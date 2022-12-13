@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    body {
+        @apply font-sans	
+    }
+
+    a {
+        @apply underline
+    }
+}
+
+@layer utilities {
+    .separator {
+        @apply border-4 rounded border-primary-main self-stretch mx-8 my-8 md:my-0
+    }
+
+}
