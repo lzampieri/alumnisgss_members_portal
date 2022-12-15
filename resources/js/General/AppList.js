@@ -5,7 +5,7 @@ import RegisteredApps from './RegisteredApps'
 export default function AppList() {
 
     return (
-        <div className="min-h-[80vh] w-full flex flex-row flex-wrap justify-center items-center gap-14 p-14">
+        <div className="w-full flex flex-row flex-wrap justify-center items-center gap-14 px-14 py-8">
             { RegisteredApps.map ( app => 
                 <Link className="
                     border-4 border-primary-main rounded-3xl

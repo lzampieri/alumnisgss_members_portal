@@ -1,3 +1,5 @@
+const colors = require('tailwindcss/colors')
+
 module.exports = {
     colors: {
         transparent: 'transparent',
@@ -10,5 +12,7 @@ module.exports = {
             'main': '#cb0014',
             'contrast': '#ffffff'
         },
+        gray: colors.gray,
+        white: colors.white,
     }
 }

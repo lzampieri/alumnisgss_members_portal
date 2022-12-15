@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MemberController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -16,4 +17,15 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('Home');
+})->name('home');
+
+Route::get('/error', function () {
+    return redirect()->route('home')->with('notistack', [ 'error', 'Utente non riconosciuto' ]);
+});
+
+include( 'auth.php' );
+
+// Members
+Route::prefix('/members')->group( function () {
+    Route::get('/', [ MemberController::class, 'list' ] )->name('members');
 });

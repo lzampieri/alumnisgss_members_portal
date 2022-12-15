@@ -7,7 +7,7 @@ use Inertia\Inertia;
 
 class MemberController extends Controller
 {
-    public function view() {
-        return Inertia::render('Members', [ 'members' => Member::all() ] );
+    public function list() {
+        return Inertia::render('Members/List', [ 'members' => Member::all() ] );
     }
 }

@@ -81,6 +81,46 @@ exports.aliases = aliases;
 
 /***/ }),
 
+/***/ "./node_modules/@fortawesome/free-solid-svg-icons/faMagnifyingGlass.js":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@fortawesome/free-solid-svg-icons/faMagnifyingGlass.js ***!
+  \*****************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+var prefix = 'fas';
+var iconName = 'magnifying-glass';
+var width = 512;
+var height = 512;
+var aliases = [128269,"search"];
+var unicode = 'f002';
+var svgPathData = 'M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z';
+
+exports.definition = {
+  prefix: prefix,
+  iconName: iconName,
+  icon: [
+    width,
+    height,
+    aliases,
+    unicode,
+    svgPathData
+  ]};
+
+exports.faMagnifyingGlass = exports.definition;
+exports.prefix = prefix;
+exports.iconName = iconName;
+exports.width = width;
+exports.height = height;
+exports.ligatures = aliases;
+exports.unicode = unicode;
+exports.svgPathData = svgPathData;
+exports.aliases = aliases;
+
+/***/ }),
+
 /***/ "./node_modules/@fortawesome/free-solid-svg-icons/faUsers.js":
 /*!*******************************************************************!*\
   !*** ./node_modules/@fortawesome/free-solid-svg-icons/faUsers.js ***!
@@ -2657,6 +2697,49 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./resources/js/General/Access.js":
+/*!****************************************!*\
+  !*** ./resources/js/General/Access.js ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Access)
+/* harmony export */ });
+/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @fortawesome/react-fontawesome */ "./node_modules/@fortawesome/react-fontawesome/index.es.js");
+/* harmony import */ var _inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @inertiajs/inertia-react */ "./node_modules/@inertiajs/inertia-react/dist/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+
+function Access() {
+  var user = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.user;
+  if (user) return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+    className: "w-full flex flex-col flex-wrap justify-center items-center px-14 py-8 gap-2",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("span", {
+      className: "text-primary-main",
+      children: ["Accesso eseguito come ", user.email]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
+      className: "\r border-4 border-primary-main rounded-3xl\r text-primary-main bg-primary-contrast\r hover:text-primary-contrast hover:bg-primary-main\r flex flex-col items-center justify-center text-xl gap-4\r no-underline\r p-2\r ",
+      href: route('auth.logout'),
+      children: "Disconnetti"
+    }, 'logout')]
+  });
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+    className: "w-full flex flex-col flex-wrap justify-center items-center gap-14 px-14 py-8",
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
+      className: "\r border-4 border-primary-main rounded-3xl\r text-primary-main bg-primary-contrast\r hover:text-primary-contrast hover:bg-primary-main\r min-w-[35vh]\r flex flex-col items-center justify-center text-3xl gap-4\r no-underline\r p-4\r ",
+      href: route('auth.login.google'),
+      children: "Accesso"
+    }, 'login')
+  });
+}
+
+/***/ }),
+
 /***/ "./resources/js/General/AppList.js":
 /*!*****************************************!*\
   !*** ./resources/js/General/AppList.js ***!
@@ -2679,7 +2762,7 @@ __webpack_require__.r(__webpack_exports__);
 
 function AppList() {
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-    className: "min-h-[80vh] w-full flex flex-row flex-wrap justify-center items-center gap-14 p-14",
+    className: "w-full flex flex-row flex-wrap justify-center items-center gap-14 px-14 py-8",
     children: _RegisteredApps__WEBPACK_IMPORTED_MODULE_2__["default"].map(function (app) {
       return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
         className: "\r border-4 border-primary-main rounded-3xl\r text-primary-main bg-primary-contrast\r hover:text-primary-contrast hover:bg-primary-main\r aspect-square min-h-[35vh]\r flex flex-col items-center justify-center text-3xl gap-4\r no-underline\r ",
@@ -2716,7 +2799,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ([{
   name: 'Soci',
-  url: '',
+  url: route('members'),
   icon: _fortawesome_free_solid_svg_icons_faUsers__WEBPACK_IMPORTED_MODULE_1__.faUsers
 }, {
   name: 'Storiche',
@@ -2727,6 +2810,33 @@ __webpack_require__.r(__webpack_exports__);
   url: '',
   icon: _fortawesome_free_solid_svg_icons_faFileSignature__WEBPACK_IMPORTED_MODULE_3__.faFileSignature
 }]);
+
+/***/ }),
+
+/***/ "./resources/js/Home.js":
+/*!******************************!*\
+  !*** ./resources/js/Home.js ***!
+  \******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* export default binding */ __WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _General_Access__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./General/Access */ "./resources/js/General/Access.js");
+/* harmony import */ var _General_AppList__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./General/AppList */ "./resources/js/General/AppList.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+
+/* harmony default export */ function __WEBPACK_DEFAULT_EXPORT__() {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+    className: "py-24",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_General_AppList__WEBPACK_IMPORTED_MODULE_1__["default"], {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_General_Access__WEBPACK_IMPORTED_MODULE_0__["default"], {})]
+  });
+}
 
 /***/ }),
 
@@ -2741,62 +2851,90 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ MainLayout)
 /* harmony export */ });
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @inertiajs/inertia-react */ "./node_modules/@inertiajs/inertia-react/dist/index.js");
+/* harmony import */ var notistack__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! notistack */ "./node_modules/notistack/notistack.esm.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
 
 
 
 function MainLayout(page) {
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+  (0,react__WEBPACK_IMPORTED_MODULE_2__.useEffect)(function () {
+    if (page.props.notistack) {
+      (0,notistack__WEBPACK_IMPORTED_MODULE_1__.enqueueSnackbar)(page.props.notistack[1], {
+        variant: page.props.notistack[0]
+      });
+    }
+  }, [page.props.notistack]);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(notistack__WEBPACK_IMPORTED_MODULE_1__.SnackbarProvider, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
       className: "flex flex-col md:flex-row w-full items-center px-8 py-2 bg-header-bg text-header-tx",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("a", {
-        href: "",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.Link, {
+        href: route('home'),
         className: "grow-0 w-full md:w-1/3",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h4", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h4", {
           className: "text-xl md:text-2xl underline",
           children: "Associazione Alumni Scuola Galileiana"
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
         className: "grow"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
         className: "separator"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
         className: "grow"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
         className: "grow-0 w-full md:w-1/3 self-stretch bg-no-repeat bg-contain bg-right flex flex-row-reverse items-center gap-4",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("img", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
           src: "https://127.0.0.1/edsa-alumnisgss-members/public" + "/assets/logo_contrast.svg",
           className: "h-full max-h-[3rem]"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h4", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h4", {
           className: "text-lg md:text-xl underline italic",
           children: "Portale soci"
         })]
       })]
-    }), page]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+      className: "flex flex-col items-center w-full p-8",
+      children: page
+    })]
   });
 }
 
 /***/ }),
 
-/***/ "./resources/js/Pages/Home.js":
-/*!************************************!*\
-  !*** ./resources/js/Pages/Home.js ***!
-  \************************************/
+/***/ "./resources/js/Members/List.js":
+/*!**************************************!*\
+  !*** ./resources/js/Members/List.js ***!
+  \**************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* export default binding */ __WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   "default": () => (/* binding */ List)
 /* harmony export */ });
-/* harmony import */ var _General_AppList__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../General/AppList */ "./resources/js/General/AppList.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faMagnifyingGlass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faMagnifyingGlass */ "./node_modules/@fortawesome/free-solid-svg-icons/faMagnifyingGlass.js");
+/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @fortawesome/react-fontawesome */ "./node_modules/@fortawesome/react-fontawesome/index.es.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
 
 
-/* harmony default export */ function __WEBPACK_DEFAULT_EXPORT__() {
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_General_AppList__WEBPACK_IMPORTED_MODULE_0__["default"], {})
+
+function List() {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+    className: "flex flex-col items-center w-full md:w-3/5",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+      className: "w-full relative mb-4",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("input", {
+        type: "text",
+        className: "w-full rounded-md text-center\r bg-gray-100 border-transparent\r focus:border-gray-500 focus:bg-white focus:ring-0\r ",
+        placeholder: "Filtra..."
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
+        icon: _fortawesome_free_solid_svg_icons_faMagnifyingGlass__WEBPACK_IMPORTED_MODULE_2__.faMagnifyingGlass,
+        className: "\r text-gray-500\r absolute right-4 text-2xl inset-y-0 my-auto"
+      })]
+    }), "Lista dei membri..."]
   });
 }
 
@@ -2831,7 +2969,7 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_2__.createInertiaApp)({
   resolve: function resolve(name) {
-    var page = __webpack_require__("./resources/js/Pages sync recursive ^\\.\\/.*$")("./".concat(name))["default"];
+    var page = __webpack_require__("./resources/js sync recursive ^\\.\\/.*$")("./".concat(name))["default"];
     page.layout = _Layout_MainLayout__WEBPACK_IMPORTED_MODULE_4__["default"];
     return page;
   },
@@ -2882,6 +3020,32 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     forceTLS: true
 // });
+
+/***/ }),
+
+/***/ "./resources/js/theme.js":
+/*!*******************************!*\
+  !*** ./resources/js/theme.js ***!
+  \*******************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var colors = __webpack_require__(/*! tailwindcss/colors */ "./node_modules/tailwindcss/colors.js");
+module.exports = {
+  colors: {
+    transparent: 'transparent',
+    current: 'currentColor',
+    header: {
+      'bg': '#111111',
+      'tx': '#ffffff'
+    },
+    primary: {
+      'main': '#cb0014',
+      'contrast': '#ffffff'
+    },
+    gray: colors.gray,
+    white: colors.white
+  }
+};
 
 /***/ }),
 
@@ -2966,6 +3130,22 @@ if ($defineProperty) {
 	module.exports.apply = applyBind;
 }
 
+
+/***/ }),
+
+/***/ "./node_modules/clsx/dist/clsx.m.js":
+/*!******************************************!*\
+  !*** ./node_modules/clsx/dist/clsx.m.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "clsx": () => (/* binding */ clsx),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function r(e){var t,f,n="";if("string"==typeof e||"number"==typeof e)n+=e;else if("object"==typeof e)if(Array.isArray(e))for(t=0;t<e.length;t++)e[t]&&(f=r(e[t]))&&(n&&(n+=" "),n+=f);else for(t in e)e[t]&&(n&&(n+=" "),n+=t);return n}function clsx(){for(var e,t,f=0,n="";f<arguments.length;)(e=arguments[f++])&&(t=r(e))&&(n&&(n+=" "),n+=t);return n}/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (clsx);
 
 /***/ }),
 
@@ -22714,6 +22894,1834 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/notistack/notistack.esm.js":
+/*!*************************************************!*\
+  !*** ./node_modules/notistack/notistack.esm.js ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SnackbarContent": () => (/* binding */ SnackbarContent),
+/* harmony export */   "SnackbarProvider": () => (/* binding */ SnackbarProvider),
+/* harmony export */   "Transition": () => (/* binding */ Transition),
+/* harmony export */   "closeSnackbar": () => (/* binding */ closeSnackbar),
+/* harmony export */   "enqueueSnackbar": () => (/* binding */ enqueueSnackbar),
+/* harmony export */   "useSnackbar": () => (/* binding */ useSnackbar)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.m.js");
+/* harmony import */ var goober__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! goober */ "./node_modules/goober/dist/goober.modern.js");
+
+
+
+
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+  subClass.__proto__ = superClass;
+}
+
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+var noOp = function noOp() {
+  return '';
+};
+
+var SnackbarContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext({
+  enqueueSnackbar: noOp,
+  closeSnackbar: noOp
+});
+
+var breakpoints = {
+  downXs: '@media (max-width:599.95px)',
+  upSm: '@media (min-width:600px)'
+};
+
+var capitalise = function capitalise(text) {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+};
+
+var originKeyExtractor = function originKeyExtractor(anchor) {
+  return "" + capitalise(anchor.vertical) + capitalise(anchor.horizontal);
+};
+var isDefined = function isDefined(value) {
+  return !!value || value === 0;
+};
+
+var UNMOUNTED = 'unmounted';
+var EXITED = 'exited';
+var ENTERING = 'entering';
+var ENTERED = 'entered';
+var EXITING = 'exiting';
+
+var Transition = /*#__PURE__*/function (_React$Component) {
+  _inheritsLoose(Transition, _React$Component);
+
+  function Transition(props) {
+    var _this;
+
+    _this = _React$Component.call(this, props) || this;
+    var appear = props.appear;
+    var initialStatus;
+    _this.appearStatus = null;
+
+    if (props["in"]) {
+      if (appear) {
+        initialStatus = EXITED;
+        _this.appearStatus = ENTERING;
+      } else {
+        initialStatus = ENTERED;
+      }
+    } else if (props.unmountOnExit || props.mountOnEnter) {
+      initialStatus = UNMOUNTED;
+    } else {
+      initialStatus = EXITED;
+    }
+
+    _this.state = {
+      status: initialStatus
+    };
+    _this.nextCallback = null;
+    return _this;
+  }
+
+  Transition.getDerivedStateFromProps = function getDerivedStateFromProps(_ref, prevState) {
+    var nextIn = _ref["in"];
+
+    if (nextIn && prevState.status === UNMOUNTED) {
+      return {
+        status: EXITED
+      };
+    }
+
+    return null;
+  };
+
+  var _proto = Transition.prototype;
+
+  _proto.componentDidMount = function componentDidMount() {
+    this.updateStatus(true, this.appearStatus);
+  };
+
+  _proto.componentDidUpdate = function componentDidUpdate(prevProps) {
+    var nextStatus = null;
+
+    if (prevProps !== this.props) {
+      var status = this.state.status;
+
+      if (this.props["in"]) {
+        if (status !== ENTERING && status !== ENTERED) {
+          nextStatus = ENTERING;
+        }
+      } else if (status === ENTERING || status === ENTERED) {
+        nextStatus = EXITING;
+      }
+    }
+
+    this.updateStatus(false, nextStatus);
+  };
+
+  _proto.componentWillUnmount = function componentWillUnmount() {
+    this.cancelNextCallback();
+  };
+
+  _proto.getTimeouts = function getTimeouts() {
+    var timeout = this.props.timeout;
+    var enter = timeout;
+    var exit = timeout;
+
+    if (timeout != null && typeof timeout !== 'number' && typeof timeout !== 'string') {
+      exit = timeout.exit;
+      enter = timeout.enter;
+    }
+
+    return {
+      exit: exit,
+      enter: enter
+    };
+  };
+
+  _proto.updateStatus = function updateStatus(mounting, nextStatus) {
+    if (mounting === void 0) {
+      mounting = false;
+    }
+
+    if (nextStatus !== null) {
+      this.cancelNextCallback();
+
+      if (nextStatus === ENTERING) {
+        this.performEnter(mounting);
+      } else {
+        this.performExit();
+      }
+    } else if (this.props.unmountOnExit && this.state.status === EXITED) {
+      this.setState({
+        status: UNMOUNTED
+      });
+    }
+  };
+
+  _proto.performEnter = function performEnter(mounting) {
+    var _this2 = this;
+
+    var enter = this.props.enter;
+    var isAppearing = mounting;
+    var timeouts = this.getTimeouts();
+
+    if (!mounting && !enter) {
+      this.safeSetState({
+        status: ENTERED
+      }, function () {
+        if (_this2.props.onEntered) {
+          _this2.props.onEntered(_this2.node, isAppearing);
+        }
+      });
+      return;
+    }
+
+    if (this.props.onEnter) {
+      this.props.onEnter(this.node, isAppearing);
+    }
+
+    this.safeSetState({
+      status: ENTERING
+    }, function () {
+      if (_this2.props.onEntering) {
+        _this2.props.onEntering(_this2.node, isAppearing);
+      }
+
+      _this2.onTransitionEnd(timeouts.enter, function () {
+        _this2.safeSetState({
+          status: ENTERED
+        }, function () {
+          if (_this2.props.onEntered) {
+            _this2.props.onEntered(_this2.node, isAppearing);
+          }
+        });
+      });
+    });
+  };
+
+  _proto.performExit = function performExit() {
+    var _this3 = this;
+
+    var exit = this.props.exit;
+    var timeouts = this.getTimeouts(); // no exit animation skip right to EXITED
+
+    if (!exit) {
+      this.safeSetState({
+        status: EXITED
+      }, function () {
+        if (_this3.props.onExited) {
+          _this3.props.onExited(_this3.node);
+        }
+      });
+      return;
+    }
+
+    if (this.props.onExit) {
+      this.props.onExit(this.node);
+    }
+
+    this.safeSetState({
+      status: EXITING
+    }, function () {
+      if (_this3.props.onExiting) {
+        _this3.props.onExiting(_this3.node);
+      }
+
+      _this3.onTransitionEnd(timeouts.exit, function () {
+        _this3.safeSetState({
+          status: EXITED
+        }, function () {
+          if (_this3.props.onExited) {
+            _this3.props.onExited(_this3.node);
+          }
+        });
+      });
+    });
+  };
+
+  _proto.cancelNextCallback = function cancelNextCallback() {
+    if (this.nextCallback !== null && this.nextCallback.cancel) {
+      this.nextCallback.cancel();
+      this.nextCallback = null;
+    }
+  };
+
+  _proto.safeSetState = function safeSetState(nextState, callback) {
+    callback = this.setNextCallback(callback);
+    this.setState(nextState, callback);
+  };
+
+  _proto.setNextCallback = function setNextCallback(callback) {
+    var _this4 = this;
+
+    var active = true;
+
+    this.nextCallback = function () {
+      if (active) {
+        active = false;
+        _this4.nextCallback = null;
+        callback();
+      }
+    };
+
+    this.nextCallback.cancel = function () {
+      active = false;
+    };
+
+    return this.nextCallback;
+  };
+
+  _proto.onTransitionEnd = function onTransitionEnd(timeout, handler) {
+    this.setNextCallback(handler);
+    var doesNotHaveTimeoutOrListener = timeout == null && !this.props.addEndListener;
+
+    if (!this.node || doesNotHaveTimeoutOrListener) {
+      setTimeout(this.nextCallback, 0);
+      return;
+    }
+
+    if (this.props.addEndListener) {
+      this.props.addEndListener(this.node, this.nextCallback);
+    }
+
+    if (timeout != null) {
+      setTimeout(this.nextCallback, timeout);
+    }
+  };
+
+  _proto.render = function render() {
+    var status = this.state.status;
+
+    if (status === UNMOUNTED) {
+      return null;
+    }
+
+    var _this$props = this.props,
+        children = _this$props.children,
+        childProps = _objectWithoutPropertiesLoose(_this$props, ["children", "in", "mountOnEnter", "unmountOnExit", "appear", "enter", "exit", "timeout", "addEndListener", "onEnter", "onEntering", "onEntered", "onExit", "onExiting", "onExited", "nodeRef"]);
+
+    return children(status, childProps);
+  };
+
+  _createClass(Transition, [{
+    key: "node",
+    get: function get() {
+      var _this$props$nodeRef;
+
+      var node = (_this$props$nodeRef = this.props.nodeRef) === null || _this$props$nodeRef === void 0 ? void 0 : _this$props$nodeRef.current;
+
+      if (!node) {
+        throw new Error('notistack - Custom snackbar is not refForwarding');
+      }
+
+      return node;
+    }
+  }]);
+
+  return Transition;
+}(react__WEBPACK_IMPORTED_MODULE_0__.Component);
+
+function noop() {//
+}
+
+Transition.defaultProps = {
+  "in": false,
+  mountOnEnter: false,
+  unmountOnExit: false,
+  appear: false,
+  enter: true,
+  exit: true,
+  onEnter: noop,
+  onEntering: noop,
+  onEntered: noop,
+  onExit: noop,
+  onExiting: noop,
+  onExited: noop
+};
+
+/**
+ * Credit to MUI team @ https://mui.com
+ */
+/**
+ * passes {value} to {ref}
+ *
+ * Useful if you want to expose the ref of an inner component to the public API
+ * while still using it inside the component.
+ * @param ref A ref callback or ref object. If anything falsy, this is a no-op.
+ */
+
+function setRef(ref, value) {
+  if (typeof ref === 'function') {
+    ref(value);
+  } else if (ref) {
+    ref.current = value;
+  }
+}
+
+function useForkRef(refA, refB) {
+  /**
+   * This will create a new function if the ref props change and are defined.
+   * This means react will call the old forkRef with `null` and the new forkRef
+   * with the ref. Cleanup naturally emerges from this behavior.
+   */
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
+    if (refA == null && refB == null) {
+      return null;
+    }
+
+    return function (refValue) {
+      setRef(refA, refValue);
+      setRef(refB, refValue);
+    };
+  }, [refA, refB]);
+}
+
+function getTransitionProps(props) {
+  var timeout = props.timeout,
+      _props$style = props.style,
+      style = _props$style === void 0 ? {} : _props$style,
+      mode = props.mode;
+  return {
+    duration: typeof timeout === 'object' ? timeout[mode] || 0 : timeout,
+    easing: style.transitionTimingFunction,
+    delay: style.transitionDelay
+  };
+}
+
+/**
+ * Credit to MUI team @ https://mui.com
+ */
+var defaultEasing = {
+  // This is the most common easing curve.
+  easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
+  // Objects enter the screen at full velocity from off-screen and
+  // slowly decelerate to a resting point.
+  easeOut: 'cubic-bezier(0.0, 0, 0.2, 1)',
+  // Objects leave the screen at full velocity. They do not decelerate when off-screen.
+  easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
+  // The sharp curve is used by objects that may return to the screen at any time.
+  sharp: 'cubic-bezier(0.4, 0, 0.6, 1)'
+};
+/**
+ * CSS hack to force a repaint
+ */
+
+var reflow = function reflow(node) {
+  // We have to do something with node.scrollTop.
+  // Otherwise it's removed from the compiled code by optimisers
+  // eslint-disable-next-line no-self-assign
+  node.scrollTop = node.scrollTop;
+};
+
+var formatMs = function formatMs(milliseconds) {
+  return Math.round(milliseconds) + "ms";
+};
+
+function createTransition(props, options) {
+  if (props === void 0) {
+    props = ['all'];
+  }
+
+  var _ref = options || {},
+      _ref$duration = _ref.duration,
+      duration = _ref$duration === void 0 ? 300 : _ref$duration,
+      _ref$easing = _ref.easing,
+      easing = _ref$easing === void 0 ? defaultEasing.easeInOut : _ref$easing,
+      _ref$delay = _ref.delay,
+      delay = _ref$delay === void 0 ? 0 : _ref$delay;
+
+  var properties = Array.isArray(props) ? props : [props];
+  return properties.map(function (animatedProp) {
+    var formattedDuration = typeof duration === 'string' ? duration : formatMs(duration);
+    var formattedDelay = typeof delay === 'string' ? delay : formatMs(delay);
+    return animatedProp + " " + formattedDuration + " " + easing + " " + formattedDelay;
+  }).join(',');
+}
+
+function ownerDocument(node) {
+  return node && node.ownerDocument || document;
+}
+
+function ownerWindow(node) {
+  var doc = ownerDocument(node);
+  return doc.defaultView || window;
+}
+/**
+ * Corresponds to 10 frames at 60 Hz.
+ * A few bytes payload overhead when lodash/debounce is ~3 kB and debounce ~300 B.
+ */
+
+
+function debounce(func, wait) {
+  if (wait === void 0) {
+    wait = 166;
+  }
+
+  var timeout;
+
+  function debounced() {
+    var _this = this;
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    var later = function later() {
+      // @ts-ignore
+      func.apply(_this, args);
+    };
+
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  }
+
+  debounced.clear = function () {
+    clearTimeout(timeout);
+  };
+
+  return debounced;
+}
+/**
+ * Translate the node so it can't be seen on the screen.
+ * Later, we're going to translate the node back to its original location with `none`.
+ */
+
+
+function getTranslateValue(direction, node) {
+  var rect = node.getBoundingClientRect();
+  var containerWindow = ownerWindow(node);
+  var transform;
+
+  if (node.fakeTransform) {
+    transform = node.fakeTransform;
+  } else {
+    var computedStyle = containerWindow.getComputedStyle(node);
+    transform = computedStyle.getPropertyValue('-webkit-transform') || computedStyle.getPropertyValue('transform');
+  }
+
+  var offsetX = 0;
+  var offsetY = 0;
+
+  if (transform && transform !== 'none' && typeof transform === 'string') {
+    var transformValues = transform.split('(')[1].split(')')[0].split(',');
+    offsetX = parseInt(transformValues[4], 10);
+    offsetY = parseInt(transformValues[5], 10);
+  }
+
+  switch (direction) {
+    case 'left':
+      return "translateX(" + (containerWindow.innerWidth + offsetX - rect.left) + "px)";
+
+    case 'right':
+      return "translateX(-" + (rect.left + rect.width - offsetX) + "px)";
+
+    case 'up':
+      return "translateY(" + (containerWindow.innerHeight + offsetY - rect.top) + "px)";
+
+    default:
+      // down
+      return "translateY(-" + (rect.top + rect.height - offsetY) + "px)";
+  }
+}
+
+function setTranslateValue(direction, node) {
+  if (!node) return;
+  var transform = getTranslateValue(direction, node);
+
+  if (transform) {
+    node.style.webkitTransform = transform;
+    node.style.transform = transform;
+  }
+}
+
+var Slide = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRef)(function (props, ref) {
+  var children = props.children,
+      _props$direction = props.direction,
+      direction = _props$direction === void 0 ? 'down' : _props$direction,
+      inProp = props["in"],
+      style = props.style,
+      _props$timeout = props.timeout,
+      timeout = _props$timeout === void 0 ? 0 : _props$timeout,
+      onEnter = props.onEnter,
+      onEntered = props.onEntered,
+      onExit = props.onExit,
+      onExited = props.onExited,
+      other = _objectWithoutPropertiesLoose(props, ["children", "direction", "in", "style", "timeout", "onEnter", "onEntered", "onExit", "onExited"]);
+
+  var nodeRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  var handleRefIntermediary = useForkRef(children.ref, nodeRef);
+  var handleRef = useForkRef(handleRefIntermediary, ref);
+
+  var handleEnter = function handleEnter(node, isAppearing) {
+    setTranslateValue(direction, node);
+    reflow(node);
+
+    if (onEnter) {
+      onEnter(node, isAppearing);
+    }
+  };
+
+  var handleEntering = function handleEntering(node) {
+    var easing = (style === null || style === void 0 ? void 0 : style.transitionTimingFunction) || defaultEasing.easeOut;
+    var transitionProps = getTransitionProps({
+      timeout: timeout,
+      mode: 'enter',
+      style: _extends({}, style, {
+        transitionTimingFunction: easing
+      })
+    });
+    node.style.webkitTransition = createTransition('-webkit-transform', transitionProps);
+    node.style.transition = createTransition('transform', transitionProps);
+    node.style.webkitTransform = 'none';
+    node.style.transform = 'none';
+  };
+
+  var handleExit = function handleExit(node) {
+    var easing = (style === null || style === void 0 ? void 0 : style.transitionTimingFunction) || defaultEasing.sharp;
+    var transitionProps = getTransitionProps({
+      timeout: timeout,
+      mode: 'exit',
+      style: _extends({}, style, {
+        transitionTimingFunction: easing
+      })
+    });
+    node.style.webkitTransition = createTransition('-webkit-transform', transitionProps);
+    node.style.transition = createTransition('transform', transitionProps);
+    setTranslateValue(direction, node);
+
+    if (onExit) {
+      onExit(node);
+    }
+  };
+
+  var handleExited = function handleExited(node) {
+    // No need for transitions when the component is hidden
+    node.style.webkitTransition = '';
+    node.style.transition = '';
+
+    if (onExited) {
+      onExited(node);
+    }
+  };
+
+  var updatePosition = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
+    if (nodeRef.current) {
+      setTranslateValue(direction, nodeRef.current);
+    }
+  }, [direction]);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    // Skip configuration where the position is screen size invariant.
+    if (inProp || direction === 'down' || direction === 'right') {
+      return undefined;
+    }
+
+    var handleResize = debounce(function () {
+      if (nodeRef.current) {
+        setTranslateValue(direction, nodeRef.current);
+      }
+    });
+    var containerWindow = ownerWindow(nodeRef.current);
+    containerWindow.addEventListener('resize', handleResize);
+    return function () {
+      handleResize.clear();
+      containerWindow.removeEventListener('resize', handleResize);
+    };
+  }, [direction, inProp]);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (!inProp) {
+      // We need to update the position of the drawer when the direction change and
+      // when it's hidden.
+      updatePosition();
+    }
+  }, [inProp, updatePosition]);
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Transition, Object.assign({
+    appear: true,
+    nodeRef: nodeRef,
+    onEnter: handleEnter,
+    onEntered: onEntered,
+    onEntering: handleEntering,
+    onExit: handleExit,
+    onExited: handleExited,
+    "in": inProp,
+    timeout: timeout
+  }, other), function (state, childProps) {
+    return (0,react__WEBPACK_IMPORTED_MODULE_0__.cloneElement)(children, _extends({
+      ref: handleRef,
+      style: _extends({
+        visibility: state === 'exited' && !inProp ? 'hidden' : undefined
+      }, style, {}, children.props.style)
+    }, childProps));
+  });
+});
+Slide.displayName = 'Slide';
+
+var SvgIcon = function SvgIcon(props) {
+  return react__WEBPACK_IMPORTED_MODULE_0__.createElement("svg", Object.assign({
+    viewBox: "0 0 24 24",
+    focusable: "false",
+    style: {
+      fontSize: 20,
+      marginInlineEnd: 8,
+      userSelect: 'none',
+      width: '1em',
+      height: '1em',
+      display: 'inline-block',
+      fill: 'currentColor',
+      flexShrink: 0
+    }
+  }, props));
+};
+
+var CheckIcon = function CheckIcon() {
+  return react__WEBPACK_IMPORTED_MODULE_0__.createElement(SvgIcon, null, react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", {
+    d: "M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41\n        10.59L10 14.17L17.59 6.58L19 8L10 17Z"
+  }));
+};
+
+var WarningIcon = function WarningIcon() {
+  return react__WEBPACK_IMPORTED_MODULE_0__.createElement(SvgIcon, null, react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", {
+    d: "M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z"
+  }));
+};
+
+var ErrorIcon = function ErrorIcon() {
+  return react__WEBPACK_IMPORTED_MODULE_0__.createElement(SvgIcon, null, react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", {
+    d: "M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,\n        6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,\n        13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z"
+  }));
+};
+
+var InfoIcon = function InfoIcon() {
+  return react__WEBPACK_IMPORTED_MODULE_0__.createElement(SvgIcon, null, react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", {
+    d: "M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,\n        0 22,12A10,10 0 0,0 12,2Z"
+  }));
+};
+
+var defaultIconVariants = {
+  "default": undefined,
+  success: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(CheckIcon, null),
+  warning: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(WarningIcon, null),
+  error: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(ErrorIcon, null),
+  info: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(InfoIcon, null)
+};
+
+var defaults = {
+  maxSnack: 3,
+  persist: false,
+  hideIconVariant: false,
+  disableWindowBlurListener: false,
+  variant: 'default',
+  autoHideDuration: 5000,
+  iconVariant: defaultIconVariants,
+  anchorOrigin: {
+    vertical: 'bottom',
+    horizontal: 'left'
+  },
+  TransitionComponent: Slide,
+  transitionDuration: {
+    enter: 225,
+    exit: 195
+  }
+};
+/**
+ * Derives the right autoHideDuration taking into account the following
+ * prority order: 1: Options, 2: Props, 3: default fallback
+ */
+
+var getAutoHideDuration = function getAutoHideDuration(optionsDuration, propsDuration) {
+  var isNumberOrNull = function isNumberOrNull(numberish) {
+    return typeof numberish === 'number' || numberish === null;
+  };
+
+  if (isNumberOrNull(optionsDuration)) return optionsDuration;
+  if (isNumberOrNull(propsDuration)) return propsDuration;
+  return defaults.autoHideDuration;
+};
+/**
+ * Derives the right transitionDuration taking into account the following
+ * prority order: 1: Options, 2: Props, 3: default fallback
+ */
+
+
+var getTransitionDuration = function getTransitionDuration(optionsDuration, propsDuration) {
+  var is = function is(item, types) {
+    return types.some(function (t) {
+      return typeof item === t;
+    });
+  };
+
+  if (is(optionsDuration, ['string', 'number'])) {
+    return optionsDuration;
+  }
+
+  if (is(optionsDuration, ['object'])) {
+    return _extends({}, defaults.transitionDuration, {}, is(propsDuration, ['object']) && propsDuration, {}, optionsDuration);
+  }
+
+  if (is(propsDuration, ['string', 'number'])) {
+    return propsDuration;
+  }
+
+  if (is(propsDuration, ['object'])) {
+    return _extends({}, defaults.transitionDuration, {}, propsDuration);
+  }
+
+  return defaults.transitionDuration;
+};
+
+var merge = function merge(options, props) {
+  return function (name, shouldObjectMerge) {
+    if (shouldObjectMerge === void 0) {
+      shouldObjectMerge = false;
+    }
+
+    if (shouldObjectMerge) {
+      return _extends({}, defaults[name], {}, props[name], {}, options[name]);
+    }
+
+    if (name === 'autoHideDuration') {
+      return getAutoHideDuration(options.autoHideDuration, props.autoHideDuration);
+    }
+
+    if (name === 'transitionDuration') {
+      return getTransitionDuration(options.transitionDuration, props.transitionDuration);
+    }
+
+    return options[name] || props[name] || defaults[name];
+  };
+};
+
+function makeStyles(styles) {
+  return Object.entries(styles).reduce(function (acc, _ref) {
+    var _extends2;
+
+    var key = _ref[0],
+        value = _ref[1];
+    return _extends({}, acc, (_extends2 = {}, _extends2[key] = (0,goober__WEBPACK_IMPORTED_MODULE_3__.css)(value), _extends2));
+  }, {});
+}
+var ComponentClasses = {
+  SnackbarContainer: 'notistack-SnackbarContainer',
+  Snackbar: 'notistack-Snackbar',
+  CollapseWrapper: 'notistack-CollapseWrapper',
+  MuiContent: 'notistack-MuiContent'
+};
+
+var classes = /*#__PURE__*/makeStyles({
+  root: {
+    height: 0
+  },
+  entered: {
+    height: 'auto'
+  }
+});
+var collapsedSize = '0px';
+var timeout = 175;
+var Collapse = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRef)(function (props, ref) {
+  var children = props.children,
+      inProp = props["in"],
+      onExited = props.onExited;
+  var wrapperRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  var nodeRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  var handleRef = useForkRef(ref, nodeRef);
+
+  var getWrapperSize = function getWrapperSize() {
+    return wrapperRef.current ? wrapperRef.current.clientHeight : 0;
+  };
+
+  var handleEnter = function handleEnter(node) {
+    node.style.height = collapsedSize;
+  };
+
+  var handleEntering = function handleEntering(node) {
+    var wrapperSize = getWrapperSize();
+
+    var _getTransitionProps = getTransitionProps({
+      timeout: timeout,
+      mode: 'enter'
+    }),
+        transitionDuration = _getTransitionProps.duration,
+        easing = _getTransitionProps.easing;
+
+    node.style.transitionDuration = typeof transitionDuration === 'string' ? transitionDuration : transitionDuration + "ms";
+    node.style.height = wrapperSize + "px";
+    node.style.transitionTimingFunction = easing || '';
+  };
+
+  var handleEntered = function handleEntered(node) {
+    node.style.height = 'auto';
+  };
+
+  var handleExit = function handleExit(node) {
+    node.style.height = getWrapperSize() + "px";
+  };
+
+  var handleExiting = function handleExiting(node) {
+    reflow(node);
+
+    var _getTransitionProps2 = getTransitionProps({
+      timeout: timeout,
+      mode: 'exit'
+    }),
+        transitionDuration = _getTransitionProps2.duration,
+        easing = _getTransitionProps2.easing;
+
+    node.style.transitionDuration = typeof transitionDuration === 'string' ? transitionDuration : transitionDuration + "ms";
+    node.style.height = collapsedSize;
+    node.style.transitionTimingFunction = easing || '';
+  };
+
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Transition, {
+    "in": inProp,
+    unmountOnExit: true,
+    onEnter: handleEnter,
+    onEntered: handleEntered,
+    onEntering: handleEntering,
+    onExit: handleExit,
+    onExited: onExited,
+    onExiting: handleExiting,
+    nodeRef: nodeRef,
+    timeout: timeout
+  }, function (state, childProps) {
+    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", Object.assign({
+      ref: handleRef,
+      className: (0,clsx__WEBPACK_IMPORTED_MODULE_2__["default"])(classes.root, state === 'entered' && classes.entered),
+      style: _extends({
+        pointerEvents: 'all',
+        overflow: 'hidden',
+        minHeight: collapsedSize,
+        transition: createTransition('height')
+      }, state === 'entered' && {
+        overflow: 'visible'
+      }, {}, state === 'exited' && !inProp && {
+        visibility: 'hidden'
+      })
+    }, childProps), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      ref: wrapperRef,
+      className: ComponentClasses.CollapseWrapper,
+      // Hack to get children with a negative margin to not falsify the height computation.
+      style: {
+        display: 'flex',
+        width: '100%'
+      }
+    }, children));
+  });
+});
+Collapse.displayName = 'Collapse';
+
+var direction = {
+  right: 'left',
+  left: 'right',
+  bottom: 'up',
+  top: 'down'
+};
+var getSlideDirection = function getSlideDirection(anchorOrigin) {
+  if (anchorOrigin.horizontal !== 'center') {
+    return direction[anchorOrigin.horizontal];
+  }
+
+  return direction[anchorOrigin.vertical];
+};
+/** Tranforms classes name */
+
+var toSnackbarAnchorOrigin = function toSnackbarAnchorOrigin(anchorOrigin) {
+  return "anchorOrigin" + originKeyExtractor(anchorOrigin);
+};
+/**
+ * Omit SnackbarContainer class keys that are not needed for SnackbarItem
+ */
+
+var keepSnackbarClassKeys = function keepSnackbarClassKeys(classes) {
+  if (classes === void 0) {
+    classes = {};
+  }
+
+  var containerClasses = {
+    containerRoot: true,
+    containerAnchorOriginTopCenter: true,
+    containerAnchorOriginBottomCenter: true,
+    containerAnchorOriginTopRight: true,
+    containerAnchorOriginBottomRight: true,
+    containerAnchorOriginTopLeft: true,
+    containerAnchorOriginBottomLeft: true
+  };
+  return Object.keys(classes).filter(function (key) {
+    return !containerClasses[key];
+  }).reduce(function (obj, key) {
+    var _extends2;
+
+    return _extends({}, obj, (_extends2 = {}, _extends2[key] = classes[key], _extends2));
+  }, {});
+};
+
+var noOp$1 = function noOp() {
+  /* */
+};
+/**
+ * Credit to MUI team @ https://mui.com
+ * Safe chained function.
+ *
+ * Will only create a new function if needed,
+ * otherwise will pass back existing functions or null.
+ */
+
+
+function createChainedFunction(funcs, snackbarId) {
+  // @ts-ignore
+  return funcs.reduce(function (acc, func) {
+    if (func === null || func === undefined) {
+      return acc;
+    }
+
+    return function chainedFunction() {
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      var argums = [].concat(args);
+
+      if (snackbarId && argums.indexOf(snackbarId) === -1) {
+        argums.push(snackbarId);
+      } // @ts-ignore
+
+
+      acc.apply(this, argums);
+      func.apply(this, argums);
+    };
+  }, noOp$1);
+}
+
+/**
+ * Credit to MUI team @ https://mui.com
+ * https://github.com/facebook/react/issues/14099#issuecomment-440013892
+ */
+var useEnhancedEffect = typeof window !== 'undefined' ? react__WEBPACK_IMPORTED_MODULE_0__.useLayoutEffect : react__WEBPACK_IMPORTED_MODULE_0__.useEffect;
+function useEventCallback(fn) {
+  var ref = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(fn);
+  useEnhancedEffect(function () {
+    ref.current = fn;
+  });
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
+    return (// @ts-expect-error hide `this`
+      (ref.current).apply(void 0, arguments)
+    );
+  }, []);
+}
+
+/**
+ * Credit to MUI team @ https://mui.com
+ */
+var Snackbar = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRef)(function (props, ref) {
+  var children = props.children,
+      className = props.className,
+      autoHideDuration = props.autoHideDuration,
+      _props$disableWindowB = props.disableWindowBlurListener,
+      disableWindowBlurListener = _props$disableWindowB === void 0 ? false : _props$disableWindowB,
+      onClose = props.onClose,
+      id = props.id,
+      open = props.open,
+      _props$SnackbarProps = props.SnackbarProps,
+      SnackbarProps = _props$SnackbarProps === void 0 ? {} : _props$SnackbarProps;
+  var timerAutoHide = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
+  var handleClose = useEventCallback(function () {
+    if (onClose) {
+      onClose.apply(void 0, arguments);
+    }
+  });
+  var setAutoHideTimer = useEventCallback(function (autoHideDurationParam) {
+    if (!onClose || autoHideDurationParam == null) {
+      return;
+    }
+
+    if (timerAutoHide.current) {
+      clearTimeout(timerAutoHide.current);
+    }
+
+    timerAutoHide.current = setTimeout(function () {
+      handleClose(null, 'timeout', id);
+    }, autoHideDurationParam);
+  });
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (open) {
+      setAutoHideTimer(autoHideDuration);
+    }
+
+    return function () {
+      if (timerAutoHide.current) {
+        clearTimeout(timerAutoHide.current);
+      }
+    };
+  }, [open, autoHideDuration, setAutoHideTimer]);
+  /**
+   * Pause the timer when the user is interacting with the Snackbar
+   * or when the user hide the window.
+   */
+
+  var handlePause = function handlePause() {
+    if (timerAutoHide.current) {
+      clearTimeout(timerAutoHide.current);
+    }
+  };
+  /**
+   * Restart the timer when the user is no longer interacting with the Snackbar
+   * or when the window is shown back.
+   */
+
+
+  var handleResume = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
+    if (autoHideDuration != null) {
+      setAutoHideTimer(autoHideDuration * 0.5);
+    }
+  }, [autoHideDuration, setAutoHideTimer]);
+
+  var handleMouseEnter = function handleMouseEnter(event) {
+    if (SnackbarProps.onMouseEnter) {
+      SnackbarProps.onMouseEnter(event);
+    }
+
+    handlePause();
+  };
+
+  var handleMouseLeave = function handleMouseLeave(event) {
+    if (SnackbarProps.onMouseLeave) {
+      SnackbarProps.onMouseLeave(event);
+    }
+
+    handleResume();
+  };
+
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (!disableWindowBlurListener && open) {
+      window.addEventListener('focus', handleResume);
+      window.addEventListener('blur', handlePause);
+      return function () {
+        window.removeEventListener('focus', handleResume);
+        window.removeEventListener('blur', handlePause);
+      };
+    }
+
+    return undefined;
+  }, [disableWindowBlurListener, handleResume, open]);
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", Object.assign({
+    ref: ref
+  }, SnackbarProps, {
+    className: (0,clsx__WEBPACK_IMPORTED_MODULE_2__["default"])(ComponentClasses.Snackbar, className),
+    onMouseEnter: handleMouseEnter,
+    onMouseLeave: handleMouseLeave
+  }), children);
+});
+Snackbar.displayName = 'Snackbar';
+
+var _root;
+var classes$1 = /*#__PURE__*/makeStyles({
+  root: (_root = {
+    display: 'flex',
+    flexWrap: 'wrap',
+    flexGrow: 1
+  }, _root[breakpoints.upSm] = {
+    flexGrow: 'initial',
+    minWidth: '288px'
+  }, _root)
+});
+var SnackbarContent = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRef)(function (_ref, ref) {
+  var className = _ref.className,
+      props = _objectWithoutPropertiesLoose(_ref, ["className"]);
+
+  return react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", Object.assign({
+    ref: ref,
+    className: (0,clsx__WEBPACK_IMPORTED_MODULE_2__["default"])(classes$1.root, className)
+  }, props));
+});
+SnackbarContent.displayName = 'SnackbarContent';
+
+var classes$2 = /*#__PURE__*/makeStyles({
+  root: {
+    backgroundColor: '#313131',
+    fontSize: '0.875rem',
+    lineHeight: 1.43,
+    letterSpacing: '0.01071em',
+    color: '#fff',
+    alignItems: 'center',
+    padding: '6px 16px',
+    borderRadius: '4px',
+    boxShadow: '0px 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12)'
+  },
+  lessPadding: {
+    paddingLeft: 8 * 2.5 + "px"
+  },
+  "default": {
+    backgroundColor: '#313131'
+  },
+  success: {
+    backgroundColor: '#43a047'
+  },
+  error: {
+    backgroundColor: '#d32f2f'
+  },
+  warning: {
+    backgroundColor: '#ff9800'
+  },
+  info: {
+    backgroundColor: '#2196f3'
+  },
+  message: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: '8px 0'
+  },
+  action: {
+    display: 'flex',
+    alignItems: 'center',
+    marginLeft: 'auto',
+    paddingLeft: '16px',
+    marginRight: '-8px'
+  }
+});
+var MaterialDesignContent = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRef)(function (props, forwardedRef) {
+  var id = props.id,
+      message = props.message,
+      componentOrFunctionAction = props.action,
+      iconVariant = props.iconVariant,
+      variant = props.variant,
+      hideIconVariant = props.hideIconVariant,
+      style = props.style;
+  var icon = iconVariant[variant];
+  var action = componentOrFunctionAction;
+
+  if (typeof action === 'function') {
+    action = action(id);
+  }
+
+  return react__WEBPACK_IMPORTED_MODULE_0__.createElement(SnackbarContent, {
+    ref: forwardedRef,
+    role: "alert",
+    style: style,
+    className: (0,clsx__WEBPACK_IMPORTED_MODULE_2__["default"])(ComponentClasses.MuiContent, classes$2.root, classes$2[variant], !hideIconVariant && icon && classes$2.lessPadding)
+  }, react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    id: "notistack-snackbar",
+    className: classes$2.message
+  }, !hideIconVariant ? icon : null, message), action && react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: classes$2.action
+  }, action));
+});
+MaterialDesignContent.displayName = 'MaterialDesignContent';
+var MaterialDesignContent$1 = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.memo)(MaterialDesignContent);
+
+var styles = /*#__PURE__*/makeStyles({
+  wrappedRoot: {
+    width: '100%',
+    position: 'relative',
+    transform: 'translateX(0)',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    minWidth: '288px'
+  }
+});
+
+var SnackbarItem = function SnackbarItem(props) {
+  var timeout = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
+
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+      collapsed = _useState[0],
+      setCollapsed = _useState[1];
+
+  var handleClose = createChainedFunction([props.snack.onClose, props.onClose]);
+
+  var handleEntered = function handleEntered() {
+    if (props.snack.requestClose) {
+      handleClose(null, 'instructed', props.snack.id);
+    }
+  };
+
+  var handleExitedScreen = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
+    timeout.current = setTimeout(function () {
+      setCollapsed(function (col) {
+        return !col;
+      });
+    }, 125);
+  }, []);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    return function () {
+      if (timeout.current) {
+        clearTimeout(timeout.current);
+      }
+    };
+  }, []);
+  var snack = props.snack,
+      allClasses = props.classes,
+      _props$Component = props.Component,
+      Component = _props$Component === void 0 ? MaterialDesignContent$1 : _props$Component;
+  var classes = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
+    return keepSnackbarClassKeys(allClasses);
+  }, [allClasses]);
+
+  var open = snack.open,
+      SnackbarProps = snack.SnackbarProps,
+      TransitionComponent = snack.TransitionComponent,
+      TransitionProps = snack.TransitionProps,
+      transitionDuration = snack.transitionDuration,
+      disableWindowBlurListener = snack.disableWindowBlurListener,
+      componentOrFunctionContent = snack.content,
+      otherSnack = _objectWithoutPropertiesLoose(snack, ["open", "SnackbarProps", "TransitionComponent", "TransitionProps", "transitionDuration", "disableWindowBlurListener", "content", "entered", "requestClose", "onEnter", "onEntered", "onExit", "onExited"]);
+
+  var transitionProps = _extends({
+    direction: getSlideDirection(otherSnack.anchorOrigin),
+    timeout: transitionDuration
+  }, TransitionProps);
+
+  var content = componentOrFunctionContent;
+
+  if (typeof content === 'function') {
+    content = content(otherSnack.id, otherSnack.message);
+  }
+
+  var callbacks = ['onEnter', 'onEntered', 'onExit', 'onExited'].reduce(function (acc, cbName) {
+    var _extends2;
+
+    return _extends({}, acc, (_extends2 = {}, _extends2[cbName] = createChainedFunction([props.snack[cbName], props[cbName]], otherSnack.id), _extends2));
+  }, {});
+  return react__WEBPACK_IMPORTED_MODULE_0__.createElement(Collapse, {
+    "in": collapsed,
+    onExited: callbacks.onExited
+  }, react__WEBPACK_IMPORTED_MODULE_0__.createElement(Snackbar, {
+    open: open,
+    id: otherSnack.id,
+    disableWindowBlurListener: disableWindowBlurListener,
+    autoHideDuration: otherSnack.autoHideDuration,
+    className: (0,clsx__WEBPACK_IMPORTED_MODULE_2__["default"])(styles.wrappedRoot, classes.root, classes[toSnackbarAnchorOrigin(otherSnack.anchorOrigin)]),
+    SnackbarProps: SnackbarProps,
+    onClose: handleClose
+  }, react__WEBPACK_IMPORTED_MODULE_0__.createElement(TransitionComponent, Object.assign({}, transitionProps, {
+    appear: true,
+    "in": open,
+    onExit: callbacks.onExit,
+    onExited: handleExitedScreen,
+    onEnter: callbacks.onEnter,
+    // order matters. first callbacks.onEntered to set entered: true,
+    // then handleEntered to check if there's a request for closing
+    onEntered: createChainedFunction([callbacks.onEntered, handleEntered], otherSnack.id)
+  }), content || react__WEBPACK_IMPORTED_MODULE_0__.createElement(Component, Object.assign({}, otherSnack)))));
+};
+
+var _root$1, _rootDense, _left, _right, _center;
+var indents = {
+  view: {
+    "default": 20,
+    dense: 4
+  },
+  snackbar: {
+    "default": 6,
+    dense: 2
+  }
+};
+var collapseWrapper = "." + ComponentClasses.CollapseWrapper;
+var xsWidthMargin = 16;
+var styles$1 = /*#__PURE__*/makeStyles({
+  root: (_root$1 = {
+    boxSizing: 'border-box',
+    display: 'flex',
+    maxHeight: '100%',
+    position: 'fixed',
+    zIndex: 1400,
+    height: 'auto',
+    width: 'auto',
+    transition: /*#__PURE__*/createTransition(['top', 'right', 'bottom', 'left', 'max-width'], {
+      duration: 300,
+      easing: 'ease'
+    }),
+    // container itself is invisible and should not block clicks, clicks should be passed to its children
+    // a pointerEvents: all is applied in the collapse component
+    pointerEvents: 'none'
+  }, _root$1[collapseWrapper] = {
+    padding: indents.snackbar["default"] + "px 0px",
+    transition: 'padding 300ms ease 0ms'
+  }, _root$1.maxWidth = "calc(100% - " + indents.view["default"] * 2 + "px)", _root$1[breakpoints.downXs] = {
+    width: '100%',
+    maxWidth: "calc(100% - " + xsWidthMargin * 2 + "px)"
+  }, _root$1),
+  rootDense: (_rootDense = {}, _rootDense[collapseWrapper] = {
+    padding: indents.snackbar.dense + "px 0px"
+  }, _rootDense),
+  top: {
+    top: indents.view["default"] - indents.snackbar["default"] + "px",
+    flexDirection: 'column'
+  },
+  bottom: {
+    bottom: indents.view["default"] - indents.snackbar["default"] + "px",
+    flexDirection: 'column-reverse'
+  },
+  left: (_left = {
+    left: indents.view["default"] + "px"
+  }, _left[breakpoints.upSm] = {
+    alignItems: 'flex-start'
+  }, _left[breakpoints.downXs] = {
+    left: xsWidthMargin + "px"
+  }, _left),
+  right: (_right = {
+    right: indents.view["default"] + "px"
+  }, _right[breakpoints.upSm] = {
+    alignItems: 'flex-end'
+  }, _right[breakpoints.downXs] = {
+    right: xsWidthMargin + "px"
+  }, _right),
+  center: (_center = {
+    left: '50%',
+    transform: 'translateX(-50%)'
+  }, _center[breakpoints.upSm] = {
+    alignItems: 'center'
+  }, _center)
+});
+
+var SnackbarContainer = function SnackbarContainer(props) {
+  var _props$classes = props.classes,
+      classes = _props$classes === void 0 ? {} : _props$classes,
+      anchorOrigin = props.anchorOrigin,
+      dense = props.dense,
+      children = props.children;
+  var combinedClassname = (0,clsx__WEBPACK_IMPORTED_MODULE_2__["default"])(ComponentClasses.SnackbarContainer, styles$1[anchorOrigin.vertical], styles$1[anchorOrigin.horizontal], styles$1.root, // root should come after others to override maxWidth
+  classes.containerRoot, classes["containerAnchorOrigin" + originKeyExtractor(anchorOrigin)], dense && styles$1.rootDense);
+  return react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: combinedClassname
+  }, children);
+};
+
+var SnackbarContainer$1 = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.memo)(SnackbarContainer);
+
+/* eslint-disable */
+var __DEV__ = "development" !== 'production';
+
+var messages = {
+  NO_PERSIST_ALL: "Reached maxSnack while all enqueued snackbars have 'persist' flag. Notistack will dismiss the oldest snackbar anyway to allow other ones in the queue to be presented."
+};
+var warning = (function (messageKey) {
+  if (!__DEV__) return;
+  var message = messages[messageKey];
+
+  if (typeof console !== 'undefined') {
+    console.error("WARNING - notistack: " + message);
+  }
+
+  try {
+    throw new Error(message);
+  } catch (x) {}
+});
+
+var isOptions = function isOptions(messageOrOptions) {
+  return typeof messageOrOptions !== 'string';
+};
+
+var enqueueSnackbar;
+var closeSnackbar;
+
+var SnackbarProvider = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(SnackbarProvider, _Component);
+
+  function SnackbarProvider(props) {
+    var _this;
+
+    _this = _Component.call(this, props) || this;
+    /**
+     * Adds a new snackbar to the queue to be presented.
+     * Returns generated or user defined key referencing the new snackbar or null
+     */
+
+    _this.enqueueSnackbar = function (messageOrOptions, optsOrUndefined) {
+      if (optsOrUndefined === void 0) {
+        optsOrUndefined = {};
+      }
+
+      var opts = isOptions(messageOrOptions) ? messageOrOptions : optsOrUndefined;
+      var message = messageOrOptions;
+
+      if (isOptions(messageOrOptions)) {
+        message = messageOrOptions.message;
+      }
+
+      var key = opts.key,
+          preventDuplicate = opts.preventDuplicate,
+          options = _objectWithoutPropertiesLoose(opts, ["key", "preventDuplicate"]);
+
+      var hasSpecifiedKey = isDefined(key);
+      var id = hasSpecifiedKey ? key : new Date().getTime() + Math.random();
+      var merger = merge(options, _this.props);
+
+      var snack = _extends({
+        id: id
+      }, options, {
+        message: message,
+        open: true,
+        entered: false,
+        requestClose: false,
+        persist: merger('persist'),
+        action: merger('action'),
+        content: merger('content'),
+        variant: merger('variant'),
+        anchorOrigin: merger('anchorOrigin'),
+        disableWindowBlurListener: merger('disableWindowBlurListener'),
+        autoHideDuration: merger('autoHideDuration'),
+        hideIconVariant: merger('hideIconVariant'),
+        TransitionComponent: merger('TransitionComponent'),
+        transitionDuration: merger('transitionDuration'),
+        TransitionProps: merger('TransitionProps', true),
+        iconVariant: merger('iconVariant', true),
+        style: merger('style', true),
+        SnackbarProps: merger('SnackbarProps', true),
+        className: (0,clsx__WEBPACK_IMPORTED_MODULE_2__["default"])(_this.props.className, options.className)
+      });
+
+      if (snack.persist) {
+        snack.autoHideDuration = undefined;
+      }
+
+      _this.setState(function (state) {
+        if (preventDuplicate === undefined && _this.props.preventDuplicate || preventDuplicate) {
+          var compareFunction = function compareFunction(item) {
+            return hasSpecifiedKey ? item.id === id : item.message === message;
+          };
+
+          var inQueue = state.queue.findIndex(compareFunction) > -1;
+          var inView = state.snacks.findIndex(compareFunction) > -1;
+
+          if (inQueue || inView) {
+            return state;
+          }
+        }
+
+        return _this.handleDisplaySnack(_extends({}, state, {
+          queue: [].concat(state.queue, [snack])
+        }));
+      });
+
+      return id;
+    };
+    /**
+     * Reducer: Display snack if there's space for it. Otherwise, immediately
+     * begin dismissing the oldest message to start showing the new one.
+     */
+
+
+    _this.handleDisplaySnack = function (state) {
+      var snacks = state.snacks;
+
+      if (snacks.length >= _this.maxSnack) {
+        return _this.handleDismissOldest(state);
+      }
+
+      return _this.processQueue(state);
+    };
+    /**
+     * Reducer: Display items (notifications) in the queue if there's space for them.
+     */
+
+
+    _this.processQueue = function (state) {
+      var queue = state.queue,
+          snacks = state.snacks;
+
+      if (queue.length > 0) {
+        return _extends({}, state, {
+          snacks: [].concat(snacks, [queue[0]]),
+          queue: queue.slice(1, queue.length)
+        });
+      }
+
+      return state;
+    };
+    /**
+     * Reducer: Hide oldest snackbar on the screen because there exists a new one which we have to display.
+     * (ignoring the one with 'persist' flag. i.e. explicitly told by user not to get dismissed).
+     *
+     * Note 1: If there is already a message leaving the screen, no new messages are dismissed.
+     * Note 2: If the oldest message has not yet entered the screen, only a request to close the
+     *         snackbar is made. Once it entered the screen, it will be immediately dismissed.
+     */
+
+
+    _this.handleDismissOldest = function (state) {
+      if (state.snacks.some(function (item) {
+        return !item.open || item.requestClose;
+      })) {
+        return state;
+      }
+
+      var popped = false;
+      var ignore = false;
+      var persistentCount = state.snacks.reduce(function (acc, current) {
+        return acc + (current.open && current.persist ? 1 : 0);
+      }, 0);
+
+      if (persistentCount === _this.maxSnack) {
+         true ? warning('NO_PERSIST_ALL') : 0;
+        ignore = true;
+      }
+
+      var snacks = state.snacks.map(function (item) {
+        if (!popped && (!item.persist || ignore)) {
+          popped = true;
+
+          if (!item.entered) {
+            return _extends({}, item, {
+              requestClose: true
+            });
+          }
+
+          if (item.onClose) {
+            item.onClose(null, 'maxsnack', item.id);
+          }
+
+          if (_this.props.onClose) {
+            _this.props.onClose(null, 'maxsnack', item.id);
+          }
+
+          return _extends({}, item, {
+            open: false
+          });
+        }
+
+        return _extends({}, item);
+      });
+      return _extends({}, state, {
+        snacks: snacks
+      });
+    };
+    /**
+     * Set the entered state of the snackbar with the given key.
+     */
+
+
+    _this.handleEnteredSnack = function (node, isAppearing, key) {
+      if (!isDefined(key)) {
+        throw new Error('handleEnteredSnack Cannot be called with undefined key');
+      }
+
+      _this.setState(function (_ref) {
+        var snacks = _ref.snacks;
+        return {
+          snacks: snacks.map(function (item) {
+            return item.id === key ? _extends({}, item, {
+              entered: true
+            }) : _extends({}, item);
+          })
+        };
+      });
+    };
+    /**
+     * Hide a snackbar after its timeout.
+     */
+
+
+    _this.handleCloseSnack = function (event, reason, key) {
+      // should not use createChainedFunction for onClose.
+      // because this.closeSnackbar called this function
+      if (_this.props.onClose) {
+        _this.props.onClose(event, reason, key);
+      }
+
+      var shouldCloseAll = key === undefined;
+
+      _this.setState(function (_ref2) {
+        var snacks = _ref2.snacks,
+            queue = _ref2.queue;
+        return {
+          snacks: snacks.map(function (item) {
+            if (!shouldCloseAll && item.id !== key) {
+              return _extends({}, item);
+            }
+
+            return item.entered ? _extends({}, item, {
+              open: false
+            }) : _extends({}, item, {
+              requestClose: true
+            });
+          }),
+          queue: queue.filter(function (item) {
+            return item.id !== key;
+          })
+        };
+      });
+    };
+    /**
+     * Close snackbar with the given key
+     */
+
+
+    _this.closeSnackbar = function (key) {
+      // call individual snackbar onClose callback passed through options parameter
+      var toBeClosed = _this.state.snacks.find(function (item) {
+        return item.id === key;
+      });
+
+      if (isDefined(key) && toBeClosed && toBeClosed.onClose) {
+        toBeClosed.onClose(null, 'instructed', key);
+      }
+
+      _this.handleCloseSnack(null, 'instructed', key);
+    };
+    /**
+     * When we set open attribute of a snackbar to false (i.e. after we hide a snackbar),
+     * it leaves the screen and immediately after leaving animation is done, this method
+     * gets called. We remove the hidden snackbar from state and then display notifications
+     * waiting in the queue (if any). If after this process the queue is not empty, the
+     * oldest message is dismissed.
+     */
+
+
+    _this.handleExitedSnack = function (node, key) {
+      if (!isDefined(key)) {
+        throw new Error('handleExitedSnack Cannot be called with undefined key');
+      }
+
+      _this.setState(function (state) {
+        var newState = _this.processQueue(_extends({}, state, {
+          snacks: state.snacks.filter(function (item) {
+            return item.id !== key;
+          })
+        }));
+
+        if (newState.queue.length === 0) {
+          return newState;
+        }
+
+        return _this.handleDismissOldest(newState);
+      });
+    };
+
+    enqueueSnackbar = _this.enqueueSnackbar;
+    closeSnackbar = _this.closeSnackbar;
+    _this.state = {
+      snacks: [],
+      queue: [],
+      contextValue: {
+        enqueueSnackbar: _this.enqueueSnackbar,
+        closeSnackbar: _this.closeSnackbar
+      }
+    };
+    return _this;
+  }
+
+  var _proto = SnackbarProvider.prototype;
+
+  _proto.render = function render() {
+    var _this2 = this;
+
+    var contextValue = this.state.contextValue;
+    var _this$props = this.props,
+        domRoot = _this$props.domRoot,
+        children = _this$props.children,
+        _this$props$dense = _this$props.dense,
+        dense = _this$props$dense === void 0 ? false : _this$props$dense,
+        _this$props$Component = _this$props.Components,
+        Components = _this$props$Component === void 0 ? {} : _this$props$Component,
+        classes = _this$props.classes;
+    var categ = this.state.snacks.reduce(function (acc, current) {
+      var _extends2;
+
+      var category = originKeyExtractor(current.anchorOrigin);
+      var existingOfCategory = acc[category] || [];
+      return _extends({}, acc, (_extends2 = {}, _extends2[category] = [].concat(existingOfCategory, [current]), _extends2));
+    }, {});
+    var snackbars = Object.keys(categ).map(function (origin) {
+      var snacks = categ[origin];
+      var nomineeSnack = snacks[0];
+      return react__WEBPACK_IMPORTED_MODULE_0__.createElement(SnackbarContainer$1, {
+        key: origin,
+        dense: dense,
+        anchorOrigin: nomineeSnack.anchorOrigin,
+        classes: classes
+      }, snacks.map(function (snack) {
+        return react__WEBPACK_IMPORTED_MODULE_0__.createElement(SnackbarItem, {
+          key: snack.id,
+          snack: snack,
+          classes: classes,
+          Component: Components[snack.variant],
+          onClose: _this2.handleCloseSnack,
+          onEnter: _this2.props.onEnter,
+          onExit: _this2.props.onExit,
+          onExited: createChainedFunction([_this2.handleExitedSnack, _this2.props.onExited], snack.id),
+          onEntered: createChainedFunction([_this2.handleEnteredSnack, _this2.props.onEntered], snack.id)
+        });
+      }));
+    });
+    return react__WEBPACK_IMPORTED_MODULE_0__.createElement(SnackbarContext.Provider, {
+      value: contextValue
+    }, children, domRoot ? (0,react_dom__WEBPACK_IMPORTED_MODULE_1__.createPortal)(snackbars, domRoot) : snackbars);
+  };
+
+  _createClass(SnackbarProvider, [{
+    key: "maxSnack",
+    get: function get() {
+      return this.props.maxSnack || defaults.maxSnack;
+    }
+  }]);
+
+  return SnackbarProvider;
+}(react__WEBPACK_IMPORTED_MODULE_0__.Component);
+
+var useSnackbar = (function () {
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(SnackbarContext);
+});
+
+
+//# sourceMappingURL=notistack.esm.js.map
+
+
+/***/ }),
+
 /***/ "./node_modules/nprogress/nprogress.js":
 /*!*********************************************!*\
   !*** ./node_modules/nprogress/nprogress.js ***!
@@ -23819,6 +25827,20 @@ function arrObjKeys(obj, inspect) {
     }
     return xs;
 }
+
+
+/***/ }),
+
+/***/ "./node_modules/picocolors/picocolors.browser.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/picocolors/picocolors.browser.js ***!
+  \*******************************************************/
+/***/ ((module) => {
+
+var x=String;
+var create=function() {return {isColorSupported:false,reset:x,bold:x,dim:x,italic:x,underline:x,inverse:x,hidden:x,strikethrough:x,black:x,red:x,green:x,yellow:x,blue:x,magenta:x,cyan:x,white:x,gray:x,bgBlack:x,bgRed:x,bgGreen:x,bgYellow:x,bgBlue:x,bgMagenta:x,bgCyan:x,bgWhite:x}};
+module.exports=create();
+module.exports.createColors = create;
 
 
 /***/ }),
@@ -57051,15 +59073,454 @@ module.exports = function getSideChannel() {
 
 /***/ }),
 
-/***/ "./resources/js/Pages sync recursive ^\\.\\/.*$":
-/*!*******************************************!*\
-  !*** ./resources/js/Pages/ sync ^\.\/.*$ ***!
-  \*******************************************/
+/***/ "./node_modules/tailwindcss/colors.js":
+/*!********************************************!*\
+  !*** ./node_modules/tailwindcss/colors.js ***!
+  \********************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+let colors = __webpack_require__(/*! ./lib/public/colors */ "./node_modules/tailwindcss/lib/public/colors.js")
+module.exports = (colors.__esModule ? colors : { default: colors }).default
+
+
+/***/ }),
+
+/***/ "./node_modules/tailwindcss/lib/public/colors.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/tailwindcss/lib/public/colors.js ***!
+  \*******************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+Object.defineProperty(exports, "default", ({
+    enumerable: true,
+    get: ()=>_default
+}));
+const _log = /*#__PURE__*/ _interopRequireDefault(__webpack_require__(/*! ../util/log */ "./node_modules/tailwindcss/lib/util/log.js"));
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+        default: obj
+    };
+}
+function warn({ version , from , to  }) {
+    _log.default.warn(`${from}-color-renamed`, [
+        `As of Tailwind CSS ${version}, \`${from}\` has been renamed to \`${to}\`.`,
+        "Update your configuration file to silence this warning."
+    ]);
+}
+const _default = {
+    inherit: "inherit",
+    current: "currentColor",
+    transparent: "transparent",
+    black: "#000",
+    white: "#fff",
+    slate: {
+        50: "#f8fafc",
+        100: "#f1f5f9",
+        200: "#e2e8f0",
+        300: "#cbd5e1",
+        400: "#94a3b8",
+        500: "#64748b",
+        600: "#475569",
+        700: "#334155",
+        800: "#1e293b",
+        900: "#0f172a"
+    },
+    gray: {
+        50: "#f9fafb",
+        100: "#f3f4f6",
+        200: "#e5e7eb",
+        300: "#d1d5db",
+        400: "#9ca3af",
+        500: "#6b7280",
+        600: "#4b5563",
+        700: "#374151",
+        800: "#1f2937",
+        900: "#111827"
+    },
+    zinc: {
+        50: "#fafafa",
+        100: "#f4f4f5",
+        200: "#e4e4e7",
+        300: "#d4d4d8",
+        400: "#a1a1aa",
+        500: "#71717a",
+        600: "#52525b",
+        700: "#3f3f46",
+        800: "#27272a",
+        900: "#18181b"
+    },
+    neutral: {
+        50: "#fafafa",
+        100: "#f5f5f5",
+        200: "#e5e5e5",
+        300: "#d4d4d4",
+        400: "#a3a3a3",
+        500: "#737373",
+        600: "#525252",
+        700: "#404040",
+        800: "#262626",
+        900: "#171717"
+    },
+    stone: {
+        50: "#fafaf9",
+        100: "#f5f5f4",
+        200: "#e7e5e4",
+        300: "#d6d3d1",
+        400: "#a8a29e",
+        500: "#78716c",
+        600: "#57534e",
+        700: "#44403c",
+        800: "#292524",
+        900: "#1c1917"
+    },
+    red: {
+        50: "#fef2f2",
+        100: "#fee2e2",
+        200: "#fecaca",
+        300: "#fca5a5",
+        400: "#f87171",
+        500: "#ef4444",
+        600: "#dc2626",
+        700: "#b91c1c",
+        800: "#991b1b",
+        900: "#7f1d1d"
+    },
+    orange: {
+        50: "#fff7ed",
+        100: "#ffedd5",
+        200: "#fed7aa",
+        300: "#fdba74",
+        400: "#fb923c",
+        500: "#f97316",
+        600: "#ea580c",
+        700: "#c2410c",
+        800: "#9a3412",
+        900: "#7c2d12"
+    },
+    amber: {
+        50: "#fffbeb",
+        100: "#fef3c7",
+        200: "#fde68a",
+        300: "#fcd34d",
+        400: "#fbbf24",
+        500: "#f59e0b",
+        600: "#d97706",
+        700: "#b45309",
+        800: "#92400e",
+        900: "#78350f"
+    },
+    yellow: {
+        50: "#fefce8",
+        100: "#fef9c3",
+        200: "#fef08a",
+        300: "#fde047",
+        400: "#facc15",
+        500: "#eab308",
+        600: "#ca8a04",
+        700: "#a16207",
+        800: "#854d0e",
+        900: "#713f12"
+    },
+    lime: {
+        50: "#f7fee7",
+        100: "#ecfccb",
+        200: "#d9f99d",
+        300: "#bef264",
+        400: "#a3e635",
+        500: "#84cc16",
+        600: "#65a30d",
+        700: "#4d7c0f",
+        800: "#3f6212",
+        900: "#365314"
+    },
+    green: {
+        50: "#f0fdf4",
+        100: "#dcfce7",
+        200: "#bbf7d0",
+        300: "#86efac",
+        400: "#4ade80",
+        500: "#22c55e",
+        600: "#16a34a",
+        700: "#15803d",
+        800: "#166534",
+        900: "#14532d"
+    },
+    emerald: {
+        50: "#ecfdf5",
+        100: "#d1fae5",
+        200: "#a7f3d0",
+        300: "#6ee7b7",
+        400: "#34d399",
+        500: "#10b981",
+        600: "#059669",
+        700: "#047857",
+        800: "#065f46",
+        900: "#064e3b"
+    },
+    teal: {
+        50: "#f0fdfa",
+        100: "#ccfbf1",
+        200: "#99f6e4",
+        300: "#5eead4",
+        400: "#2dd4bf",
+        500: "#14b8a6",
+        600: "#0d9488",
+        700: "#0f766e",
+        800: "#115e59",
+        900: "#134e4a"
+    },
+    cyan: {
+        50: "#ecfeff",
+        100: "#cffafe",
+        200: "#a5f3fc",
+        300: "#67e8f9",
+        400: "#22d3ee",
+        500: "#06b6d4",
+        600: "#0891b2",
+        700: "#0e7490",
+        800: "#155e75",
+        900: "#164e63"
+    },
+    sky: {
+        50: "#f0f9ff",
+        100: "#e0f2fe",
+        200: "#bae6fd",
+        300: "#7dd3fc",
+        400: "#38bdf8",
+        500: "#0ea5e9",
+        600: "#0284c7",
+        700: "#0369a1",
+        800: "#075985",
+        900: "#0c4a6e"
+    },
+    blue: {
+        50: "#eff6ff",
+        100: "#dbeafe",
+        200: "#bfdbfe",
+        300: "#93c5fd",
+        400: "#60a5fa",
+        500: "#3b82f6",
+        600: "#2563eb",
+        700: "#1d4ed8",
+        800: "#1e40af",
+        900: "#1e3a8a"
+    },
+    indigo: {
+        50: "#eef2ff",
+        100: "#e0e7ff",
+        200: "#c7d2fe",
+        300: "#a5b4fc",
+        400: "#818cf8",
+        500: "#6366f1",
+        600: "#4f46e5",
+        700: "#4338ca",
+        800: "#3730a3",
+        900: "#312e81"
+    },
+    violet: {
+        50: "#f5f3ff",
+        100: "#ede9fe",
+        200: "#ddd6fe",
+        300: "#c4b5fd",
+        400: "#a78bfa",
+        500: "#8b5cf6",
+        600: "#7c3aed",
+        700: "#6d28d9",
+        800: "#5b21b6",
+        900: "#4c1d95"
+    },
+    purple: {
+        50: "#faf5ff",
+        100: "#f3e8ff",
+        200: "#e9d5ff",
+        300: "#d8b4fe",
+        400: "#c084fc",
+        500: "#a855f7",
+        600: "#9333ea",
+        700: "#7e22ce",
+        800: "#6b21a8",
+        900: "#581c87"
+    },
+    fuchsia: {
+        50: "#fdf4ff",
+        100: "#fae8ff",
+        200: "#f5d0fe",
+        300: "#f0abfc",
+        400: "#e879f9",
+        500: "#d946ef",
+        600: "#c026d3",
+        700: "#a21caf",
+        800: "#86198f",
+        900: "#701a75"
+    },
+    pink: {
+        50: "#fdf2f8",
+        100: "#fce7f3",
+        200: "#fbcfe8",
+        300: "#f9a8d4",
+        400: "#f472b6",
+        500: "#ec4899",
+        600: "#db2777",
+        700: "#be185d",
+        800: "#9d174d",
+        900: "#831843"
+    },
+    rose: {
+        50: "#fff1f2",
+        100: "#ffe4e6",
+        200: "#fecdd3",
+        300: "#fda4af",
+        400: "#fb7185",
+        500: "#f43f5e",
+        600: "#e11d48",
+        700: "#be123c",
+        800: "#9f1239",
+        900: "#881337"
+    },
+    get lightBlue () {
+        warn({
+            version: "v2.2",
+            from: "lightBlue",
+            to: "sky"
+        });
+        return this.sky;
+    },
+    get warmGray () {
+        warn({
+            version: "v3.0",
+            from: "warmGray",
+            to: "stone"
+        });
+        return this.stone;
+    },
+    get trueGray () {
+        warn({
+            version: "v3.0",
+            from: "trueGray",
+            to: "neutral"
+        });
+        return this.neutral;
+    },
+    get coolGray () {
+        warn({
+            version: "v3.0",
+            from: "coolGray",
+            to: "gray"
+        });
+        return this.gray;
+    },
+    get blueGray () {
+        warn({
+            version: "v3.0",
+            from: "blueGray",
+            to: "slate"
+        });
+        return this.slate;
+    }
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/tailwindcss/lib/util/log.js":
+/*!**************************************************!*\
+  !*** ./node_modules/tailwindcss/lib/util/log.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+/* provided dependency */ var process = __webpack_require__(/*! process/browser.js */ "./node_modules/process/browser.js");
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+function _export(target, all) {
+    for(var name in all)Object.defineProperty(target, name, {
+        enumerable: true,
+        get: all[name]
+    });
+}
+_export(exports, {
+    dim: ()=>dim,
+    default: ()=>_default
+});
+const _picocolors = /*#__PURE__*/ _interopRequireDefault(__webpack_require__(/*! picocolors */ "./node_modules/picocolors/picocolors.browser.js"));
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+        default: obj
+    };
+}
+let alreadyShown = new Set();
+function log(type, messages, key) {
+    if (typeof process !== "undefined" && process.env.JEST_WORKER_ID) return;
+    if (key && alreadyShown.has(key)) return;
+    if (key) alreadyShown.add(key);
+    console.warn("");
+    messages.forEach((message)=>console.warn(type, "-", message));
+}
+function dim(input) {
+    return _picocolors.default.dim(input);
+}
+const _default = {
+    info (key, messages) {
+        log(_picocolors.default.bold(_picocolors.default.cyan("info")), ...Array.isArray(key) ? [
+            key
+        ] : [
+            messages,
+            key
+        ]);
+    },
+    warn (key, messages) {
+        log(_picocolors.default.bold(_picocolors.default.yellow("warn")), ...Array.isArray(key) ? [
+            key
+        ] : [
+            messages,
+            key
+        ]);
+    },
+    risk (key, messages) {
+        log(_picocolors.default.bold(_picocolors.default.magenta("risk")), ...Array.isArray(key) ? [
+            key
+        ] : [
+            messages,
+            key
+        ]);
+    }
+};
+
+
+/***/ }),
+
+/***/ "./resources/js sync recursive ^\\.\\/.*$":
+/*!*************************************!*\
+  !*** ./resources/js/ sync ^\.\/.*$ ***!
+  \*************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var map = {
-	"./Home": "./resources/js/Pages/Home.js",
-	"./Home.js": "./resources/js/Pages/Home.js"
+	"./General/Access": "./resources/js/General/Access.js",
+	"./General/Access.js": "./resources/js/General/Access.js",
+	"./General/AppList": "./resources/js/General/AppList.js",
+	"./General/AppList.js": "./resources/js/General/AppList.js",
+	"./General/RegisteredApps": "./resources/js/General/RegisteredApps.js",
+	"./General/RegisteredApps.js": "./resources/js/General/RegisteredApps.js",
+	"./Home": "./resources/js/Home.js",
+	"./Home.js": "./resources/js/Home.js",
+	"./Layout/MainLayout": "./resources/js/Layout/MainLayout.js",
+	"./Layout/MainLayout.js": "./resources/js/Layout/MainLayout.js",
+	"./Members/List": "./resources/js/Members/List.js",
+	"./Members/List.js": "./resources/js/Members/List.js",
+	"./app": "./resources/js/app.js",
+	"./app.js": "./resources/js/app.js",
+	"./bootstrap": "./resources/js/bootstrap.js",
+	"./bootstrap.js": "./resources/js/bootstrap.js",
+	"./theme": "./resources/js/theme.js",
+	"./theme.js": "./resources/js/theme.js"
 };
 
 
@@ -57080,7 +59541,7 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = "./resources/js/Pages sync recursive ^\\.\\/.*$";
+webpackContext.id = "./resources/js sync recursive ^\\.\\/.*$";
 
 /***/ }),
 
@@ -60178,6 +62639,27 @@ var text = api.text;
 var counter = api.counter;
 
 
+
+
+/***/ }),
+
+/***/ "./node_modules/goober/dist/goober.modern.js":
+/*!***************************************************!*\
+  !*** ./node_modules/goober/dist/goober.modern.js ***!
+  \***************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "css": () => (/* binding */ u),
+/* harmony export */   "extractCss": () => (/* binding */ r),
+/* harmony export */   "glob": () => (/* binding */ b),
+/* harmony export */   "keyframes": () => (/* binding */ h),
+/* harmony export */   "setup": () => (/* binding */ m),
+/* harmony export */   "styled": () => (/* binding */ j)
+/* harmony export */ });
+let e={data:""},t=t=>"object"==typeof window?((t?t.querySelector("#_goober"):window._goober)||Object.assign((t||document.head).appendChild(document.createElement("style")),{innerHTML:" ",id:"_goober"})).firstChild:t||e,r=e=>{let r=t(e),l=r.data;return r.data="",l},l=/(?:([\u0080-\uFFFF\w-%@]+) *:? *([^{;]+?);|([^;}{]*?) *{)|(}\s*)/g,a=/\/\*[^]*?\*\/|  +/g,n=/\n+/g,o=(e,t)=>{let r="",l="",a="";for(let n in e){let c=e[n];"@"==n[0]?"i"==n[1]?r=n+" "+c+";":l+="f"==n[1]?o(c,n):n+"{"+o(c,"k"==n[1]?"":t)+"}":"object"==typeof c?l+=o(c,t?t.replace(/([^,])+/g,e=>n.replace(/(^:.*)|([^,])+/g,t=>/&/.test(t)?t.replace(/&/g,e):e?e+" "+t:t)):n):null!=c&&(n=/^--/.test(n)?n:n.replace(/[A-Z]/g,"-$&").toLowerCase(),a+=o.p?o.p(n,c):n+":"+c+";")}return r+(t&&a?t+"{"+a+"}":a)+l},c={},s=e=>{if("object"==typeof e){let t="";for(let r in e)t+=r+s(e[r]);return t}return e},i=(e,t,r,i,p)=>{let u=s(e),d=c[u]||(c[u]=(e=>{let t=0,r=11;for(;t<e.length;)r=101*r+e.charCodeAt(t++)>>>0;return"go"+r})(u));if(!c[d]){let t=u!==e?e:(e=>{let t,r,o=[{}];for(;t=l.exec(e.replace(a,""));)t[4]?o.shift():t[3]?(r=t[3].replace(n," ").trim(),o.unshift(o[0][r]=o[0][r]||{})):o[0][t[1]]=t[2].replace(n," ").trim();return o[0]})(e);c[d]=o(p?{["@keyframes "+d]:t}:t,r?"":"."+d)}let f=r&&c.g?c.g:null;return r&&(c.g=c[d]),((e,t,r,l)=>{l?t.data=t.data.replace(l,e):-1===t.data.indexOf(e)&&(t.data=r?e+t.data:t.data+e)})(c[d],t,i,f),d},p=(e,t,r)=>e.reduce((e,l,a)=>{let n=t[a];if(n&&n.call){let e=n(r),t=e&&e.props&&e.props.className||/^go/.test(e)&&e;n=t?"."+t:e&&"object"==typeof e?e.props?"":o(e,""):!1===e?"":e}return e+l+(null==n?"":n)},"");function u(e){let r=this||{},l=e.call?e(r.p):e;return i(l.unshift?l.raw?p(l,[].slice.call(arguments,1),r.p):l.reduce((e,t)=>Object.assign(e,t&&t.call?t(r.p):t),{}):l,t(r.target),r.g,r.o,r.k)}let d,f,g,b=u.bind({g:1}),h=u.bind({k:1});function m(e,t,r,l){o.p=t,d=e,f=r,g=l}function j(e,t){let r=this||{};return function(){let l=arguments;function a(n,o){let c=Object.assign({},n),s=c.className||a.className;r.p=Object.assign({theme:f&&f()},c),r.o=/ *go\d+/.test(s),c.className=u.apply(r,l)+(s?" "+s:""),t&&(c.ref=o);let i=e;return e[0]&&(i=c.as||e,delete c.as),g&&i[0]&&g(c),d(i,c)}return t?t(a):a}}
 
 
 /***/ }),

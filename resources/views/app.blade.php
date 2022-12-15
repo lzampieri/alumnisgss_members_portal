@@ -11,6 +11,7 @@
         <script src="{{ mix('/js/app.js') }}" defer></script>
 
         @inertiaHead
+        @routes
     </head>
     <body>
         @inertia
