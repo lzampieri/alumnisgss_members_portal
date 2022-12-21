@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\MemberController;
+use App\Http\Controllers\Log;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -25,7 +25,7 @@ Route::get('/error', function () {
 
 include( 'auth.php' );
 
-// Members
-Route::prefix('/members')->group( function () {
-    Route::get('/', [ MemberController::class, 'list' ] )->name('members');
-});
+include( 'alumni.php' );
+
+// Utils
+Route::get('/logs', [ Log::class, 'index' ] );

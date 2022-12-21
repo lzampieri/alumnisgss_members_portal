@@ -646,26 +646,12 @@ a {
 .relative {
   position: relative;
 }
-.inset-x-auto {
-  left: auto;
-  right: auto;
-}
-.inset-y-auto {
-  top: auto;
-  bottom: auto;
-}
 .inset-y-0 {
   top: 0px;
   bottom: 0px;
 }
-.right-0 {
-  right: 0px;
-}
 .right-4 {
   right: 1rem;
-}
-.float-right {
-  float: right;
 }
 .my-auto {
   margin-top: auto;
