@@ -8,14 +8,18 @@ use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 class Log extends Controller
 {
 
-    public function index() {
-        // $this->authorize( 'log-view' );
+    public function index()
+    {
+        $this->authorize('log-manage');
 
         return (new LogViewerController)->index();
     }
 
-    public static function debug(string $message) {
-        OriginalLog::channel('internal')->debug( $message );
+    public static function debug(string $message, array $params)
+    {
+        foreach( $params as $key => $value ) {
+            $message .= " | " . $key . " => " . $value;
+        }
+        OriginalLog::channel('internal')->debug($message);
     }
-
 }

@@ -1,22 +1,22 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./node_modules/@fortawesome/free-solid-svg-icons/faBook.js":
-/*!******************************************************************!*\
-  !*** ./node_modules/@fortawesome/free-solid-svg-icons/faBook.js ***!
-  \******************************************************************/
+/***/ "./node_modules/@fortawesome/free-solid-svg-icons/faBug.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/@fortawesome/free-solid-svg-icons/faBug.js ***!
+  \*****************************************************************/
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 var prefix = 'fas';
-var iconName = 'book';
-var width = 448;
+var iconName = 'bug';
+var width = 512;
 var height = 512;
-var aliases = [128212];
-var unicode = 'f02d';
-var svgPathData = 'M96 0C43 0 0 43 0 96V416c0 53 43 96 96 96H384h32c17.7 0 32-14.3 32-32s-14.3-32-32-32V384c17.7 0 32-14.3 32-32V32c0-17.7-14.3-32-32-32H384 96zm0 384H352v64H96c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16zm16 48H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16s7.2-16 16-16z';
+var aliases = [];
+var unicode = 'f188';
+var svgPathData = 'M256 0c53 0 96 43 96 96v3.6c0 15.7-12.7 28.4-28.4 28.4H188.4c-15.7 0-28.4-12.7-28.4-28.4V96c0-53 43-96 96-96zM41.4 105.4c12.5-12.5 32.8-12.5 45.3 0l64 64c.7 .7 1.3 1.4 1.9 2.1c14.2-7.3 30.4-11.4 47.5-11.4H312c17.1 0 33.2 4.1 47.5 11.4c.6-.7 1.2-1.4 1.9-2.1l64-64c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3l-64 64c-.7 .7-1.4 1.3-2.1 1.9c6.2 12 10.1 25.3 11.1 39.5H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H416c0 24.6-5.5 47.8-15.4 68.6c2.2 1.3 4.2 2.9 6 4.8l64 64c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0l-63.1-63.1c-24.5 21.8-55.8 36.2-90.3 39.6V240c0-8.8-7.2-16-16-16s-16 7.2-16 16V479.2c-34.5-3.4-65.8-17.8-90.3-39.6L86.6 502.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l64-64c1.9-1.9 3.9-3.4 6-4.8C101.5 367.8 96 344.6 96 320H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H96.3c1.1-14.1 5-27.5 11.1-39.5c-.7-.6-1.4-1.2-2.1-1.9l-64-64c-12.5-12.5-12.5-32.8 0-45.3z';
 
 exports.definition = {
   prefix: prefix,
@@ -29,7 +29,7 @@ exports.definition = {
     svgPathData
   ]};
 
-exports.faBook = exports.definition;
+exports.faBug = exports.definition;
 exports.prefix = prefix;
 exports.iconName = iconName;
 exports.width = width;
@@ -41,22 +41,22 @@ exports.aliases = aliases;
 
 /***/ }),
 
-/***/ "./node_modules/@fortawesome/free-solid-svg-icons/faFileSignature.js":
-/*!***************************************************************************!*\
-  !*** ./node_modules/@fortawesome/free-solid-svg-icons/faFileSignature.js ***!
-  \***************************************************************************/
+/***/ "./node_modules/@fortawesome/free-solid-svg-icons/faCirclePlus.js":
+/*!************************************************************************!*\
+  !*** ./node_modules/@fortawesome/free-solid-svg-icons/faCirclePlus.js ***!
+  \************************************************************************/
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 var prefix = 'fas';
-var iconName = 'file-signature';
-var width = 576;
+var iconName = 'circle-plus';
+var width = 512;
 var height = 512;
-var aliases = [];
-var unicode = 'f573';
-var svgPathData = 'M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V428.7c-2.7 1.1-5.4 2-8.2 2.7l-60.1 15c-3 .7-6 1.2-9 1.4c-.9 .1-1.8 .2-2.7 .2H240c-6.1 0-11.6-3.4-14.3-8.8l-8.8-17.7c-1.7-3.4-5.1-5.5-8.8-5.5s-7.2 2.1-8.8 5.5l-8.8 17.7c-2.9 5.9-9.2 9.4-15.7 8.8s-12.1-5.1-13.9-11.3L144 381l-9.8 32.8c-6.1 20.3-24.8 34.2-46 34.2H80c-8.8 0-16-7.2-16-16s7.2-16 16-16h8.2c7.1 0 13.3-4.6 15.3-11.4l14.9-49.5c3.4-11.3 13.8-19.1 25.6-19.1s22.2 7.8 25.6 19.1l11.6 38.6c7.4-6.2 16.8-9.7 26.8-9.7c15.9 0 30.4 9 37.5 23.2l4.4 8.8h8.9c-3.1-8.8-3.7-18.4-1.4-27.8l15-60.1c2.8-11.3 8.6-21.5 16.8-29.7L384 203.6V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM549.8 139.7c-15.6-15.6-40.9-15.6-56.6 0l-29.4 29.4 71 71 29.4-29.4c15.6-15.6 15.6-40.9 0-56.6l-14.4-14.4zM311.9 321c-4.1 4.1-7 9.2-8.4 14.9l-15 60.1c-1.4 5.5 .2 11.2 4.2 15.2s9.7 5.6 15.2 4.2l60.1-15c5.6-1.4 10.8-4.3 14.9-8.4L512.1 262.7l-71-71L311.9 321z';
+var aliases = ["plus-circle"];
+var unicode = 'f055';
+var svgPathData = 'M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512zM232 344V280H168c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V168c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H280v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z';
 
 exports.definition = {
   prefix: prefix,
@@ -69,7 +69,7 @@ exports.definition = {
     svgPathData
   ]};
 
-exports.faFileSignature = exports.definition;
+exports.faCirclePlus = exports.definition;
 exports.prefix = prefix;
 exports.iconName = iconName;
 exports.width = width;
@@ -110,6 +110,46 @@ exports.definition = {
   ]};
 
 exports.faMagnifyingGlass = exports.definition;
+exports.prefix = prefix;
+exports.iconName = iconName;
+exports.width = width;
+exports.height = height;
+exports.ligatures = aliases;
+exports.unicode = unicode;
+exports.svgPathData = svgPathData;
+exports.aliases = aliases;
+
+/***/ }),
+
+/***/ "./node_modules/@fortawesome/free-solid-svg-icons/faStapler.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/@fortawesome/free-solid-svg-icons/faStapler.js ***!
+  \*********************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+var prefix = 'fas';
+var iconName = 'stapler';
+var width = 640;
+var height = 512;
+var aliases = [];
+var unicode = 'e5af';
+var svgPathData = 'M640 299.3V304 432c0 26.5-21.5 48-48 48H512 448 64c-17.7 0-32-14.3-32-32s14.3-32 32-32H448V368H96c-17.7 0-32-14.3-32-32V219.4L33.8 214C14.2 210.5 0 193.5 0 173.7c0-8.9 2.9-17.5 8.2-24.6l35.6-47.5C76.7 57.8 128.2 32 182.9 32c27 0 53.6 6.3 77.8 18.4L586.9 213.5C619.5 229.7 640 263 640 299.3zM448 304V288L128 230.9V304H448z';
+
+exports.definition = {
+  prefix: prefix,
+  iconName: iconName,
+  icon: [
+    width,
+    height,
+    aliases,
+    unicode,
+    svgPathData
+  ]};
+
+exports.faStapler = exports.definition;
 exports.prefix = prefix;
 exports.iconName = iconName;
 exports.width = width;
@@ -2761,17 +2801,33 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function AppList() {
+  var apps = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.apps;
+  var classes = "border-4 border-primary-main rounded-3xl \
+                    text-primary-main bg-primary-contrast \
+                    hover:text-primary-contrast hover:bg-primary-main \
+                    aspect-square min-h-[35vh] \
+                    flex flex-col items-center justify-center text-3xl gap-4 \
+                    no-underline";
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
     className: "w-full flex flex-row flex-wrap justify-center items-center gap-14 px-14 py-8",
     children: _RegisteredApps__WEBPACK_IMPORTED_MODULE_2__["default"].map(function (app) {
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-        className: "\r border-4 border-primary-main rounded-3xl\r text-primary-main bg-primary-contrast\r hover:text-primary-contrast hover:bg-primary-main\r aspect-square min-h-[35vh]\r flex flex-col items-center justify-center text-3xl gap-4\r no-underline\r ",
-        href: app.url,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
-          icon: app.icon,
-          className: "text-5xl"
-        }), app.name]
-      }, app.name);
+      if (apps.includes(app.id)) {
+        if (app.href) return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("a", {
+          className: classes,
+          href: app.url,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
+            icon: app.icon,
+            className: "text-5xl"
+          }), app.name]
+        }, app.name);else return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
+          className: classes,
+          href: app.url,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
+            icon: app.icon,
+            className: "text-5xl"
+          }), app.name]
+        }, app.name);
+      }
     })
   });
 }
@@ -2789,26 +2845,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faFileSignature__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faFileSignature */ "./node_modules/@fortawesome/free-solid-svg-icons/faFileSignature.js");
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faBook__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faBook */ "./node_modules/@fortawesome/free-solid-svg-icons/faBook.js");
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faUsers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faUsers */ "./node_modules/@fortawesome/free-solid-svg-icons/faUsers.js");
-/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @fortawesome/react-fontawesome */ "./node_modules/@fortawesome/react-fontawesome/index.es.js");
-
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faBug__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faBug */ "./node_modules/@fortawesome/free-solid-svg-icons/faBug.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faStapler__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faStapler */ "./node_modules/@fortawesome/free-solid-svg-icons/faStapler.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faUsers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faUsers */ "./node_modules/@fortawesome/free-solid-svg-icons/faUsers.js");
 
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ([{
+  id: 'members',
   name: 'Soci',
   url: route('members'),
-  icon: _fortawesome_free_solid_svg_icons_faUsers__WEBPACK_IMPORTED_MODULE_1__.faUsers
+  icon: _fortawesome_free_solid_svg_icons_faUsers__WEBPACK_IMPORTED_MODULE_0__.faUsers
 }, {
-  name: 'Storiche',
-  url: '',
-  icon: _fortawesome_free_solid_svg_icons_faBook__WEBPACK_IMPORTED_MODULE_2__.faBook
+  id: 'registry',
+  name: 'Anagrafica',
+  url: route('registry'),
+  icon: _fortawesome_free_solid_svg_icons_faStapler__WEBPACK_IMPORTED_MODULE_1__.faStapler
 }, {
-  name: 'Verbali',
-  url: '',
-  icon: _fortawesome_free_solid_svg_icons_faFileSignature__WEBPACK_IMPORTED_MODULE_3__.faFileSignature
+  id: 'logs',
+  name: 'Log',
+  url: route('log'),
+  icon: _fortawesome_free_solid_svg_icons_faBug__WEBPACK_IMPORTED_MODULE_2__.faBug,
+  href: true
 }]);
 
 /***/ }),
@@ -2928,13 +2986,148 @@ function List() {
       className: "w-full relative mb-4",
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("input", {
         type: "text",
-        className: "w-full rounded-md text-center\r bg-gray-100 border-transparent\r focus:border-gray-500 focus:bg-white focus:ring-0\r ",
+        className: "w-full text-center",
         placeholder: "Filtra..."
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
         icon: _fortawesome_free_solid_svg_icons_faMagnifyingGlass__WEBPACK_IMPORTED_MODULE_2__.faMagnifyingGlass,
         className: "\r text-gray-500\r absolute right-4 text-2xl inset-y-0 my-auto"
       })]
     }), "Lista dei membri..."]
+  });
+}
+
+/***/ }),
+
+/***/ "./resources/js/Registry/Add.js":
+/*!**************************************!*\
+  !*** ./resources/js/Registry/Add.js ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ List)
+/* harmony export */ });
+/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @fortawesome/react-fontawesome */ "./node_modules/@fortawesome/react-fontawesome/index.es.js");
+/* harmony import */ var _inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @inertiajs/inertia-react */ "./node_modules/@inertiajs/inertia-react/dist/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+
+function List() {
+  var _useForm = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.useForm)({
+      surname: '',
+      name: '',
+      coorte: 1
+    }),
+    data = _useForm.data,
+    setData = _useForm.setData,
+    post = _useForm.post,
+    processing = _useForm.processing,
+    errors = _useForm.errors;
+  var submit = function submit(e) {
+    e.preventDefault();
+    post(route('registry.add'));
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("form", {
+    className: "flex flex-col w-full md:w-3/5",
+    onSubmit: submit,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h3", {
+      children: "Crea nuovo alumno"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+      children: "Cognome"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+      type: "text",
+      value: data.surname,
+      onChange: function onChange(e) {
+        return setData('surname', e.target.value);
+      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+      className: "error",
+      children: errors.surname
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+      children: "Nome"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+      type: "text",
+      value: data.name,
+      onChange: function onChange(e) {
+        return setData('name', e.target.value);
+      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+      className: "error",
+      children: errors.name
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+      children: "Coorte"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+      type: "number",
+      value: data.coorte,
+      onChange: function onChange(e) {
+        return setData('coorte', e.target.value);
+      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+      className: "error",
+      children: errors.coorte
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+      type: "button",
+      className: "button mt-4",
+      onClick: submit,
+      value: "Aggiungi"
+    })]
+  });
+}
+
+/***/ }),
+
+/***/ "./resources/js/Registry/List.js":
+/*!***************************************!*\
+  !*** ./resources/js/Registry/List.js ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ List)
+/* harmony export */ });
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faMagnifyingGlass__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faMagnifyingGlass */ "./node_modules/@fortawesome/free-solid-svg-icons/faMagnifyingGlass.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faCirclePlus__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faCirclePlus */ "./node_modules/@fortawesome/free-solid-svg-icons/faCirclePlus.js");
+/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @fortawesome/react-fontawesome */ "./node_modules/@fortawesome/react-fontawesome/index.es.js");
+/* harmony import */ var _inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @inertiajs/inertia-react */ "./node_modules/@inertiajs/inertia-react/dist/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+
+
+
+function List() {
+  var alumni = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.alumni;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+    className: "flex flex-col items-center w-full md:w-3/5",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+      className: "w-full flex flex-row justify-end",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
+        className: "button",
+        href: route('registry.add'),
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
+          icon: _fortawesome_free_solid_svg_icons_faCirclePlus__WEBPACK_IMPORTED_MODULE_3__.faCirclePlus
+        }), "Aggiungi"]
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      className: "w-full relative mb-4",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+        type: "text",
+        className: "w-full text-center",
+        placeholder: "Filtra..."
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
+        icon: _fortawesome_free_solid_svg_icons_faMagnifyingGlass__WEBPACK_IMPORTED_MODULE_4__.faMagnifyingGlass,
+        className: "\r text-gray-500\r absolute right-4 text-2xl inset-y-0 my-auto"
+      })]
+    }), alumni.map(function (alumnus) {
+      return alumnus.name;
+    })]
   });
 }
 
@@ -3042,6 +3235,7 @@ module.exports = {
       'main': '#cb0014',
       'contrast': '#ffffff'
     },
+    error: '#ff3333',
     gray: colors.gray,
     white: colors.white
   }
@@ -59515,6 +59709,10 @@ var map = {
 	"./Layout/MainLayout.js": "./resources/js/Layout/MainLayout.js",
 	"./Members/List": "./resources/js/Members/List.js",
 	"./Members/List.js": "./resources/js/Members/List.js",
+	"./Registry/Add": "./resources/js/Registry/Add.js",
+	"./Registry/Add.js": "./resources/js/Registry/Add.js",
+	"./Registry/List": "./resources/js/Registry/List.js",
+	"./Registry/List.js": "./resources/js/Registry/List.js",
 	"./app": "./resources/js/app.js",
 	"./app.js": "./resources/js/app.js",
 	"./bootstrap": "./resources/js/bootstrap.js",

@@ -10,6 +10,33 @@
     a {
         @apply underline
     }
+
+    .button {
+        @apply px-4 py-2 rounded border-2 border-primary-main text-primary-main bg-primary-contrast;
+        @apply hover:text-primary-contrast hover:bg-primary-main;
+        @apply no-underline;
+    }
+
+    .button svg {
+        @apply pr-2
+    }
+
+    h3 {
+        @apply text-2xl
+    }
+
+    input[type="text"] {
+        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0
+    }
+    input[type="number"] {
+        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0
+    }
+    label {
+        @apply text-gray-500 text-sm pt-4
+    }
+    label.error {
+        @apply text-error text-sm pt-0
+    }
 }
 
 @layer utilities {

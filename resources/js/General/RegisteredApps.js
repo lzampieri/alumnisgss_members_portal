@@ -1,8 +1,7 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { solid } from '@fortawesome/fontawesome-svg-core/import.macro'
 
 export default [
-    { name: 'Soci', url: route('members'), icon: solid('users') },
-    { name: 'Storiche', url: '', icon: solid('book') },
-    { name: 'Verbali', url: '', icon: solid('file-signature') },
+    { id: 'members', name: 'Soci', url: route('members'), icon: solid('users') },
+    { id: 'registry', name: 'Anagrafica', url: route('registry'), icon: solid('stapler') },
+    { id: 'logs', name: 'Log', url: route('log'), icon: solid('bug'), href: true },
 ]

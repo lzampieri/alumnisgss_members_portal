@@ -12,6 +12,7 @@ module.exports = {
             'main': '#cb0014',
             'contrast': '#ffffff'
         },
+        error: '#ff3333',
         gray: colors.gray,
         white: colors.white,
     }

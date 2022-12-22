@@ -8,6 +8,7 @@ class Alumnus extends Model
 {
     protected $fillable = [
         'name',
+        'surname',
         'coorte'
     ];
 }

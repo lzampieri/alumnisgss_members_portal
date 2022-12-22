@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\AppsController;
 use App\Http\Controllers\Log;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,17 +15,11 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Home');
-})->name('home');
-
-Route::get('/error', function () {
-    return redirect()->route('home')->with('notistack', [ 'error', 'Utente non riconosciuto' ]);
-});
+Route::get('/', [ AppsController::class, 'home' ])->name('home');
 
 include( 'auth.php' );
 
 include( 'alumni.php' );
 
 // Utils
-Route::get('/logs', [ Log::class, 'index' ] );
+Route::get('/logs', [ Log::class, 'index' ] )->name('log');
