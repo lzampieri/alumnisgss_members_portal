@@ -663,6 +663,29 @@ a {
 .button {
   text-decoration-line: none;
 }
+.button-active {
+  --tw-bg-opacity: 1;
+  background-color: rgb(203 0 20 / var(--tw-bg-opacity));
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+.icon-button {
+  aspect-ratio: 1 / 1;
+  border-radius: 9999px;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(203 0 20 / var(--tw-text-opacity));
+}
+.icon-button:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(203 0 20 / var(--tw-bg-opacity));
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+.icon-button {
+  text-decoration-line: none;
+}
 .button svg {
   padding-right: 0.5rem;
 }
@@ -714,6 +737,15 @@ label.error {
   --tw-text-opacity: 1;
   color: rgb(255 51 51 / var(--tw-text-opacity));
 }
+.visible {
+  visibility: visible;
+}
+.invisible {
+  visibility: hidden;
+}
+.static {
+  position: static;
+}
 .absolute {
   position: absolute;
 }
@@ -727,9 +759,16 @@ label.error {
 .right-4 {
   right: 1rem;
 }
+.z-10 {
+  z-index: 10;
+}
 .my-auto {
   margin-top: auto;
   margin-bottom: auto;
+}
+.mx-2 {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
 }
 .mb-4 {
   margin-bottom: 1rem;
@@ -755,8 +794,14 @@ label.error {
 .w-full {
   width: 100%;
 }
+.w-4\/5 {
+  width: 80%;
+}
 .min-w-\[35vh\] {
   min-width: 35vh;
+}
+.shrink-0 {
+  flex-shrink: 0;
 }
 .grow-0 {
   flex-grow: 0;
@@ -776,8 +821,17 @@ label.error {
 .flex-wrap {
   flex-wrap: wrap;
 }
+.flex-nowrap {
+  flex-wrap: nowrap;
+}
 .items-center {
   align-items: center;
+}
+.items-stretch {
+  align-items: stretch;
+}
+.justify-start {
+  justify-content: flex-start;
 }
 .justify-end {
   justify-content: flex-end;
@@ -797,15 +851,31 @@ label.error {
 .self-stretch {
   align-self: stretch;
 }
+.overflow-hidden {
+  overflow: hidden;
+}
+.overflow-x-auto {
+  overflow-x: auto;
+}
+.whitespace-nowrap {
+  white-space: nowrap;
+}
 .rounded-3xl {
   border-radius: 1.5rem;
 }
 .border-4 {
   border-width: 4px;
 }
+.border {
+  border-width: 1px;
+}
 .border-primary-main {
   --tw-border-opacity: 1;
   border-color: rgb(203 0 20 / var(--tw-border-opacity));
+}
+.border-gray-400 {
+  --tw-border-opacity: 1;
+  border-color: rgb(156 163 175 / var(--tw-border-opacity));
 }
 .bg-primary-contrast {
   --tw-bg-opacity: 1;
@@ -814,6 +884,14 @@ label.error {
 .bg-header-bg {
   --tw-bg-opacity: 1;
   background-color: rgb(17 17 17 / var(--tw-bg-opacity));
+}
+.bg-gray-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity));
+}
+.bg-gray-600 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(75 85 99 / var(--tw-bg-opacity));
 }
 .bg-contain {
   background-size: contain;
@@ -853,6 +931,13 @@ label.error {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
 }
+.px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+.pr-2 {
+  padding-right: 0.5rem;
+}
 .text-center {
   text-align: center;
 }
@@ -876,6 +961,9 @@ label.error {
   font-size: 1.5rem;
   line-height: 2rem;
 }
+.font-bold {
+  font-weight: 700;
+}
 .italic {
   font-style: italic;
 }
@@ -891,11 +979,23 @@ label.error {
   --tw-text-opacity: 1;
   color: rgb(107 114 128 / var(--tw-text-opacity));
 }
+.text-white {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
 .underline {
   text-decoration-line: underline;
 }
 .no-underline {
   text-decoration-line: none;
+}
+.filter {
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+.transition-\[height\] {
+  transition-property: height;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
 }
 .separator {
   margin-left: 2rem;
@@ -915,14 +1015,21 @@ label.error {
     margin-bottom: 0px;
   }
 }
+
 .hover\:bg-primary-main:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(203 0 20 / var(--tw-bg-opacity));
 }
+
 .hover\:text-primary-contrast:hover {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
+
+.group:hover .group-hover\:visible {
+  visibility: visible;
+}
+
 @media (min-width: 768px) {
 
   .md\:w-1\/3 {
@@ -931,6 +1038,10 @@ label.error {
 
   .md\:w-3\/5 {
     width: 60%;
+  }
+
+  .md\:w-2\/5 {
+    width: 40%;
   }
 
   .md\:flex-row {

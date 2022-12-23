@@ -16,6 +16,14 @@
         @apply hover:text-primary-contrast hover:bg-primary-main;
         @apply no-underline;
     }
+    .button-active {
+        @apply text-primary-contrast bg-primary-main;
+    }
+    .icon-button {
+        @apply rounded-full text-primary-main aspect-square px-1;
+        @apply hover:text-primary-contrast hover:bg-primary-main;
+        @apply no-underline;
+    }
 
     .button svg {
         @apply pr-2
