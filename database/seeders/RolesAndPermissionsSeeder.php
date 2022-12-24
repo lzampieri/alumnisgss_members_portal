@@ -23,6 +23,7 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'members-view']);
         Permission::create(['name' => 'alumnus-view']);
         Permission::create(['name' => 'alumnus-edit']);
+        Permission::create(['name' => 'alumnus-bulk']);
 
 
         // create roles

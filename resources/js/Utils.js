@@ -3,6 +3,8 @@
 export function romanize (num) {
     if (isNaN(num))
         return NaN;
+    if( num == 0 )
+        return "ON"
     var digits = String(+num).split(""),
         key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM",
                "","X","XX","XXX","XL","L","LX","LXX","LXXX","XC",

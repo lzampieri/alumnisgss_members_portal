@@ -4,7 +4,6 @@ import { AlumnusStatus } from "../Utils";
 
 export default function Edit() {
     const prev = usePage().props.alumnus;
-    console.log( usePage().props );
 
     const { data, setData, post, processing, errors } = useForm({
         surname: prev.surname,

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AppsController;
 use App\Http\Controllers\Log;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,3 +24,7 @@ include( 'alumni.php' );
 
 // Utils
 Route::get('/logs', [ Log::class, 'index' ] )->name('log');
+
+// Migrations
+Route::get('/db/migrate', function () { Artisan::call('migrate'); } );
+Route::get('/db/seed', function () { Artisan::call('db:seed'); } );

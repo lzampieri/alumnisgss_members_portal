@@ -45,7 +45,7 @@ class AlumnusPolicy
     // }
 
     /**
-     * Determine whether the user can create models.
+     * Determine whether the user can edit models.
      *
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
@@ -53,6 +53,17 @@ class AlumnusPolicy
     public function edit(User $user)
     {
         return $user->hasPermissionTo( 'alumnus-edit' );
+    }
+
+    /**
+     * Determine whether the user can edit models in bulk.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function bulkEdit(User $user)
+    {
+        return $user->hasPermissionTo( 'alumnus-bulk' );
     }
 
     /**

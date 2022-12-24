@@ -12,7 +12,6 @@ export default function Add() {
 
     const submit = ( e ) => {
         e.preventDefault();
-        console.log( data );
         post( route( 'registry.add' ) );
     }
 
