@@ -20,6 +20,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // create permissions
         Permission::create(['name' => 'log-manage']);
+        Permission::create(['name' => 'login']);
         Permission::create(['name' => 'members-view']);
         Permission::create(['name' => 'alumnus-view']);
         Permission::create(['name' => 'alumnus-edit']);
@@ -28,7 +29,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // create roles
         Role::create(['name' => 'secretariary'])
-            ->givePermissionTo(['members-view', 'alumnus-view', 'alumnus-edit']);
+            ->givePermissionTo(['login', 'members-view', 'alumnus-view', 'alumnus-edit']);
 
         Role::create(['name' => 'webmaster'])
             ->givePermissionTo(Permission::all());
