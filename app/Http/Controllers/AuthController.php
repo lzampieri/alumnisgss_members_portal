@@ -21,8 +21,11 @@ class AuthController extends Controller
         $user = User::where( 'email', $email )->first();
 
         if( $user ) {
-            Auth::login( $user );
-            return redirect()->route( 'home' );
+            if( $user->can('login', User::class ) ) {
+                Auth::login( $user );
+                return redirect()->route( 'home' );
+            }
+            return redirect()->route( 'home' )->with( 'notistack', [ 'error', 'Non hai ancora il permesso di accedere.' ] );
         }
         
         return redirect()->route( 'home' )->with( 'notistack', [ 'error', 'Utente non riconosciuto' ] );
