@@ -18,5 +18,12 @@ class UsersSeeder extends Seeder
             'email' => 'zampieri.leonardo98@gmail.com'
         ]);
         $webmaster->assignRole('webmaster');
+
+        User::create([
+            'email' => 'l.zampieri4@campus.unimib.it'
+        ]);
+        User::create([
+            'email' => 'leonardo.zampieri@studenti.unipd.it'
+        ]);
     }
 }

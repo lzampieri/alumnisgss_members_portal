@@ -22,6 +22,8 @@ include( 'auth.php' );
 
 include( 'alumni.php' );
 
+include( 'roles.php' );
+
 // Utils
 Route::get('/logs', [ Log::class, 'index' ] )->name('log');
 

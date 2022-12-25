@@ -4,5 +4,5 @@ export default [
     { id: 'members', name: 'Soci', url: route('members'), icon: solid('users') },
     { id: 'registry', name: 'Anagrafica', url: route('registry'), icon: solid('stapler') },
     { id: 'logs', name: 'Log', url: route('log'), icon: solid('bug'), href: true },
-    { id: 'roles', name: 'Ruoli', url: route('roles'), icon: solid('id-badge') },
+    { id: 'accesses', name: 'Accessi', url: route('roles'), icon: solid('id-badge') },
 ]

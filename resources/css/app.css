@@ -10,7 +10,11 @@
     a {
         @apply underline
     }
+}
 
+@layer utilities {
+
+    /* BUTTONS */
     .button {
         @apply px-4 py-2 rounded border-2 border-primary-main text-primary-main bg-primary-contrast;
         @apply hover:text-primary-contrast hover:bg-primary-main;
@@ -24,17 +28,24 @@
         @apply hover:text-primary-contrast hover:bg-primary-main;
         @apply no-underline;
     }
-
     .button svg {
         @apply pr-2
     }
 
+    /* TEXT SIZES */
     h3 {
         @apply text-2xl
     }
 
+    /* INPUT AND FORMS */
     input[type="text"] {
         @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0
+    }
+    input[type="number"] {
+        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0
+    }
+    .input-icon {
+        @apply text-gray-500 absolute right-4 text-2xl inset-y-0 my-auto
     }
     .textarea-container {
         @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0
@@ -42,20 +53,40 @@
     .textarea-reset {
         @apply py-0 px-1 border-0 bg-transparent
     }
-    input[type="number"] {
-        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0
-    }
     label {
         @apply text-gray-500 text-sm pt-4
     }
     label.error {
         @apply text-error text-sm pt-0
     }
-}
 
-@layer utilities {
+    /* TOOLTIP AND DROPDOWN */
+    .tooltip-right {
+        @apply absolute z-10 px-2 bg-gray-600 text-white rounded-3xl invisible group-hover:visible whitespace-nowrap
+    }
+    .dropdown-parent {
+        @apply relative inline-block z-auto /* and add group */
+    }
+    .dropdown-content-flex {
+        @apply absolute z-20 hidden group-hover:flex rounded border border-gray-500 bg-white py-2 px-1
+    }
+
+    /* LAYOUT STUFF */
     .separator {
         @apply border-4 rounded border-primary-main self-stretch mx-8 my-8 md:my-0
+    }
+
+    /* LISTS */
+    .mylist-item {
+        @apply bg-gray-100 border-gray-400 border
+    }
+
+    /* GRAPHICAL CONTAINERS */
+    .main-container {
+        @apply flex flex-col items-center w-full md:w-3/5
+    }
+    .chip {
+        @apply bg-gray-600 text-white rounded-3xl mx-2 px-2
     }
 
 }

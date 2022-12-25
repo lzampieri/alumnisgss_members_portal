@@ -19,17 +19,28 @@ class RolesAndPermissionsSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         // create permissions
-        Permission::create(['name' => 'log-manage']);
+
+        // Users
         Permission::create(['name' => 'login']);
-        Permission::create(['name' => 'members-view']);
+        Permission::create(['name' => 'user-view']);
+        Permission::create(['name' => 'user-enabling']);
+        
+        // Edit roles
+        Permission::create(['name' => 'user-edit-secretariat']);
+        Permission::create(['name' => 'user-edit-webmaster']);
+        
+        // Log
+        Permission::create(['name' => 'log-manage']);
+
+        // Registry
         Permission::create(['name' => 'alumnus-view']);
         Permission::create(['name' => 'alumnus-edit']);
         Permission::create(['name' => 'alumnus-bulk']);
 
 
         // create roles
-        Role::create(['name' => 'secretariary'])
-            ->givePermissionTo(['login', 'members-view', 'alumnus-view', 'alumnus-edit']);
+        Role::create(['name' => 'secretariat'])
+            ->givePermissionTo(['alumnus-view', 'alumnus-edit', 'user-edit-secretariat']);
 
         Role::create(['name' => 'webmaster'])
             ->givePermissionTo(Permission::all());

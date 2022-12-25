@@ -3,37 +3,97 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Inertia\Inertia;
 use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
     // Redirect to google
-    function redirect() {
+    function redirect()
+    {
+        if (Auth::check())
+            return redirect()->route('home');
+
         return Socialite::driver('google')->redirect();
     }
 
     // Callback
-    function callback() {
+    function callback()
+    {
+        if (Auth::check())
+            return redirect()->route('home');
+
         $email = Socialite::driver('google')->user()->email;
 
-        $user = User::where( 'email', $email )->first();
+        $user = User::where('email', $email)->first();
 
-        if( $user ) {
-            if( $user->can('login', User::class ) ) {
-                Auth::login( $user );
-                return redirect()->route( 'home' );
+        if ($user) {
+            if ($user->can('login', User::class)) {
+                Auth::login($user);
+
+                Log::debug('Login', $user);
+
+                $user->last_login = Carbon::now();
+                $user->save();
+
+                return redirect()->route('home');
             }
-            return redirect()->route( 'home' )->with( 'notistack', [ 'error', 'Non hai ancora il permesso di accedere.' ] );
+            return redirect()->route('home')->with('notistack', ['error', 'Non hai ancora il permesso di accedere.']);
         }
-        
-        return redirect()->route( 'home' )->with( 'notistack', [ 'error', 'Utente non riconosciuto' ] );
+
+        return redirect()->route('auth.askaccess')->with('email', $email );
     }
-    
+
+    function askaccess()
+    {
+        if( Auth::check() )
+            return redirect()->route('home');
+            
+        if( session()->has( 'email' ) )
+            return Inertia::render('Accesses/AskAccess', ['email' => session('email') ] );
+            
+        return redirect()->route('home');
+
+    }
+
+    function askaccess_post(Request $request)
+    {
+        if (Auth::check())
+            return redirect()->route('home');
+
+        $validated = $request->validate([
+            'message' => 'required|min:3',
+            'email' => 'required|email|unique:users,email'
+        ]);
+
+        $user = User::create(['email' => $validated['email']]);
+        Log::debug('New user created', $user);
+        
+        $emails = User::permission('user-enabling')->get()->pluck('email')->toArray();
+
+        $message = "E' stata inserita una nuova richiesta d'accesso\n";
+        $message.= "Indirizzo mail richiedente: " . $validated['email'] . "\n";
+        $message.= "Messaggio:\n" . $validated['message'];
+
+        Mail::raw( $message, function ($message) use ($emails) {
+            $message->to($emails);
+            $message->subject('Nuova richiesta di accesso a soci.alumnuscuolagalileiana.it');
+        });
+        Log::debug('Access request sent', [$emails, $message]);
+        
+        return redirect()->route('home')->with(['notistack' => ['success', 'La richiesta è stata inoltrata alla segreteria.']]);
+    }
+
     // Logout
-    function logout() {
-        Auth::logout();
-        return redirect()->route( 'home' );
+    function logout()
+    {
+        if (Auth::check())
+            Auth::logout();
+
+        return redirect()->route('home');
     }
 }

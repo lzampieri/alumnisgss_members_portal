@@ -28,3 +28,10 @@ export class AlumnusStatus {
     static names = [ 'Avente diritto', 'Non avente diritto', 'Da ratificare', 'Socio', 'Deceduto', 'Rifiuta', 'Studente socio', 'Studente non socio' ]
     static colors = [ '#FFFF00', '#FF00FF', '#0000FF', '#00CC00', '#003300', '#FF0000', '#FF9900', '#00FF99']
 }
+
+export class Roles {
+    static names = {
+        'secretariat': 'Segreteria',
+        'webmaster': 'WebMaster'
+    }
+}
