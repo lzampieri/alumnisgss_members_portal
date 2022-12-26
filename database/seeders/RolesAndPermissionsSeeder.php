@@ -40,7 +40,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // create roles
         Role::create(['name' => 'secretariat'])
-            ->givePermissionTo(['alumnus-view', 'alumnus-edit', 'user-edit-secretariat']);
+            ->givePermissionTo([ 'user-view', 'user-enabling', 'user-edit-secretariat', 'alumnus-view', 'alumnus-edit']);
 
         Role::create(['name' => 'webmaster'])
             ->givePermissionTo(Permission::all());

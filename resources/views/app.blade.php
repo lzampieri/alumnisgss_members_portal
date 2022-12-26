@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>AlumniSGSS members portal</title>
+        <link rel="icon" type="image/x-icon" href={{ asset('assets/favicon.png') }}>
 
         <!-- Styles -->
         <link href="{{ mix('/css/app.css') }}" rel="stylesheet" />

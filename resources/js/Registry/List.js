@@ -9,7 +9,7 @@ function AlumnusLink(alumnus, filter) {
     let visible = filter ? (fullname + " " + alumnus.coorte).includes(filter) : true
 
     return (
-        <div key={alumnus.id} style={{ height: visible ? 'auto' : 0 }} >
+        <div key={alumnus.id} className="overflow-hidden" style={{ height: visible ? 'auto' : 0 }} >
             <div className="mylist-item flex flex-row p-2">
                 <span style={{ color: AlumnusStatus.colors[alumnus.status] }} className="pr-2 group relative">
                     ⬤

@@ -1,3 +1,5 @@
+require('custom-env').env()
+
 const mix = require('laravel-mix');
 
 /*

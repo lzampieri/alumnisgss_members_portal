@@ -9,7 +9,7 @@ function AlumnusItem(alumnus, filter) {
     let visible = filter ? (fullname + " " + alumnus.coorte).toLowerCase().includes(filter.toLowerCase()) : true
 
     return (
-        <div key={alumnus.id} style={{ height: visible ? 'auto' : 0 }} >
+        <div key={alumnus.id} className="overflow-hidden" style={{ height: visible ? 'auto' : 0 }} >
             <div className="mylist-item flex flex-row p-2">
                 {alumnus.surname} {alumnus.name}
                 <div className="chip">{romanize(alumnus.coorte)}</div>
@@ -44,7 +44,7 @@ export default function List() {
                     className={order == orders.coorte ? "button button-active" : "button"}
                 >Per coorte</button>
             </div>
-            <div className="w-full md:w-2/5 flex flex-col items-stretch mt-4" style={order == orders.alphabetical ? {} : { display: "none" }} >
+            <div className="w-full md:w-2/5 flex flex-col items-stretch mt-4 overflow-hidden" style={order == orders.alphabetical ? {} : { display: "none" }} >
                 {members.map(alumnus => AlumnusItem(alumnus, filter))}
             </div>
             <div className="w-full flex flex-row justify-start mt-4 flex-nowrap overflow-x-auto whitespace-nowrap" style={order == orders.coorte ? {} : { display: "none" }} >
