@@ -1,7 +1,7 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import { AlumnusStatus, bgAndContrast, romanize } from "../Utils";
+import { AlumnusStatus, bgAndContrast, disappearing, romanize } from "../Utils";
 
 function AlumnusItem(alumnus, textFilter, statusFilter, itemFunction) {
     let fullname = alumnus.surname + " " + alumnus.name
