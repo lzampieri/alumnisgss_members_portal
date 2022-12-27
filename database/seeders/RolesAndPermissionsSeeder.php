@@ -25,9 +25,13 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'user-view']);
         Permission::create(['name' => 'user-enabling']);
         
-        // Edit roles
+        // Assign roles
         Permission::create(['name' => 'user-edit-secretariat']);
         Permission::create(['name' => 'user-edit-webmaster']);
+
+        // Edit roles and permissions
+        Permission::create(['name' => 'permissions-view']);
+        Permission::create(['name' => 'permissions-edit']);
         
         // Log
         Permission::create(['name' => 'log-manage']);

@@ -12,7 +12,7 @@ function userEnabling(id, newState, setProcessing) {
     Inertia.post(
         route('user.enabling', { user: id }),
         { enabled: newState },
-        { onSuccess: () => { setProcessing(false) }, preserveState: true, preserveScroll: true }
+        { onFinish: () => { setProcessing(false) }, preserveState: true, preserveScroll: true }
     )
 }
 
@@ -21,7 +21,7 @@ function userRoleAdd(id, role, setProcessing) {
     Inertia.post(
         route('user.roles', { user: id }),
         { role: role, action: 'add' },
-        { onSuccess: () => { setProcessing(false) }, preserveState: true, preserveScroll: true }
+        { onFinish: () => { setProcessing(false) }, preserveState: true, preserveScroll: true }
     )
 }
 
@@ -30,7 +30,7 @@ function userRoleRemove(id, role, setProcessing) {
     Inertia.post(
         route('user.roles', { user: id }),
         { role: role, action: 'remove' },
-        { onSuccess: () => { setProcessing(false) }, preserveState: true, preserveScroll: true }
+        { onFinish: () => { setProcessing(false) }, preserveState: true, preserveScroll: true }
     )
 }
 

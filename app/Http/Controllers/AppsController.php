@@ -30,6 +30,10 @@ class AppsController extends Controller
             $apps[] = 'accesses';
         }
 
+        if (Auth::user() && Auth::user()->hasPermissionTo('permissions-view')) {
+            $apps[] = 'permissions';
+        }
+
         return Inertia::render('Home', ['apps' => $apps]);
     }
 }

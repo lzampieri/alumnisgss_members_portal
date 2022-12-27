@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log as OriginalLog;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
+use Spatie\Permission\Models\Permission;
 
 class Log extends Controller
 {
@@ -32,12 +34,16 @@ class Log extends Controller
             return "(" . $object->id . ") " . $object->surname . " "  . $object->name . " [" . Alumnus::names[ $object->status ] . "]";
         if( $object instanceof User )
             return $object->email;
+        if( $object instanceof Permission )
+            return $object->name;
         return $object;
     }
 
     public static function debug(string $message, $params)
     {
         $message .= " " . Log::stringify( $params );
+        if( Auth::check() )
+            $message = "(" . Auth::user()->email . ") " . $message;
         OriginalLog::channel('internal')->debug($message);
     }
 }
