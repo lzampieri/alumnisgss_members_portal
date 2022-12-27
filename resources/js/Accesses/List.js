@@ -5,7 +5,7 @@ import { useState } from "react";
 import Switch from "react-switch";
 import Backdrop from "../Layout/Backdrop";
 import { Inertia } from "@inertiajs/inertia";
-import { Roles } from "../Utils";
+import { disappearing, Roles } from "../Utils";
 
 function userEnabling(id, newState, setProcessing) {
     setProcessing(true);
@@ -39,7 +39,7 @@ function UserItem(user, filter, editableRoles, setProcessing) {
     const [dropdownOpen, setDropdownOpen] = useState(true);
 
     return (
-        <div key={user.id} style={{ height: visible ? 'auto' : 0 }} >
+        <div key={user.id} style={ disappearing( visible ) } >
             <div className="mylist-item flex flex-row p-2 items-center gap-2">
                 <Switch checked={user.enabled} onChange={(checked) => userEnabling(user.id, checked, setProcessing)} />
                 <div className={"flex flex-col" + (user.enabled ? "" : " text-gray-400")}>
