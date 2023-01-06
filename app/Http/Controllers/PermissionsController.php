@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Document;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Spatie\Permission\Exceptions\PermissionDoesNotExist;
@@ -30,6 +31,47 @@ class PermissionsController extends Controller
         }
 
         return Inertia::render('Permissions/List', ['roles' => $roles, 'perms' => $perms]);
+    }
+
+    public function verify() {
+        $count = Permission::count();
+
+        $permissions_to_assert = [
+            // Users
+            'login',
+            'user-view',
+            'user-enabling',
+            // Edit roles and permissions
+            'permissions-view',
+            'permissions-edit',
+            // Log
+            'log-manage',
+            // Registry
+            'alumnus-view',
+            'alumnus-edit',
+            'alumnus-bulk',
+            // Documents
+            'documents-upload',
+            'documents-edit'
+        ];
+
+        // Roles edit
+        foreach( Role::all()->pluck('name') as $role )
+            $permissions_to_assert[] = 'user-edit-' . $role;
+            
+        // Document privacies
+        foreach( Document::$privacies as $privacy )
+            $permissions_to_assert[] = 'documents-view-' . $privacy;
+        
+        // Find or create!
+        foreach( $permissions_to_assert as $permission )
+            Permission::findOrCreate( $permission );
+
+        $count = Permission::count() - $count;
+
+        if( $count == 0 )
+            return redirect()->back()->with(['notistack'=>['success','Permessi corretti']]);
+        return redirect()->back()->with(['notistack'=>['warning',$count . ' permessi aggiunti']]);
     }
     
     public function update(Request $request) {

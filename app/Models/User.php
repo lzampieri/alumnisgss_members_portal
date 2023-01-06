@@ -37,4 +37,8 @@ class User extends Authenticatable
 
         return $editableRoles;
     }
+
+    public function documents() {
+        return $this->hasMany( Document::class );
+    }
 }

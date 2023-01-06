@@ -1,4 +1,4 @@
-import { useForm, usePage } from "@inertiajs/inertia-react";
+import { Link, useForm, usePage } from "@inertiajs/inertia-react";
 import { useState } from "react";
 import ReactSwitch from "react-switch";
 import { Roles } from "../Utils";
@@ -56,6 +56,7 @@ export default function List() {
             { roles.map( role => RoleCard( role, perms, setProcessing ) ) }
         </div>
         { permissionAdd( setProcessing ) }
+        <Link href={ route('permissions.verify') }>Verifica permessi</Link>
         <Backdrop open={processing} />
     </div>
 }

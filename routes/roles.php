@@ -17,4 +17,5 @@ Route::prefix('/permissions')->group( function () {
     Route::get('/', [ PermissionsController::class, 'list' ] )->name('permissions');
     Route::post('/', [ PermissionsController::class, 'update' ] );
     Route::post('/add', [ PermissionsController::class, 'add' ] )->name('permissions.add');
+    Route::get('/verify', [ PermissionsController::class, 'verify' ] )->name('permissions.verify');
 });
