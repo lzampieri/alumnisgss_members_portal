@@ -12,10 +12,16 @@ class Document extends Model
     protected $fillable = [
         'title',
         'identifier',
+        'date',
         'privacy',
         'handle',
         'author_id'
     ];
+
+
+    protected $casts = [
+        'date' => 'datetime',
+    ];    
 
     public static $privacies = [
         'everyone',

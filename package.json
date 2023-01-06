@@ -32,6 +32,7 @@
         "notistack": "^3.0.0-alpha.11",
         "react-select": "^5.7.0",
         "react-switch": "^7.0.0",
-        "react-use-measure": "^2.1.1"
+        "react-use-measure": "^2.1.1",
+        "tailwind-datepicker-react": "^1.2.3"
     }
 }

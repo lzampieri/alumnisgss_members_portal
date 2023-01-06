@@ -22,6 +22,8 @@ include( 'auth.php' );
 
 include( 'alumni.php' );
 
+include( 'board.php' );
+
 include( 'roles.php' );
 
 // Utils

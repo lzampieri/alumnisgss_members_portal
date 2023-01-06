@@ -38,6 +38,14 @@ export class Roles {
     }
 }
 
+export class Documents {
+    static names = {
+        'everyone': 'Tutti',
+        'members': 'Soci',
+        'internal': 'Segreteria'
+    }
+}
+
 export function bgAndContrast( bgColor ) {
     return {
         backgroundColor: bgColor,

@@ -5,21 +5,34 @@ namespace App\Policies;
 use App\Models\Document;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Auth;
 
-class DocumentsPolicy
+class DocumentPolicy
 {
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any models.
+     * Determine the list of visible privacies
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return string[]
      */
-    // public function viewAny(User $user)
-    // {
-    //     //
-    // }
+    public static function visiblePrivacies()
+    {
+        $visiblePrivacies = [];
+        foreach( Document::$privacies as $privacy ) {
+            if( $privacy == 'everyone' ) {
+                $visiblePrivacies[] = $privacy;
+                continue;
+            }
+            if( Auth::check() ) {
+                if( Auth::user()->hasPermissionTo( 'documents-view-' . $privacy ) ) {
+                    $visiblePrivacies[] = $privacy;
+                }
+            }
+        }
+
+        return $visiblePrivacies;
+    }
 
     /**
      * Determine whether the user can view the model.
@@ -45,13 +58,13 @@ class DocumentsPolicy
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determine whether the user can edit the model.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Document  $document
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Document $document)
+    public function edit(User $user)
     {
         return $user->hasPermissionTo( 'documents-edit' );
     }

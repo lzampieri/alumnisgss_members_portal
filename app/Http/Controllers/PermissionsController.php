@@ -60,8 +60,10 @@ class PermissionsController extends Controller
             $permissions_to_assert[] = 'user-edit-' . $role;
             
         // Document privacies
-        foreach( Document::$privacies as $privacy )
+        foreach( Document::$privacies as $privacy ) {
+            if( $privacy == 'everyone' ) continue;
             $permissions_to_assert[] = 'documents-view-' . $privacy;
+        }
         
         // Find or create!
         foreach( $permissions_to_assert as $permission )

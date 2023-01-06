@@ -2126,6 +2126,46 @@ var weakMemoize = function weakMemoize(func) {
 
 /***/ }),
 
+/***/ "./node_modules/@fortawesome/free-solid-svg-icons/faBookOpen.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/@fortawesome/free-solid-svg-icons/faBookOpen.js ***!
+  \**********************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+var prefix = 'fas';
+var iconName = 'book-open';
+var width = 576;
+var height = 512;
+var aliases = [128214,128366];
+var unicode = 'f518';
+var svgPathData = 'M249.6 471.5c10.8 3.8 22.4-4.1 22.4-15.5V78.6c0-4.2-1.6-8.4-5-11C247.4 52 202.4 32 144 32C87.5 32 35.1 48.6 9 59.9c-5.6 2.4-9 8-9 14V454.1c0 11.9 12.8 20.2 24.1 16.5C55.6 460.1 105.5 448 144 448c33.9 0 79 14 105.6 23.5zm76.8 0C353 462 398.1 448 432 448c38.5 0 88.4 12.1 119.9 22.6c11.3 3.8 24.1-4.6 24.1-16.5V73.9c0-6.1-3.4-11.6-9-14C540.9 48.6 488.5 32 432 32c-58.4 0-103.4 20-123 35.6c-3.3 2.6-5 6.8-5 11V456c0 11.4 11.7 19.3 22.4 15.5z';
+
+exports.definition = {
+  prefix: prefix,
+  iconName: iconName,
+  icon: [
+    width,
+    height,
+    aliases,
+    unicode,
+    svgPathData
+  ]};
+
+exports.faBookOpen = exports.definition;
+exports.prefix = prefix;
+exports.iconName = iconName;
+exports.width = width;
+exports.height = height;
+exports.ligatures = aliases;
+exports.unicode = unicode;
+exports.svgPathData = svgPathData;
+exports.aliases = aliases;
+
+/***/ }),
+
 /***/ "./node_modules/@fortawesome/free-solid-svg-icons/faBug.js":
 /*!*****************************************************************!*\
   !*** ./node_modules/@fortawesome/free-solid-svg-icons/faBug.js ***!
@@ -5400,6 +5440,350 @@ function List() {
 
 /***/ }),
 
+/***/ "./resources/js/Board/IdSelector.js":
+/*!******************************************!*\
+  !*** ./resources/js/Board/IdSelector.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ IdSelector)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-select */ "./node_modules/react-select/dist/react-select.esm.js");
+/* harmony import */ var tailwind_datepicker_react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! tailwind-datepicker-react */ "./node_modules/tailwind-datepicker-react/dist/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0) { ; } } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i["return"] && (_r = _i["return"](), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+
+
+function IdSelector(_ref) {
+  var onChange = _ref.onChange;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState2 = _slicedToArray(_useState, 2),
+    progr = _useState2[0],
+    setProgr = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(new Date().getFullYear()),
+    _useState4 = _slicedToArray(_useState3, 2),
+    year = _useState4[0],
+    setYear = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState6 = _slicedToArray(_useState5, 2),
+    other = _useState6[0],
+    setOther = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(new Date()),
+    _useState8 = _slicedToArray(_useState7, 2),
+    date = _useState8[0],
+    setDate = _useState8[1];
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState10 = _slicedToArray(_useState9, 2),
+    datePickerOpen = _useState10[0],
+    setDatePickerOpen = _useState10[1];
+  var options = [{
+    value: 'Decreto',
+    label: 'Decreto',
+    yearAndProgr: true,
+    parser: function parser(progr, year, date, other) {
+      return 'Decreto ' + progr + '/' + year;
+    }
+  }, {
+    value: 'Verbale CdA',
+    label: 'Verbale CdA',
+    date: true,
+    parser: function parser(progr, year, date, other) {
+      return 'Verbale Consiglio di Amministrazione ' + date.toLocaleDateString('it-IT', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+    }
+  }, {
+    value: 'Verbale Assemblea dei Soci',
+    label: 'Verbale Assemblea dei Soci',
+    date: true,
+    parser: function parser(progr, year, date, other) {
+      return 'Verbale Assemblea dei Soci ' + date.toLocaleDateString('it-IT', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+    }
+  }, {
+    value: 'Altro',
+    label: 'Altro',
+    other: true,
+    parser: function parser(progr, year, date, other) {
+      return other;
+    }
+  }];
+  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(options[2]),
+    _useState12 = _slicedToArray(_useState11, 2),
+    selected = _useState12[0],
+    setSelected = _useState12[1];
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    return onChange(selected.parser(progr, year, date, other));
+  }, [progr, year, date, other, selected]);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+    className: "w-full flex flex-row flex-wrap gap-2 items-center",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(react_select__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      className: "w-full md:w-1/3",
+      value: selected,
+      options: options,
+      onChange: setSelected
+    }), selected.yearAndProgr && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+        className: "grow",
+        type: "text",
+        placeholder: "Progressivo",
+        value: progr,
+        onChange: function onChange(e) {
+          return setProgr(e.target.value);
+        }
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
+        children: "/"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+        className: "grow",
+        type: "number",
+        value: year,
+        onChange: function onChange(e) {
+          return setYear(e.target.value);
+        },
+        min: 2000,
+        max: new Date().getFullYear()
+      })]
+    }), selected.date && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(tailwind_datepicker_react__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        classNames: "w-full md:w-auto grow",
+        options: {
+          maxDate: new Date(),
+          language: 'it',
+          theme: {
+            input: '!text-black'
+          }
+        },
+        onChange: setDate,
+        show: datePickerOpen,
+        setShow: setDatePickerOpen
+      })
+    }), selected.other && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+        className: "grow",
+        type: "text",
+        placeholder: "Identificativo",
+        value: other,
+        onChange: function onChange(e) {
+          return setOther(e.target.value);
+        }
+      })
+    })]
+  });
+}
+
+/***/ }),
+
+/***/ "./resources/js/Board/List.js":
+/*!************************************!*\
+  !*** ./resources/js/Board/List.js ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ List)
+/* harmony export */ });
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faCirclePlus__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faCirclePlus */ "./node_modules/@fortawesome/free-solid-svg-icons/faCirclePlus.js");
+/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @fortawesome/react-fontawesome */ "./node_modules/@fortawesome/react-fontawesome/index.es.js");
+/* harmony import */ var _inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @inertiajs/inertia-react */ "./node_modules/@inertiajs/inertia-react/dist/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+
+
+function DocumentItem(document) {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+    className: "mylist-item flex flex-row p-2 items-center gap-2",
+    children: "Contenuto..."
+  }, document.id);
+}
+function List() {
+  var documents = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.documents;
+  var total = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.total;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+    className: "main-container",
+    children: [(0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.canUpload && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+      className: "w-full flex flex-row justify-end",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
+        className: "button",
+        href: route('board.add'),
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
+          icon: _fortawesome_free_solid_svg_icons_faCirclePlus__WEBPACK_IMPORTED_MODULE_3__.faCirclePlus
+        }), "Aggiungi"]
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("span", {
+      className: "text-sm",
+      children: [documents.length, " documenti visualizzati su ", total, " totali."]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+      className: "w-full flex flex-col items-stretch mt-4",
+      children: documents.map(function (document) {
+        return DocumentItem(document);
+      })
+    })]
+  });
+}
+
+/***/ }),
+
+/***/ "./resources/js/Board/Upload.js":
+/*!**************************************!*\
+  !*** ./resources/js/Board/Upload.js ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Add)
+/* harmony export */ });
+/* harmony import */ var _inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @inertiajs/inertia-react */ "./node_modules/@inertiajs/inertia-react/dist/index.js");
+/* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Utils */ "./resources/js/Utils.js");
+/* harmony import */ var _IdSelector__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./IdSelector */ "./resources/js/Board/IdSelector.js");
+/* harmony import */ var tailwind_datepicker_react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! tailwind-datepicker-react */ "./node_modules/tailwind-datepicker-react/dist/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var _Layout_Backdrop__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Layout/Backdrop */ "./resources/js/Layout/Backdrop.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0) { ; } } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i["return"] && (_r = _i["return"](), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+
+
+
+
+function Add() {
+  var privacies = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.privacies;
+  var _useForm = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.useForm)({
+      title: '',
+      privacy: privacies[0],
+      identifier: '',
+      date: new Date(),
+      file: ''
+    }),
+    data = _useForm.data,
+    setData = _useForm.setData,
+    post = _useForm.post,
+    processing = _useForm.processing,
+    errors = _useForm.errors,
+    progress = _useForm.progress;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_4__.useState)(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    datePickerOpen = _useState2[0],
+    setDatePickerOpen = _useState2[1];
+  var submit = function submit(e) {
+    e.preventDefault();
+    post(route('board.add'));
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("form", {
+    className: "flex flex-col w-full md:w-3/5",
+    onSubmit: submit,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("h3", {
+      children: "Carica documento"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+      children: "Identificativo"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_IdSelector__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      onChange: function onChange(idf) {
+        return setData('identifier', idf);
+      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+      className: "error",
+      children: errors.identifier
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+      children: "Oggetto"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("input", {
+      type: "text",
+      value: data.title,
+      onChange: function onChange(e) {
+        return setData('title', e.target.value);
+      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+      className: "error",
+      children: errors.title
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+      children: "Visibilit\xE0"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+      className: "w-full flex flex-row flex-wrap justify-start",
+      children: privacies.map(function (p) {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+          className: "chip px-4 py-2 cursor-pointer " + (p == data.privacy ? '' : 'disabled'),
+          onClick: function onClick() {
+            return setData('privacy', p);
+          },
+          children: _Utils__WEBPACK_IMPORTED_MODULE_1__.Documents.names[p] ? _Utils__WEBPACK_IMPORTED_MODULE_1__.Documents.names[p] : p
+        });
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+      className: "error",
+      children: errors.privacy
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+      children: "Data di redazione"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(tailwind_datepicker_react__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      classNames: "w-full",
+      options: {
+        maxDate: new Date(),
+        language: 'it',
+        theme: {
+          input: '!text-black'
+        }
+      },
+      onChange: function onChange(date) {
+        return setData('date', date);
+      },
+      show: datePickerOpen,
+      setShow: setDatePickerOpen
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+      className: "error",
+      children: errors.date
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+      children: "File"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("input", {
+      type: "file",
+      onChange: function onChange(e) {
+        return setData('file', e.target.files[0]);
+      },
+      accept: ".pdf"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+      className: "error",
+      children: errors.file
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("input", {
+      type: "button",
+      className: "button mt-4",
+      onClick: submit,
+      value: "Aggiungi"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_Layout_Backdrop__WEBPACK_IMPORTED_MODULE_5__["default"], {
+      open: processing
+    })]
+  });
+}
+
+/***/ }),
+
 /***/ "./resources/js/General/Access.js":
 /*!****************************************!*\
   !*** ./resources/js/General/Access.js ***!
@@ -5508,11 +5892,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faIdCard__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faIdCard */ "./node_modules/@fortawesome/free-solid-svg-icons/faIdCard.js");
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faIdBadge__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faIdBadge */ "./node_modules/@fortawesome/free-solid-svg-icons/faIdBadge.js");
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faBug__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faBug */ "./node_modules/@fortawesome/free-solid-svg-icons/faBug.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faIdCard__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faIdCard */ "./node_modules/@fortawesome/free-solid-svg-icons/faIdCard.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faIdBadge__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faIdBadge */ "./node_modules/@fortawesome/free-solid-svg-icons/faIdBadge.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faBug__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faBug */ "./node_modules/@fortawesome/free-solid-svg-icons/faBug.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faBookOpen__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faBookOpen */ "./node_modules/@fortawesome/free-solid-svg-icons/faBookOpen.js");
 /* harmony import */ var _fortawesome_free_solid_svg_icons_faStapler__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faStapler */ "./node_modules/@fortawesome/free-solid-svg-icons/faStapler.js");
 /* harmony import */ var _fortawesome_free_solid_svg_icons_faUsers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faUsers */ "./node_modules/@fortawesome/free-solid-svg-icons/faUsers.js");
+
 
 
 
@@ -5529,21 +5915,26 @@ __webpack_require__.r(__webpack_exports__);
   url: route('registry'),
   icon: _fortawesome_free_solid_svg_icons_faStapler__WEBPACK_IMPORTED_MODULE_1__.faStapler
 }, {
+  id: 'board',
+  name: 'Albo',
+  url: route('board'),
+  icon: _fortawesome_free_solid_svg_icons_faBookOpen__WEBPACK_IMPORTED_MODULE_2__.faBookOpen
+}, {
   id: 'logs',
   name: 'Log',
   url: route('log'),
-  icon: _fortawesome_free_solid_svg_icons_faBug__WEBPACK_IMPORTED_MODULE_2__.faBug,
+  icon: _fortawesome_free_solid_svg_icons_faBug__WEBPACK_IMPORTED_MODULE_3__.faBug,
   href: true
 }, {
   id: 'accesses',
   name: 'Accessi',
   url: route('roles'),
-  icon: _fortawesome_free_solid_svg_icons_faIdBadge__WEBPACK_IMPORTED_MODULE_3__.faIdBadge
+  icon: _fortawesome_free_solid_svg_icons_faIdBadge__WEBPACK_IMPORTED_MODULE_4__.faIdBadge
 }, {
   id: 'permissions',
   name: 'Ruoli e permessi',
   url: route('permissions'),
-  icon: _fortawesome_free_solid_svg_icons_faIdCard__WEBPACK_IMPORTED_MODULE_4__.faIdCard
+  icon: _fortawesome_free_solid_svg_icons_faIdCard__WEBPACK_IMPORTED_MODULE_5__.faIdCard
 }]);
 
 /***/ }),
@@ -6472,6 +6863,7 @@ function ListTemplate(_ref) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AlumnusStatus": () => (/* binding */ AlumnusStatus),
+/* harmony export */   "Documents": () => (/* binding */ Documents),
 /* harmony export */   "Roles": () => (/* binding */ Roles),
 /* harmony export */   "bgAndContrast": () => (/* binding */ bgAndContrast),
 /* harmony export */   "disappearing": () => (/* binding */ disappearing),
@@ -6519,6 +6911,14 @@ var Roles = /*#__PURE__*/_createClass(function Roles() {
 _defineProperty(Roles, "names", {
   'secretariat': 'Segreteria',
   'webmaster': 'WebMaster'
+});
+var Documents = /*#__PURE__*/_createClass(function Documents() {
+  _classCallCheck(this, Documents);
+});
+_defineProperty(Documents, "names", {
+  'everyone': 'Tutti',
+  'members': 'Soci',
+  'internal': 'Segreteria'
 });
 function bgAndContrast(bgColor) {
   return {
@@ -6641,7 +7041,8 @@ module.exports = {
     },
     error: '#ff3333',
     gray: colors.gray,
-    white: colors.white
+    white: colors.white,
+    black: colors.black
   }
 };
 
@@ -67336,6 +67737,2878 @@ module.exports = function getSideChannel() {
 
 /***/ }),
 
+/***/ "./node_modules/tailwind-datepicker-react/dist/Components/Buttons.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/tailwind-datepicker-react/dist/Components/Buttons.js ***!
+  \***************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", ({value:true}));function _export(target,all){for(var name in all)Object.defineProperty(target,name,{enumerable:true,get:all[name]})}_export(exports,{ButtonPrevMonth:function(){return ButtonPrevMonth},ButtonSelectMonth:function(){return ButtonSelectMonth},ButtonNextMonth:function(){return ButtonNextMonth},ButtonToday:function(){return ButtonToday},ButtonClear:function(){return ButtonClear}});var _react=_interopRequireWildcard(__webpack_require__(/*! react */ "./node_modules/react/index.js"));var _tailwindMerge=__webpack_require__(/*! tailwind-merge */ "./node_modules/tailwind-merge/dist/index.js");var _date=__webpack_require__(/*! ../Utils/date */ "./node_modules/tailwind-datepicker-react/dist/Utils/date.js");var _datePickerProvider=__webpack_require__(/*! ./DatePickerProvider */ "./node_modules/tailwind-datepicker-react/dist/Components/DatePickerProvider.js");function _getRequireWildcardCache(nodeInterop){if(typeof WeakMap!=="function")return null;var cacheBabelInterop=new WeakMap;var cacheNodeInterop=new WeakMap;return(_getRequireWildcardCache=function(nodeInterop){return nodeInterop?cacheNodeInterop:cacheBabelInterop})(nodeInterop)}function _interopRequireWildcard(obj,nodeInterop){if(!nodeInterop&&obj&&obj.__esModule){return obj}if(obj===null||typeof obj!=="object"&&typeof obj!=="function"){return{default:obj}}var cache=_getRequireWildcardCache(nodeInterop);if(cache&&cache.has(obj)){return cache.get(obj)}var newObj={};var hasPropertyDescriptor=Object.defineProperty&&Object.getOwnPropertyDescriptor;for(var key in obj){if(key!=="default"&&Object.prototype.hasOwnProperty.call(obj,key)){var desc=hasPropertyDescriptor?Object.getOwnPropertyDescriptor(obj,key):null;if(desc&&(desc.get||desc.set)){Object.defineProperty(newObj,key,desc)}else{newObj[key]=obj[key]}}}newObj.default=obj;if(cache){cache.set(obj,newObj)}return newObj}var ButtonPrevMonth=function(){var ref,ref1,ref2;var ref3=(0,_react.useContext)(_datePickerProvider.DatePickerContext),selectedDate=ref3.selectedDate,changeSelectedDate=ref3.changeSelectedDate,view=ref3.view,options=ref3.options;return _react.default.createElement("button",{type:"button",className:(0,_tailwindMerge.twMerge)("bg-white dark:bg-gray-700 rounded-lg text-gray-500 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-gray-900 dark:hover:text-white text-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-gray-200",options===null||options===void 0?void 0:(ref=options.theme)===null||ref===void 0?void 0:ref.icons),onClick:function(){return changeSelectedDate("prev",new Date((0,_date.goToPrevNext)(view,selectedDate,-1)))}},(options===null||options===void 0?void 0:(ref1=options.icons)===null||ref1===void 0?void 0:ref1.prev)?options===null||options===void 0?void 0:(ref2=options.icons)===null||ref2===void 0?void 0:ref2.prev():_react.default.createElement("svg",{className:"w-4 h-4",fill:"currentColor",viewBox:"0 0 20 20",xmlns:"http://www.w3.org/2000/svg"},_react.default.createElement("path",{fillRule:"evenodd",d:"M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z",clipRule:"evenodd"})))};var ButtonSelectMonth=function(){var ref;var ref1=(0,_react.useContext)(_datePickerProvider.DatePickerContext),selectedDate=ref1.selectedDate,view=ref1.view,setView=ref1.setView,options=ref1.options,getFormattedDate=ref1.getFormattedDate;var calculateView=function(){if(view==="days")return"months";if(view==="months")return"years";if(view==="years")return"decades";return view};return _react.default.createElement("button",{type:"button",className:(0,_tailwindMerge.twMerge)("text-sm rounded-lg text-gray-900 dark:text-white bg-white dark:bg-gray-700 font-semibold py-2.5 px-5 hover:bg-gray-100 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-200",options===null||options===void 0?void 0:(ref=options.theme)===null||ref===void 0?void 0:ref.icons),onClick:function(){return setView(calculateView())}},view==="days"&&getFormattedDate(selectedDate,{month:"long",year:"numeric"}),view==="months"&&getFormattedDate(selectedDate,{year:"numeric"}),view==="years"&&"".concat((0,_date.startOfYearPeriod)(selectedDate,10),"-").concat((0,_date.startOfYearPeriod)(selectedDate,10)+9),view==="decades"&&"".concat((0,_date.startOfYearPeriod)(selectedDate,100),"-").concat((0,_date.startOfYearPeriod)(selectedDate,100)+90))};var ButtonNextMonth=function(){var ref,ref1,ref2;var ref3=(0,_react.useContext)(_datePickerProvider.DatePickerContext),selectedDate=ref3.selectedDate,changeSelectedDate=ref3.changeSelectedDate,view=ref3.view,options=ref3.options;return _react.default.createElement("button",{type:"button",className:(0,_tailwindMerge.twMerge)("bg-white dark:bg-gray-700 rounded-lg text-gray-500 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-gray-900 dark:hover:text-white text-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-gray-200",options===null||options===void 0?void 0:(ref=options.theme)===null||ref===void 0?void 0:ref.icons),onClick:function(){return changeSelectedDate("next",new Date((0,_date.goToPrevNext)(view,selectedDate,1)))}},(options===null||options===void 0?void 0:(ref1=options.icons)===null||ref1===void 0?void 0:ref1.next)?options===null||options===void 0?void 0:(ref2=options.icons)===null||ref2===void 0?void 0:ref2.next():_react.default.createElement("svg",{className:"w-4 h-4",fill:"currentColor",viewBox:"0 0 20 20",xmlns:"http://www.w3.org/2000/svg"},_react.default.createElement("path",{fillRule:"evenodd",d:"M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z",clipRule:"evenodd"})))};var ButtonToday=function(){var ref;var ref1=(0,_react.useContext)(_datePickerProvider.DatePickerContext),changeSelectedDate=ref1.changeSelectedDate,setView=ref1.setView,options=ref1.options;return _react.default.createElement("button",{type:"button",className:(0,_tailwindMerge.twMerge)("w-full px-5 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg dark:bg-blue-600 hover:bg-blue-800 dark:hover:bg-blue-700 focus:ring-4 focus:ring-blue-300",options===null||options===void 0?void 0:(ref=options.theme)===null||ref===void 0?void 0:ref.todayBtn),onClick:function(){changeSelectedDate("today",new Date);setView("days")}},"Today")};var ButtonClear=function(){var ref;var ref1=(0,_react.useContext)(_datePickerProvider.DatePickerContext),setShowSelectedDate=ref1.setShowSelectedDate,options=ref1.options;return _react.default.createElement("button",{type:"button",className:(0,_tailwindMerge.twMerge)("w-full px-5 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg dark:text-white dark:bg-gray-700 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 focus:ring-4 focus:ring-blue-300",options===null||options===void 0?void 0:(ref=options.theme)===null||ref===void 0?void 0:ref.clearBtn),onClick:function(){return setShowSelectedDate(false)}},"Clear")};
+
+/***/ }),
+
+/***/ "./node_modules/tailwind-datepicker-react/dist/Components/DatePicker.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/tailwind-datepicker-react/dist/Components/DatePicker.js ***!
+  \******************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", ({value:true}));Object.defineProperty(exports, "default", ({enumerable:true,get:function(){return _default}}));var _react=_interopRequireWildcard(__webpack_require__(/*! react */ "./node_modules/react/index.js"));var _tailwindMerge=__webpack_require__(/*! tailwind-merge */ "./node_modules/tailwind-merge/dist/index.js");var _datePickerPopup=_interopRequireDefault(__webpack_require__(/*! ./DatePickerPopup */ "./node_modules/tailwind-datepicker-react/dist/Components/DatePickerPopup.js"));var _datePickerProvider=_interopRequireWildcard(__webpack_require__(/*! ./DatePickerProvider */ "./node_modules/tailwind-datepicker-react/dist/Components/DatePickerProvider.js"));function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj}}function _getRequireWildcardCache(nodeInterop){if(typeof WeakMap!=="function")return null;var cacheBabelInterop=new WeakMap;var cacheNodeInterop=new WeakMap;return(_getRequireWildcardCache=function(nodeInterop){return nodeInterop?cacheNodeInterop:cacheBabelInterop})(nodeInterop)}function _interopRequireWildcard(obj,nodeInterop){if(!nodeInterop&&obj&&obj.__esModule){return obj}if(obj===null||typeof obj!=="object"&&typeof obj!=="function"){return{default:obj}}var cache=_getRequireWildcardCache(nodeInterop);if(cache&&cache.has(obj)){return cache.get(obj)}var newObj={};var hasPropertyDescriptor=Object.defineProperty&&Object.getOwnPropertyDescriptor;for(var key in obj){if(key!=="default"&&Object.prototype.hasOwnProperty.call(obj,key)){var desc=hasPropertyDescriptor?Object.getOwnPropertyDescriptor(obj,key):null;if(desc&&(desc.get||desc.set)){Object.defineProperty(newObj,key,desc)}else{newObj[key]=obj[key]}}}newObj.default=obj;if(cache){cache.set(obj,newObj)}return newObj}var DatePicker=function(param){var children=param.children,options=param.options,onChange=param.onChange,classNames=param.classNames,show=param.show,setShow=param.setShow;return _react.default.createElement("div",{className:(0,_tailwindMerge.twMerge)("w-full",classNames)},_react.default.createElement(_datePickerProvider.default,{options:options,onChange:onChange,show:show,setShow:setShow},_react.default.createElement(DatePickerMain,null,children)))};var DatePickerMain=function(param){var children=param.children;var ref=(0,_react.useContext)(_datePickerProvider.DatePickerContext),setShow=ref.setShow,show=ref.show;var InputRef=(0,_react.useRef)(null);var DatePickerRef=(0,_react.useRef)(null);(0,_react.useEffect)(function(){var handleClickOutside=function(event){if(!((InputRef===null||InputRef===void 0?void 0:InputRef.current)&&(DatePickerRef===null||DatePickerRef===void 0?void 0:DatePickerRef.current)))return;if(!InputRef.current.contains(event.target)&&!DatePickerRef.current.contains(event.target)){setShow(false)}};document.addEventListener("mousedown",function(event){return handleClickOutside(event)});return function(){document.removeEventListener("mousedown",function(event){return handleClickOutside(event)})}},[DatePickerRef,InputRef,setShow]);return _react.default.createElement(_react.default.Fragment,null,children?{children:children}:_react.default.createElement("div",{className:"relative"},_react.default.createElement("div",{className:"absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"},_react.default.createElement(CalendarIcon,null)),_react.default.createElement(Input,{ref:InputRef})),show&&_react.default.createElement(_datePickerPopup.default,{ref:DatePickerRef}))};var Input=(0,_react.forwardRef)(function(_props,ref){var _$ref;var _$ref1=(0,_react.useContext)(_datePickerProvider.DatePickerContext),setShow=_$ref1.setShow,selectedDate=_$ref1.selectedDate,showSelectedDate=_$ref1.showSelectedDate,options=_$ref1.options,getFormattedDate=_$ref1.getFormattedDate;return _react.default.createElement("input",{ref:ref,type:"text",id:"date",className:(0,_tailwindMerge.twMerge)("pl-9 pr-2.5 py-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500",options===null||options===void 0?void 0:(_$ref=options.theme)===null||_$ref===void 0?void 0:_$ref.input),placeholder:"Select Date",value:selectedDate.getTime()>0&&showSelectedDate?getFormattedDate(selectedDate):"",onFocus:function(){return setShow(true)},readOnly:true})});Input.displayName="Input";var CalendarIcon=function(){var ref;var options=(0,_react.useContext)(_datePickerProvider.DatePickerContext).options;return _react.default.createElement("svg",{"aria-hidden":"true",className:(0,_tailwindMerge.twMerge)("w-5 h-5 text-gray-500 dark:text-gray-400",options===null||options===void 0?void 0:(ref=options.theme)===null||ref===void 0?void 0:ref.inputIcon),fill:"currentColor",viewBox:"0 0 20 20",xmlns:"http://www.w3.org/2000/svg"},_react.default.createElement("path",{fillRule:"evenodd",d:"M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z",clipRule:"evenodd"}))};var _default=DatePicker;
+
+/***/ }),
+
+/***/ "./node_modules/tailwind-datepicker-react/dist/Components/DatePickerPopup.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/tailwind-datepicker-react/dist/Components/DatePickerPopup.js ***!
+  \***********************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", ({value:true}));Object.defineProperty(exports, "default", ({enumerable:true,get:function(){return _default}}));var _react=_interopRequireWildcard(__webpack_require__(/*! react */ "./node_modules/react/index.js"));var _tailwindMerge=__webpack_require__(/*! tailwind-merge */ "./node_modules/tailwind-merge/dist/index.js");var _date=__webpack_require__(/*! ../Utils/date */ "./node_modules/tailwind-datepicker-react/dist/Utils/date.js");var _buttons=__webpack_require__(/*! ./Buttons */ "./node_modules/tailwind-datepicker-react/dist/Components/Buttons.js");var _datePickerProvider=__webpack_require__(/*! ./DatePickerProvider */ "./node_modules/tailwind-datepicker-react/dist/Components/DatePickerProvider.js");var _days=_interopRequireDefault(__webpack_require__(/*! ./Views/Days */ "./node_modules/tailwind-datepicker-react/dist/Components/Views/Days.js"));var _decades=_interopRequireDefault(__webpack_require__(/*! ./Views/Decades */ "./node_modules/tailwind-datepicker-react/dist/Components/Views/Decades.js"));var _months=_interopRequireDefault(__webpack_require__(/*! ./Views/Months */ "./node_modules/tailwind-datepicker-react/dist/Components/Views/Months.js"));var _years=_interopRequireDefault(__webpack_require__(/*! ./Views/Years */ "./node_modules/tailwind-datepicker-react/dist/Components/Views/Years.js"));function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj}}function _getRequireWildcardCache(nodeInterop){if(typeof WeakMap!=="function")return null;var cacheBabelInterop=new WeakMap;var cacheNodeInterop=new WeakMap;return(_getRequireWildcardCache=function(nodeInterop){return nodeInterop?cacheNodeInterop:cacheBabelInterop})(nodeInterop)}function _interopRequireWildcard(obj,nodeInterop){if(!nodeInterop&&obj&&obj.__esModule){return obj}if(obj===null||typeof obj!=="object"&&typeof obj!=="function"){return{default:obj}}var cache=_getRequireWildcardCache(nodeInterop);if(cache&&cache.has(obj)){return cache.get(obj)}var newObj={};var hasPropertyDescriptor=Object.defineProperty&&Object.getOwnPropertyDescriptor;for(var key in obj){if(key!=="default"&&Object.prototype.hasOwnProperty.call(obj,key)){var desc=hasPropertyDescriptor?Object.getOwnPropertyDescriptor(obj,key):null;if(desc&&(desc.get||desc.set)){Object.defineProperty(newObj,key,desc)}else{newObj[key]=obj[key]}}}newObj.default=obj;if(cache){cache.set(obj,newObj)}return newObj}var DatePickerPopup=(0,_react.forwardRef)(function(_props,ref){var _$ref,_$ref1;var _$ref2=(0,_react.useContext)(_datePickerProvider.DatePickerContext),selectedMonth=_$ref2.selectedMonth,selectedYear=_$ref2.selectedYear,view=_$ref2.view,options=_$ref2.options;var firstOfMonth=(0,_date.firstDateOfMonth)(selectedYear,selectedMonth,1);var start=(0,_date.dayOfTheWeekOf)(firstOfMonth,1,1);return _react.default.createElement("div",{ref:ref,className:(0,_tailwindMerge.twMerge)("absolute z-50 block pt-2 top-10",options===null||options===void 0?void 0:options.datepickerClassNames)},_react.default.createElement("div",{className:(0,_tailwindMerge.twMerge)("inline-block p-4 bg-white rounded-lg shadow-lg dark:bg-gray-700",options===null||options===void 0?void 0:(_$ref=options.theme)===null||_$ref===void 0?void 0:_$ref.background)},_react.default.createElement("div",null,(options===null||options===void 0?void 0:options.title)&&_react.default.createElement("div",{className:(0,_tailwindMerge.twMerge)("px-2 py-3 font-semibold text-center text-gray-900 dark:text-white",options===null||options===void 0?void 0:(_$ref1=options.theme)===null||_$ref1===void 0?void 0:_$ref1.text)},options===null||options===void 0?void 0:options.title),_react.default.createElement("div",{className:"flex justify-between mb-2"},_react.default.createElement(_buttons.ButtonPrevMonth,null),_react.default.createElement(_buttons.ButtonSelectMonth,null),_react.default.createElement(_buttons.ButtonNextMonth,null))),_react.default.createElement("div",{className:"p-1"},view==="days"&&_react.default.createElement(_days.default,{start:start}),view==="months"&&_react.default.createElement(_months.default,null),view==="years"&&_react.default.createElement(_years.default,null),view==="decades"&&_react.default.createElement(_decades.default,null)),((options===null||options===void 0?void 0:options.todayBtn)||(options===null||options===void 0?void 0:options.clearBtn))&&_react.default.createElement("div",{className:"flex mt-2 space-x-2"},(options===null||options===void 0?void 0:options.todayBtn)&&_react.default.createElement(_buttons.ButtonToday,null),(options===null||options===void 0?void 0:options.clearBtn)&&_react.default.createElement(_buttons.ButtonClear,null))))});DatePickerPopup.displayName="DatePickerPopup";var _default=DatePickerPopup;
+
+/***/ }),
+
+/***/ "./node_modules/tailwind-datepicker-react/dist/Components/DatePickerProvider.js":
+/*!**************************************************************************************!*\
+  !*** ./node_modules/tailwind-datepicker-react/dist/Components/DatePickerProvider.js ***!
+  \**************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", ({value:true}));function _export(target,all){for(var name in all)Object.defineProperty(target,name,{enumerable:true,get:all[name]})}_export(exports,{DatePickerContext:function(){return DatePickerContext},default:function(){return _default}});var _react=_interopRequireWildcard(__webpack_require__(/*! react */ "./node_modules/react/index.js"));var _options=_interopRequireDefault(__webpack_require__(/*! ../Options */ "./node_modules/tailwind-datepicker-react/dist/Options.js"));var _date=__webpack_require__(/*! ../Utils/date */ "./node_modules/tailwind-datepicker-react/dist/Utils/date.js");function _arrayLikeToArray(arr,len){if(len==null||len>arr.length)len=arr.length;for(var i=0,arr2=new Array(len);i<len;i++)arr2[i]=arr[i];return arr2}function _arrayWithHoles(arr){if(Array.isArray(arr))return arr}function _defineProperty(obj,key,value){if(key in obj){Object.defineProperty(obj,key,{value:value,enumerable:true,configurable:true,writable:true})}else{obj[key]=value}return obj}function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj}}function _getRequireWildcardCache(nodeInterop){if(typeof WeakMap!=="function")return null;var cacheBabelInterop=new WeakMap;var cacheNodeInterop=new WeakMap;return(_getRequireWildcardCache=function(nodeInterop){return nodeInterop?cacheNodeInterop:cacheBabelInterop})(nodeInterop)}function _interopRequireWildcard(obj,nodeInterop){if(!nodeInterop&&obj&&obj.__esModule){return obj}if(obj===null||typeof obj!=="object"&&typeof obj!=="function"){return{default:obj}}var cache=_getRequireWildcardCache(nodeInterop);if(cache&&cache.has(obj)){return cache.get(obj)}var newObj={};var hasPropertyDescriptor=Object.defineProperty&&Object.getOwnPropertyDescriptor;for(var key in obj){if(key!=="default"&&Object.prototype.hasOwnProperty.call(obj,key)){var desc=hasPropertyDescriptor?Object.getOwnPropertyDescriptor(obj,key):null;if(desc&&(desc.get||desc.set)){Object.defineProperty(newObj,key,desc)}else{newObj[key]=obj[key]}}}newObj.default=obj;if(cache){cache.set(obj,newObj)}return newObj}function _iterableToArrayLimit(arr,i){var _i=arr==null?null:typeof Symbol!=="undefined"&&arr[Symbol.iterator]||arr["@@iterator"];if(_i==null)return;var _arr=[];var _n=true;var _d=false;var _s,_e;try{for(_i=_i.call(arr);!(_n=(_s=_i.next()).done);_n=true){_arr.push(_s.value);if(i&&_arr.length===i)break}}catch(err){_d=true;_e=err}finally{try{if(!_n&&_i["return"]!=null)_i["return"]()}finally{if(_d)throw _e}}return _arr}function _nonIterableRest(){throw new TypeError("Invalid attempt to destructure non-iterable instance.\\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}function _objectSpread(target){for(var i=1;i<arguments.length;i++){var source=arguments[i]!=null?arguments[i]:{};var ownKeys=Object.keys(source);if(typeof Object.getOwnPropertySymbols==="function"){ownKeys=ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function(sym){return Object.getOwnPropertyDescriptor(source,sym).enumerable}))}ownKeys.forEach(function(key){_defineProperty(target,key,source[key])})}return target}function _slicedToArray(arr,i){return _arrayWithHoles(arr)||_iterableToArrayLimit(arr,i)||_unsupportedIterableToArray(arr,i)||_nonIterableRest()}function _unsupportedIterableToArray(o,minLen){if(!o)return;if(typeof o==="string")return _arrayLikeToArray(o,minLen);var n=Object.prototype.toString.call(o).slice(8,-1);if(n==="Object"&&o.constructor)n=o.constructor.name;if(n==="Map"||n==="Set")return Array.from(n);if(n==="Arguments"||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))return _arrayLikeToArray(o,minLen)}var DatePickerContext=(0,_react.createContext)({options:_options.default,view:"days",setView:function(){},show:false,setShow:function(){},selectedDate:new Date,changeSelectedDate:function(){},showSelectedDate:true,setShowSelectedDate:function(){},selectedMonth:0,selectedYear:0,getFormattedDate:function(){return""}});var DatePickerProvider=function(param){var children=param.children,customOptions=param.options,onChange=param.onChange,show=param.show,setShow=param.setShow;var options=_objectSpread({},_options.default,customOptions);var ref=_slicedToArray((0,_react.useState)("days"),2),view=ref[0],setView=ref[1];var ref1=_slicedToArray((0,_react.useState)((options===null||options===void 0?void 0:options.defaultDate)||new Date),2),selectedDate=ref1[0],setSelectedDate=ref1[1];var ref2=_slicedToArray((0,_react.useState)(true),2),showSelectedDate=ref2[0],setShowSelectedDate=ref2[1];var selectedMonth=selectedDate.getMonth();var selectedYear=selectedDate.getFullYear();var changeSelectedDate=function(action,date){if((options===null||options===void 0?void 0:options.maxDate)&&date>options.maxDate)return;if((options===null||options===void 0?void 0:options.minDate)&&date<options.minDate)return;setSelectedDate(date);setShowSelectedDate(true);if((options===null||options===void 0?void 0:options.autoHide)&&view==="days"&&action==="date")setShow(false);if(onChange)onChange(date)};var getFormattedDate=function(date,formatOptions){return(0,_date.getFormattedDate)((options===null||options===void 0?void 0:options.language)?options===null||options===void 0?void 0:options.language:"en",date,formatOptions)};return _react.default.createElement(DatePickerContext.Provider,{value:{options:options,view:view,setView:setView,show:show,setShow:setShow,selectedDate:selectedDate,changeSelectedDate:changeSelectedDate,showSelectedDate:showSelectedDate,setShowSelectedDate:setShowSelectedDate,selectedMonth:selectedMonth,selectedYear:selectedYear,getFormattedDate:getFormattedDate}},children)};var _default=DatePickerProvider;
+
+/***/ }),
+
+/***/ "./node_modules/tailwind-datepicker-react/dist/Components/Views/Days.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/tailwind-datepicker-react/dist/Components/Views/Days.js ***!
+  \******************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", ({value:true}));Object.defineProperty(exports, "default", ({enumerable:true,get:function(){return _default}}));var _react=_interopRequireWildcard(__webpack_require__(/*! react */ "./node_modules/react/index.js"));var _date=__webpack_require__(/*! ../../Utils/date */ "./node_modules/tailwind-datepicker-react/dist/Utils/date.js");var _datePickerProvider=__webpack_require__(/*! ../DatePickerProvider */ "./node_modules/tailwind-datepicker-react/dist/Components/DatePickerProvider.js");var _tailwindMerge=__webpack_require__(/*! tailwind-merge */ "./node_modules/tailwind-merge/dist/index.js");function _arrayLikeToArray(arr,len){if(len==null||len>arr.length)len=arr.length;for(var i=0,arr2=new Array(len);i<len;i++)arr2[i]=arr[i];return arr2}function _arrayWithoutHoles(arr){if(Array.isArray(arr))return _arrayLikeToArray(arr)}function _getRequireWildcardCache(nodeInterop){if(typeof WeakMap!=="function")return null;var cacheBabelInterop=new WeakMap;var cacheNodeInterop=new WeakMap;return(_getRequireWildcardCache=function(nodeInterop){return nodeInterop?cacheNodeInterop:cacheBabelInterop})(nodeInterop)}function _interopRequireWildcard(obj,nodeInterop){if(!nodeInterop&&obj&&obj.__esModule){return obj}if(obj===null||typeof obj!=="object"&&typeof obj!=="function"){return{default:obj}}var cache=_getRequireWildcardCache(nodeInterop);if(cache&&cache.has(obj)){return cache.get(obj)}var newObj={};var hasPropertyDescriptor=Object.defineProperty&&Object.getOwnPropertyDescriptor;for(var key in obj){if(key!=="default"&&Object.prototype.hasOwnProperty.call(obj,key)){var desc=hasPropertyDescriptor?Object.getOwnPropertyDescriptor(obj,key):null;if(desc&&(desc.get||desc.set)){Object.defineProperty(newObj,key,desc)}else{newObj[key]=obj[key]}}}newObj.default=obj;if(cache){cache.set(obj,newObj)}return newObj}function _iterableToArray(iter){if(typeof Symbol!=="undefined"&&iter[Symbol.iterator]!=null||iter["@@iterator"]!=null)return Array.from(iter)}function _nonIterableSpread(){throw new TypeError("Invalid attempt to spread non-iterable instance.\\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}function _toConsumableArray(arr){return _arrayWithoutHoles(arr)||_iterableToArray(arr)||_unsupportedIterableToArray(arr)||_nonIterableSpread()}function _unsupportedIterableToArray(o,minLen){if(!o)return;if(typeof o==="string")return _arrayLikeToArray(o,minLen);var n=Object.prototype.toString.call(o).slice(8,-1);if(n==="Object"&&o.constructor)n=o.constructor.name;if(n==="Map"||n==="Set")return Array.from(n);if(n==="Arguments"||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))return _arrayLikeToArray(o,minLen)}var Days=function(param){var start=param.start;var weekDays=["Mo","Tu","We","Th","Fr","Sa","Su"];var ref=(0,_react.useContext)(_datePickerProvider.DatePickerContext),selectedDate=ref.selectedDate,changeSelectedDate=ref.changeSelectedDate,showSelectedDate=ref.showSelectedDate,getFormattedDate=ref.getFormattedDate,options=ref.options;return _react.default.createElement(_react.default.Fragment,null,_react.default.createElement("div",{className:"grid grid-cols-7 mb-1"},weekDays.map(function(day,index){return _react.default.createElement("span",{key:index,className:"h-6 text-sm font-medium leading-6 text-center text-gray-500 dow dark:text-gray-400"},day)})),_react.default.createElement("div",{className:"grid w-64 grid-cols-7"},_toConsumableArray(Array(42)).map(function(_date1,index){var ref,ref1,ref2,ref3,ref4;var current=(0,_date.addDays)(start,index);var day=getFormattedDate(current,{day:"numeric"});var month=getFormattedDate(current,{month:"long"});var year=getFormattedDate(current,{year:"numeric"});return _react.default.createElement("span",{key:index,className:"hover:bg-gray-100 dark:hover:bg-gray-600 block flex-1 leading-9 border-0 rounded-lg cursor-pointer text-center  dark:text-white font-semibold text-sm ".concat(showSelectedDate&&selectedDate.getTime()>0&&getFormattedDate(selectedDate)===getFormattedDate(current)?(0,_tailwindMerge.twMerge)("bg-blue-700 text-white hover:bg-blue-600",options===null||options===void 0?void 0:(ref=options.theme)===null||ref===void 0?void 0:ref.selected):""," ").concat(month==getFormattedDate(selectedDate,{month:"long"})&&year==getFormattedDate(selectedDate,{year:"numeric"})?(0,_tailwindMerge.twMerge)("text-gray-900",options===null||options===void 0?void 0:(ref1=options.theme)===null||ref1===void 0?void 0:ref1.text):(0,_tailwindMerge.twMerge)("text-gray-500",options===null||options===void 0?void 0:(ref2=options.theme)===null||ref2===void 0?void 0:ref2.disabledText)," ").concat((options===null||options===void 0?void 0:options.minDate)&&new Date(current)<(options===null||options===void 0?void 0:options.minDate)?(0,_tailwindMerge.twMerge)("text-gray-500",options===null||options===void 0?void 0:(ref3=options.theme)===null||ref3===void 0?void 0:ref3.disabledText):""," ").concat((options===null||options===void 0?void 0:options.maxDate)&&new Date(current)>(options===null||options===void 0?void 0:options.maxDate)?(0,_tailwindMerge.twMerge)("text-gray-500",options===null||options===void 0?void 0:(ref4=options.theme)===null||ref4===void 0?void 0:ref4.disabledText):"","\n                            "),onClick:function(){changeSelectedDate("date",new Date(current))}},day)})))};var _default=Days;
+
+/***/ }),
+
+/***/ "./node_modules/tailwind-datepicker-react/dist/Components/Views/Decades.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/tailwind-datepicker-react/dist/Components/Views/Decades.js ***!
+  \*********************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", ({value:true}));Object.defineProperty(exports, "default", ({enumerable:true,get:function(){return _default}}));var _react=_interopRequireWildcard(__webpack_require__(/*! react */ "./node_modules/react/index.js"));var _date=__webpack_require__(/*! ../../Utils/date */ "./node_modules/tailwind-datepicker-react/dist/Utils/date.js");var _datePickerProvider=__webpack_require__(/*! ../DatePickerProvider */ "./node_modules/tailwind-datepicker-react/dist/Components/DatePickerProvider.js");var _tailwindMerge=__webpack_require__(/*! tailwind-merge */ "./node_modules/tailwind-merge/dist/index.js");function _arrayLikeToArray(arr,len){if(len==null||len>arr.length)len=arr.length;for(var i=0,arr2=new Array(len);i<len;i++)arr2[i]=arr[i];return arr2}function _arrayWithoutHoles(arr){if(Array.isArray(arr))return _arrayLikeToArray(arr)}function _getRequireWildcardCache(nodeInterop){if(typeof WeakMap!=="function")return null;var cacheBabelInterop=new WeakMap;var cacheNodeInterop=new WeakMap;return(_getRequireWildcardCache=function(nodeInterop){return nodeInterop?cacheNodeInterop:cacheBabelInterop})(nodeInterop)}function _interopRequireWildcard(obj,nodeInterop){if(!nodeInterop&&obj&&obj.__esModule){return obj}if(obj===null||typeof obj!=="object"&&typeof obj!=="function"){return{default:obj}}var cache=_getRequireWildcardCache(nodeInterop);if(cache&&cache.has(obj)){return cache.get(obj)}var newObj={};var hasPropertyDescriptor=Object.defineProperty&&Object.getOwnPropertyDescriptor;for(var key in obj){if(key!=="default"&&Object.prototype.hasOwnProperty.call(obj,key)){var desc=hasPropertyDescriptor?Object.getOwnPropertyDescriptor(obj,key):null;if(desc&&(desc.get||desc.set)){Object.defineProperty(newObj,key,desc)}else{newObj[key]=obj[key]}}}newObj.default=obj;if(cache){cache.set(obj,newObj)}return newObj}function _iterableToArray(iter){if(typeof Symbol!=="undefined"&&iter[Symbol.iterator]!=null||iter["@@iterator"]!=null)return Array.from(iter)}function _nonIterableSpread(){throw new TypeError("Invalid attempt to spread non-iterable instance.\\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}function _toConsumableArray(arr){return _arrayWithoutHoles(arr)||_iterableToArray(arr)||_unsupportedIterableToArray(arr)||_nonIterableSpread()}function _unsupportedIterableToArray(o,minLen){if(!o)return;if(typeof o==="string")return _arrayLikeToArray(o,minLen);var n=Object.prototype.toString.call(o).slice(8,-1);if(n==="Object"&&o.constructor)n=o.constructor.name;if(n==="Map"||n==="Set")return Array.from(n);if(n==="Arguments"||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))return _arrayLikeToArray(o,minLen)}var Decades=function(){var ref=(0,_react.useContext)(_datePickerProvider.DatePickerContext),selectedDate=ref.selectedDate,showSelectedDate=ref.showSelectedDate,changeSelectedDate=ref.changeSelectedDate,setView=ref.setView,getFormattedDate=ref.getFormattedDate,options=ref.options;return _react.default.createElement("div",{className:"grid w-64 grid-cols-4"},_toConsumableArray(Array(12)).map(function(_year,index){var ref,ref1,ref2,ref3,ref4;var first=(0,_date.startOfYearPeriod)(selectedDate,100);var year=first-10+index*10;return _react.default.createElement("span",{key:index,className:"hover:bg-gray-100 dark:hover:bg-gray-600 block flex-1 leading-9 border-0 rounded-lg cursor-pointer text-center  dark:text-white font-semibold text-sm ".concat(showSelectedDate&&selectedDate.getTime()>0&&Number(getFormattedDate(selectedDate,{year:"numeric"}))===year?(0,_tailwindMerge.twMerge)("bg-blue-700 text-white hover:bg-blue-600",options===null||options===void 0?void 0:(ref=options.theme)===null||ref===void 0?void 0:ref.selected):""," ").concat(index==0||index==11?(0,_tailwindMerge.twMerge)("text-gray-500",options===null||options===void 0?void 0:(ref1=options.theme)===null||ref1===void 0?void 0:ref1.disabledText):(0,_tailwindMerge.twMerge)("text-gray-900",options===null||options===void 0?void 0:(ref2=options.theme)===null||ref2===void 0?void 0:ref2.text),"\n                            ").concat((options===null||options===void 0?void 0:options.minDate)&&year<Number(getFormattedDate(options===null||options===void 0?void 0:options.minDate,{year:"numeric"}))?(0,_tailwindMerge.twMerge)("text-gray-500",options===null||options===void 0?void 0:(ref3=options.theme)===null||ref3===void 0?void 0:ref3.disabledText):"","\n                            ").concat((options===null||options===void 0?void 0:options.maxDate)&&year>Number(getFormattedDate(options===null||options===void 0?void 0:options.maxDate,{year:"numeric"}))?(0,_tailwindMerge.twMerge)("text-gray-500",options===null||options===void 0?void 0:(ref4=options.theme)===null||ref4===void 0?void 0:ref4.disabledText):"","\n                            "),onClick:function(){changeSelectedDate("date",new Date((0,_date.addYears)(selectedDate,year-selectedDate.getFullYear())));setView("years")}},year)}))};var _default=Decades;
+
+/***/ }),
+
+/***/ "./node_modules/tailwind-datepicker-react/dist/Components/Views/Months.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/tailwind-datepicker-react/dist/Components/Views/Months.js ***!
+  \********************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", ({value:true}));Object.defineProperty(exports, "default", ({enumerable:true,get:function(){return _default}}));var _react=_interopRequireWildcard(__webpack_require__(/*! react */ "./node_modules/react/index.js"));var _date=__webpack_require__(/*! ../../Utils/date */ "./node_modules/tailwind-datepicker-react/dist/Utils/date.js");var _datePickerProvider=__webpack_require__(/*! ../DatePickerProvider */ "./node_modules/tailwind-datepicker-react/dist/Components/DatePickerProvider.js");var _tailwindMerge=__webpack_require__(/*! tailwind-merge */ "./node_modules/tailwind-merge/dist/index.js");function _arrayLikeToArray(arr,len){if(len==null||len>arr.length)len=arr.length;for(var i=0,arr2=new Array(len);i<len;i++)arr2[i]=arr[i];return arr2}function _arrayWithoutHoles(arr){if(Array.isArray(arr))return _arrayLikeToArray(arr)}function _getRequireWildcardCache(nodeInterop){if(typeof WeakMap!=="function")return null;var cacheBabelInterop=new WeakMap;var cacheNodeInterop=new WeakMap;return(_getRequireWildcardCache=function(nodeInterop){return nodeInterop?cacheNodeInterop:cacheBabelInterop})(nodeInterop)}function _interopRequireWildcard(obj,nodeInterop){if(!nodeInterop&&obj&&obj.__esModule){return obj}if(obj===null||typeof obj!=="object"&&typeof obj!=="function"){return{default:obj}}var cache=_getRequireWildcardCache(nodeInterop);if(cache&&cache.has(obj)){return cache.get(obj)}var newObj={};var hasPropertyDescriptor=Object.defineProperty&&Object.getOwnPropertyDescriptor;for(var key in obj){if(key!=="default"&&Object.prototype.hasOwnProperty.call(obj,key)){var desc=hasPropertyDescriptor?Object.getOwnPropertyDescriptor(obj,key):null;if(desc&&(desc.get||desc.set)){Object.defineProperty(newObj,key,desc)}else{newObj[key]=obj[key]}}}newObj.default=obj;if(cache){cache.set(obj,newObj)}return newObj}function _iterableToArray(iter){if(typeof Symbol!=="undefined"&&iter[Symbol.iterator]!=null||iter["@@iterator"]!=null)return Array.from(iter)}function _nonIterableSpread(){throw new TypeError("Invalid attempt to spread non-iterable instance.\\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}function _toConsumableArray(arr){return _arrayWithoutHoles(arr)||_iterableToArray(arr)||_unsupportedIterableToArray(arr)||_nonIterableSpread()}function _unsupportedIterableToArray(o,minLen){if(!o)return;if(typeof o==="string")return _arrayLikeToArray(o,minLen);var n=Object.prototype.toString.call(o).slice(8,-1);if(n==="Object"&&o.constructor)n=o.constructor.name;if(n==="Map"||n==="Set")return Array.from(n);if(n==="Arguments"||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))return _arrayLikeToArray(o,minLen)}var Months=function(){var ref=(0,_react.useContext)(_datePickerProvider.DatePickerContext),selectedDate=ref.selectedDate,showSelectedDate=ref.showSelectedDate,changeSelectedDate=ref.changeSelectedDate,getFormattedDate=ref.getFormattedDate,setView=ref.setView,options=ref.options;return _react.default.createElement("div",{className:"grid w-64 grid-cols-4"},_toConsumableArray(Array(12)).map(function(_month,index){var ref;var month=getFormattedDate(new Date(selectedDate.getFullYear(),index),{month:"short"});return _react.default.createElement("span",{key:index,className:"hover:bg-gray-100 dark:hover:bg-gray-600 block flex-1 leading-9 border-0 rounded-lg cursor-pointer text-center  dark:text-white font-semibold text-sm text-gray-900 ".concat(showSelectedDate&&selectedDate.getTime()>0&&getFormattedDate(selectedDate,{month:"short"})===month?(0,_tailwindMerge.twMerge)("bg-blue-700 text-white hover:bg-blue-600",options===null||options===void 0?void 0:(ref=options.theme)===null||ref===void 0?void 0:ref.selected):""),onClick:function(){changeSelectedDate("date",new Date((0,_date.addMonths)(selectedDate,index-selectedDate.getMonth())));setView("days")}},month)}))};var _default=Months;
+
+/***/ }),
+
+/***/ "./node_modules/tailwind-datepicker-react/dist/Components/Views/Years.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/tailwind-datepicker-react/dist/Components/Views/Years.js ***!
+  \*******************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", ({value:true}));Object.defineProperty(exports, "default", ({enumerable:true,get:function(){return _default}}));var _react=_interopRequireWildcard(__webpack_require__(/*! react */ "./node_modules/react/index.js"));var _date=__webpack_require__(/*! ../../Utils/date */ "./node_modules/tailwind-datepicker-react/dist/Utils/date.js");var _datePickerProvider=__webpack_require__(/*! ../DatePickerProvider */ "./node_modules/tailwind-datepicker-react/dist/Components/DatePickerProvider.js");var _tailwindMerge=__webpack_require__(/*! tailwind-merge */ "./node_modules/tailwind-merge/dist/index.js");function _arrayLikeToArray(arr,len){if(len==null||len>arr.length)len=arr.length;for(var i=0,arr2=new Array(len);i<len;i++)arr2[i]=arr[i];return arr2}function _arrayWithoutHoles(arr){if(Array.isArray(arr))return _arrayLikeToArray(arr)}function _getRequireWildcardCache(nodeInterop){if(typeof WeakMap!=="function")return null;var cacheBabelInterop=new WeakMap;var cacheNodeInterop=new WeakMap;return(_getRequireWildcardCache=function(nodeInterop){return nodeInterop?cacheNodeInterop:cacheBabelInterop})(nodeInterop)}function _interopRequireWildcard(obj,nodeInterop){if(!nodeInterop&&obj&&obj.__esModule){return obj}if(obj===null||typeof obj!=="object"&&typeof obj!=="function"){return{default:obj}}var cache=_getRequireWildcardCache(nodeInterop);if(cache&&cache.has(obj)){return cache.get(obj)}var newObj={};var hasPropertyDescriptor=Object.defineProperty&&Object.getOwnPropertyDescriptor;for(var key in obj){if(key!=="default"&&Object.prototype.hasOwnProperty.call(obj,key)){var desc=hasPropertyDescriptor?Object.getOwnPropertyDescriptor(obj,key):null;if(desc&&(desc.get||desc.set)){Object.defineProperty(newObj,key,desc)}else{newObj[key]=obj[key]}}}newObj.default=obj;if(cache){cache.set(obj,newObj)}return newObj}function _iterableToArray(iter){if(typeof Symbol!=="undefined"&&iter[Symbol.iterator]!=null||iter["@@iterator"]!=null)return Array.from(iter)}function _nonIterableSpread(){throw new TypeError("Invalid attempt to spread non-iterable instance.\\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}function _toConsumableArray(arr){return _arrayWithoutHoles(arr)||_iterableToArray(arr)||_unsupportedIterableToArray(arr)||_nonIterableSpread()}function _unsupportedIterableToArray(o,minLen){if(!o)return;if(typeof o==="string")return _arrayLikeToArray(o,minLen);var n=Object.prototype.toString.call(o).slice(8,-1);if(n==="Object"&&o.constructor)n=o.constructor.name;if(n==="Map"||n==="Set")return Array.from(n);if(n==="Arguments"||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))return _arrayLikeToArray(o,minLen)}var Years=function(){var ref=(0,_react.useContext)(_datePickerProvider.DatePickerContext),selectedDate=ref.selectedDate,showSelectedDate=ref.showSelectedDate,changeSelectedDate=ref.changeSelectedDate,setView=ref.setView,getFormattedDate=ref.getFormattedDate,options=ref.options;return _react.default.createElement("div",{className:"grid w-64 grid-cols-4"},_toConsumableArray(Array(12)).map(function(_year,index){var ref,ref1,ref2;var first=(0,_date.startOfYearPeriod)(selectedDate,10);var year=first-1+index*1;return _react.default.createElement("span",{key:index,className:"hover:bg-gray-100 dark:hover:bg-gray-600 block flex-1 leading-9 border-0 rounded-lg cursor-pointer text-center  dark:text-white font-semibold text-sm ".concat(showSelectedDate&&selectedDate.getTime()>0&&Number(getFormattedDate(selectedDate,{year:"numeric"}))===year?(0,_tailwindMerge.twMerge)("bg-blue-700 text-white hover:bg-blue-600",options===null||options===void 0?void 0:(ref=options.theme)===null||ref===void 0?void 0:ref.selected):""," ").concat(index==0||index==11?(0,_tailwindMerge.twMerge)("text-gray-500",options===null||options===void 0?void 0:(ref1=options.theme)===null||ref1===void 0?void 0:ref1.disabledText):(0,_tailwindMerge.twMerge)("text-gray-900",options===null||options===void 0?void 0:(ref2=options.theme)===null||ref2===void 0?void 0:ref2.text)),onClick:function(){changeSelectedDate("date",new Date((0,_date.addYears)(selectedDate,year-selectedDate.getFullYear())));setView("months")}},year)}))};var _default=Years;
+
+/***/ }),
+
+/***/ "./node_modules/tailwind-datepicker-react/dist/Options.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/tailwind-datepicker-react/dist/Options.js ***!
+  \****************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", ({value:true}));Object.defineProperty(exports, "default", ({enumerable:true,get:function(){return _default}}));var _react=_interopRequireDefault(__webpack_require__(/*! react */ "./node_modules/react/index.js"));function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj}}var options={autoHide:true,todayBtn:true,clearBtn:true,theme:{background:"",todayBtn:"",clearBtn:"",icons:"",text:"",disabledText:"",input:"",inputIcon:"",selected:""},datepickerClassNames:"",defaultDate:new Date,language:"en"};var _default=options;
+
+/***/ }),
+
+/***/ "./node_modules/tailwind-datepicker-react/dist/Utils/date.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/tailwind-datepicker-react/dist/Utils/date.js ***!
+  \*******************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", ({value:true}));function _export(target,all){for(var name in all)Object.defineProperty(target,name,{enumerable:true,get:all[name]})}_export(exports,{firstDateOfMonth:function(){return firstDateOfMonth},addDays:function(){return addDays},dayDiff:function(){return dayDiff},dayOfTheWeekOf:function(){return dayOfTheWeekOf},addMonths:function(){return addMonths},addYears:function(){return addYears},getFormattedDate:function(){return getFormattedDate},goToPrevNext:function(){return goToPrevNext},startOfYearPeriod:function(){return startOfYearPeriod}});var firstDateOfMonth=function(selectedYear,selectedMonth,date){var newDate=new Date(0);newDate.setFullYear(selectedYear,selectedMonth,date);return newDate.setHours(0,0,0,0)};var addDays=function(date,amount){var newDate=new Date(date);return newDate.setDate(newDate.getDate()+amount)};var dayDiff=function(day,from){return(day-from+7)%7};var dayOfTheWeekOf=function(baseDate,dayOfWeek){var weekStart=arguments.length>2&&arguments[2]!==void 0?arguments[2]:0;var baseDay=new Date(baseDate).getDay();return addDays(baseDate,dayDiff(dayOfWeek,weekStart)-dayDiff(baseDay,weekStart))};var addMonths=function(date,amount){var newDate=date;var monthsToSet=newDate.getMonth()+amount;var expectedMonth=monthsToSet%12;if(expectedMonth<0){expectedMonth+=12}var time=newDate.setMonth(monthsToSet);return newDate.getMonth()!==expectedMonth?newDate.setDate(0):time};var addYears=function(date,amount){var newDate=date;var expectedMonth=newDate.getMonth();var time=newDate.setFullYear(newDate.getFullYear()+amount);return expectedMonth===1&&newDate.getMonth()===2?newDate.setDate(0):time};var getFormattedDate=function(language,date,options){var defaultOptions={day:"numeric",month:"long",year:"numeric"};if(options)defaultOptions=options;return new Intl.DateTimeFormat(language,defaultOptions).format(date)};var goToPrevNext=function(view,date,direction){switch(view){case"days":return addMonths(date,direction);case"months":return addYears(date,direction);case"years":return addYears(date,direction*10);case"decades":return addYears(date,direction*100);default:return addYears(date,direction*10)}};var startOfYearPeriod=function(date,years){var year=date.getFullYear();return Math.floor(year/years)*years};
+
+/***/ }),
+
+/***/ "./node_modules/tailwind-datepicker-react/dist/index.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/tailwind-datepicker-react/dist/index.js ***!
+  \**************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", ({value:true}));Object.defineProperty(exports, "default", ({enumerable:true,get:function(){return _default}}));var _datePicker=_interopRequireDefault(__webpack_require__(/*! ./Components/DatePicker */ "./node_modules/tailwind-datepicker-react/dist/Components/DatePicker.js"));function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj}}var _default=_datePicker.default;
+
+/***/ }),
+
+/***/ "./node_modules/tailwind-merge/dist/index.js":
+/*!***************************************************!*\
+  !*** ./node_modules/tailwind-merge/dist/index.js ***!
+  \***************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+
+if (false) {} else {
+  module.exports = __webpack_require__(/*! ./tailwind-merge.cjs.development.js */ "./node_modules/tailwind-merge/dist/tailwind-merge.cjs.development.js")
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/tailwind-merge/dist/tailwind-merge.cjs.development.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/tailwind-merge/dist/tailwind-merge.cjs.development.js ***!
+  \****************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+/**
+ * The code in this file is copied from https://github.com/lukeed/clsx and modified to suit the needs of tailwind-merge better.
+ *
+ * Specifically:
+ * - Runtime code from https://github.com/lukeed/clsx/blob/v1.2.1/src/index.js
+ * - TypeScript types from https://github.com/lukeed/clsx/blob/v1.2.1/clsx.d.ts
+ *
+ * Original code has MIT license: Copyright (c) Luke Edwards <luke.edwards05@gmail.com> (lukeed.com)
+ */
+function twJoin() {
+  var index = 0;
+  var argument;
+  var resolvedValue;
+  var string = '';
+
+  while (index < arguments.length) {
+    if (argument = arguments[index++]) {
+      if (resolvedValue = toValue(argument)) {
+        string && (string += ' ');
+        string += resolvedValue;
+      }
+    }
+  }
+
+  return string;
+}
+
+function toValue(mix) {
+  if (typeof mix === 'string') {
+    return mix;
+  }
+
+  var resolvedValue;
+  var string = '';
+
+  for (var k = 0; k < mix.length; k++) {
+    if (mix[k]) {
+      if (resolvedValue = toValue(mix[k])) {
+        string && (string += ' ');
+        string += resolvedValue;
+      }
+    }
+  }
+
+  return string;
+}
+
+function _extends() {
+  _extends = Object.assign ? Object.assign.bind() : function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+  return _extends.apply(this, arguments);
+}
+
+var CLASS_PART_SEPARATOR = '-';
+function createClassUtils(config) {
+  var classMap = createClassMap(config);
+
+  function getClassGroupId(className) {
+    var classParts = className.split(CLASS_PART_SEPARATOR); // Classes like `-inset-1` produce an empty string as first classPart. We assume that classes for negative values are used correctly and remove it from classParts.
+
+    if (classParts[0] === '' && classParts.length !== 1) {
+      classParts.shift();
+    }
+
+    return getGroupRecursive(classParts, classMap) || getGroupIdForArbitraryProperty(className);
+  }
+
+  function getConflictingClassGroupIds(classGroupId) {
+    return config.conflictingClassGroups[classGroupId] || [];
+  }
+
+  return {
+    getClassGroupId: getClassGroupId,
+    getConflictingClassGroupIds: getConflictingClassGroupIds
+  };
+}
+
+function getGroupRecursive(classParts, classPartObject) {
+  var _classPartObject$vali;
+
+  if (classParts.length === 0) {
+    return classPartObject.classGroupId;
+  }
+
+  var currentClassPart = classParts[0];
+  var nextClassPartObject = classPartObject.nextPart.get(currentClassPart);
+  var classGroupFromNextClassPart = nextClassPartObject ? getGroupRecursive(classParts.slice(1), nextClassPartObject) : undefined;
+
+  if (classGroupFromNextClassPart) {
+    return classGroupFromNextClassPart;
+  }
+
+  if (classPartObject.validators.length === 0) {
+    return undefined;
+  }
+
+  var classRest = classParts.join(CLASS_PART_SEPARATOR);
+  return (_classPartObject$vali = classPartObject.validators.find(function (_ref) {
+    var validator = _ref.validator;
+    return validator(classRest);
+  })) == null ? void 0 : _classPartObject$vali.classGroupId;
+}
+
+var arbitraryPropertyRegex = /^\[(.+)\]$/;
+
+function getGroupIdForArbitraryProperty(className) {
+  if (arbitraryPropertyRegex.test(className)) {
+    var arbitraryPropertyClassName = arbitraryPropertyRegex.exec(className)[1];
+    var property = arbitraryPropertyClassName == null ? void 0 : arbitraryPropertyClassName.substring(0, arbitraryPropertyClassName.indexOf(':'));
+
+    if (property) {
+      // I use two dots here because one dot is used as prefix for class groups in plugins
+      return 'arbitrary..' + property;
+    }
+  }
+}
+/**
+ * Exported for testing only
+ */
+
+
+function createClassMap(config) {
+  var theme = config.theme,
+      prefix = config.prefix;
+  var classMap = {
+    nextPart: new Map(),
+    validators: []
+  };
+  var prefixedClassGroupEntries = getPrefixedClassGroupEntries(Object.entries(config.classGroups), prefix);
+  prefixedClassGroupEntries.forEach(function (_ref2) {
+    var classGroupId = _ref2[0],
+        classGroup = _ref2[1];
+    processClassesRecursively(classGroup, classMap, classGroupId, theme);
+  });
+  return classMap;
+}
+
+function processClassesRecursively(classGroup, classPartObject, classGroupId, theme) {
+  classGroup.forEach(function (classDefinition) {
+    if (typeof classDefinition === 'string') {
+      var classPartObjectToEdit = classDefinition === '' ? classPartObject : getPart(classPartObject, classDefinition);
+      classPartObjectToEdit.classGroupId = classGroupId;
+      return;
+    }
+
+    if (typeof classDefinition === 'function') {
+      if (isThemeGetter(classDefinition)) {
+        processClassesRecursively(classDefinition(theme), classPartObject, classGroupId, theme);
+        return;
+      }
+
+      classPartObject.validators.push({
+        validator: classDefinition,
+        classGroupId: classGroupId
+      });
+      return;
+    }
+
+    Object.entries(classDefinition).forEach(function (_ref3) {
+      var key = _ref3[0],
+          classGroup = _ref3[1];
+      processClassesRecursively(classGroup, getPart(classPartObject, key), classGroupId, theme);
+    });
+  });
+}
+
+function getPart(classPartObject, path) {
+  var currentClassPartObject = classPartObject;
+  path.split(CLASS_PART_SEPARATOR).forEach(function (pathPart) {
+    if (!currentClassPartObject.nextPart.has(pathPart)) {
+      currentClassPartObject.nextPart.set(pathPart, {
+        nextPart: new Map(),
+        validators: []
+      });
+    }
+
+    currentClassPartObject = currentClassPartObject.nextPart.get(pathPart);
+  });
+  return currentClassPartObject;
+}
+
+function isThemeGetter(func) {
+  return func.isThemeGetter;
+}
+
+function getPrefixedClassGroupEntries(classGroupEntries, prefix) {
+  if (!prefix) {
+    return classGroupEntries;
+  }
+
+  return classGroupEntries.map(function (_ref4) {
+    var classGroupId = _ref4[0],
+        classGroup = _ref4[1];
+    var prefixedClassGroup = classGroup.map(function (classDefinition) {
+      if (typeof classDefinition === 'string') {
+        return prefix + classDefinition;
+      }
+
+      if (typeof classDefinition === 'object') {
+        return Object.fromEntries(Object.entries(classDefinition).map(function (_ref5) {
+          var key = _ref5[0],
+              value = _ref5[1];
+          return [prefix + key, value];
+        }));
+      }
+
+      return classDefinition;
+    });
+    return [classGroupId, prefixedClassGroup];
+  });
+}
+
+// LRU cache inspired from hashlru (https://github.com/dominictarr/hashlru/blob/v1.0.4/index.js) but object replaced with Map to improve performance
+function createLruCache(maxCacheSize) {
+  if (maxCacheSize < 1) {
+    return {
+      get: function get() {
+        return undefined;
+      },
+      set: function set() {}
+    };
+  }
+
+  var cacheSize = 0;
+  var cache = new Map();
+  var previousCache = new Map();
+
+  function update(key, value) {
+    cache.set(key, value);
+    cacheSize++;
+
+    if (cacheSize > maxCacheSize) {
+      cacheSize = 0;
+      previousCache = cache;
+      cache = new Map();
+    }
+  }
+
+  return {
+    get: function get(key) {
+      var value = cache.get(key);
+
+      if (value !== undefined) {
+        return value;
+      }
+
+      if ((value = previousCache.get(key)) !== undefined) {
+        update(key, value);
+        return value;
+      }
+    },
+    set: function set(key, value) {
+      if (cache.has(key)) {
+        cache.set(key, value);
+      } else {
+        update(key, value);
+      }
+    }
+  };
+}
+
+var IMPORTANT_MODIFIER = '!';
+function createSplitModifiers(config) {
+  var separator = config.separator || ':'; // splitModifiers inspired by https://github.com/tailwindlabs/tailwindcss/blob/v3.2.2/src/util/splitAtTopLevelOnly.js
+
+  return function splitModifiers(className) {
+    var bracketDepth = 0;
+    var modifiers = [];
+    var modifierStart = 0;
+
+    for (var index = 0; index < className.length; index++) {
+      var _char = className[index];
+
+      if (bracketDepth === 0 && _char === separator[0]) {
+        if (separator.length === 1 || className.slice(index, index + separator.length) === separator) {
+          modifiers.push(className.slice(modifierStart, index));
+          modifierStart = index + separator.length;
+        }
+      }
+
+      if (_char === '[') {
+        bracketDepth++;
+      } else if (_char === ']') {
+        bracketDepth--;
+      }
+    }
+
+    var baseClassNameWithImportantModifier = modifiers.length === 0 ? className : className.substring(modifierStart);
+    var hasImportantModifier = baseClassNameWithImportantModifier.startsWith(IMPORTANT_MODIFIER);
+    var baseClassName = hasImportantModifier ? baseClassNameWithImportantModifier.substring(1) : baseClassNameWithImportantModifier;
+    return {
+      modifiers: modifiers,
+      hasImportantModifier: hasImportantModifier,
+      baseClassName: baseClassName
+    };
+  };
+}
+/**
+ * Sorts modifiers according to following schema:
+ * - Predefined modifiers are sorted alphabetically
+ * - When an arbitrary variant appears, it must be preserved which modifiers are before and after it
+ */
+
+function sortModifiers(modifiers) {
+  if (modifiers.length <= 1) {
+    return modifiers;
+  }
+
+  var sortedModifiers = [];
+  var unsortedModifiers = [];
+  modifiers.forEach(function (modifier) {
+    var isArbitraryVariant = modifier[0] === '[';
+
+    if (isArbitraryVariant) {
+      sortedModifiers.push.apply(sortedModifiers, unsortedModifiers.sort().concat([modifier]));
+      unsortedModifiers = [];
+    } else {
+      unsortedModifiers.push(modifier);
+    }
+  });
+  sortedModifiers.push.apply(sortedModifiers, unsortedModifiers.sort());
+  return sortedModifiers;
+}
+
+function createConfigUtils(config) {
+  return _extends({
+    cache: createLruCache(config.cacheSize),
+    splitModifiers: createSplitModifiers(config)
+  }, createClassUtils(config));
+}
+
+var SPLIT_CLASSES_REGEX = /\s+/;
+function mergeClassList(classList, configUtils) {
+  var splitModifiers = configUtils.splitModifiers,
+      getClassGroupId = configUtils.getClassGroupId,
+      getConflictingClassGroupIds = configUtils.getConflictingClassGroupIds;
+  /**
+   * Set of classGroupIds in following format:
+   * `{importantModifier}{variantModifiers}{classGroupId}`
+   * @example 'float'
+   * @example 'hover:focus:bg-color'
+   * @example 'md:!pr'
+   */
+
+  var classGroupsInConflict = new Set();
+  return classList.trim().split(SPLIT_CLASSES_REGEX).map(function (originalClassName) {
+    var _splitModifiers = splitModifiers(originalClassName),
+        modifiers = _splitModifiers.modifiers,
+        hasImportantModifier = _splitModifiers.hasImportantModifier,
+        baseClassName = _splitModifiers.baseClassName;
+
+    var classGroupId = getClassGroupId(baseClassName);
+
+    if (!classGroupId) {
+      return {
+        isTailwindClass: false,
+        originalClassName: originalClassName
+      };
+    }
+
+    var variantModifier = sortModifiers(modifiers).join(':');
+    var modifierId = hasImportantModifier ? variantModifier + IMPORTANT_MODIFIER : variantModifier;
+    return {
+      isTailwindClass: true,
+      modifierId: modifierId,
+      classGroupId: classGroupId,
+      originalClassName: originalClassName
+    };
+  }).reverse() // Last class in conflict wins, so we need to filter conflicting classes in reverse order.
+  .filter(function (parsed) {
+    if (!parsed.isTailwindClass) {
+      return true;
+    }
+
+    var modifierId = parsed.modifierId,
+        classGroupId = parsed.classGroupId;
+    var classId = modifierId + classGroupId;
+
+    if (classGroupsInConflict.has(classId)) {
+      return false;
+    }
+
+    classGroupsInConflict.add(classId);
+    getConflictingClassGroupIds(classGroupId).forEach(function (group) {
+      return classGroupsInConflict.add(modifierId + group);
+    });
+    return true;
+  }).reverse().map(function (parsed) {
+    return parsed.originalClassName;
+  }).join(' ');
+}
+
+function createTailwindMerge() {
+  for (var _len = arguments.length, createConfig = new Array(_len), _key = 0; _key < _len; _key++) {
+    createConfig[_key] = arguments[_key];
+  }
+
+  var configUtils;
+  var cacheGet;
+  var cacheSet;
+  var functionToCall = initTailwindMerge;
+
+  function initTailwindMerge(classList) {
+    var firstCreateConfig = createConfig[0],
+        restCreateConfig = createConfig.slice(1);
+    var config = restCreateConfig.reduce(function (previousConfig, createConfigCurrent) {
+      return createConfigCurrent(previousConfig);
+    }, firstCreateConfig());
+    configUtils = createConfigUtils(config);
+    cacheGet = configUtils.cache.get;
+    cacheSet = configUtils.cache.set;
+    functionToCall = tailwindMerge;
+    return tailwindMerge(classList);
+  }
+
+  function tailwindMerge(classList) {
+    var cachedResult = cacheGet(classList);
+
+    if (cachedResult) {
+      return cachedResult;
+    }
+
+    var result = mergeClassList(classList, configUtils);
+    cacheSet(classList, result);
+    return result;
+  }
+
+  return function callTailwindMerge() {
+    return functionToCall(twJoin.apply(null, arguments));
+  };
+}
+
+function fromTheme(key) {
+  var themeGetter = function themeGetter(theme) {
+    return theme[key] || [];
+  };
+
+  themeGetter.isThemeGetter = true;
+  return themeGetter;
+}
+
+var arbitraryValueRegex = /^\[(.+)\]$/;
+var fractionRegex = /^\d+\/\d+$/;
+var stringLengths = /*#__PURE__*/new Set(['px', 'full', 'screen']);
+var tshirtUnitRegex = /^(\d+)?(xs|sm|md|lg|xl)$/;
+var lengthUnitRegex = /\d+(%|px|r?em|[sdl]?v([hwib]|min|max)|pt|pc|in|cm|mm|cap|ch|ex|r?lh)/; // Shadow always begins with x and y offset separated by underscore
+
+var shadowRegex = /^-?((\d+)?\.?(\d+)[a-z]+|0)_-?((\d+)?\.?(\d+)[a-z]+|0)/;
+function isLength(classPart) {
+  return !Number.isNaN(Number(classPart)) || stringLengths.has(classPart) || fractionRegex.test(classPart) || isArbitraryLength(classPart);
+}
+function isArbitraryLength(classPart) {
+  var _arbitraryValueRegex$;
+
+  var arbitraryValue = (_arbitraryValueRegex$ = arbitraryValueRegex.exec(classPart)) == null ? void 0 : _arbitraryValueRegex$[1];
+
+  if (arbitraryValue) {
+    return arbitraryValue.startsWith('length:') || lengthUnitRegex.test(arbitraryValue);
+  }
+
+  return false;
+}
+function isArbitrarySize(classPart) {
+  var _arbitraryValueRegex$2;
+
+  var arbitraryValue = (_arbitraryValueRegex$2 = arbitraryValueRegex.exec(classPart)) == null ? void 0 : _arbitraryValueRegex$2[1];
+  return arbitraryValue ? arbitraryValue.startsWith('size:') : false;
+}
+function isArbitraryPosition(classPart) {
+  var _arbitraryValueRegex$3;
+
+  var arbitraryValue = (_arbitraryValueRegex$3 = arbitraryValueRegex.exec(classPart)) == null ? void 0 : _arbitraryValueRegex$3[1];
+  return arbitraryValue ? arbitraryValue.startsWith('position:') : false;
+}
+function isArbitraryUrl(classPart) {
+  var _arbitraryValueRegex$4;
+
+  var arbitraryValue = (_arbitraryValueRegex$4 = arbitraryValueRegex.exec(classPart)) == null ? void 0 : _arbitraryValueRegex$4[1];
+  return arbitraryValue ? arbitraryValue.startsWith('url(') || arbitraryValue.startsWith('url:') : false;
+}
+function isArbitraryNumber(classPart) {
+  var _arbitraryValueRegex$5;
+
+  var arbitraryValue = (_arbitraryValueRegex$5 = arbitraryValueRegex.exec(classPart)) == null ? void 0 : _arbitraryValueRegex$5[1];
+  return arbitraryValue ? !Number.isNaN(Number(arbitraryValue)) || arbitraryValue.startsWith('number:') : false;
+}
+/**
+ * @deprecated Will be removed in next major version. Use `isArbitraryNumber` instead.
+ */
+
+var isArbitraryWeight = isArbitraryNumber;
+function isInteger(classPart) {
+  var _arbitraryValueRegex$6;
+
+  var arbitraryValue = (_arbitraryValueRegex$6 = arbitraryValueRegex.exec(classPart)) == null ? void 0 : _arbitraryValueRegex$6[1];
+
+  if (arbitraryValue) {
+    return Number.isInteger(Number(arbitraryValue));
+  }
+
+  return Number.isInteger(Number(classPart));
+}
+function isArbitraryValue(classPart) {
+  return arbitraryValueRegex.test(classPart);
+}
+function isAny() {
+  return true;
+}
+function isTshirtSize(classPart) {
+  return tshirtUnitRegex.test(classPart);
+}
+function isArbitraryShadow(classPart) {
+  var _arbitraryValueRegex$7;
+
+  var arbitraryValue = (_arbitraryValueRegex$7 = arbitraryValueRegex.exec(classPart)) == null ? void 0 : _arbitraryValueRegex$7[1];
+
+  if (arbitraryValue) {
+    return shadowRegex.test(arbitraryValue);
+  }
+
+  return false;
+}
+
+var validators = {
+    __proto__: null,
+    isLength: isLength,
+    isArbitraryLength: isArbitraryLength,
+    isArbitrarySize: isArbitrarySize,
+    isArbitraryPosition: isArbitraryPosition,
+    isArbitraryUrl: isArbitraryUrl,
+    isArbitraryNumber: isArbitraryNumber,
+    isArbitraryWeight: isArbitraryWeight,
+    isInteger: isInteger,
+    isArbitraryValue: isArbitraryValue,
+    isAny: isAny,
+    isTshirtSize: isTshirtSize,
+    isArbitraryShadow: isArbitraryShadow
+};
+
+function getDefaultConfig() {
+  var colors = fromTheme('colors');
+  var spacing = fromTheme('spacing');
+  var blur = fromTheme('blur');
+  var brightness = fromTheme('brightness');
+  var borderColor = fromTheme('borderColor');
+  var borderRadius = fromTheme('borderRadius');
+  var borderSpacing = fromTheme('borderSpacing');
+  var borderWidth = fromTheme('borderWidth');
+  var contrast = fromTheme('contrast');
+  var grayscale = fromTheme('grayscale');
+  var hueRotate = fromTheme('hueRotate');
+  var invert = fromTheme('invert');
+  var gap = fromTheme('gap');
+  var gradientColorStops = fromTheme('gradientColorStops');
+  var inset = fromTheme('inset');
+  var margin = fromTheme('margin');
+  var opacity = fromTheme('opacity');
+  var padding = fromTheme('padding');
+  var saturate = fromTheme('saturate');
+  var scale = fromTheme('scale');
+  var sepia = fromTheme('sepia');
+  var skew = fromTheme('skew');
+  var space = fromTheme('space');
+  var translate = fromTheme('translate');
+
+  var getOverscroll = function getOverscroll() {
+    return ['auto', 'contain', 'none'];
+  };
+
+  var getOverflow = function getOverflow() {
+    return ['auto', 'hidden', 'clip', 'visible', 'scroll'];
+  };
+
+  var getSpacingWithAuto = function getSpacingWithAuto() {
+    return ['auto', spacing];
+  };
+
+  var getLengthWithEmpty = function getLengthWithEmpty() {
+    return ['', isLength];
+  };
+
+  var getIntegerWithAuto = function getIntegerWithAuto() {
+    return ['auto', isInteger];
+  };
+
+  var getPositions = function getPositions() {
+    return ['bottom', 'center', 'left', 'left-bottom', 'left-top', 'right', 'right-bottom', 'right-top', 'top'];
+  };
+
+  var getLineStyles = function getLineStyles() {
+    return ['solid', 'dashed', 'dotted', 'double', 'none'];
+  };
+
+  var getBlendModes = function getBlendModes() {
+    return ['normal', 'multiply', 'screen', 'overlay', 'darken', 'lighten', 'color-dodge', 'color-burn', 'hard-light', 'soft-light', 'difference', 'exclusion', 'hue', 'saturation', 'color', 'luminosity', 'plus-lighter'];
+  };
+
+  var getAlign = function getAlign() {
+    return ['start', 'end', 'center', 'between', 'around', 'evenly'];
+  };
+
+  var getZeroAndEmpty = function getZeroAndEmpty() {
+    return ['', '0', isArbitraryValue];
+  };
+
+  var getBreaks = function getBreaks() {
+    return ['auto', 'avoid', 'all', 'avoid-page', 'page', 'left', 'right', 'column'];
+  };
+
+  return {
+    cacheSize: 500,
+    theme: {
+      colors: [isAny],
+      spacing: [isLength],
+      blur: ['none', '', isTshirtSize, isArbitraryLength],
+      brightness: [isInteger],
+      borderColor: [colors],
+      borderRadius: ['none', '', 'full', isTshirtSize, isArbitraryLength],
+      borderSpacing: [spacing],
+      borderWidth: getLengthWithEmpty(),
+      contrast: [isInteger],
+      grayscale: getZeroAndEmpty(),
+      hueRotate: [isInteger],
+      invert: getZeroAndEmpty(),
+      gap: [spacing],
+      gradientColorStops: [colors],
+      inset: getSpacingWithAuto(),
+      margin: getSpacingWithAuto(),
+      opacity: [isInteger],
+      padding: [spacing],
+      saturate: [isInteger],
+      scale: [isInteger],
+      sepia: getZeroAndEmpty(),
+      skew: [isInteger, isArbitraryValue],
+      space: [spacing],
+      translate: [spacing]
+    },
+    classGroups: {
+      // Layout
+
+      /**
+       * Aspect Ratio
+       * @see https://tailwindcss.com/docs/aspect-ratio
+       */
+      aspect: [{
+        aspect: ['auto', 'square', 'video', isArbitraryValue]
+      }],
+
+      /**
+       * Container
+       * @see https://tailwindcss.com/docs/container
+       */
+      container: ['container'],
+
+      /**
+       * Columns
+       * @see https://tailwindcss.com/docs/columns
+       */
+      columns: [{
+        columns: [isTshirtSize]
+      }],
+
+      /**
+       * Break After
+       * @see https://tailwindcss.com/docs/break-after
+       */
+      'break-after': [{
+        'break-after': getBreaks()
+      }],
+
+      /**
+       * Break Before
+       * @see https://tailwindcss.com/docs/break-before
+       */
+      'break-before': [{
+        'break-before': getBreaks()
+      }],
+
+      /**
+       * Break Inside
+       * @see https://tailwindcss.com/docs/break-inside
+       */
+      'break-inside': [{
+        'break-inside': ['auto', 'avoid', 'avoid-page', 'avoid-column']
+      }],
+
+      /**
+       * Box Decoration Break
+       * @see https://tailwindcss.com/docs/box-decoration-break
+       */
+      'box-decoration': [{
+        'box-decoration': ['slice', 'clone']
+      }],
+
+      /**
+       * Box Sizing
+       * @see https://tailwindcss.com/docs/box-sizing
+       */
+      box: [{
+        box: ['border', 'content']
+      }],
+
+      /**
+       * Display
+       * @see https://tailwindcss.com/docs/display
+       */
+      display: ['block', 'inline-block', 'inline', 'flex', 'inline-flex', 'table', 'inline-table', 'table-caption', 'table-cell', 'table-column', 'table-column-group', 'table-footer-group', 'table-header-group', 'table-row-group', 'table-row', 'flow-root', 'grid', 'inline-grid', 'contents', 'list-item', 'hidden'],
+
+      /**
+       * Floats
+       * @see https://tailwindcss.com/docs/float
+       */
+      "float": [{
+        "float": ['right', 'left', 'none']
+      }],
+
+      /**
+       * Clear
+       * @see https://tailwindcss.com/docs/clear
+       */
+      clear: [{
+        clear: ['left', 'right', 'both', 'none']
+      }],
+
+      /**
+       * Isolation
+       * @see https://tailwindcss.com/docs/isolation
+       */
+      isolation: ['isolate', 'isolation-auto'],
+
+      /**
+       * Object Fit
+       * @see https://tailwindcss.com/docs/object-fit
+       */
+      'object-fit': [{
+        object: ['contain', 'cover', 'fill', 'none', 'scale-down']
+      }],
+
+      /**
+       * Object Position
+       * @see https://tailwindcss.com/docs/object-position
+       */
+      'object-position': [{
+        object: [].concat(getPositions(), [isArbitraryValue])
+      }],
+
+      /**
+       * Overflow
+       * @see https://tailwindcss.com/docs/overflow
+       */
+      overflow: [{
+        overflow: getOverflow()
+      }],
+
+      /**
+       * Overflow X
+       * @see https://tailwindcss.com/docs/overflow
+       */
+      'overflow-x': [{
+        'overflow-x': getOverflow()
+      }],
+
+      /**
+       * Overflow Y
+       * @see https://tailwindcss.com/docs/overflow
+       */
+      'overflow-y': [{
+        'overflow-y': getOverflow()
+      }],
+
+      /**
+       * Overscroll Behavior
+       * @see https://tailwindcss.com/docs/overscroll-behavior
+       */
+      overscroll: [{
+        overscroll: getOverscroll()
+      }],
+
+      /**
+       * Overscroll Behavior X
+       * @see https://tailwindcss.com/docs/overscroll-behavior
+       */
+      'overscroll-x': [{
+        'overscroll-x': getOverscroll()
+      }],
+
+      /**
+       * Overscroll Behavior Y
+       * @see https://tailwindcss.com/docs/overscroll-behavior
+       */
+      'overscroll-y': [{
+        'overscroll-y': getOverscroll()
+      }],
+
+      /**
+       * Position
+       * @see https://tailwindcss.com/docs/position
+       */
+      position: ['static', 'fixed', 'absolute', 'relative', 'sticky'],
+
+      /**
+       * Top / Right / Bottom / Left
+       * @see https://tailwindcss.com/docs/top-right-bottom-left
+       */
+      inset: [{
+        inset: [inset]
+      }],
+
+      /**
+       * Right / Left
+       * @see https://tailwindcss.com/docs/top-right-bottom-left
+       */
+      'inset-x': [{
+        'inset-x': [inset]
+      }],
+
+      /**
+       * Top / Bottom
+       * @see https://tailwindcss.com/docs/top-right-bottom-left
+       */
+      'inset-y': [{
+        'inset-y': [inset]
+      }],
+
+      /**
+       * Top
+       * @see https://tailwindcss.com/docs/top-right-bottom-left
+       */
+      top: [{
+        top: [inset]
+      }],
+
+      /**
+       * Right
+       * @see https://tailwindcss.com/docs/top-right-bottom-left
+       */
+      right: [{
+        right: [inset]
+      }],
+
+      /**
+       * Bottom
+       * @see https://tailwindcss.com/docs/top-right-bottom-left
+       */
+      bottom: [{
+        bottom: [inset]
+      }],
+
+      /**
+       * Left
+       * @see https://tailwindcss.com/docs/top-right-bottom-left
+       */
+      left: [{
+        left: [inset]
+      }],
+
+      /**
+       * Visibility
+       * @see https://tailwindcss.com/docs/visibility
+       */
+      visibility: ['visible', 'invisible', 'collapse'],
+
+      /**
+       * Z-Index
+       * @see https://tailwindcss.com/docs/z-index
+       */
+      z: [{
+        z: [isInteger]
+      }],
+      // Flexbox and Grid
+
+      /**
+       * Flex Basis
+       * @see https://tailwindcss.com/docs/flex-basis
+       */
+      basis: [{
+        basis: [spacing]
+      }],
+
+      /**
+       * Flex Direction
+       * @see https://tailwindcss.com/docs/flex-direction
+       */
+      'flex-direction': [{
+        flex: ['row', 'row-reverse', 'col', 'col-reverse']
+      }],
+
+      /**
+       * Flex Wrap
+       * @see https://tailwindcss.com/docs/flex-wrap
+       */
+      'flex-wrap': [{
+        flex: ['wrap', 'wrap-reverse', 'nowrap']
+      }],
+
+      /**
+       * Flex
+       * @see https://tailwindcss.com/docs/flex
+       */
+      flex: [{
+        flex: ['1', 'auto', 'initial', 'none', isArbitraryValue]
+      }],
+
+      /**
+       * Flex Grow
+       * @see https://tailwindcss.com/docs/flex-grow
+       */
+      grow: [{
+        grow: getZeroAndEmpty()
+      }],
+
+      /**
+       * Flex Shrink
+       * @see https://tailwindcss.com/docs/flex-shrink
+       */
+      shrink: [{
+        shrink: getZeroAndEmpty()
+      }],
+
+      /**
+       * Order
+       * @see https://tailwindcss.com/docs/order
+       */
+      order: [{
+        order: ['first', 'last', 'none', isInteger]
+      }],
+
+      /**
+       * Grid Template Columns
+       * @see https://tailwindcss.com/docs/grid-template-columns
+       */
+      'grid-cols': [{
+        'grid-cols': [isAny]
+      }],
+
+      /**
+       * Grid Column Start / End
+       * @see https://tailwindcss.com/docs/grid-column
+       */
+      'col-start-end': [{
+        col: ['auto', {
+          span: [isInteger]
+        }]
+      }],
+
+      /**
+       * Grid Column Start
+       * @see https://tailwindcss.com/docs/grid-column
+       */
+      'col-start': [{
+        'col-start': getIntegerWithAuto()
+      }],
+
+      /**
+       * Grid Column End
+       * @see https://tailwindcss.com/docs/grid-column
+       */
+      'col-end': [{
+        'col-end': getIntegerWithAuto()
+      }],
+
+      /**
+       * Grid Template Rows
+       * @see https://tailwindcss.com/docs/grid-template-rows
+       */
+      'grid-rows': [{
+        'grid-rows': [isAny]
+      }],
+
+      /**
+       * Grid Row Start / End
+       * @see https://tailwindcss.com/docs/grid-row
+       */
+      'row-start-end': [{
+        row: ['auto', {
+          span: [isInteger]
+        }]
+      }],
+
+      /**
+       * Grid Row Start
+       * @see https://tailwindcss.com/docs/grid-row
+       */
+      'row-start': [{
+        'row-start': getIntegerWithAuto()
+      }],
+
+      /**
+       * Grid Row End
+       * @see https://tailwindcss.com/docs/grid-row
+       */
+      'row-end': [{
+        'row-end': getIntegerWithAuto()
+      }],
+
+      /**
+       * Grid Auto Flow
+       * @see https://tailwindcss.com/docs/grid-auto-flow
+       */
+      'grid-flow': [{
+        'grid-flow': ['row', 'col', 'dense', 'row-dense', 'col-dense']
+      }],
+
+      /**
+       * Grid Auto Columns
+       * @see https://tailwindcss.com/docs/grid-auto-columns
+       */
+      'auto-cols': [{
+        'auto-cols': ['auto', 'min', 'max', 'fr', isArbitraryValue]
+      }],
+
+      /**
+       * Grid Auto Rows
+       * @see https://tailwindcss.com/docs/grid-auto-rows
+       */
+      'auto-rows': [{
+        'auto-rows': ['auto', 'min', 'max', 'fr', isArbitraryValue]
+      }],
+
+      /**
+       * Gap
+       * @see https://tailwindcss.com/docs/gap
+       */
+      gap: [{
+        gap: [gap]
+      }],
+
+      /**
+       * Gap X
+       * @see https://tailwindcss.com/docs/gap
+       */
+      'gap-x': [{
+        'gap-x': [gap]
+      }],
+
+      /**
+       * Gap Y
+       * @see https://tailwindcss.com/docs/gap
+       */
+      'gap-y': [{
+        'gap-y': [gap]
+      }],
+
+      /**
+       * Justify Content
+       * @see https://tailwindcss.com/docs/justify-content
+       */
+      'justify-content': [{
+        justify: getAlign()
+      }],
+
+      /**
+       * Justify Items
+       * @see https://tailwindcss.com/docs/justify-items
+       */
+      'justify-items': [{
+        'justify-items': ['start', 'end', 'center', 'stretch']
+      }],
+
+      /**
+       * Justify Self
+       * @see https://tailwindcss.com/docs/justify-self
+       */
+      'justify-self': [{
+        'justify-self': ['auto', 'start', 'end', 'center', 'stretch']
+      }],
+
+      /**
+       * Align Content
+       * @see https://tailwindcss.com/docs/align-content
+       */
+      'align-content': [{
+        content: [].concat(getAlign(), ['baseline'])
+      }],
+
+      /**
+       * Align Items
+       * @see https://tailwindcss.com/docs/align-items
+       */
+      'align-items': [{
+        items: ['start', 'end', 'center', 'baseline', 'stretch']
+      }],
+
+      /**
+       * Align Self
+       * @see https://tailwindcss.com/docs/align-self
+       */
+      'align-self': [{
+        self: ['auto', 'start', 'end', 'center', 'stretch', 'baseline']
+      }],
+
+      /**
+       * Place Content
+       * @see https://tailwindcss.com/docs/place-content
+       */
+      'place-content': [{
+        'place-content': [].concat(getAlign(), ['baseline', 'stretch'])
+      }],
+
+      /**
+       * Place Items
+       * @see https://tailwindcss.com/docs/place-items
+       */
+      'place-items': [{
+        'place-items': ['start', 'end', 'center', 'baseline', 'stretch']
+      }],
+
+      /**
+       * Place Self
+       * @see https://tailwindcss.com/docs/place-self
+       */
+      'place-self': [{
+        'place-self': ['auto', 'start', 'end', 'center', 'stretch']
+      }],
+      // Spacing
+
+      /**
+       * Padding
+       * @see https://tailwindcss.com/docs/padding
+       */
+      p: [{
+        p: [padding]
+      }],
+
+      /**
+       * Padding X
+       * @see https://tailwindcss.com/docs/padding
+       */
+      px: [{
+        px: [padding]
+      }],
+
+      /**
+       * Padding Y
+       * @see https://tailwindcss.com/docs/padding
+       */
+      py: [{
+        py: [padding]
+      }],
+
+      /**
+       * Padding Top
+       * @see https://tailwindcss.com/docs/padding
+       */
+      pt: [{
+        pt: [padding]
+      }],
+
+      /**
+       * Padding Right
+       * @see https://tailwindcss.com/docs/padding
+       */
+      pr: [{
+        pr: [padding]
+      }],
+
+      /**
+       * Padding Bottom
+       * @see https://tailwindcss.com/docs/padding
+       */
+      pb: [{
+        pb: [padding]
+      }],
+
+      /**
+       * Padding Left
+       * @see https://tailwindcss.com/docs/padding
+       */
+      pl: [{
+        pl: [padding]
+      }],
+
+      /**
+       * Margin
+       * @see https://tailwindcss.com/docs/margin
+       */
+      m: [{
+        m: [margin]
+      }],
+
+      /**
+       * Margin X
+       * @see https://tailwindcss.com/docs/margin
+       */
+      mx: [{
+        mx: [margin]
+      }],
+
+      /**
+       * Margin Y
+       * @see https://tailwindcss.com/docs/margin
+       */
+      my: [{
+        my: [margin]
+      }],
+
+      /**
+       * Margin Top
+       * @see https://tailwindcss.com/docs/margin
+       */
+      mt: [{
+        mt: [margin]
+      }],
+
+      /**
+       * Margin Right
+       * @see https://tailwindcss.com/docs/margin
+       */
+      mr: [{
+        mr: [margin]
+      }],
+
+      /**
+       * Margin Bottom
+       * @see https://tailwindcss.com/docs/margin
+       */
+      mb: [{
+        mb: [margin]
+      }],
+
+      /**
+       * Margin Left
+       * @see https://tailwindcss.com/docs/margin
+       */
+      ml: [{
+        ml: [margin]
+      }],
+
+      /**
+       * Space Between X
+       * @see https://tailwindcss.com/docs/space
+       */
+      'space-x': [{
+        'space-x': [space]
+      }],
+
+      /**
+       * Space Between X Reverse
+       * @see https://tailwindcss.com/docs/space
+       */
+      'space-x-reverse': ['space-x-reverse'],
+
+      /**
+       * Space Between Y
+       * @see https://tailwindcss.com/docs/space
+       */
+      'space-y': [{
+        'space-y': [space]
+      }],
+
+      /**
+       * Space Between Y Reverse
+       * @see https://tailwindcss.com/docs/space
+       */
+      'space-y-reverse': ['space-y-reverse'],
+      // Sizing
+
+      /**
+       * Width
+       * @see https://tailwindcss.com/docs/width
+       */
+      w: [{
+        w: ['auto', 'min', 'max', 'fit', spacing]
+      }],
+
+      /**
+       * Min-Width
+       * @see https://tailwindcss.com/docs/min-width
+       */
+      'min-w': [{
+        'min-w': ['min', 'max', 'fit', isLength]
+      }],
+
+      /**
+       * Max-Width
+       * @see https://tailwindcss.com/docs/max-width
+       */
+      'max-w': [{
+        'max-w': ['0', 'none', 'full', 'min', 'max', 'fit', 'prose', {
+          screen: [isTshirtSize]
+        }, isTshirtSize, isArbitraryLength]
+      }],
+
+      /**
+       * Height
+       * @see https://tailwindcss.com/docs/height
+       */
+      h: [{
+        h: [spacing, 'auto', 'min', 'max', 'fit']
+      }],
+
+      /**
+       * Min-Height
+       * @see https://tailwindcss.com/docs/min-height
+       */
+      'min-h': [{
+        'min-h': ['min', 'max', 'fit', isLength]
+      }],
+
+      /**
+       * Max-Height
+       * @see https://tailwindcss.com/docs/max-height
+       */
+      'max-h': [{
+        'max-h': [spacing, 'min', 'max', 'fit']
+      }],
+      // Typography
+
+      /**
+       * Font Size
+       * @see https://tailwindcss.com/docs/font-size
+       */
+      'font-size': [{
+        text: ['base', isTshirtSize, isArbitraryLength]
+      }],
+
+      /**
+       * Font Smoothing
+       * @see https://tailwindcss.com/docs/font-smoothing
+       */
+      'font-smoothing': ['antialiased', 'subpixel-antialiased'],
+
+      /**
+       * Font Style
+       * @see https://tailwindcss.com/docs/font-style
+       */
+      'font-style': ['italic', 'not-italic'],
+
+      /**
+       * Font Weight
+       * @see https://tailwindcss.com/docs/font-weight
+       */
+      'font-weight': [{
+        font: ['thin', 'extralight', 'light', 'normal', 'medium', 'semibold', 'bold', 'extrabold', 'black', isArbitraryNumber]
+      }],
+
+      /**
+       * Font Family
+       * @see https://tailwindcss.com/docs/font-family
+       */
+      'font-family': [{
+        font: [isAny]
+      }],
+
+      /**
+       * Font Variant Numeric
+       * @see https://tailwindcss.com/docs/font-variant-numeric
+       */
+      'fvn-normal': ['normal-nums'],
+
+      /**
+       * Font Variant Numeric
+       * @see https://tailwindcss.com/docs/font-variant-numeric
+       */
+      'fvn-ordinal': ['ordinal'],
+
+      /**
+       * Font Variant Numeric
+       * @see https://tailwindcss.com/docs/font-variant-numeric
+       */
+      'fvn-slashed-zero': ['slashed-zero'],
+
+      /**
+       * Font Variant Numeric
+       * @see https://tailwindcss.com/docs/font-variant-numeric
+       */
+      'fvn-figure': ['lining-nums', 'oldstyle-nums'],
+
+      /**
+       * Font Variant Numeric
+       * @see https://tailwindcss.com/docs/font-variant-numeric
+       */
+      'fvn-spacing': ['proportional-nums', 'tabular-nums'],
+
+      /**
+       * Font Variant Numeric
+       * @see https://tailwindcss.com/docs/font-variant-numeric
+       */
+      'fvn-fraction': ['diagonal-fractions', 'stacked-fractons'],
+
+      /**
+       * Letter Spacing
+       * @see https://tailwindcss.com/docs/letter-spacing
+       */
+      tracking: [{
+        tracking: ['tighter', 'tight', 'normal', 'wide', 'wider', 'widest', isArbitraryLength]
+      }],
+
+      /**
+       * Line Height
+       * @see https://tailwindcss.com/docs/line-height
+       */
+      leading: [{
+        leading: ['none', 'tight', 'snug', 'normal', 'relaxed', 'loose', isLength]
+      }],
+
+      /**
+       * List Style Type
+       * @see https://tailwindcss.com/docs/list-style-type
+       */
+      'list-style-type': [{
+        list: ['none', 'disc', 'decimal', isArbitraryValue]
+      }],
+
+      /**
+       * List Style Position
+       * @see https://tailwindcss.com/docs/list-style-position
+       */
+      'list-style-position': [{
+        list: ['inside', 'outside']
+      }],
+
+      /**
+       * Placeholder Color
+       * @deprecated since Tailwind CSS v3.0.0
+       * @see https://tailwindcss.com/docs/placeholder-color
+       */
+      'placeholder-color': [{
+        placeholder: [colors]
+      }],
+
+      /**
+       * Placeholder Opacity
+       * @see https://tailwindcss.com/docs/placeholder-opacity
+       */
+      'placeholder-opacity': [{
+        'placeholder-opacity': [opacity]
+      }],
+
+      /**
+       * Text Alignment
+       * @see https://tailwindcss.com/docs/text-align
+       */
+      'text-alignment': [{
+        text: ['left', 'center', 'right', 'justify', 'start', 'end']
+      }],
+
+      /**
+       * Text Color
+       * @see https://tailwindcss.com/docs/text-color
+       */
+      'text-color': [{
+        text: [colors]
+      }],
+
+      /**
+       * Text Opacity
+       * @see https://tailwindcss.com/docs/text-opacity
+       */
+      'text-opacity': [{
+        'text-opacity': [opacity]
+      }],
+
+      /**
+       * Text Decoration
+       * @see https://tailwindcss.com/docs/text-decoration
+       */
+      'text-decoration': ['underline', 'overline', 'line-through', 'no-underline'],
+
+      /**
+       * Text Decoration Style
+       * @see https://tailwindcss.com/docs/text-decoration-style
+       */
+      'text-decoration-style': [{
+        decoration: [].concat(getLineStyles(), ['wavy'])
+      }],
+
+      /**
+       * Text Decoration Thickness
+       * @see https://tailwindcss.com/docs/text-decoration-thickness
+       */
+      'text-decoration-thickness': [{
+        decoration: ['auto', 'from-font', isLength]
+      }],
+
+      /**
+       * Text Underline Offset
+       * @see https://tailwindcss.com/docs/text-underline-offset
+       */
+      'underline-offset': [{
+        'underline-offset': ['auto', isLength]
+      }],
+
+      /**
+       * Text Decoration Color
+       * @see https://tailwindcss.com/docs/text-decoration-color
+       */
+      'text-decoration-color': [{
+        decoration: [colors]
+      }],
+
+      /**
+       * Text Transform
+       * @see https://tailwindcss.com/docs/text-transform
+       */
+      'text-transform': ['uppercase', 'lowercase', 'capitalize', 'normal-case'],
+
+      /**
+       * Text Overflow
+       * @see https://tailwindcss.com/docs/text-overflow
+       */
+      'text-overflow': ['truncate', 'text-ellipsis', 'text-clip'],
+
+      /**
+       * Text Indent
+       * @see https://tailwindcss.com/docs/text-indent
+       */
+      indent: [{
+        indent: [spacing]
+      }],
+
+      /**
+       * Vertical Alignment
+       * @see https://tailwindcss.com/docs/vertical-align
+       */
+      'vertical-align': [{
+        align: ['baseline', 'top', 'middle', 'bottom', 'text-top', 'text-bottom', 'sub', 'super', isArbitraryLength]
+      }],
+
+      /**
+       * Whitespace
+       * @see https://tailwindcss.com/docs/whitespace
+       */
+      whitespace: [{
+        whitespace: ['normal', 'nowrap', 'pre', 'pre-line', 'pre-wrap']
+      }],
+
+      /**
+       * Word Break
+       * @see https://tailwindcss.com/docs/word-break
+       */
+      "break": [{
+        "break": ['normal', 'words', 'all', 'keep']
+      }],
+
+      /**
+       * Content
+       * @see https://tailwindcss.com/docs/content
+       */
+      content: [{
+        content: ['none', isArbitraryValue]
+      }],
+      // Backgrounds
+
+      /**
+       * Background Attachment
+       * @see https://tailwindcss.com/docs/background-attachment
+       */
+      'bg-attachment': [{
+        bg: ['fixed', 'local', 'scroll']
+      }],
+
+      /**
+       * Background Clip
+       * @see https://tailwindcss.com/docs/background-clip
+       */
+      'bg-clip': [{
+        'bg-clip': ['border', 'padding', 'content', 'text']
+      }],
+
+      /**
+       * Background Opacity
+       * @deprecated since Tailwind CSS v3.0.0
+       * @see https://tailwindcss.com/docs/background-opacity
+       */
+      'bg-opacity': [{
+        'bg-opacity': [opacity]
+      }],
+
+      /**
+       * Background Origin
+       * @see https://tailwindcss.com/docs/background-origin
+       */
+      'bg-origin': [{
+        'bg-origin': ['border', 'padding', 'content']
+      }],
+
+      /**
+       * Background Position
+       * @see https://tailwindcss.com/docs/background-position
+       */
+      'bg-position': [{
+        bg: [].concat(getPositions(), [isArbitraryPosition])
+      }],
+
+      /**
+       * Background Repeat
+       * @see https://tailwindcss.com/docs/background-repeat
+       */
+      'bg-repeat': [{
+        bg: ['no-repeat', {
+          repeat: ['', 'x', 'y', 'round', 'space']
+        }]
+      }],
+
+      /**
+       * Background Size
+       * @see https://tailwindcss.com/docs/background-size
+       */
+      'bg-size': [{
+        bg: ['auto', 'cover', 'contain', isArbitrarySize]
+      }],
+
+      /**
+       * Background Image
+       * @see https://tailwindcss.com/docs/background-image
+       */
+      'bg-image': [{
+        bg: ['none', {
+          'gradient-to': ['t', 'tr', 'r', 'br', 'b', 'bl', 'l', 'tl']
+        }, isArbitraryUrl]
+      }],
+
+      /**
+       * Background Color
+       * @see https://tailwindcss.com/docs/background-color
+       */
+      'bg-color': [{
+        bg: [colors]
+      }],
+
+      /**
+       * Gradient Color Stops From
+       * @see https://tailwindcss.com/docs/gradient-color-stops
+       */
+      'gradient-from': [{
+        from: [gradientColorStops]
+      }],
+
+      /**
+       * Gradient Color Stops Via
+       * @see https://tailwindcss.com/docs/gradient-color-stops
+       */
+      'gradient-via': [{
+        via: [gradientColorStops]
+      }],
+
+      /**
+       * Gradient Color Stops To
+       * @see https://tailwindcss.com/docs/gradient-color-stops
+       */
+      'gradient-to': [{
+        to: [gradientColorStops]
+      }],
+      // Borders
+
+      /**
+       * Border Radius
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      rounded: [{
+        rounded: [borderRadius]
+      }],
+
+      /**
+       * Border Radius Top
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      'rounded-t': [{
+        'rounded-t': [borderRadius]
+      }],
+
+      /**
+       * Border Radius Right
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      'rounded-r': [{
+        'rounded-r': [borderRadius]
+      }],
+
+      /**
+       * Border Radius Bottom
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      'rounded-b': [{
+        'rounded-b': [borderRadius]
+      }],
+
+      /**
+       * Border Radius Left
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      'rounded-l': [{
+        'rounded-l': [borderRadius]
+      }],
+
+      /**
+       * Border Radius Top Left
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      'rounded-tl': [{
+        'rounded-tl': [borderRadius]
+      }],
+
+      /**
+       * Border Radius Top Right
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      'rounded-tr': [{
+        'rounded-tr': [borderRadius]
+      }],
+
+      /**
+       * Border Radius Bottom Right
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      'rounded-br': [{
+        'rounded-br': [borderRadius]
+      }],
+
+      /**
+       * Border Radius Bottom Left
+       * @see https://tailwindcss.com/docs/border-radius
+       */
+      'rounded-bl': [{
+        'rounded-bl': [borderRadius]
+      }],
+
+      /**
+       * Border Width
+       * @see https://tailwindcss.com/docs/border-width
+       */
+      'border-w': [{
+        border: [borderWidth]
+      }],
+
+      /**
+       * Border Width X
+       * @see https://tailwindcss.com/docs/border-width
+       */
+      'border-w-x': [{
+        'border-x': [borderWidth]
+      }],
+
+      /**
+       * Border Width Y
+       * @see https://tailwindcss.com/docs/border-width
+       */
+      'border-w-y': [{
+        'border-y': [borderWidth]
+      }],
+
+      /**
+       * Border Width Top
+       * @see https://tailwindcss.com/docs/border-width
+       */
+      'border-w-t': [{
+        'border-t': [borderWidth]
+      }],
+
+      /**
+       * Border Width Right
+       * @see https://tailwindcss.com/docs/border-width
+       */
+      'border-w-r': [{
+        'border-r': [borderWidth]
+      }],
+
+      /**
+       * Border Width Bottom
+       * @see https://tailwindcss.com/docs/border-width
+       */
+      'border-w-b': [{
+        'border-b': [borderWidth]
+      }],
+
+      /**
+       * Border Width Left
+       * @see https://tailwindcss.com/docs/border-width
+       */
+      'border-w-l': [{
+        'border-l': [borderWidth]
+      }],
+
+      /**
+       * Border Opacity
+       * @see https://tailwindcss.com/docs/border-opacity
+       */
+      'border-opacity': [{
+        'border-opacity': [opacity]
+      }],
+
+      /**
+       * Border Style
+       * @see https://tailwindcss.com/docs/border-style
+       */
+      'border-style': [{
+        border: [].concat(getLineStyles(), ['hidden'])
+      }],
+
+      /**
+       * Divide Width X
+       * @see https://tailwindcss.com/docs/divide-width
+       */
+      'divide-x': [{
+        'divide-x': [borderWidth]
+      }],
+
+      /**
+       * Divide Width X Reverse
+       * @see https://tailwindcss.com/docs/divide-width
+       */
+      'divide-x-reverse': ['divide-x-reverse'],
+
+      /**
+       * Divide Width Y
+       * @see https://tailwindcss.com/docs/divide-width
+       */
+      'divide-y': [{
+        'divide-y': [borderWidth]
+      }],
+
+      /**
+       * Divide Width Y Reverse
+       * @see https://tailwindcss.com/docs/divide-width
+       */
+      'divide-y-reverse': ['divide-y-reverse'],
+
+      /**
+       * Divide Opacity
+       * @see https://tailwindcss.com/docs/divide-opacity
+       */
+      'divide-opacity': [{
+        'divide-opacity': [opacity]
+      }],
+
+      /**
+       * Divide Style
+       * @see https://tailwindcss.com/docs/divide-style
+       */
+      'divide-style': [{
+        divide: getLineStyles()
+      }],
+
+      /**
+       * Border Color
+       * @see https://tailwindcss.com/docs/border-color
+       */
+      'border-color': [{
+        border: [borderColor]
+      }],
+
+      /**
+       * Border Color X
+       * @see https://tailwindcss.com/docs/border-color
+       */
+      'border-color-x': [{
+        'border-x': [borderColor]
+      }],
+
+      /**
+       * Border Color Y
+       * @see https://tailwindcss.com/docs/border-color
+       */
+      'border-color-y': [{
+        'border-y': [borderColor]
+      }],
+
+      /**
+       * Border Color Top
+       * @see https://tailwindcss.com/docs/border-color
+       */
+      'border-color-t': [{
+        'border-t': [borderColor]
+      }],
+
+      /**
+       * Border Color Right
+       * @see https://tailwindcss.com/docs/border-color
+       */
+      'border-color-r': [{
+        'border-r': [borderColor]
+      }],
+
+      /**
+       * Border Color Bottom
+       * @see https://tailwindcss.com/docs/border-color
+       */
+      'border-color-b': [{
+        'border-b': [borderColor]
+      }],
+
+      /**
+       * Border Color Left
+       * @see https://tailwindcss.com/docs/border-color
+       */
+      'border-color-l': [{
+        'border-l': [borderColor]
+      }],
+
+      /**
+       * Divide Color
+       * @see https://tailwindcss.com/docs/divide-color
+       */
+      'divide-color': [{
+        divide: [borderColor]
+      }],
+
+      /**
+       * Outline Style
+       * @see https://tailwindcss.com/docs/outline-style
+       */
+      'outline-style': [{
+        outline: [''].concat(getLineStyles())
+      }],
+
+      /**
+       * Outline Offset
+       * @see https://tailwindcss.com/docs/outline-offset
+       */
+      'outline-offset': [{
+        'outline-offset': [isLength]
+      }],
+
+      /**
+       * Outline Width
+       * @see https://tailwindcss.com/docs/outline-width
+       */
+      'outline-w': [{
+        outline: [isLength]
+      }],
+
+      /**
+       * Outline Color
+       * @see https://tailwindcss.com/docs/outline-color
+       */
+      'outline-color': [{
+        outline: [colors]
+      }],
+
+      /**
+       * Ring Width
+       * @see https://tailwindcss.com/docs/ring-width
+       */
+      'ring-w': [{
+        ring: getLengthWithEmpty()
+      }],
+
+      /**
+       * Ring Width Inset
+       * @see https://tailwindcss.com/docs/ring-width
+       */
+      'ring-w-inset': ['ring-inset'],
+
+      /**
+       * Ring Color
+       * @see https://tailwindcss.com/docs/ring-color
+       */
+      'ring-color': [{
+        ring: [colors]
+      }],
+
+      /**
+       * Ring Opacity
+       * @see https://tailwindcss.com/docs/ring-opacity
+       */
+      'ring-opacity': [{
+        'ring-opacity': [opacity]
+      }],
+
+      /**
+       * Ring Offset Width
+       * @see https://tailwindcss.com/docs/ring-offset-width
+       */
+      'ring-offset-w': [{
+        'ring-offset': [isLength]
+      }],
+
+      /**
+       * Ring Offset Color
+       * @see https://tailwindcss.com/docs/ring-offset-color
+       */
+      'ring-offset-color': [{
+        'ring-offset': [colors]
+      }],
+      // Effects
+
+      /**
+       * Box Shadow
+       * @see https://tailwindcss.com/docs/box-shadow
+       */
+      shadow: [{
+        shadow: ['', 'inner', 'none', isTshirtSize, isArbitraryShadow]
+      }],
+
+      /**
+       * Box Shadow Color
+       * @see https://tailwindcss.com/docs/box-shadow-color
+       */
+      'shadow-color': [{
+        shadow: [isAny]
+      }],
+
+      /**
+       * Opacity
+       * @see https://tailwindcss.com/docs/opacity
+       */
+      opacity: [{
+        opacity: [opacity]
+      }],
+
+      /**
+       * Mix Beldn Mode
+       * @see https://tailwindcss.com/docs/mix-blend-mode
+       */
+      'mix-blend': [{
+        'mix-blend': getBlendModes()
+      }],
+
+      /**
+       * Background Blend Mode
+       * @see https://tailwindcss.com/docs/background-blend-mode
+       */
+      'bg-blend': [{
+        'bg-blend': getBlendModes()
+      }],
+      // Filters
+
+      /**
+       * Filter
+       * @deprecated since Tailwind CSS v3.0.0
+       * @see https://tailwindcss.com/docs/filter
+       */
+      filter: [{
+        filter: ['', 'none']
+      }],
+
+      /**
+       * Blur
+       * @see https://tailwindcss.com/docs/blur
+       */
+      blur: [{
+        blur: [blur]
+      }],
+
+      /**
+       * Brightness
+       * @see https://tailwindcss.com/docs/brightness
+       */
+      brightness: [{
+        brightness: [brightness]
+      }],
+
+      /**
+       * Contrast
+       * @see https://tailwindcss.com/docs/contrast
+       */
+      contrast: [{
+        contrast: [contrast]
+      }],
+
+      /**
+       * Drop Shadow
+       * @see https://tailwindcss.com/docs/drop-shadow
+       */
+      'drop-shadow': [{
+        'drop-shadow': ['', 'none', isTshirtSize, isArbitraryValue]
+      }],
+
+      /**
+       * Grayscale
+       * @see https://tailwindcss.com/docs/grayscale
+       */
+      grayscale: [{
+        grayscale: [grayscale]
+      }],
+
+      /**
+       * Hue Rotate
+       * @see https://tailwindcss.com/docs/hue-rotate
+       */
+      'hue-rotate': [{
+        'hue-rotate': [hueRotate]
+      }],
+
+      /**
+       * Invert
+       * @see https://tailwindcss.com/docs/invert
+       */
+      invert: [{
+        invert: [invert]
+      }],
+
+      /**
+       * Saturate
+       * @see https://tailwindcss.com/docs/saturate
+       */
+      saturate: [{
+        saturate: [saturate]
+      }],
+
+      /**
+       * Sepia
+       * @see https://tailwindcss.com/docs/sepia
+       */
+      sepia: [{
+        sepia: [sepia]
+      }],
+
+      /**
+       * Backdrop Filter
+       * @deprecated since Tailwind CSS v3.0.0
+       * @see https://tailwindcss.com/docs/backdrop-filter
+       */
+      'backdrop-filter': [{
+        'backdrop-filter': ['', 'none']
+      }],
+
+      /**
+       * Backdrop Blur
+       * @see https://tailwindcss.com/docs/backdrop-blur
+       */
+      'backdrop-blur': [{
+        'backdrop-blur': [blur]
+      }],
+
+      /**
+       * Backdrop Brightness
+       * @see https://tailwindcss.com/docs/backdrop-brightness
+       */
+      'backdrop-brightness': [{
+        'backdrop-brightness': [brightness]
+      }],
+
+      /**
+       * Backdrop Contrast
+       * @see https://tailwindcss.com/docs/backdrop-contrast
+       */
+      'backdrop-contrast': [{
+        'backdrop-contrast': [contrast]
+      }],
+
+      /**
+       * Backdrop Grayscale
+       * @see https://tailwindcss.com/docs/backdrop-grayscale
+       */
+      'backdrop-grayscale': [{
+        'backdrop-grayscale': [grayscale]
+      }],
+
+      /**
+       * Backdrop Hue Rotate
+       * @see https://tailwindcss.com/docs/backdrop-hue-rotate
+       */
+      'backdrop-hue-rotate': [{
+        'backdrop-hue-rotate': [hueRotate]
+      }],
+
+      /**
+       * Backdrop Invert
+       * @see https://tailwindcss.com/docs/backdrop-invert
+       */
+      'backdrop-invert': [{
+        'backdrop-invert': [invert]
+      }],
+
+      /**
+       * Backdrop Opacity
+       * @see https://tailwindcss.com/docs/backdrop-opacity
+       */
+      'backdrop-opacity': [{
+        'backdrop-opacity': [opacity]
+      }],
+
+      /**
+       * Backdrop Saturate
+       * @see https://tailwindcss.com/docs/backdrop-saturate
+       */
+      'backdrop-saturate': [{
+        'backdrop-saturate': [saturate]
+      }],
+
+      /**
+       * Backdrop Sepia
+       * @see https://tailwindcss.com/docs/backdrop-sepia
+       */
+      'backdrop-sepia': [{
+        'backdrop-sepia': [sepia]
+      }],
+      // Tables
+
+      /**
+       * Border Collapse
+       * @see https://tailwindcss.com/docs/border-collapse
+       */
+      'border-collapse': [{
+        border: ['collapse', 'separate']
+      }],
+
+      /**
+       * Border Spacing
+       * @see https://tailwindcss.com/docs/border-spacing
+       */
+      'border-spacing': [{
+        'border-spacing': [borderSpacing]
+      }],
+
+      /**
+       * Border Spacing X
+       * @see https://tailwindcss.com/docs/border-spacing
+       */
+      'border-spacing-x': [{
+        'border-spacing-x': [borderSpacing]
+      }],
+
+      /**
+       * Border Spacing Y
+       * @see https://tailwindcss.com/docs/border-spacing
+       */
+      'border-spacing-y': [{
+        'border-spacing-y': [borderSpacing]
+      }],
+
+      /**
+       * Table Layout
+       * @see https://tailwindcss.com/docs/table-layout
+       */
+      'table-layout': [{
+        table: ['auto', 'fixed']
+      }],
+      // Transitions and Animation
+
+      /**
+       * Tranisition Property
+       * @see https://tailwindcss.com/docs/transition-property
+       */
+      transition: [{
+        transition: ['none', 'all', '', 'colors', 'opacity', 'shadow', 'transform', isArbitraryValue]
+      }],
+
+      /**
+       * Transition Duration
+       * @see https://tailwindcss.com/docs/transition-duration
+       */
+      duration: [{
+        duration: [isInteger]
+      }],
+
+      /**
+       * Transition Timing Function
+       * @see https://tailwindcss.com/docs/transition-timing-function
+       */
+      ease: [{
+        ease: ['linear', 'in', 'out', 'in-out', isArbitraryValue]
+      }],
+
+      /**
+       * Transition Delay
+       * @see https://tailwindcss.com/docs/transition-delay
+       */
+      delay: [{
+        delay: [isInteger]
+      }],
+
+      /**
+       * Animation
+       * @see https://tailwindcss.com/docs/animation
+       */
+      animate: [{
+        animate: ['none', 'spin', 'ping', 'pulse', 'bounce', isArbitraryValue]
+      }],
+      // Transforms
+
+      /**
+       * Transform
+       * @see https://tailwindcss.com/docs/transform
+       */
+      transform: [{
+        transform: ['', 'gpu', 'none']
+      }],
+
+      /**
+       * Scale
+       * @see https://tailwindcss.com/docs/scale
+       */
+      scale: [{
+        scale: [scale]
+      }],
+
+      /**
+       * Scale X
+       * @see https://tailwindcss.com/docs/scale
+       */
+      'scale-x': [{
+        'scale-x': [scale]
+      }],
+
+      /**
+       * Scale Y
+       * @see https://tailwindcss.com/docs/scale
+       */
+      'scale-y': [{
+        'scale-y': [scale]
+      }],
+
+      /**
+       * Rotate
+       * @see https://tailwindcss.com/docs/rotate
+       */
+      rotate: [{
+        rotate: [isInteger, isArbitraryValue]
+      }],
+
+      /**
+       * Translate X
+       * @see https://tailwindcss.com/docs/translate
+       */
+      'translate-x': [{
+        'translate-x': [translate]
+      }],
+
+      /**
+       * Translate Y
+       * @see https://tailwindcss.com/docs/translate
+       */
+      'translate-y': [{
+        'translate-y': [translate]
+      }],
+
+      /**
+       * Skew X
+       * @see https://tailwindcss.com/docs/skew
+       */
+      'skew-x': [{
+        'skew-x': [skew]
+      }],
+
+      /**
+       * Skew Y
+       * @see https://tailwindcss.com/docs/skew
+       */
+      'skew-y': [{
+        'skew-y': [skew]
+      }],
+
+      /**
+       * Transform Origin
+       * @see https://tailwindcss.com/docs/transform-origin
+       */
+      'transform-origin': [{
+        origin: ['center', 'top', 'top-right', 'right', 'bottom-right', 'bottom', 'bottom-left', 'left', 'top-left', isArbitraryValue]
+      }],
+      // Interactivity
+
+      /**
+       * Accent Color
+       * @see https://tailwindcss.com/docs/accent-color
+       */
+      accent: [{
+        accent: ['auto', colors]
+      }],
+
+      /**
+       * Appearance
+       * @see https://tailwindcss.com/docs/appearance
+       */
+      appearance: ['appearance-none'],
+
+      /**
+       * Cursor
+       * @see https://tailwindcss.com/docs/cursor
+       */
+      cursor: [{
+        cursor: ['auto', 'default', 'pointer', 'wait', 'text', 'move', 'help', 'not-allowed', 'none', 'context-menu', 'progress', 'cell', 'crosshair', 'vertical-text', 'alias', 'copy', 'no-drop', 'grab', 'grabbing', 'all-scroll', 'col-resize', 'row-resize', 'n-resize', 'e-resize', 's-resize', 'w-resize', 'ne-resize', 'nw-resize', 'se-resize', 'sw-resize', 'ew-resize', 'ns-resize', 'nesw-resize', 'nwse-resize', 'zoom-in', 'zoom-out', isArbitraryValue]
+      }],
+
+      /**
+       * Caret Color
+       * @see https://tailwindcss.com/docs/just-in-time-mode#caret-color-utilities
+       */
+      'caret-color': [{
+        caret: [colors]
+      }],
+
+      /**
+       * Pointer Events
+       * @see https://tailwindcss.com/docs/pointer-events
+       */
+      'pointer-events': [{
+        'pointer-events': ['none', 'auto']
+      }],
+
+      /**
+       * Resize
+       * @see https://tailwindcss.com/docs/resize
+       */
+      resize: [{
+        resize: ['none', 'y', 'x', '']
+      }],
+
+      /**
+       * Scroll Behavior
+       * @see https://tailwindcss.com/docs/scroll-behavior
+       */
+      'scroll-behavior': [{
+        scroll: ['auto', 'smooth']
+      }],
+
+      /**
+       * Scroll Margin
+       * @see https://tailwindcss.com/docs/scroll-margin
+       */
+      'scroll-m': [{
+        'scroll-m': [spacing]
+      }],
+
+      /**
+       * Scroll Margin X
+       * @see https://tailwindcss.com/docs/scroll-margin
+       */
+      'scroll-mx': [{
+        'scroll-mx': [spacing]
+      }],
+
+      /**
+       * Scroll Margin Y
+       * @see https://tailwindcss.com/docs/scroll-margin
+       */
+      'scroll-my': [{
+        'scroll-my': [spacing]
+      }],
+
+      /**
+       * Scroll Margin Top
+       * @see https://tailwindcss.com/docs/scroll-margin
+       */
+      'scroll-mt': [{
+        'scroll-mt': [spacing]
+      }],
+
+      /**
+       * Scroll Margin Right
+       * @see https://tailwindcss.com/docs/scroll-margin
+       */
+      'scroll-mr': [{
+        'scroll-mr': [spacing]
+      }],
+
+      /**
+       * Scroll Margin Bottom
+       * @see https://tailwindcss.com/docs/scroll-margin
+       */
+      'scroll-mb': [{
+        'scroll-mb': [spacing]
+      }],
+
+      /**
+       * Scroll Margin Left
+       * @see https://tailwindcss.com/docs/scroll-margin
+       */
+      'scroll-ml': [{
+        'scroll-ml': [spacing]
+      }],
+
+      /**
+       * Scroll Padding
+       * @see https://tailwindcss.com/docs/scroll-padding
+       */
+      'scroll-p': [{
+        'scroll-p': [spacing]
+      }],
+
+      /**
+       * Scroll Padding X
+       * @see https://tailwindcss.com/docs/scroll-padding
+       */
+      'scroll-px': [{
+        'scroll-px': [spacing]
+      }],
+
+      /**
+       * Scroll Padding Y
+       * @see https://tailwindcss.com/docs/scroll-padding
+       */
+      'scroll-py': [{
+        'scroll-py': [spacing]
+      }],
+
+      /**
+       * Scroll Padding Top
+       * @see https://tailwindcss.com/docs/scroll-padding
+       */
+      'scroll-pt': [{
+        'scroll-pt': [spacing]
+      }],
+
+      /**
+       * Scroll Padding Right
+       * @see https://tailwindcss.com/docs/scroll-padding
+       */
+      'scroll-pr': [{
+        'scroll-pr': [spacing]
+      }],
+
+      /**
+       * Scroll Padding Bottom
+       * @see https://tailwindcss.com/docs/scroll-padding
+       */
+      'scroll-pb': [{
+        'scroll-pb': [spacing]
+      }],
+
+      /**
+       * Scroll Padding Left
+       * @see https://tailwindcss.com/docs/scroll-padding
+       */
+      'scroll-pl': [{
+        'scroll-pl': [spacing]
+      }],
+
+      /**
+       * Scroll Snap Align
+       * @see https://tailwindcss.com/docs/scroll-snap-align
+       */
+      'snap-align': [{
+        snap: ['start', 'end', 'center', 'align-none']
+      }],
+
+      /**
+       * Scroll Snap Stop
+       * @see https://tailwindcss.com/docs/scroll-snap-stop
+       */
+      'snap-stop': [{
+        snap: ['normal', 'always']
+      }],
+
+      /**
+       * Scroll Snap Type
+       * @see https://tailwindcss.com/docs/scroll-snap-type
+       */
+      'snap-type': [{
+        snap: ['none', 'x', 'y', 'both']
+      }],
+
+      /**
+       * Scroll Snap Type Strictness
+       * @see https://tailwindcss.com/docs/scroll-snap-type
+       */
+      'snap-strictness': [{
+        snap: ['mandatory', 'proximity']
+      }],
+
+      /**
+       * Touch Action
+       * @see https://tailwindcss.com/docs/touch-action
+       */
+      touch: [{
+        touch: ['auto', 'none', 'pinch-zoom', 'manipulation', {
+          pan: ['x', 'left', 'right', 'y', 'up', 'down']
+        }]
+      }],
+
+      /**
+       * User Select
+       * @see https://tailwindcss.com/docs/user-select
+       */
+      select: [{
+        select: ['none', 'text', 'all', 'auto']
+      }],
+
+      /**
+       * Will Change
+       * @see https://tailwindcss.com/docs/will-change
+       */
+      'will-change': [{
+        'will-change': ['auto', 'scroll', 'contents', 'transform', isArbitraryValue]
+      }],
+      // SVG
+
+      /**
+       * Fill
+       * @see https://tailwindcss.com/docs/fill
+       */
+      fill: [{
+        fill: [colors, 'none']
+      }],
+
+      /**
+       * Stroke Width
+       * @see https://tailwindcss.com/docs/stroke-width
+       */
+      'stroke-w': [{
+        stroke: [isLength, isArbitraryNumber]
+      }],
+
+      /**
+       * Stroke
+       * @see https://tailwindcss.com/docs/stroke
+       */
+      stroke: [{
+        stroke: [colors, 'none']
+      }],
+      // Accessibility
+
+      /**
+       * Screen Readers
+       * @see https://tailwindcss.com/docs/screen-readers
+       */
+      sr: ['sr-only', 'not-sr-only']
+    },
+    conflictingClassGroups: {
+      overflow: ['overflow-x', 'overflow-y'],
+      overscroll: ['overscroll-x', 'overscroll-y'],
+      inset: ['inset-x', 'inset-y', 'top', 'right', 'bottom', 'left'],
+      'inset-x': ['right', 'left'],
+      'inset-y': ['top', 'bottom'],
+      flex: ['basis', 'grow', 'shrink'],
+      gap: ['gap-x', 'gap-y'],
+      p: ['px', 'py', 'pt', 'pr', 'pb', 'pl'],
+      px: ['pr', 'pl'],
+      py: ['pt', 'pb'],
+      m: ['mx', 'my', 'mt', 'mr', 'mb', 'ml'],
+      mx: ['mr', 'ml'],
+      my: ['mt', 'mb'],
+      'font-size': ['leading'],
+      'fvn-normal': ['fvn-ordinal', 'fvn-slashed-zero', 'fvn-figure', 'fvn-spacing', 'fvn-fraction'],
+      'fvn-ordinal': ['fvn-normal'],
+      'fvn-slashed-zero': ['fvn-normal'],
+      'fvn-figure': ['fvn-normal'],
+      'fvn-spacing': ['fvn-normal'],
+      'fvn-fraction': ['fvn-normal'],
+      rounded: ['rounded-t', 'rounded-r', 'rounded-b', 'rounded-l', 'rounded-tl', 'rounded-tr', 'rounded-br', 'rounded-bl'],
+      'rounded-t': ['rounded-tl', 'rounded-tr'],
+      'rounded-r': ['rounded-tr', 'rounded-br'],
+      'rounded-b': ['rounded-br', 'rounded-bl'],
+      'rounded-l': ['rounded-tl', 'rounded-bl'],
+      'border-spacing': ['border-spacing-x', 'border-spacing-y'],
+      'border-w': ['border-w-t', 'border-w-r', 'border-w-b', 'border-w-l'],
+      'border-w-x': ['border-w-r', 'border-w-l'],
+      'border-w-y': ['border-w-t', 'border-w-b'],
+      'border-color': ['border-color-t', 'border-color-r', 'border-color-b', 'border-color-l'],
+      'border-color-x': ['border-color-r', 'border-color-l'],
+      'border-color-y': ['border-color-t', 'border-color-b'],
+      'scroll-m': ['scroll-mx', 'scroll-my', 'scroll-mt', 'scroll-mr', 'scroll-mb', 'scroll-ml'],
+      'scroll-mx': ['scroll-mr', 'scroll-ml'],
+      'scroll-my': ['scroll-mt', 'scroll-mb'],
+      'scroll-p': ['scroll-px', 'scroll-py', 'scroll-pt', 'scroll-pr', 'scroll-pb', 'scroll-pl'],
+      'scroll-px': ['scroll-pr', 'scroll-pl'],
+      'scroll-py': ['scroll-pt', 'scroll-pb']
+    }
+  };
+}
+
+var twMerge = /*#__PURE__*/createTailwindMerge(getDefaultConfig);
+
+/**
+ * @param baseConfig Config where other config will be merged into. This object will be mutated.
+ * @param configExtension Partial config to merge into the `baseConfig`.
+ */
+function mergeConfigs(baseConfig, configExtension) {
+  for (var key in configExtension) {
+    mergePropertyRecursively(baseConfig, key, configExtension[key]);
+  }
+
+  return baseConfig;
+}
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var overrideTypes = /*#__PURE__*/new Set(['string', 'number', 'boolean']);
+
+function mergePropertyRecursively(baseObject, mergeKey, mergeValue) {
+  if (!hasOwnProperty.call(baseObject, mergeKey) || overrideTypes.has(typeof mergeValue) || mergeValue === null) {
+    baseObject[mergeKey] = mergeValue;
+    return;
+  }
+
+  if (Array.isArray(mergeValue) && Array.isArray(baseObject[mergeKey])) {
+    baseObject[mergeKey] = baseObject[mergeKey].concat(mergeValue);
+    return;
+  }
+
+  if (typeof mergeValue === 'object' && typeof baseObject[mergeKey] === 'object') {
+    if (baseObject[mergeKey] === null) {
+      baseObject[mergeKey] = mergeValue;
+      return;
+    }
+
+    for (var nextKey in mergeValue) {
+      mergePropertyRecursively(baseObject[mergeKey], nextKey, mergeValue[nextKey]);
+    }
+  }
+}
+
+function extendTailwindMerge(configExtension) {
+  for (var _len = arguments.length, createConfig = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    createConfig[_key - 1] = arguments[_key];
+  }
+
+  return typeof configExtension === 'function' ? createTailwindMerge.apply(void 0, [getDefaultConfig, configExtension].concat(createConfig)) : createTailwindMerge.apply(void 0, [function () {
+    return mergeConfigs(getDefaultConfig(), configExtension);
+  }].concat(createConfig));
+}
+
+/**
+ * @deprecated Will be removed in next major version. Use `twJoin` instead.
+ */
+
+var join = twJoin;
+
+exports.createTailwindMerge = createTailwindMerge;
+exports.extendTailwindMerge = extendTailwindMerge;
+exports.fromTheme = fromTheme;
+exports.getDefaultConfig = getDefaultConfig;
+exports.join = join;
+exports.mergeConfigs = mergeConfigs;
+exports.twJoin = twJoin;
+exports.twMerge = twMerge;
+exports.validators = validators;
+//# sourceMappingURL=tailwind-merge.cjs.development.js.map
+
+
+/***/ }),
+
 /***/ "./node_modules/tailwindcss/colors.js":
 /*!********************************************!*\
   !*** ./node_modules/tailwindcss/colors.js ***!
@@ -67791,6 +71064,12 @@ var map = {
 	"./Accesses/AskAccess.js": "./resources/js/Accesses/AskAccess.js",
 	"./Accesses/List": "./resources/js/Accesses/List.js",
 	"./Accesses/List.js": "./resources/js/Accesses/List.js",
+	"./Board/IdSelector": "./resources/js/Board/IdSelector.js",
+	"./Board/IdSelector.js": "./resources/js/Board/IdSelector.js",
+	"./Board/List": "./resources/js/Board/List.js",
+	"./Board/List.js": "./resources/js/Board/List.js",
+	"./Board/Upload": "./resources/js/Board/Upload.js",
+	"./Board/Upload.js": "./resources/js/Board/Upload.js",
 	"./General/Access": "./resources/js/General/Access.js",
 	"./General/Access.js": "./resources/js/General/Access.js",
 	"./General/AppList": "./resources/js/General/AppList.js",

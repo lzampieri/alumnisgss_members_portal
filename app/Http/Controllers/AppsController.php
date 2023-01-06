@@ -22,6 +22,9 @@ class AppsController extends Controller
             $apps[] = 'registry';
         }
 
+        // Anyone can access board
+        $apps[] = 'board';
+
         if (Auth::user() && Auth::user()->hasPermissionTo('log-manage')) {
             $apps[] = 'logs';
         }
