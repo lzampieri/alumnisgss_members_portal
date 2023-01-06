@@ -41,9 +41,9 @@ class DocumentPolicy
      * @param  \App\Models\Document  $document
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Document $document)
+    public function view(?User $user, Document $document)
     {
-        return $user->hasPermissionTo( 'documents-view-' . $document->privacy );
+        return $document->privacy == 'everyone' || ( $user && $user->hasPermissionTo( 'documents-view-' . $document->privacy ) );
     }
 
     /**

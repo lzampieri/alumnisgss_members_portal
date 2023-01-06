@@ -10,10 +10,10 @@ class Document extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'title',
         'identifier',
-        'date',
         'privacy',
+        'date',
+        'note',
         'handle',
         'author_id'
     ];
@@ -26,6 +26,7 @@ class Document extends Model
     public static $privacies = [
         'everyone',
         'members',
+        'cda',
         'internal'
     ];
 

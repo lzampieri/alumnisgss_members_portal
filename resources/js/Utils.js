@@ -42,6 +42,7 @@ export class Documents {
     static names = {
         'everyone': 'Tutti',
         'members': 'Soci',
+        'cda': 'CdA',
         'internal': 'Segreteria'
     }
 }

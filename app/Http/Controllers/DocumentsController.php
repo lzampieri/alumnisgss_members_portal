@@ -7,6 +7,8 @@ use App\Policies\DocumentPolicy;
 use DateTimeImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use setasign\Fpdi\Fpdi;
 use Inertia\Inertia;
 
 class DocumentsController extends Controller
@@ -16,7 +18,7 @@ class DocumentsController extends Controller
         $params = [];
 
         $privacies = DocumentPolicy::visiblePrivacies();
-        $params['documents'] = Document::whereIn( 'privacy', $privacies )->get();
+        $params['documents'] = Document::whereIn('privacy', $privacies)->with('author')->orderBy('date', 'desc')->get();
 
         $params['total'] = Document::count();
 
@@ -28,38 +30,73 @@ class DocumentsController extends Controller
 
     public function add()
     {
-        $this->authorize( 'create', Document::class );
+        $this->authorize('create', Document::class);
 
         $canEdit = Auth::check() && Auth::user()->can('edit', Document::class);
 
-        return Inertia::render('Board/Upload', [ 'privacies' => Document::$privacies, 'canEdit' => $canEdit ] );
+        return Inertia::render('Board/Upload', ['privacies' => Document::$privacies, 'canEdit' => $canEdit]);
     }
 
-    public function add_post(Request $request) {
-        $this->authorize( 'create', Document::class );
+    public function add_post(Request $request)
+    {
+        $this->authorize('create', Document::class);
 
         $validated = $request->validate([
-            'title' => 'required|min:3',
             'privacy' => 'required|in:' . implode(',', Document::$privacies),
             'identifier' => 'required|unique:documents,identifier',
             'date' => 'required|date|before_or_equal:now',
+            'note' => '',
             'file' => 'required|mimes:pdf'
         ]);
 
         $validated['author_id'] = Auth::user()->id;
         $validated['handle'] = 'None';
 
-        $document = Document::create( $validated );
-        Log::debug('Document created',$validated);
-        
+        $document = Document::create($validated);
+        Log::debug('Document created', $validated);
+
         $months = ['A', 'B', 'C', 'D', 'E', 'H', 'L', 'M', 'P', 'R', 'S', 'T'];
-        $date = new DateTimeImmutable( $validated['date'] );
-        $handle = $date->format("Y") . $months[ $date->format("n") ] . str_pad( $document->id, 6, '0', STR_PAD_LEFT );
-        
-        $validated['file']->storeAs( 'documents', $handle . '.pdf' );
-        Log::debug('File uploaded',$handle . '.pdf');
+        $date = new DateTimeImmutable($validated['date']);
+        $handle = $date->format("Y") . $months[$date->format("n") - 1] . str_pad($document->id, 6, '0', STR_PAD_LEFT);
+
+        $validated['file']->storeAs('documents', $handle . '.pdf');
+        Log::debug('File uploaded', $handle . '.pdf');
 
         $document->handle = $handle;
         $document->save();
+
+        return redirect()->route('board')->with(['notistack' => ['success', 'File caricato con protocollo ' . $handle]]);
+    }
+
+    public function view(Document $document)
+    {
+        $this->authorize('view', $document);
+
+        $pdf = new Fpdi();
+        $pageCount = $pdf->setSourceFile(storage_path() . '/app/documents/' . $document->handle . '.pdf');
+
+        $pdf->SetAutoPageBreak(false);
+        $pdf->SetFont('Helvetica');
+        $pdf->SetFontSize('10');
+        $pdf->SetTextColor(255, 0, 0);
+
+        $footer = '=== Scaricato dal portale soci il ' . date('d/m/Y') . ' - Protocollo web ' . $document->handle . ' ===';
+
+        for ($i = 1; $i <= $pageCount; $i++) {
+            $id = $pdf->importPage($i);
+
+            // Add a page
+            $pdf->AddPage();
+            $pdf->useTemplate($id, 0, 0, null, null, true);
+
+            // Add watermark on the bottom
+            $pdf->SetXY(0, -10);
+            $pdf->Cell(0, 7, $footer, 0, 0, 'C');
+        }
+        $pdf->SetTitle($document->identifier);
+
+        Log::debug('File generated', ['handle' => $document->handle]);
+
+        return response($pdf->Output('I',$document->handle . '.pdf'));
     }
 }

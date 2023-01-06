@@ -17,10 +17,10 @@ class CreateDocumentsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->softDeletes();
-            $table->string('title',500);
             $table->string('identifier',100)->unique();
             $table->timestamp('date');
             $table->string('privacy',100);
+            $table->text('note')->nullable();
             $table->foreignId('author_id')->constrained('users');
             $table->string('handle',500);
         });
