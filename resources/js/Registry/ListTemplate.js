@@ -70,7 +70,7 @@ export default function ListTemplate({ data, itemFunction }) {
                 {coorts.map(coort =>
                     <div className="w-4/5 md:w-2/5 grow-0 shrink-0" key={coort}>
                         <span className="bg-gray-200 border-gray-400 border flex flex-row p-2">
-                            <span key={0} className="font-bold">{romanize(coort)} Coorte</span>
+                            <span key={0} className="font-bold">{ coort == 0 ? "Onorari" : romanize(coort) + " Coorte"}</span>
                         </span>
                         {data.map(alumnus => alumnus.coorte == coort ? AlumnusItem(alumnus, textFilter, statusFilter, itemFunction) : '')}
                     </div>
