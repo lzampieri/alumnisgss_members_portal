@@ -25,9 +25,9 @@ class Document extends Model
 
     public static $privacies = [
         'everyone',
-        'members',
+        // 'members', Still to implement
         'cda',
-        'internal'
+        'secretariat'
     ];
 
     public function author() {

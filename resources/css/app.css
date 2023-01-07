@@ -19,6 +19,7 @@
         @apply px-4 py-2 rounded border-2 border-primary-main text-primary-main bg-primary-contrast;
         @apply hover:text-primary-contrast hover:bg-primary-main;
         @apply no-underline;
+        @apply cursor-pointer;
     }
     .button-active {
         @apply text-primary-contrast bg-primary-main;

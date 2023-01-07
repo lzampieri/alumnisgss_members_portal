@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import Select from 'react-select';
 import Datepicker from "tailwind-datepicker-react"
 
-export default function IdSelector({ onChange }) {
+export default function IdSelector({ onChange, prevIdf }) {
     const [progr,setProgr] = useState('');
     const [year,setYear] = useState( new Date().getFullYear() );
-    const [other,setOther] = useState('');
+    const [other,setOther] = useState( prevIdf || '' );
     const [date,setDate] = useState(new Date());
     
     const [datePickerOpen,setDatePickerOpen] = useState(false);
@@ -17,7 +17,7 @@ export default function IdSelector({ onChange }) {
         { value: 'Altro', label: 'Altro', other: true, parser: (progr,year,date,other) => other },
     ]
 
-    const [selected, setSelected] = useState(options[2]);
+    const [selected, setSelected] = useState( prevIdf ? options[3] : options[0] );
 
     useEffect( () => onChange( selected.parser(progr,year,date,other) ), [progr,year,date,other,selected] );
 

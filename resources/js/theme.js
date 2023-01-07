@@ -15,6 +15,7 @@ module.exports = {
         error: '#ff3333',
         gray: colors.gray,
         white: colors.white,
-        black: colors.black
+        black: colors.black,
+        halfblack: '#000000A0'
     }
 }

@@ -5,7 +5,7 @@ import Datepicker from "tailwind-datepicker-react"
 import { useState } from "react";
 import Backdrop from "../Layout/Backdrop";
 
-export default function Add() {
+export default function Upload() {
     const privacies = usePage().props.privacies;
 
     const { data, setData, post, processing, errors, progress } = useForm({
@@ -27,13 +27,14 @@ export default function Add() {
     return (
         <form className="flex flex-col w-full md:w-3/5" onSubmit={ submit }>
             <h3>Carica documento</h3>
+            { !usePage().props.canEdit && <label className="error">Attenzione: possiedi i permessi di caricare documenti, ma non di modificare documenti già caricati. Rivedi con attenzione tutti i campi prima di salvare.</label> }
             <label>Identificativo</label>
             <IdSelector onChange={ (idf) => setData('identifier', idf ) } />
             <label className="error">{ errors.identifier }</label>
             <label>Visibilità</label>
             <div className="w-full flex flex-row flex-wrap justify-start">
                 { privacies.map( p =>
-                <div className={"chip px-4 py-2 cursor-pointer " + ( p == data.privacy ? '' : 'disabled' )} onClick={() => setData('privacy',p)}>
+                <div key={p} className={"chip px-4 py-2 cursor-pointer " + ( p == data.privacy ? '' : 'disabled' )} onClick={() => setData('privacy',p)}>
                     { Documents.names[p] || p }
                 </div> )}
             </div>

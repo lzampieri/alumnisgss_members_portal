@@ -43,7 +43,7 @@ export class Documents {
         'everyone': 'Tutti',
         'members': 'Soci',
         'cda': 'CdA',
-        'internal': 'Segreteria'
+        'secretariat': 'Segreteria'
     }
 }
 

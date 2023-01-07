@@ -2206,6 +2206,46 @@ exports.aliases = aliases;
 
 /***/ }),
 
+/***/ "./node_modules/@fortawesome/free-solid-svg-icons/faCircleCheck.js":
+/*!*************************************************************************!*\
+  !*** ./node_modules/@fortawesome/free-solid-svg-icons/faCircleCheck.js ***!
+  \*************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+var prefix = 'fas';
+var iconName = 'circle-check';
+var width = 512;
+var height = 512;
+var aliases = [61533,"check-circle"];
+var unicode = 'f058';
+var svgPathData = 'M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z';
+
+exports.definition = {
+  prefix: prefix,
+  iconName: iconName,
+  icon: [
+    width,
+    height,
+    aliases,
+    unicode,
+    svgPathData
+  ]};
+
+exports.faCircleCheck = exports.definition;
+exports.prefix = prefix;
+exports.iconName = iconName;
+exports.width = width;
+exports.height = height;
+exports.ligatures = aliases;
+exports.unicode = unicode;
+exports.svgPathData = svgPathData;
+exports.aliases = aliases;
+
+/***/ }),
+
 /***/ "./node_modules/@fortawesome/free-solid-svg-icons/faCirclePlus.js":
 /*!************************************************************************!*\
   !*** ./node_modules/@fortawesome/free-solid-svg-icons/faCirclePlus.js ***!
@@ -2235,6 +2275,46 @@ exports.definition = {
   ]};
 
 exports.faCirclePlus = exports.definition;
+exports.prefix = prefix;
+exports.iconName = iconName;
+exports.width = width;
+exports.height = height;
+exports.ligatures = aliases;
+exports.unicode = unicode;
+exports.svgPathData = svgPathData;
+exports.aliases = aliases;
+
+/***/ }),
+
+/***/ "./node_modules/@fortawesome/free-solid-svg-icons/faCircleXmark.js":
+/*!*************************************************************************!*\
+  !*** ./node_modules/@fortawesome/free-solid-svg-icons/faCircleXmark.js ***!
+  \*************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+var prefix = 'fas';
+var iconName = 'circle-xmark';
+var width = 512;
+var height = 512;
+var aliases = [61532,"times-circle","xmark-circle"];
+var unicode = 'f057';
+var svgPathData = 'M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z';
+
+exports.definition = {
+  prefix: prefix,
+  iconName: iconName,
+  icon: [
+    width,
+    height,
+    aliases,
+    unicode,
+    svgPathData
+  ]};
+
+exports.faCircleXmark = exports.definition;
 exports.prefix = prefix;
 exports.iconName = iconName;
 exports.width = width;
@@ -5480,6 +5560,170 @@ function List() {
 
 /***/ }),
 
+/***/ "./resources/js/Board/Edit.js":
+/*!************************************!*\
+  !*** ./resources/js/Board/Edit.js ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Edit)
+/* harmony export */ });
+/* harmony import */ var _inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @inertiajs/inertia-react */ "./node_modules/@inertiajs/inertia-react/dist/index.js");
+/* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Utils */ "./resources/js/Utils.js");
+/* harmony import */ var _IdSelector__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./IdSelector */ "./resources/js/Board/IdSelector.js");
+/* harmony import */ var tailwind_datepicker_react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! tailwind-datepicker-react */ "./node_modules/tailwind-datepicker-react/dist/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var _Layout_Backdrop__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Layout/Backdrop */ "./resources/js/Layout/Backdrop.js");
+/* harmony import */ var _Layout_Dialog__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../Layout/Dialog */ "./resources/js/Layout/Dialog.js");
+/* harmony import */ var _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @inertiajs/inertia */ "./node_modules/@inertiajs/inertia/dist/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0) { ; } } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i["return"] && (_r = _i["return"](), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+
+
+
+
+
+
+function Edit() {
+  var prevDoc = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.document;
+  var privacies = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.privacies;
+  var _useForm = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.useForm)({
+      privacy: prevDoc.privacy,
+      identifier: prevDoc.identifier,
+      date: new Date(prevDoc.date),
+      note: prevDoc.note || ""
+    }),
+    data = _useForm.data,
+    setData = _useForm.setData,
+    post = _useForm.post,
+    processing = _useForm.processing,
+    errors = _useForm.errors,
+    progress = _useForm.progress;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_4__.useState)(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    datePickerOpen = _useState2[0],
+    setDatePickerOpen = _useState2[1];
+  var submit = function submit(e) {
+    e.preventDefault();
+    post(route('board.edit', {
+      document: prevDoc.id
+    }));
+  };
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_4__.useState)(false),
+    _useState4 = _slicedToArray(_useState3, 2),
+    deleteDialogOpen = _useState4[0],
+    setDeleteDialogOpen = _useState4[1];
+  var submitDelete = function submitDelete() {
+    _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_7__.Inertia.post(route('board.delete', {
+      document: prevDoc.id
+    }));
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("form", {
+    className: "flex flex-col w-full md:w-3/5",
+    onSubmit: submit,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("h3", {
+      children: "Modifica documento"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("span", {
+      className: "font-bold",
+      children: ["Protocollo web: ", document.handle]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
+      children: "Identificativo"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_IdSelector__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      onChange: function onChange(idf) {
+        return setData('identifier', idf);
+      },
+      prevIdf: data.identifier
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
+      className: "error",
+      children: errors.identifier
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
+      children: "Visibilit\xE0"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+      className: "w-full flex flex-row flex-wrap justify-start",
+      children: privacies.map(function (p) {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+          className: "chip px-4 py-2 cursor-pointer " + (p == data.privacy ? '' : 'disabled'),
+          onClick: function onClick() {
+            return setData('privacy', p);
+          },
+          children: _Utils__WEBPACK_IMPORTED_MODULE_1__.Documents.names[p] || p
+        }, p);
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
+      className: "error",
+      children: errors.privacy
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
+      children: "Data di redazione"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(tailwind_datepicker_react__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      classNames: "w-full",
+      options: {
+        defaultDate: data.date,
+        maxDate: new Date(),
+        language: 'it',
+        theme: {
+          input: '!text-black'
+        }
+      },
+      onChange: function onChange(date) {
+        return setData('date', date);
+      },
+      show: datePickerOpen,
+      setShow: setDatePickerOpen
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
+      className: "error",
+      children: errors.date
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
+      children: "Note"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("input", {
+      type: "text",
+      value: data.note,
+      onChange: function onChange(e) {
+        return setData('note', e.target.value);
+      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
+      className: "error",
+      children: errors.note
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("input", {
+      type: "button",
+      className: "button mt-4",
+      onClick: submit,
+      value: "Salva"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("button", {
+      className: "button mt-8 text-center",
+      onClick: function onClick(e) {
+        e.preventDefault();
+        setDeleteDialogOpen(true);
+      },
+      children: "Elimina"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_Layout_Dialog__WEBPACK_IMPORTED_MODULE_6__["default"], {
+      open: deleteDialogOpen,
+      onClose: function onClose() {
+        return setDeleteDialogOpen(false);
+      },
+      onConfirm: function onConfirm() {
+        return submitDelete();
+      },
+      children: ["Sei sicuro di voler eliminare il documento ", document.title, "?"]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_Layout_Backdrop__WEBPACK_IMPORTED_MODULE_5__["default"], {
+      open: processing
+    })]
+  });
+}
+
+/***/ }),
+
 /***/ "./resources/js/Board/IdSelector.js":
 /*!******************************************!*\
   !*** ./resources/js/Board/IdSelector.js ***!
@@ -5508,7 +5752,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 function IdSelector(_ref) {
-  var onChange = _ref.onChange;
+  var onChange = _ref.onChange,
+    prevIdf = _ref.prevIdf;
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
     _useState2 = _slicedToArray(_useState, 2),
     progr = _useState2[0],
@@ -5517,7 +5762,7 @@ function IdSelector(_ref) {
     _useState4 = _slicedToArray(_useState3, 2),
     year = _useState4[0],
     setYear = _useState4[1];
-  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(prevIdf || ''),
     _useState6 = _slicedToArray(_useState5, 2),
     other = _useState6[0],
     setOther = _useState6[1];
@@ -5566,7 +5811,7 @@ function IdSelector(_ref) {
       return other;
     }
   }];
-  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(options[2]),
+  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(prevIdf ? options[3] : options[0]),
     _useState12 = _slicedToArray(_useState11, 2),
     selected = _useState12[0],
     setSelected = _useState12[1];
@@ -5642,8 +5887,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ List)
 /* harmony export */ });
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faCirclePlus__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faCirclePlus */ "./node_modules/@fortawesome/free-solid-svg-icons/faCirclePlus.js");
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faFilePdf__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faFilePdf */ "./node_modules/@fortawesome/free-solid-svg-icons/faFilePdf.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faCirclePlus__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faCirclePlus */ "./node_modules/@fortawesome/free-solid-svg-icons/faCirclePlus.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faFilePdf__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faFilePdf */ "./node_modules/@fortawesome/free-solid-svg-icons/faFilePdf.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faPen__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faPen */ "./node_modules/@fortawesome/free-solid-svg-icons/faPen.js");
 /* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @fortawesome/react-fontawesome */ "./node_modules/@fortawesome/react-fontawesome/index.es.js");
 /* harmony import */ var _inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @inertiajs/inertia-react */ "./node_modules/@inertiajs/inertia-react/dist/index.js");
 /* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Utils */ "./resources/js/Utils.js");
@@ -5655,16 +5901,31 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function DocumentItem(document) {
+
+function DocumentItem(document, canEdit) {
+  var date = new Date(document.date);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
-    className: "mylist-item flex flex-row p-2 items-center gap-2",
+    className: "mylist-item flex flex-col md:flex-row p-2 items-center gap-2",
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "flex flex-col items-center mr-4",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
+        className: "text-3xl font-bold",
+        children: [date.toLocaleDateString('it-IT', {
+          'day': '2-digit'
+        }), ".", date.toLocaleDateString('it-IT', {
+          'month': '2-digit'
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+        className: "font-bold",
+        children: date.toLocaleDateString('it-IT', {
+          'year': 'numeric'
+        })
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
       className: "grow flex flex-col",
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
         className: "text-gray-500 text-sm",
-        children: [new Date(document.date).toLocaleDateString('it-IT', {
-          'dateStyle': 'long'
-        }), " - Protocollo web ", document.handle]
+        children: ["Protocollo web ", document.handle]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
         className: "text-xl font-bold",
         children: document.identifier
@@ -5677,13 +5938,22 @@ function DocumentItem(document) {
           'dateStyle': 'long'
         }), " da ", document.author.email]
       })]
+    }), canEdit && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
+      href: route('board.edit', {
+        document: document.id
+      }),
+      className: "",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
+        icon: _fortawesome_free_solid_svg_icons_faPen__WEBPACK_IMPORTED_MODULE_4__.faPen,
+        className: "text-4xl !p-4 icon-button"
+      })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("a", {
       href: route('board.view', {
         document: document.id
       }),
       className: "",
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
-        icon: _fortawesome_free_solid_svg_icons_faFilePdf__WEBPACK_IMPORTED_MODULE_4__.faFilePdf,
+        icon: _fortawesome_free_solid_svg_icons_faFilePdf__WEBPACK_IMPORTED_MODULE_5__.faFilePdf,
         className: "text-4xl !p-4 icon-button"
       })
     })]
@@ -5692,6 +5962,7 @@ function DocumentItem(document) {
 function List() {
   var documents = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.documents;
   var total = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.total;
+  var canEdit = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.canEdit;
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
     className: "main-container",
     children: [(0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.canUpload && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
@@ -5700,7 +5971,7 @@ function List() {
         className: "button",
         href: route('board.add'),
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
-          icon: _fortawesome_free_solid_svg_icons_faCirclePlus__WEBPACK_IMPORTED_MODULE_5__.faCirclePlus
+          icon: _fortawesome_free_solid_svg_icons_faCirclePlus__WEBPACK_IMPORTED_MODULE_6__.faCirclePlus
         }), "Aggiungi"]
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
@@ -5709,7 +5980,7 @@ function List() {
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
       className: "w-full flex flex-col items-stretch mt-4",
       children: documents.map(function (document) {
-        return DocumentItem(document);
+        return DocumentItem(document, canEdit);
       })
     })]
   });
@@ -5726,7 +5997,7 @@ function List() {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Add)
+/* harmony export */   "default": () => (/* binding */ Upload)
 /* harmony export */ });
 /* harmony import */ var _inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @inertiajs/inertia-react */ "./node_modules/@inertiajs/inertia-react/dist/index.js");
 /* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Utils */ "./resources/js/Utils.js");
@@ -5749,7 +6020,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-function Add() {
+function Upload() {
   var privacies = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.privacies;
   var _useForm = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.useForm)({
       privacy: privacies[0],
@@ -5777,6 +6048,9 @@ function Add() {
     onSubmit: submit,
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("h3", {
       children: "Carica documento"
+    }), !(0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.canEdit && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+      className: "error",
+      children: "Attenzione: possiedi i permessi di caricare documenti, ma non di modificare documenti gi\xE0 caricati. Rivedi con attenzione tutti i campi prima di salvare."
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
       children: "Identificativo"
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_IdSelector__WEBPACK_IMPORTED_MODULE_2__["default"], {
@@ -5797,7 +6071,7 @@ function Add() {
             return setData('privacy', p);
           },
           children: _Utils__WEBPACK_IMPORTED_MODULE_1__.Documents.names[p] || p
-        });
+        }, p);
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
       className: "error",
@@ -6085,6 +6359,92 @@ function Backdrop(_ref) {
         children: text
       })]
     })]
+  });
+}
+
+/***/ }),
+
+/***/ "./resources/js/Layout/Dialog.js":
+/*!***************************************!*\
+  !*** ./resources/js/Layout/Dialog.js ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Dialog)
+/* harmony export */ });
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faCircleCheck__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faCircleCheck */ "./node_modules/@fortawesome/free-solid-svg-icons/faCircleCheck.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faCircleXmark__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faCircleXmark */ "./node_modules/@fortawesome/free-solid-svg-icons/faCircleXmark.js");
+/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @fortawesome/react-fontawesome */ "./node_modules/@fortawesome/react-fontawesome/index.es.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+
+// import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+// import { Alert, AlertTitle, IconButton, Modal } from "@mui/material";
+
+// const style = {
+//     position: 'absolute',
+//     top: '50%',
+//     left: '50%',
+//     transform: 'translate(-50%, -50%)',
+//     boxShadow: 24,
+//     p: 4,
+// };
+
+
+
+function Dialog(_ref) {
+  var open = _ref.open,
+    undoLabel = _ref.undoLabel,
+    confirmLabel = _ref.confirmLabel,
+    onClose = _ref.onClose,
+    onConfirm = _ref.onConfirm,
+    children = _ref.children;
+  if (!open) return "";
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      className: "fixed inset-0 flex justify-center items-center",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "absolute w-full h-full bg-halfblack z-40",
+        onClick: function onClick(e) {
+          e.preventDefault();
+          onClose();
+        }
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        className: "max-w-full md:max-w-[33%] border rounded-xl bg-white z-50 flex flex-col items-stretch p-8",
+        onClick: function onClick() {},
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+          className: "text-black pt-4 pb-2 px-4 rounded-t-xl text-center",
+          children: children
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+          className: "w-full flex flex-row items-stretch gap-2 justify-evenly",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("button", {
+            className: "button",
+            onClick: function onClick(e) {
+              e.preventDefault();
+              onClose();
+            },
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
+              icon: _fortawesome_free_solid_svg_icons_faCircleXmark__WEBPACK_IMPORTED_MODULE_3__.faCircleXmark
+            }), undoLabel || "Annulla"]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("button", {
+            className: "button",
+            onClick: function onClick(e) {
+              e.preventDefault();
+              onConfirm();
+            },
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
+              icon: _fortawesome_free_solid_svg_icons_faCircleCheck__WEBPACK_IMPORTED_MODULE_4__.faCircleCheck
+            }), confirmLabel || "Conferma"]
+          })]
+        })]
+      })]
+    })
   });
 }
 
@@ -6991,7 +7351,7 @@ _defineProperty(Documents, "names", {
   'everyone': 'Tutti',
   'members': 'Soci',
   'cda': 'CdA',
-  'internal': 'Segreteria'
+  'secretariat': 'Segreteria'
 });
 function bgAndContrast(bgColor) {
   return {
@@ -7115,7 +7475,8 @@ module.exports = {
     error: '#ff3333',
     gray: colors.gray,
     white: colors.white,
-    black: colors.black
+    black: colors.black,
+    halfblack: '#000000A0'
   }
 };
 
@@ -71137,6 +71498,8 @@ var map = {
 	"./Accesses/AskAccess.js": "./resources/js/Accesses/AskAccess.js",
 	"./Accesses/List": "./resources/js/Accesses/List.js",
 	"./Accesses/List.js": "./resources/js/Accesses/List.js",
+	"./Board/Edit": "./resources/js/Board/Edit.js",
+	"./Board/Edit.js": "./resources/js/Board/Edit.js",
 	"./Board/IdSelector": "./resources/js/Board/IdSelector.js",
 	"./Board/IdSelector.js": "./resources/js/Board/IdSelector.js",
 	"./Board/List": "./resources/js/Board/List.js",
@@ -71153,6 +71516,8 @@ var map = {
 	"./Home.js": "./resources/js/Home.js",
 	"./Layout/Backdrop": "./resources/js/Layout/Backdrop.js",
 	"./Layout/Backdrop.js": "./resources/js/Layout/Backdrop.js",
+	"./Layout/Dialog": "./resources/js/Layout/Dialog.js",
+	"./Layout/Dialog.js": "./resources/js/Layout/Dialog.js",
 	"./Layout/MainLayout": "./resources/js/Layout/MainLayout.js",
 	"./Layout/MainLayout.js": "./resources/js/Layout/MainLayout.js",
 	"./Members/List": "./resources/js/Members/List.js",

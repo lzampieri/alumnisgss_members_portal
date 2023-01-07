@@ -68,6 +68,40 @@ class DocumentsController extends Controller
         return redirect()->route('board')->with(['notistack' => ['success', 'File caricato con protocollo ' . $handle]]);
     }
 
+    public function edit(Document $document)
+    {
+        $this->authorize('edit', Document::class);
+
+        return Inertia::render('Board/Edit', ['document' => $document, 'privacies' => Document::$privacies]);
+    }
+   
+    public function edit_post(Request $request, Document $document)
+    {
+        $this->authorize('edit', Document::class);
+
+        $validated = $request->validate([
+            'privacy' => 'required|in:' . implode(',', Document::$privacies),
+            'identifier' => 'required|min:3',
+            'date' => 'required|date|before_or_equal:now',
+            'note' => ''
+        ]);
+
+        $document->update($validated);
+        Log::debug('Document updated', $validated);
+
+        return redirect()->route('board')->with(['notistack' => ['success', 'Dati aggiornati']]);
+    }
+ 
+    public function delete_post(Request $request, Document $document)
+    {
+        $this->authorize('edit', Document::class);
+        Log::debug('Document deleted', $document);
+
+        $document->delete();
+
+        return redirect()->route('board')->with(['notistack' => ['success', 'Eliminato']]);
+    }
+
     public function view(Document $document)
     {
         $this->authorize('view', $document);
