@@ -34,10 +34,16 @@ export default function List() {
                     Aggiungi
                 </Link>
                 {usePage().props.canImport &&
-                    <Link className="button" href={route('registry.bulk')}>
+                    <Link className="button" href={route('registry.bulk.import')}>
                         <FontAwesomeIcon icon={solid('folder-plus')} />
                         Importa
                     </Link>
+                }
+                {usePage().props.canImport &&
+                    <a className="button" href={route('registry.bulk.export')}>
+                        <FontAwesomeIcon icon={solid('download')} />
+                        Esporta
+                    </a>
                 }
             </div>
             <ListTemplate

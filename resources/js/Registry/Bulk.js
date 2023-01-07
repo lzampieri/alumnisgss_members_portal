@@ -28,7 +28,7 @@ export default function Bulk() {
         setWrongLines( tempWrongLines );
 
         if( tempWrongLines.length == 0 )
-            post( route( 'registry.bulk' ) );
+            post( route( 'registry.bulk.import' ) );
     }
 
     const textAreaManager = ( e ) => {

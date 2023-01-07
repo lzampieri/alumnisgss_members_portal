@@ -49,14 +49,14 @@ class AlumnusController extends Controller
         return redirect()->route('registry')->with('notistack', ['success', 'Inserimento riuscito']);
     }
 
-    public function bulk()
+    public function bulk_im()
     {
         $this->authorize('bulkEdit', Alumnus::class);
 
         return Inertia::render('Registry/Bulk');
     }
 
-    public function bulk_post(Request $request)
+    public function bulk_im_post(Request $request)
     {
         $this->authorize('bulkEdit', Alumnus::class);
 
@@ -85,6 +85,17 @@ class AlumnusController extends Controller
         return redirect()->route('registry')->with('notistack', ['success', 'Anagrafiche inserite: ' . $count]);
     }
 
+    public function bulk_ex()
+    {
+        $this->authorize('bulkEdit', Alumnus::class);
+
+        return response()->streamDownload( function() {
+            echo "\xEF\xBB\xBF"; // UTF-8 BOM
+            $alumni = Alumnus::all();
+            foreach( $alumni as $a )
+                echo implode( ',', [ $a->name, $a->surname, $a->coorte, $a->status ] ) . "\n";
+        }, 'export_' . date('Ymd') . '.csv' );
+    }
 
     public function edit(Request $request, Alumnus $alumnus)
     {
