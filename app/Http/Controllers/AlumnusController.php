@@ -94,7 +94,7 @@ class AlumnusController extends Controller
             $alumni = Alumnus::all();
             foreach( $alumni as $a )
                 echo implode( ',', [ $a->name, $a->surname, $a->coorte, $a->status ] ) . "\n";
-        }, 'export_' . date('Ymd') . '.csv' );
+        }, 'export_' . date('Ymd') . '_' . env('APP_ENV','debug') .  '.csv' );
     }
 
     public function edit(Request $request, Alumnus $alumnus)

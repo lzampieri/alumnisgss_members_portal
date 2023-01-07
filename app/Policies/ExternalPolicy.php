@@ -2,38 +2,36 @@
 
 namespace App\Policies;
 
-use App\Models\User;
+use App\Models\External;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class UserPolicy
+class ExternalPolicy
 {
     use HandlesAuthorization;
 
-    public function login(User $user) {
-        return $user->hasPermissionTo( 'login' );
-    }
-
+    /**
+     * Determine whether the user can view any models.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
     public function viewAny(User $user)
     {
-        return $user->hasPermissionTo( 'user-view' );
-    }
-
-    public function enabling(User $user)
-    {
-        return $user->hasPermissionTo( 'user-enabling' );
+        //
     }
 
     /**
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\External  $external
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    // public function view(User $user, User $model)
-    // {
-    //     //
-    // }
+    public function view(User $user, External $external)
+    {
+        //
+    }
 
     /**
      * Determine whether the user can create models.
@@ -41,56 +39,56 @@ class UserPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    // public function create(User $user)
-    // {
-    //     //
-    // }
+    public function create(User $user)
+    {
+        //
+    }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\External  $external
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    // public function update(User $user, User $model)
-    // {
-    //     //
-    // }
+    public function update(User $user, External $external)
+    {
+        //
+    }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\External  $external
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    // public function delete(User $user, User $model)
-    // {
-    //     //
-    // }
+    public function delete(User $user, External $external)
+    {
+        //
+    }
 
     /**
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\External  $external
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    // public function restore(User $user, User $model)
-    // {
-    //     //
-    // }
+    public function restore(User $user, External $external)
+    {
+        //
+    }
 
     /**
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\External  $external
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    // public function forceDelete(User $user, User $model)
-    // {
-    //     //
-    // }
+    public function forceDelete(User $user, External $external)
+    {
+        //
+    }
 }

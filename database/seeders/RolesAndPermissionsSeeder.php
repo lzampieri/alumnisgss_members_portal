@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Http\Controllers\PermissionsController;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -18,21 +19,15 @@ class RolesAndPermissionsSeeder extends Seeder
         // Reset cached roles and permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // create permissions
-
-        // Users
-        Permission::create(['name' => 'login']);
-        Permission::create(['name' => 'user-view']);
-        Permission::create(['name' => 'user-enabling']);
         
-        // Edit permissions
-        Permission::create(['name' => 'permissions-view']);
-        Permission::create(['name' => 'permissions-edit']);
-
         // create roles
         Role::create(['name' => 'secretariat']);
+        $wm = Role::create(['name' => 'webmaster']);
+        
+        // create permissions
+        PermissionsController::verify();
 
-        Role::create(['name' => 'webmaster'])
-            ->givePermissionTo(Permission::all());
+        // all permissions to webmaster
+        $wm->givePermissionTo(Permission::all());
     }
 }

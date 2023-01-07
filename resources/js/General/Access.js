@@ -9,7 +9,7 @@ export default function Access() {
         return (
             <div className="w-full flex flex-col flex-wrap justify-center items-center px-14 py-8 gap-2">
                 <span className="text-primary-main">
-                    Accesso eseguito come {user.email}
+                    Accesso eseguito come {user.identity ? user.identity.name || '' + " " + user.identity.surname || '' : user.credential}
                 </span>
                 <a className="
                 border-4 border-primary-main rounded-3xl

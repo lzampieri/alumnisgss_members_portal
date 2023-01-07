@@ -33,14 +33,14 @@ class PermissionsController extends Controller
         return Inertia::render('Permissions/List', ['roles' => $roles, 'perms' => $perms]);
     }
 
-    public function verify() {
+    public static function verify() {
         $count = Permission::count();
 
         $permissions_to_assert = [
             // Users
             'login',
-            'user-view',
-            'user-enabling',
+            'logins-view',
+            'logins-enabling',
             // Edit roles and permissions
             'permissions-view',
             'permissions-edit',

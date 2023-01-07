@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\LoginMethod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
-class UserController extends Controller
+class LoginMethodController extends Controller
 {
     public function list()
     {
-        $this->authorize('viewAny', User::class);
-        $users = User::orderBy('email')->with('roles')->get();
+        $this->authorize('viewAny', LoginMethod::class);
+        $lmthds = LoginMethod::orderBy('credential')->with(['identity','identity.roles'])->get();
 
-        $users = $users->map( function ( $user ) { $user['enabled'] = $user->enabled(); return $user; } );
+        $lmthds = $lmthds->map( function ( $lmthds ) { $lmthds['enabled'] = $lmthds->enabled(); return $lmthds; } );
 
-        return Inertia::render('Accesses/List', ['users' => $users, 'editableRoles' => Auth::user()->editableRoles() ]);
+        return Inertia::render('Accesses/List', ['lmthds' => $lmthds, 'editableRoles' => Auth::user()->identity->editableRoles() ]);
     }
 
     public function enabling(Request $request, User $user) {

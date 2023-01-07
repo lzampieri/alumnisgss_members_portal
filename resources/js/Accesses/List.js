@@ -34,25 +34,28 @@ function userRoleRemove(id, role, setProcessing) {
     )
 }
 
-function UserItem(user, filter, editableRoles, setProcessing) {
-    let visible = filter ? user.email.toLowerCase().includes(filter.toLowerCase()) : true
+function LmthdItem(lmthd, filter, editableRoles, setProcessing) {
+    let key = lmthd.credential;
+    key += lmthd.identity ? lmthd.identity.name + lmthd.identity.surname : "";
+    let visible = filter ? key.toLowerCase().includes(filter.toLowerCase()) : true
     const [dropdownOpen, setDropdownOpen] = useState(true);
 
+    // TODO sistemare questa pagina con la gestione delle identità
     return (
-        <div key={user.id} style={ disappearing( visible ) } >
+        <div key={lmthd.id} style={ disappearing( visible ) } >
             <div className="mylist-item flex flex-row p-2 items-center gap-2">
-                <Switch checked={user.enabled} onChange={(checked) => userEnabling(user.id, checked, setProcessing)} />
-                <div className={"flex flex-col" + (user.enabled ? "" : " text-gray-400")}>
-                    {user.email}
-                    <div className="text-gray-400 text-sm">Registrato il {new Date(Date.parse(user.created_at)).toLocaleDateString('it-IT')}</div>
-                    <div className="text-gray-400 text-sm">Ultimo accesso {new Date(Date.parse(user.last_login)).toLocaleString('it-IT')}</div>
+                <Switch checked={lmthd.enabled} onChange={(checked) => userEnabling(lmthd.id, checked, setProcessing)} />
+                <div className={"flex flex-col" + (lmthd.enabled ? "" : " text-gray-400")}>
+                    {lmthd.credential}
+                    <div className="text-gray-400 text-sm">Registrato il {new Date(Date.parse(lmthd.created_at)).toLocaleDateString('it-IT')}</div>
+                    <div className="text-gray-400 text-sm">Ultimo accesso {new Date(Date.parse(lmthd.last_login)).toLocaleString('it-IT')}</div>
                 </div>
-                { user.enabled && <>
-                    {user.roles.map(role =>
+                { lmthd.enabled && <>
+                    {lmthd.identity && lmthd.identity.roles.map(role =>
                         <div className="chip" key={role}>
                             {Roles.names[role.name]}
                             {editableRoles.indexOf(role.name) > -1 ?
-                                <FontAwesomeIcon icon={solid('xmark')} className="ml-1 px-1 hover:text-white hover:bg-gray-700 rounded-full" onClick={() => userRoleRemove(user.id, role.name, setProcessing)} />
+                                <FontAwesomeIcon icon={solid('xmark')} className="ml-1 px-1 hover:text-white hover:bg-gray-700 rounded-full" onClick={() => userRoleRemove(lmthd.id, role.name, setProcessing)} />
                                 : ""}
                         </div>
                     )}
@@ -60,8 +63,8 @@ function UserItem(user, filter, editableRoles, setProcessing) {
                         <FontAwesomeIcon icon={solid('plus')} onClick={() => setDropdownOpen(!dropdownOpen)} />
                         <div className="dropdown-content-flex flex-col gap-2">
                             {editableRoles.map(role => (
-                                user.roles.indexOf(role) > -1 ? "" :
-                                    <div className="chip cursor-pointer" key={role} onClick={() => userRoleAdd(user.id, role, setProcessing)} >{Roles.names[role]}</div>
+                                lmthd.identity && lmthd.identity.roles.indexOf(role) > -1 ? "" :
+                                    <div className="chip cursor-pointer" key={role} onClick={() => userRoleAdd(lmthd.id, role, setProcessing)} >{Roles.names[role]}</div>
                             ))}
                         </div>
                     </div>
@@ -72,7 +75,7 @@ function UserItem(user, filter, editableRoles, setProcessing) {
 }
 
 export default function List() {
-    const users = usePage().props.users
+    const lmthds = usePage().props.lmthds
     const editableRoles = usePage().props.editableRoles
     const [filter, setFilter] = useState("")
     const [processing, setProcessing] = useState(false);
@@ -84,7 +87,7 @@ export default function List() {
                 <FontAwesomeIcon icon={solid('magnifying-glass')} className="input-icon" />
             </div>
             <div className="w-full flex flex-col items-stretch mt-4">
-                {users.map(user => UserItem(user, filter, editableRoles, setProcessing))}
+                {lmthds.map(lmthd => LmthdItem(lmthd, filter, editableRoles, setProcessing))}
             </div>
             <Backdrop open={processing} />
         </div>

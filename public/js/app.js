@@ -5500,39 +5500,43 @@ function userRoleRemove(id, role, setProcessing) {
     preserveScroll: true
   });
 }
-function UserItem(user, filter, editableRoles, setProcessing) {
-  var visible = filter ? user.email.toLowerCase().includes(filter.toLowerCase()) : true;
+function LmthdItem(lmthd, filter, editableRoles, setProcessing) {
+  var key = lmthd.credential;
+  key += lmthd.identity ? lmthd.identity.name + lmthd.identity.surname : "";
+  var visible = filter ? key.toLowerCase().includes(filter.toLowerCase()) : true;
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(true),
     _useState2 = _slicedToArray(_useState, 2),
     dropdownOpen = _useState2[0],
     setDropdownOpen = _useState2[1];
+
+  // TODO sistemare questa pagina con la gestione delle identità
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
     style: (0,_Utils__WEBPACK_IMPORTED_MODULE_6__.disappearing)(visible),
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
       className: "mylist-item flex flex-row p-2 items-center gap-2",
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(react_switch__WEBPACK_IMPORTED_MODULE_3__["default"], {
-        checked: user.enabled,
+        checked: lmthd.enabled,
         onChange: function onChange(checked) {
-          return userEnabling(user.id, checked, setProcessing);
+          return userEnabling(lmthd.id, checked, setProcessing);
         }
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-        className: "flex flex-col" + (user.enabled ? "" : " text-gray-400"),
-        children: [user.email, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+        className: "flex flex-col" + (lmthd.enabled ? "" : " text-gray-400"),
+        children: [lmthd.credential, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
           className: "text-gray-400 text-sm",
-          children: ["Registrato il ", new Date(Date.parse(user.created_at)).toLocaleDateString('it-IT')]
+          children: ["Registrato il ", new Date(Date.parse(lmthd.created_at)).toLocaleDateString('it-IT')]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
           className: "text-gray-400 text-sm",
-          children: ["Ultimo accesso ", new Date(Date.parse(user.last_login)).toLocaleString('it-IT')]
+          children: ["Ultimo accesso ", new Date(Date.parse(lmthd.last_login)).toLocaleString('it-IT')]
         })]
-      }), user.enabled && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
-        children: [user.roles.map(function (role) {
+      }), lmthd.enabled && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+        children: [lmthd.identity && lmthd.identity.roles.map(function (role) {
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
             className: "chip",
             children: [_Utils__WEBPACK_IMPORTED_MODULE_6__.Roles.names[role.name], editableRoles.indexOf(role.name) > -1 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
               icon: _fortawesome_free_solid_svg_icons_faXmark__WEBPACK_IMPORTED_MODULE_8__.faXmark,
               className: "ml-1 px-1 hover:text-white hover:bg-gray-700 rounded-full",
               onClick: function onClick() {
-                return userRoleRemove(user.id, role.name, setProcessing);
+                return userRoleRemove(lmthd.id, role.name, setProcessing);
               }
             }) : ""]
           }, role);
@@ -5546,10 +5550,10 @@ function UserItem(user, filter, editableRoles, setProcessing) {
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
             className: "dropdown-content-flex flex-col gap-2",
             children: editableRoles.map(function (role) {
-              return user.roles.indexOf(role) > -1 ? "" : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+              return lmthd.identity && lmthd.identity.roles.indexOf(role) > -1 ? "" : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
                 className: "chip cursor-pointer",
                 onClick: function onClick() {
-                  return userRoleAdd(user.id, role, setProcessing);
+                  return userRoleAdd(lmthd.id, role, setProcessing);
                 },
                 children: _Utils__WEBPACK_IMPORTED_MODULE_6__.Roles.names[role]
               }, role);
@@ -5558,10 +5562,10 @@ function UserItem(user, filter, editableRoles, setProcessing) {
         })]
       })]
     })
-  }, user.id);
+  }, lmthd.id);
 }
 function List() {
-  var users = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.users;
+  var lmthds = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.lmthds;
   var editableRoles = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.editableRoles;
   var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(""),
     _useState4 = _slicedToArray(_useState3, 2),
@@ -5589,8 +5593,8 @@ function List() {
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
       className: "w-full flex flex-col items-stretch mt-4",
-      children: users.map(function (user) {
-        return UserItem(user, filter, editableRoles, setProcessing);
+      children: lmthds.map(function (lmthd) {
+        return LmthdItem(lmthd, filter, editableRoles, setProcessing);
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_Layout_Backdrop__WEBPACK_IMPORTED_MODULE_4__["default"], {
       open: processing
@@ -6202,7 +6206,7 @@ function Access() {
     className: "w-full flex flex-col flex-wrap justify-center items-center px-14 py-8 gap-2",
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("span", {
       className: "text-primary-main",
-      children: ["Accesso eseguito come ", user.email]
+      children: ["Accesso eseguito come ", user.identity ? user.identity.name || '' + " " + user.identity.surname || 0 : user.credential]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
       className: "\r border-4 border-primary-main rounded-3xl\r text-primary-main bg-primary-contrast\r hover:text-primary-contrast hover:bg-primary-main\r flex flex-col items-center justify-center text-xl gap-4\r no-underline\r p-2\r ",
       href: route('auth.logout'),

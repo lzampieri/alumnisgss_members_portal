@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Document;
-use App\Models\User;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Auth;
 
