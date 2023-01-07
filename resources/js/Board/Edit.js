@@ -34,7 +34,7 @@ export default function Edit() {
     return (
         <form className="flex flex-col w-full md:w-3/5" onSubmit={submit}>
             <h3>Modifica documento</h3>
-            <span className="font-bold">Protocollo web: {document.handle}</span>
+            <span className="font-bold">Protocollo web: {prevDoc.handle}</span>
             <label>Identificativo</label>
             <IdSelector onChange={(idf) => setData('identifier', idf)} prevIdf={data.identifier} />
             <label className="error">{errors.identifier}</label>
@@ -55,7 +55,7 @@ export default function Edit() {
             <input type="button" className="button mt-4" onClick={submit} value="Salva" />
             <button className="button mt-8 text-center" onClick={(e) => { e.preventDefault(); setDeleteDialogOpen(true) }}>Elimina</button>
             <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)} onConfirm={() => submitDelete()}>
-                Sei sicuro di voler eliminare il documento {document.title}?
+                Sei sicuro di voler eliminare il documento {prevDoc.title}?
             </Dialog>
             <Backdrop open={processing} />
         </form>

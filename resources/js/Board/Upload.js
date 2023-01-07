@@ -12,6 +12,7 @@ export default function Upload() {
         privacy: privacies[0],
         identifier: '',
         date: new Date(),
+        prehandle: '',
         note: '',
         file: ''
     })
@@ -20,6 +21,11 @@ export default function Upload() {
 
     const submit = ( e ) => {
         e.preventDefault();
+
+        data.prehandle = data.date.toLocaleDateString('it-IT', {'year': 'numeric'});
+        let months = ['A', 'B', 'C', 'D', 'E', 'H', 'L', 'M', 'P', 'R', 'S', 'T'];
+        data.prehandle = data.prehandle + months[ data.date.toLocaleDateString('it-IT', {'month': 'numeric'}) - 1 ];
+
         post( route( 'board.add' ) );
     }
 

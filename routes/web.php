@@ -31,6 +31,5 @@ Route::get('/logs', [ Log::class, 'index' ] )->name('log');
 
 // Migrations
 Route::get('/db/migrate', function () { Artisan::call('migrate', ['--force' => true]); } );
-Route::get('/db/seed', function () { Artisan::call('db:seed', ['--force' => true]); } );
 
 Route::redirect('/main','https://www.alumniscuolagalileiana.it')->name('main');

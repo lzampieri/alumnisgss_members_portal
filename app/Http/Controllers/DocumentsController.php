@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Document;
 use App\Policies\DocumentPolicy;
-use DateTimeImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use setasign\Fpdi\Fpdi;
 use Inertia\Inertia;
 
@@ -18,7 +16,7 @@ class DocumentsController extends Controller
         $params = [];
 
         $privacies = DocumentPolicy::visiblePrivacies();
-        $params['documents'] = Document::whereIn('privacy', $privacies)->with('author')->orderBy('date', 'desc')->get();
+        $params['documents'] = Document::whereIn('privacy', $privacies)->with('author')->orderBy('date', 'desc')->orderBy('handle', 'desc')->get();
 
         $params['total'] = Document::count();
 
@@ -45,6 +43,7 @@ class DocumentsController extends Controller
             'privacy' => 'required|in:' . implode(',', Document::$privacies),
             'identifier' => 'required|unique:documents,identifier',
             'date' => 'required|date|before_or_equal:now',
+            'prehandle' => 'required|min:5|max:5',
             'note' => '',
             'file' => 'required|mimes:pdf'
         ]);
@@ -55,9 +54,7 @@ class DocumentsController extends Controller
         $document = Document::create($validated);
         Log::debug('Document created', $validated);
 
-        $months = ['A', 'B', 'C', 'D', 'E', 'H', 'L', 'M', 'P', 'R', 'S', 'T'];
-        $date = new DateTimeImmutable($validated['date']);
-        $handle = $date->format("Y") . $months[$date->format("n") - 1] . str_pad($document->id, 6, '0', STR_PAD_LEFT);
+        $handle = $validated['prehandle'] . str_pad($document->id, 6, '0', STR_PAD_LEFT);
 
         $validated['file']->storeAs('documents', $handle . '.pdf');
         Log::debug('File uploaded', $handle . '.pdf');
