@@ -15,17 +15,17 @@ class Document extends Model
         'date',
         'note',
         'handle',
+        'author_type',
         'author_id'
     ];
 
-
     protected $casts = [
         'date' => 'datetime',
-    ];    
+    ];
 
     public static $privacies = [
         'everyone',
-        // 'members', Still to implement
+        'members',
         'cda',
         'secretariat'
     ];

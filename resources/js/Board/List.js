@@ -46,7 +46,7 @@ export default function List() {
                     Aggiungi
                 </Link>
             </div>}
-            <span className="text-sm">{documents.length} documenti visualizzati su {total} totali.</span>
+            <span className="text-sm">{documents.length} document{documents.length == 1 ? 'o' : 'i'} visualizzabili coi correnti permessi.</span>
             <div className="w-full flex flex-col items-stretch mt-4">
                 {documents.map(document => DocumentItem(document, canEdit))}
             </div>

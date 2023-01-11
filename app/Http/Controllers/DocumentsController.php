@@ -52,6 +52,8 @@ class DocumentsController extends Controller
         $validated['author_id'] = Auth::user()->identity_id;
         $validated['handle'] = 'None';
 
+        Log::debug('Test',$validated);
+
         $document = Document::create($validated);
         Log::debug('Document created', $validated);
 

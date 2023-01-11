@@ -6258,7 +6258,7 @@ function List() {
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
       className: "text-sm",
-      children: [documents.length, " documenti visualizzati su ", total, " totali."]
+      children: [documents.length, " document", documents.length == 1 ? 'o' : 'i', " visualizzabili coi correnti permessi."]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
       className: "w-full flex flex-col items-stretch mt-4",
       children: documents.map(function (document) {
