@@ -7,8 +7,8 @@ function AlumnusItem(alumnus) {
         <div className="mylist-item flex flex-row p-2">
             {alumnus.surname} {alumnus.name}
             <div className="chip">{romanize(alumnus.coorte)}</div>
-            <div className="chip" style={ bgAndContrast( AlumnusStatus.colors[ alumnus.status ] ) }>
-                { AlumnusStatus.acronym[ alumnus.status ]}
+            <div className="chip" style={ bgAndContrast( AlumnusStatus[ alumnus.status ].color ) }>
+                { AlumnusStatus[ alumnus.status ].acronym }
             </div>
         </div>
     )

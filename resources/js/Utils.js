@@ -18,17 +18,16 @@ export function romanize (num) {
 }
 
 export class AlumnusStatus {
-    static HasRight = 0;
-    static HasntRight = 1;
-    static Candidate = 2;
-    static Member = 3;
-    static Dead = 4;
-    static Disallow = 5;
-    static StudentNotMember = 6;
-    static StudentMember = 7;
-    static names = [ 'Avente diritto', 'Non avente diritto', 'Da ratificare', 'Socio', 'Deceduto', 'Rifiuta', 'Studente socio', 'Studente non socio' ]
-    static acronym = [ 'AD', 'NAD', 'DR', 'S', 'D', 'R', 'SS', 'SNS' ]
-    static colors = [ '#FFFF00', '#FF00FF', '#0000FF', '#00CC00', '#003300', '#FF0000', '#00FF99', '#FF9900']
+    static status = {
+        member: { label: 'Socio', acronym: 'S', color: '#00CC00' },
+        student_member: { label: 'Socio studente', acronym: 'SS', color: '#00FF99' },
+        not_reached: { label: 'Non raggiunto', acronym: '?', color: '#FFFF00' },
+        student_not_reached: { label: 'Studente non raggiunto', acronym: 'S?', color: '#FF9900' },
+        student_not_agreed: { label: 'Studente rifiutante', acronym: 'SR', color: '#FF0000' },
+        hasnt_right: { label: 'Non avente diritto', acronym: 'NAD', color: '#FF00FF' },
+        dead: { label: 'Deceduto', acronym: 'D', color: '#003300' },
+        not_agreed: { label: 'Rifiutante', acronym: 'R', color: '#FF0000' },
+    };
 }
 
 export class Roles {

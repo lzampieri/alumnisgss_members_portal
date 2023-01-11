@@ -12,12 +12,14 @@ export default function Edit() {
         status: prev.status
     })
 
+    console.log( prev.status )
+
     const submit = ( e ) => {
         e.preventDefault();
         post( route( 'registry.edit', { alumnus: prev.id } ) );
     }
 
-    const options = AlumnusStatus.names.map( (v,i) => { return { value: i, label: v } } )
+    const options = usePage().props.availableStatus.map( i => { return { value: i, label: AlumnusStatus.status[ i ].label } } )
 
     return (
         <form className="flex flex-col w-full md:w-3/5" onSubmit={ submit }>
@@ -32,7 +34,7 @@ export default function Edit() {
             <input type="number" value={ data.coorte } onChange={ ( e ) => setData( 'coorte', e.target.value ) } />
             <label className="error">{ errors.coorte }</label>
             <label>Stato</label>
-            <Select value={ options[ data.status ] } onChange={ ( sel ) => setData( 'status', sel.value ) } options={ options } />
+            <Select value={ options.find( i => i.value == data.status ) } onChange={ ( sel ) => setData( 'status', sel.value ) } options={ options } />
             <label className="error">{ errors.status }</label>
             <input type="button" className="button mt-4" onClick={ submit } value="Aggiorna" />
         </form>

@@ -29,7 +29,7 @@ class AlumnusController extends Controller
     {
         $this->authorize('edit', Alumnus::class);
 
-        return Inertia::render('Registry/Add');
+        return Inertia::render('Registry/Add', ['availableStatus' => Alumnus::status ]);
     }
 
     public function add_post(Request $request)
@@ -40,7 +40,7 @@ class AlumnusController extends Controller
             'surname' => 'required|regex:/^[A-zÀ-ú\s]+$/',
             'name' => 'required|regex:/^[A-zÀ-ú\s]+$/',
             'coorte' => 'required|numeric',
-            'status' => 'required|numeric'
+            'status' => 'required|in:' . implode(',',Alumnus::status )
         ]);
 
         Alumnus::create($validated);
@@ -68,7 +68,7 @@ class AlumnusController extends Controller
             $fields = explode(',', $line);
             if (count($fields) != 4) continue;
             if (!is_numeric($fields[2])) continue;
-            if (!is_numeric($fields[3])) continue;
+            if (!in_array($fields[3],Alumnus::status)) continue;
 
             $data = [
                 'surname' => $fields[0],
@@ -101,7 +101,7 @@ class AlumnusController extends Controller
     {
         $this->authorize('edit', Alumnus::class);
 
-        return Inertia::render('Registry/Edit', ['alumnus' => $alumnus]);
+        return Inertia::render('Registry/Edit', ['alumnus' => $alumnus, 'availableStatus' => Alumnus::status ]);
     }
 
     public function edit_post(Request $request, Alumnus $alumnus)
@@ -112,7 +112,7 @@ class AlumnusController extends Controller
             'surname' => 'required|regex:/^[A-zÀ-ú\s]+$/',
             'name' => 'required|regex:/^[A-zÀ-ú\s]+$/',
             'coorte' => 'required|numeric',
-            'status' => 'required|numeric'
+            'status' => 'required|in:' . implode(',',Alumnus::status )
         ]);
 
         $alumnus->update($validated);

@@ -19,7 +19,7 @@ class CreateAlumniTable extends Migration
             $table->string('surname', 500);
             $table->string('name', 500);
             $table->integer('coorte');
-            $table->integer('status');
+            $table->string('status', 50);
         });
     }
 

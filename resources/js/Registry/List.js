@@ -7,12 +7,12 @@ import ListTemplate from "./ListTemplate";
 function AlumnusLink(alumnus) {
     return (
         <div className="mylist-item flex flex-row p-2">
-            <span style={{ color: AlumnusStatus.colors[alumnus.status] }} className="pr-2 group relative z-auto">
-                <div className="chip" style={ bgAndContrast( AlumnusStatus.colors[ alumnus.status ] ) }>
-                    { AlumnusStatus.acronym[ alumnus.status ]}
+            <span style={{ color: AlumnusStatus.status[alumnus.status].color }} className="pr-2 group relative z-auto">
+                <div className="chip" style={bgAndContrast(AlumnusStatus.status[alumnus.status].color)}>
+                    {AlumnusStatus.status[alumnus.status].acronym}
                 </div>
                 <span className="tooltip-right">
-                    {AlumnusStatus.names[alumnus.status]}
+                    {AlumnusStatus.status[alumnus.status].label}
                 </span>
             </span>
             {alumnus.surname} {alumnus.name}
@@ -47,8 +47,8 @@ export default function List() {
                 }
             </div>
             <ListTemplate
-                data={ alumni }
-                itemFunction={ AlumnusLink } />
+                data={alumni}
+                itemFunction={AlumnusLink} />
         </div>
     );
 }

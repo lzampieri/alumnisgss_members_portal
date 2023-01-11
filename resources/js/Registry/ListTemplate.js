@@ -58,9 +58,9 @@ export default function ListTemplate({ data, itemFunction }) {
             <div className="w-full mt-4 flex flex-row justify-center flex-wrap">
                 { status.map( s =>
                     <div className="chip px-2 py-1 cursor-pointer" key={s}
-                        style={{ opacity: ( ( statusFilter.length == 0 || statusFilter.includes( s ) ) ? 1 : 0.4 ), ...bgAndContrast( AlumnusStatus.colors[ s ] ) }}
+                        style={{ opacity: ( ( statusFilter.length == 0 || statusFilter.includes( s ) ) ? 1 : 0.4 ), ...bgAndContrast( AlumnusStatus.status[ s ].color ) }}
                         onClick={ () => updateStatusFilter( s )}>
-                        { AlumnusStatus.names[ s ] }
+                        { AlumnusStatus.status[ s ].label }
                     </div> )}
             </div>
             <div className="w-full md:w-2/5 flex flex-col items-stretch mt-4" style={order == orders.alphabetical ? {} : { display: "none" }} >

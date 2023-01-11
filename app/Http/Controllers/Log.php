@@ -31,7 +31,7 @@ class Log extends Controller
             return rtrim( rtrim( $output, " "), "|" ) . "]";
         }
         if( $object instanceof Alumnus )
-            return "(" . $object->id . ") " . $object->surname . " "  . $object->name . " [" . Alumnus::names[ $object->status ] . "]";
+            return "(" . $object->id . ") " . $object->surname . " "  . $object->name . " [" . $object->status . "]";
         if( $object instanceof User )
             return $object->email;
         if( $object instanceof Permission )
