@@ -3,8 +3,8 @@
 namespace App\Policies;
 
 use App\Models\Alumnus;
-use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Foundation\Auth\User;
 
 class AlumnusPolicy
 {
@@ -29,20 +29,8 @@ class AlumnusPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasPermissionTo( 'alumnus-view' );
+        return $user->hasPermissionTo('alumnus-view');
     }
-
-    /**
-     * Determine whether the user can view the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Alumnus  $alumnus
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    // public function view(User $user, Alumnus $alumnus)
-    // {
-    //     //
-    // }
 
     /**
      * Determine whether the user can edit models.
@@ -52,7 +40,7 @@ class AlumnusPolicy
      */
     public function edit(User $user)
     {
-        return $user->hasPermissionTo( 'alumnus-edit' );
+        return $user->hasPermissionTo('alumnus-edit');
     }
 
     /**
@@ -63,54 +51,17 @@ class AlumnusPolicy
      */
     public function bulkEdit(User $user)
     {
-        return $user->hasPermissionTo( 'alumnus-bulk' );
+        return $user->hasPermissionTo('alumnus-bulk');
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determine whether the user can enable models.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Alumnus  $alumnus
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    // public function update(User $user, Alumnus $alumnus)
-    // {
-    //     //
-    // }
-
-    /**
-     * Determine whether the user can delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Alumnus  $alumnus
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    // public function delete(User $user, Alumnus $alumnus)
-    // {
-    //     //
-    // }
-
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Alumnus  $alumnus
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    // public function restore(User $user, Alumnus $alumnus)
-    // {
-    //     //
-    // }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Alumnus  $alumnus
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    // public function forceDelete(User $user, Alumnus $alumnus)
-    // {
-    //     //
-    // }
+    public function enable(User $user)
+    {
+        return $user->hasPermissionTo('identity-alumni-enabling');
+    }
 }

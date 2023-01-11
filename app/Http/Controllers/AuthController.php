@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LoginMethod;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -29,16 +30,16 @@ class AuthController extends Controller
 
         $email = Socialite::driver('google')->user()->email;
 
-        $user = User::where('email', $email)->first();
+        $loginMethod = LoginMethod::where('driver','google')->where('credential',$email)->first();
 
-        if ($user) {
-            if ($user->can('login', User::class)) {
-                Auth::login($user);
+        if ($loginMethod ) {
+            if ( $loginMethod->can('login', LoginMethod::class) ) {
+                Auth::login($loginMethod);
 
-                Log::debug('Login', $user);
+                Log::debug('Login', $loginMethod);
 
-                $user->last_login = Carbon::now();
-                $user->save();
+                $loginMethod->last_login = Carbon::now();
+                $loginMethod->save();
 
                 return redirect()->route('home');
             }

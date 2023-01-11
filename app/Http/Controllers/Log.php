@@ -15,7 +15,7 @@ class Log extends Controller
     public function index()
     {
         $this->authorize('log-manage');
-
+        
         return (new LogViewerController)->index();
     }
 

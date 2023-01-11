@@ -1,15 +1,17 @@
 <?php
 
 use App\Http\Controllers\PermissionsController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\LoginMethodController;
 use Illuminate\Support\Facades\Route;
 
 // Accesses
-Route::prefix('/roles')->group( function () {
-    Route::get('/', [ UserController::class, 'list' ] )->name('roles');
+Route::prefix('/accesses')->group( function () {
+    Route::get('/', [ LoginMethodController::class, 'list' ] )->name('accesses');
     
-    Route::post('/enabling/{user}', [ UserController::class, 'enabling' ] )->name('user.enabling');
-    Route::post('/roles/{user}', [ UserController::class, 'roles' ] )->name('user.roles');
+    Route::post('/enabling', [ LoginMethodController::class, 'enabling' ] )->name('identity.enabling');
+    // Route::post('/roles/{user}', [ LoginMethodController::class, 'roles' ] )->name('user.roles');
+
+    Route::post('/delete/{lmth}', [ LoginMethodController::class, 'delete' ] )->name('lmth.delete');
 });
 
 // Permissions

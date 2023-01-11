@@ -48,7 +48,8 @@ class DocumentsController extends Controller
             'file' => 'required|mimes:pdf'
         ]);
 
-        $validated['author_id'] = Auth::user()->id;
+        $validated['author_type'] = Auth::user()->identity_type;
+        $validated['author_id'] = Auth::user()->identity_id;
         $validated['handle'] = 'None';
 
         $document = Document::create($validated);

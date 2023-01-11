@@ -40,7 +40,7 @@ class HandleInertiaRequests extends Middleware
         $data = parent::share($request);
 
         if( Auth::check() ) {
-            $data = array_merge( $data, [ 'user' => Auth::user() ] );
+            $data = array_merge( $data, [ 'user' => Auth::user()->load('identity') ] );
         }
         
         if( session()->has( 'notistack' ) ) {

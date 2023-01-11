@@ -21,7 +21,7 @@ class CreateDocumentsTable extends Migration
             $table->timestamp('date');
             $table->string('privacy',100);
             $table->text('note')->nullable();
-            $table->foreignId('author_id')->constrained('users');
+            $table->morphs('author');
             $table->string('handle',500);
         });
     }

@@ -2,10 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-
-class Alumnus extends Model
+class Alumnus extends Identity
 {
     // Available status
     const HasRight = 0;

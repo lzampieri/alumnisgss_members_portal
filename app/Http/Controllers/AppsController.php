@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
+use App\Models\LoginMethod;
 use App\Policies\AlumnusPolicy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +30,7 @@ class AppsController extends Controller
             $apps[] = 'logs';
         }
 
-        if (Auth::user() && Auth::user()->can('viewAny', User::class)) {
+        if (Auth::user() && Auth::user()->can('viewAny', LoginMethod::class)) {
             $apps[] = 'accesses';
         }
 
