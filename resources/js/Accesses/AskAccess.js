@@ -10,7 +10,6 @@ export default function AskAccess() {
         message: 'Carissimi\nSono NOME COGNOME e richiedo l\'accesso al presente portale soci per SCOPO.\nCordialmente,',
         email: email
     })
-    console.log( errors );
 
     const submit = (e) => {
         e.preventDefault();

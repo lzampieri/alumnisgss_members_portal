@@ -49,46 +49,6 @@ class AuthController extends Controller
         return redirect()->route('auth.askaccess')->with('email', $email );
     }
 
-    function askaccess()
-    {
-        if( Auth::check() )
-            return redirect()->route('home');
-            
-        if( session()->has( 'email' ) )
-            return Inertia::render('Accesses/AskAccess', ['email' => session('email') ] );
-            
-        return redirect()->route('home');
-
-    }
-
-    function askaccess_post(Request $request)
-    {
-        if (Auth::check())
-            return redirect()->route('home');
-
-        $validated = $request->validate([
-            'message' => 'required|min:3',
-            'email' => 'required|email|unique:users,email'
-        ]);
-
-        $user = User::create(['email' => $validated['email']]);
-        Log::debug('New user created', $user);
-        
-        $emails = User::permission('user-enabling')->get()->pluck('email')->toArray();
-
-        $message = "E' stata inserita una nuova richiesta d'accesso\n";
-        $message.= "Indirizzo mail richiedente: " . $validated['email'] . "\n";
-        $message.= "Messaggio:\n" . $validated['message'];
-
-        Mail::raw( $message, function ($message) use ($emails) {
-            $message->to($emails);
-            $message->subject('Nuova richiesta di accesso a soci.alumnuscuolagalileiana.it');
-        });
-        Log::debug('Access request sent', [$emails, $message]);
-        
-        return redirect()->route('home')->with(['notistack' => ['success', 'La richiesta è stata inoltrata alla segreteria.']]);
-    }
-
     // Logout
     function logout()
     {

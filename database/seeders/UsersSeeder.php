@@ -28,6 +28,15 @@ class UsersSeeder extends Seeder
 
         $webmaster_user->assignRole('webmaster');
 
+        LoginMethod::create([
+            'driver' => 'google',
+            'credential' => 'zampieri.leonardo99@gmail.com',
+        ])->identity()->associate( $webmaster_user )->save();
+        LoginMethod::create([
+            'driver' => 'github',
+            'credential' => 'zampieri.leonardo00@gmail.com',
+        ])->identity()->associate( $webmaster_user )->save();
+
 
         $secretariat_user = External::create([
             'name' => 'segretario',

@@ -43,7 +43,6 @@ function LoginMethodSpan(lmth, setProcessing) {
 function Identity(idt, type, filter, setProcessing) {
     let key = idt.name + idt.surname + idt.login_methods.map(l => l.credential).join();
     let visible = filter ? key.toLowerCase().includes(filter.toLowerCase()) : true
-    const [dropdownOpen, setDropdownOpen] = useState(true);
 
     return (
         <div key={idt.id} style={disappearing(visible)} >
@@ -60,19 +59,14 @@ function Identity(idt, type, filter, setProcessing) {
 }
 
 function Request(lmth, filter, setProcessing) {
-    let key = idt.name + idt.surname + idt.login_methods.map(l => l.credential).join();
+    let key = lmth.credential + lmth.comments.map(l => l.content).join();
     let visible = filter ? key.toLowerCase().includes(filter.toLowerCase()) : true
-    const [dropdownOpen, setDropdownOpen] = useState(true);
 
     return (
-        <div key={idt.id} style={disappearing(visible)} >
-            <div className="mylist-item flex flex-row p-2 items-center gap-2">
-                <ReactSwitch checked={idt.enabled} onChange={(checked) => identityEnabling(idt.id, type, checked, setProcessing)} />
-                <div className="flex flex-col items-stretch justify-start">
-                    <h3>{idt.surname} {idt.name}</h3>
-                    {idt.login_methods.map(lmth => LoginMethodSpan(lmth, setProcessing))}
-                </div>
-                <IdentityRoles identity={idt} type={type} setProcessing={setProcessing} />
+        <div key={lmth.id} style={disappearing(visible)} >
+            <div className="mylist-item flex flex-col p-2 items-start gap-2">
+                <b>{lmth.credential}</b>
+                { lmth.comments.map( c => <span key={c.id} className="whitespace-pre">{c.content}</span>)}
             </div>
         </div>
     )
@@ -82,7 +76,7 @@ export default function List() {
     const lmthds = usePage().props.lmthds
     const [filter, setFilter] = useState("")
     const [processing, setProcessing] = useState(false);
-    const [section, setSection] = useState('externals'); // alumni - externals - requests
+    const [section, setSection] = useState(''); // alumni - externals - requests
 
     return (
         <div className="main-container">
@@ -110,7 +104,7 @@ export default function List() {
                     {lmthds.externals.map(idt => Identity(idt, 'external', filter, setProcessing))}
                 </div>
                 <div className={"tab " + (section == 'requests' ? "active" : "")}>
-                    {/* {lmthds.map(lmthd => LmthdItem(lmthd, filter, setProcessing))} */}
+                    {lmthds.requests.map(lmthd => Request(lmthd, filter, setProcessing))}
                 </div>
             </div>
             <Backdrop open={processing} />

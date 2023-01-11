@@ -833,6 +833,9 @@ a {
 .\!items-start {
   align-items: flex-start !important;
 }
+.items-start {
+  align-items: flex-start;
+}
 .items-end {
   align-items: flex-end;
 }
@@ -885,6 +888,9 @@ a {
 }
 .whitespace-nowrap {
   white-space: nowrap;
+}
+.whitespace-pre {
+  white-space: pre;
 }
 .rounded-full {
   border-radius: 9999px;

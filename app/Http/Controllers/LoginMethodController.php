@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
+use App\Models\Comment;
 use App\Models\External;
+use App\Models\Identity;
 use App\Models\LoginMethod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
 class LoginMethodController extends Controller
@@ -18,45 +21,10 @@ class LoginMethodController extends Controller
         $lmthds = [
             'alumni' => Alumnus::has('loginMethods')->with(['loginMethods','roles'])->orderBy('surname')->orderBy('name')->get(),
             'externals' => External::has('loginMethods')->with(['loginMethods','roles'])->orderBy('surname')->orderBy('name')->get(),
-            'requests' => LoginMethod::where('identity_id',null)->orderBy('created_at','desc')->get(),
+            'requests' => LoginMethod::where('identity_id',null)->with('comments')->orderBy('created_at','desc')->get(),
         ];
 
         return Inertia::render('Accesses/List', ['lmthds' => $lmthds, 'editableRoles' => Auth::user()->identity->editableRoles() ]);
-    }
-
-    public function enabling(Request $request) {
-        
-        $validated = $request->validate([
-            'id' => 'required|numeric',
-            'type' => 'required|in:alumnus,external',
-            'enabled' => 'required|boolean'
-        ]);
-
-        $classType = $validated['type'] == 'alumnus' ? Alumnus::class : External::class;
-
-        $this->authorize('enable', $classType);        
-
-        $identity = $validated['type'] == 'alumnus' ? Alumnus::find( $validated['id'] ) : External::find( $validated['id'] );
-
-        if( !$identity ) {
-            return redirect()->back()->with( 'notistack', ['error','Identità non trovata']);
-        }
-
-        if( $identity->hasRole('webmaster') ) {
-            return redirect()->back()->with( 'notistack', ['error','Impossibile disabilitare il webmaster']);
-        }
-
-        if( $identity->enabled && !$validated['enabled'] ) {
-            Log::debug('Identity disabled', $identity);
-            $identity->revokePermissionTo( 'login' );
-        }
-        
-        if( !$identity->enabled && $validated['enabled'] ) {
-            Log::debug('Identity enabled', $identity);
-            $identity->givePermissionTo( 'login' );
-        }
-        
-        return redirect()->back();
     }
 
     public function delete(Request $request, LoginMethod $lmth) {
@@ -74,30 +42,50 @@ class LoginMethodController extends Controller
         
         return redirect()->back();
     }
+    
+    function askaccess()
+    {
+        if( Auth::check() )
+            return redirect()->route('home');
+            
+        if( session()->has( 'email' ) )
+            return Inertia::render('Accesses/AskAccess', ['email' => session('email') ] );
+            
+        return redirect()->route('home');
 
-    public function edit_roles(Request $request) {
-        
+    }
+
+    function askaccess_post(Request $request)
+    {
+        if (Auth::check())
+            return redirect()->route('home');
+
         $validated = $request->validate([
-            'id' => 'required|numeric',
-            'type' => 'required|in:alumnus,external',
-            'action' => 'required|in:add,remove',
-            'role' => 'required|exists:roles,name'
+            'message' => 'required|min:3',
+            'email' => 'required|email'
         ]);
+
+        $lm = LoginMethod::create(['driver' => 'google', 'credential' => $validated['email']]);
+        Log::debug('New login created', $lm);
+
+        Comment::create(['content' => $validated['message']])->commentable()->associate($lm)->save();
         
-        $this->authorize( 'user-edit-' . $validated['role'] );
-
-        $identity = $validated['type'] == 'alumnus' ? Alumnus::find( $validated['id'] ) : External::find( $validated['id'] );
-
-        if( $identity->hasRole( $validated['role'] ) && $validated['action'] == 'remove' ) {
-            Log::debug('Identity roles changed', [$identity, $validated]);
-            $identity->removeRole( $validated['role'] );
+        $emails = [];
+        foreach( LoginMethod::where('driver','google')->hasMorph('identity',[Alumnus::class,External::class])->get() as $lm ) {
+            if( $lm->hasPermissionTo( 'accesses-receive-request-emails' ) )
+                $emails[] = $lm->credential;
         }
 
-        if( !$identity->hasRole( $validated['role'] ) && $validated['action'] == 'add' ) {
-            Log::debug('Identity roles changed', [$identity, $validated]);
-            $identity->assignRole( $validated['role'] );
-        }
+        $message = "E' stata inserita una nuova richiesta d'accesso\n";
+        $message.= "Indirizzo mail richiedente: " . $validated['email'] . "\n";
+        $message.= "Messaggio:\n" . $validated['message'];
+
+        Mail::raw( $message, function ($message) use ($emails) {
+            $message->to($emails);
+            $message->subject('Nuova richiesta di accesso a soci.alumnuscuolagalileiana.it');
+        });
+        Log::debug('Access request sent', [$emails, $message]);
         
-        return redirect()->back();
+        return redirect()->route('home')->with(['notistack' => ['success', 'La richiesta è stata inoltrata alla segreteria.']]);
     }
 }

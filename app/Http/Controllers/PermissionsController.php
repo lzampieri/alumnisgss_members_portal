@@ -65,6 +65,8 @@ class PermissionsController extends Controller
             'logins-edit',
             'identity-alumni-enabling',
             'identity-externals-enabling',
+            'accesses-associate',
+            'accesses-receive-request-emails',
             // Edit roles and permissions
             'permissions-view',
             'permissions-edit',

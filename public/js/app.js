@@ -5385,7 +5385,6 @@ function AskAccess() {
     processing = _useForm.processing,
     errors = _useForm.errors,
     post = _useForm.post;
-  console.log(errors);
   var submit = function submit(e) {
     e.preventDefault();
     post(route('auth.askaccess'));
@@ -5625,10 +5624,6 @@ function Identity(idt, type, filter, setProcessing) {
     return l.credential;
   }).join();
   var visible = filter ? key.toLowerCase().includes(filter.toLowerCase()) : true;
-  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(true),
-    _useState4 = _slicedToArray(_useState3, 2),
-    dropdownOpen = _useState4[0],
-    setDropdownOpen = _useState4[1];
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
     style: (0,_Utils__WEBPACK_IMPORTED_MODULE_4__.disappearing)(visible),
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
@@ -5654,52 +5649,39 @@ function Identity(idt, type, filter, setProcessing) {
   }, idt.id);
 }
 function Request(lmth, filter, setProcessing) {
-  var key = idt.name + idt.surname + idt.login_methods.map(function (l) {
-    return l.credential;
+  var key = lmth.credential + lmth.comments.map(function (l) {
+    return l.content;
   }).join();
   var visible = filter ? key.toLowerCase().includes(filter.toLowerCase()) : true;
-  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(true),
-    _useState6 = _slicedToArray(_useState5, 2),
-    dropdownOpen = _useState6[0],
-    setDropdownOpen = _useState6[1];
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
     style: (0,_Utils__WEBPACK_IMPORTED_MODULE_4__.disappearing)(visible),
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
-      className: "mylist-item flex flex-row p-2 items-center gap-2",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_switch__WEBPACK_IMPORTED_MODULE_5__["default"], {
-        checked: idt.enabled,
-        onChange: function onChange(checked) {
-          return identityEnabling(idt.id, type, checked, setProcessing);
-        }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
-        className: "flex flex-col items-stretch justify-start",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("h3", {
-          children: [idt.surname, " ", idt.name]
-        }), idt.login_methods.map(function (lmth) {
-          return LoginMethodSpan(lmth, setProcessing);
-        })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_IdentityRoles__WEBPACK_IMPORTED_MODULE_7__["default"], {
-        identity: idt,
-        type: type,
-        setProcessing: setProcessing
+      className: "mylist-item flex flex-col p-2 items-start gap-2",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("b", {
+        children: lmth.credential
+      }), lmth.comments.map(function (c) {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
+          className: "whitespace-pre",
+          children: c.content
+        }, c.id);
       })]
     })
-  }, idt.id);
+  }, lmth.id);
 }
 function List() {
   var lmthds = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.lmthds;
-  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(""),
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(""),
+    _useState4 = _slicedToArray(_useState3, 2),
+    filter = _useState4[0],
+    setFilter = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false),
+    _useState6 = _slicedToArray(_useState5, 2),
+    processing = _useState6[0],
+    setProcessing = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(''),
     _useState8 = _slicedToArray(_useState7, 2),
-    filter = _useState8[0],
-    setFilter = _useState8[1];
-  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false),
-    _useState10 = _slicedToArray(_useState9, 2),
-    processing = _useState10[0],
-    setProcessing = _useState10[1];
-  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)('externals'),
-    _useState12 = _slicedToArray(_useState11, 2),
-    section = _useState12[0],
-    setSection = _useState12[1]; // alumni - externals - requests
+    section = _useState8[0],
+    setSection = _useState8[1]; // alumni - externals - requests
 
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
     className: "main-container",
@@ -5753,7 +5735,10 @@ function List() {
           return Identity(idt, 'external', filter, setProcessing);
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
-        className: "tab " + (section == 'requests' ? "active" : "")
+        className: "tab " + (section == 'requests' ? "active" : ""),
+        children: lmthds.requests.map(function (lmthd) {
+          return Request(lmthd, filter, setProcessing);
+        })
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_Layout_Backdrop__WEBPACK_IMPORTED_MODULE_3__["default"], {
       open: processing

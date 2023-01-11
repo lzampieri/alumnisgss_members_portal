@@ -31,4 +31,8 @@ class LoginMethod extends Authenticatable
     public function enabled() {
         return $this->hasPermissionTo('login');
     }
+    
+    public function comments() {
+        return $this->morphMany( Comment::class, 'commentable' );
+    }
 }

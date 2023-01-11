@@ -8,13 +8,12 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('/accesses')->group( function () {
     Route::get('/', [ LoginMethodController::class, 'list' ] )->name('accesses');
     
-    Route::post('/enabling', [ LoginMethodController::class, 'enabling' ] )->name('identity.enabling');
-    // Route::post('/roles/{user}', [ LoginMethodController::class, 'roles' ] )->name('user.roles');
+    Route::post('/enabling', [ IdentityController::class, 'enabling' ] )->name('identity.enabling');
 
     Route::post('/delete/{lmth}', [ LoginMethodController::class, 'delete' ] )->name('lmth.delete');
 
     // Roles
-    Route::post('/edit_roles', [ LoginMethodController::class, 'edit_roles'])->name('identity.edit_roles');
+    Route::post('/edit_roles', [ IdentityController::class, 'edit_roles'])->name('identity.edit_roles');
 });
 
 // Permissions
