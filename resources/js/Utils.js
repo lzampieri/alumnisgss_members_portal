@@ -1,4 +1,6 @@
+import { Inertia } from "@inertiajs/inertia";
 import { contrastColor } from "contrast-color";
+import { enqueueSnackbar } from "notistack";
 
 
 export function romanize (num) {
@@ -60,4 +62,13 @@ export function disappearing( visible ) {
         height: visible ? 'auto' : 0,
         overflow: visible ? 'visible' : 'hidden'
     }
+}
+
+export function postRequest( route_name, data, setProcessing, routeParams = {}, preserveState = true, preserveScroll = true ) {
+    setProcessing(true);
+    Inertia.post(
+        route(route_name,routeParams),
+        data,
+        { onFinish: () => { setProcessing(false) }, onError: () => { enqueueSnackbar('Errore generico!', { variant: 'error' }) }, preserveState: preserveState, preserveScroll: preserveScroll }
+    )
 }

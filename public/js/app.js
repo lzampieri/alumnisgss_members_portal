@@ -5455,6 +5455,93 @@ function AskAccess() {
 
 /***/ }),
 
+/***/ "./resources/js/Accesses/IdentityRoles.js":
+/*!************************************************!*\
+  !*** ./resources/js/Accesses/IdentityRoles.js ***!
+  \************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ IdentityRoles)
+/* harmony export */ });
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faPlus__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faPlus */ "./node_modules/@fortawesome/free-solid-svg-icons/faPlus.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faXmark__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faXmark */ "./node_modules/@fortawesome/free-solid-svg-icons/faXmark.js");
+/* harmony import */ var _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @inertiajs/inertia */ "./node_modules/@inertiajs/inertia/dist/index.js");
+/* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Utils */ "./resources/js/Utils.js");
+/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @fortawesome/react-fontawesome */ "./node_modules/@fortawesome/react-fontawesome/index.es.js");
+/* harmony import */ var _inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @inertiajs/inertia-react */ "./node_modules/@inertiajs/inertia-react/dist/index.js");
+/* harmony import */ var notistack__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! notistack */ "./node_modules/notistack/notistack.esm.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+
+
+
+
+
+
+
+function userRoleAdd(id, type, role, setProcessing) {
+  (0,_Utils__WEBPACK_IMPORTED_MODULE_1__.postRequest)('identity.edit_roles', {
+    type: type,
+    id: id,
+    role: role,
+    action: 'add'
+  }, setProcessing);
+}
+function userRoleRemove(id, type, role, setProcessing) {
+  (0,_Utils__WEBPACK_IMPORTED_MODULE_1__.postRequest)('identity.edit_roles', {
+    type: type,
+    id: id,
+    role: role,
+    action: 'remove'
+  }, setProcessing);
+}
+function IdentityRoles(_ref) {
+  var identity = _ref.identity,
+    type = _ref.type,
+    setProcessing = _ref.setProcessing;
+  var editableRoles = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_3__.usePage)().props.editableRoles;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
+    children: [identity.roles.map(function (role) {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+        className: "chip",
+        children: [_Utils__WEBPACK_IMPORTED_MODULE_1__.Roles.names[role.name], editableRoles.indexOf(role.name) > -1 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_2__.FontAwesomeIcon, {
+          icon: _fortawesome_free_solid_svg_icons_faXmark__WEBPACK_IMPORTED_MODULE_6__.faXmark,
+          className: "ml-1 px-1 hover:text-white hover:bg-gray-700 rounded-full",
+          onClick: function onClick() {
+            return userRoleRemove(identity.id, type, role.name, setProcessing);
+          }
+        }) : ""]
+      }, role.name);
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+      className: "icon-button dropdown-parent group",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_2__.FontAwesomeIcon, {
+        icon: _fortawesome_free_solid_svg_icons_faPlus__WEBPACK_IMPORTED_MODULE_7__.faPlus,
+        onClick: function onClick() {
+          return setDropdownOpen(!dropdownOpen);
+        }
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+        className: "dropdown-content-flex flex-col gap-2",
+        children: editableRoles.map(function (role) {
+          return identity.roles.indexOf(role) > -1 ? "" : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+            className: "chip cursor-pointer",
+            onClick: function onClick() {
+              return userRoleAdd(identity.id, type, role, setProcessing);
+            },
+            children: _Utils__WEBPACK_IMPORTED_MODULE_1__.Roles.names[role]
+          }, role);
+        })
+      })]
+    })]
+  });
+}
+
+/***/ }),
+
 /***/ "./resources/js/Accesses/List.js":
 /*!***************************************!*\
   !*** ./resources/js/Accesses/List.js ***!
@@ -5474,8 +5561,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Layout_Backdrop__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Layout/Backdrop */ "./resources/js/Layout/Backdrop.js");
 /* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Utils */ "./resources/js/Utils.js");
 /* harmony import */ var react_switch__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-switch */ "./node_modules/react-switch/dist/index.dev.mjs");
-/* harmony import */ var _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @inertiajs/inertia */ "./node_modules/@inertiajs/inertia/dist/index.js");
-/* harmony import */ var _Layout_Dialog__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../Layout/Dialog */ "./resources/js/Layout/Dialog.js");
+/* harmony import */ var _Layout_Dialog__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../Layout/Dialog */ "./resources/js/Layout/Dialog.js");
+/* harmony import */ var _IdentityRoles__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./IdentityRoles */ "./resources/js/Accesses/IdentityRoles.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
 
@@ -5496,29 +5583,16 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 function identityEnabling(id, type, newState, setProcessing) {
-  setProcessing(true);
-  _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_6__.Inertia.post(route('identity.enabling'), {
+  (0,_Utils__WEBPACK_IMPORTED_MODULE_4__.postRequest)('identity.enabling', {
     type: type,
     id: id,
     enabled: newState
-  }, {
-    onFinish: function onFinish() {
-      setProcessing(false);
-    },
-    preserveState: true,
-    preserveScroll: true
-  });
+  }, setProcessing);
 }
 function lmthDelete(lmth, setProcessing) {
-  setProcessing(true);
-  _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_6__.Inertia.post(route('lmth.delete', {
+  (0,_Utils__WEBPACK_IMPORTED_MODULE_4__.postRequest)('lmth.delete', {}, setProcessing, {
     lmth: lmth.id
-  }), {}, {
-    onFinish: function onFinish() {
-      setProcessing(false);
-    },
-    preserveState: false
-  });
+  }, false, false);
 }
 function LoginMethodSpan(lmth, setProcessing) {
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false),
@@ -5533,7 +5607,7 @@ function LoginMethodSpan(lmth, setProcessing) {
       onClick: function onClick() {
         return setOpen(true);
       }
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_Layout_Dialog__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_Layout_Dialog__WEBPACK_IMPORTED_MODULE_6__["default"], {
       open: open,
       onClose: function onClose() {
         return setOpen(false);
@@ -5546,7 +5620,7 @@ function LoginMethodSpan(lmth, setProcessing) {
     })]
   }, lmth.id);
 }
-function Identity(idt, type, filter, editableRoles, setProcessing) {
+function Identity(idt, type, filter, setProcessing) {
   var key = idt.name + idt.surname + idt.login_methods.map(function (l) {
     return l.credential;
   }).join();
@@ -5571,25 +5645,61 @@ function Identity(idt, type, filter, editableRoles, setProcessing) {
         }), idt.login_methods.map(function (lmth) {
           return LoginMethodSpan(lmth, setProcessing);
         })]
-      }), key]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_IdentityRoles__WEBPACK_IMPORTED_MODULE_7__["default"], {
+        identity: idt,
+        type: type,
+        setProcessing: setProcessing
+      })]
+    })
+  }, idt.id);
+}
+function Request(lmth, filter, setProcessing) {
+  var key = idt.name + idt.surname + idt.login_methods.map(function (l) {
+    return l.credential;
+  }).join();
+  var visible = filter ? key.toLowerCase().includes(filter.toLowerCase()) : true;
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(true),
+    _useState6 = _slicedToArray(_useState5, 2),
+    dropdownOpen = _useState6[0],
+    setDropdownOpen = _useState6[1];
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+    style: (0,_Utils__WEBPACK_IMPORTED_MODULE_4__.disappearing)(visible),
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+      className: "mylist-item flex flex-row p-2 items-center gap-2",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_switch__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        checked: idt.enabled,
+        onChange: function onChange(checked) {
+          return identityEnabling(idt.id, type, checked, setProcessing);
+        }
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+        className: "flex flex-col items-stretch justify-start",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("h3", {
+          children: [idt.surname, " ", idt.name]
+        }), idt.login_methods.map(function (lmth) {
+          return LoginMethodSpan(lmth, setProcessing);
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_IdentityRoles__WEBPACK_IMPORTED_MODULE_7__["default"], {
+        identity: idt,
+        type: type,
+        setProcessing: setProcessing
+      })]
     })
   }, idt.id);
 }
 function List() {
   var lmthds = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.lmthds;
-  var editableRoles = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.editableRoles;
-  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(""),
-    _useState6 = _slicedToArray(_useState5, 2),
-    filter = _useState6[0],
-    setFilter = _useState6[1];
-  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false),
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(""),
     _useState8 = _slicedToArray(_useState7, 2),
-    processing = _useState8[0],
-    setProcessing = _useState8[1];
-  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)('externals'),
+    filter = _useState8[0],
+    setFilter = _useState8[1];
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false),
     _useState10 = _slicedToArray(_useState9, 2),
-    section = _useState10[0],
-    setSection = _useState10[1]; // alumni - externals - requests
+    processing = _useState10[0],
+    setProcessing = _useState10[1];
+  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)('externals'),
+    _useState12 = _slicedToArray(_useState11, 2),
+    section = _useState12[0],
+    setSection = _useState12[1]; // alumni - externals - requests
 
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
     className: "main-container",
@@ -5635,206 +5745,17 @@ function List() {
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
         className: "tab " + (section == 'alumni' ? "active" : ""),
         children: lmthds.alumni.map(function (idt) {
-          return Identity(idt, 'alumnus', filter, editableRoles, setProcessing);
+          return Identity(idt, 'alumnus', filter, setProcessing);
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
         className: "tab " + (section == 'externals' ? "active" : ""),
         children: lmthds.externals.map(function (idt) {
-          return Identity(idt, 'external', filter, editableRoles, setProcessing);
+          return Identity(idt, 'external', filter, setProcessing);
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
         className: "tab " + (section == 'requests' ? "active" : "")
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_Layout_Backdrop__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      open: processing
-    })]
-  });
-}
-
-/***/ }),
-
-/***/ "./resources/js/Accesses/OldList.js":
-/*!******************************************!*\
-  !*** ./resources/js/Accesses/OldList.js ***!
-  \******************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ List)
-/* harmony export */ });
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faMagnifyingGlass__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faMagnifyingGlass */ "./node_modules/@fortawesome/free-solid-svg-icons/faMagnifyingGlass.js");
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faPlus__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faPlus */ "./node_modules/@fortawesome/free-solid-svg-icons/faPlus.js");
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faXmark__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faXmark */ "./node_modules/@fortawesome/free-solid-svg-icons/faXmark.js");
-/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @fortawesome/react-fontawesome */ "./node_modules/@fortawesome/react-fontawesome/index.es.js");
-/* harmony import */ var _inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @inertiajs/inertia-react */ "./node_modules/@inertiajs/inertia-react/dist/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_switch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-switch */ "./node_modules/react-switch/dist/index.dev.mjs");
-/* harmony import */ var _Layout_Backdrop__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Layout/Backdrop */ "./resources/js/Layout/Backdrop.js");
-/* harmony import */ var _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @inertiajs/inertia */ "./node_modules/@inertiajs/inertia/dist/index.js");
-/* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../Utils */ "./resources/js/Utils.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-
-
-
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0) { ; } } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i["return"] && (_r = _i["return"](), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-
-
-
-
-
-
-
-
-
-function userEnabling(id, newState, setProcessing) {
-  setProcessing(true);
-  _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_5__.Inertia.post(route('user.enabling', {
-    user: id
-  }), {
-    enabled: newState
-  }, {
-    onFinish: function onFinish() {
-      setProcessing(false);
-    },
-    preserveState: true,
-    preserveScroll: true
-  });
-}
-function userRoleAdd(id, role, setProcessing) {
-  setProcessing(true);
-  _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_5__.Inertia.post(route('user.roles', {
-    user: id
-  }), {
-    role: role,
-    action: 'add'
-  }, {
-    onFinish: function onFinish() {
-      setProcessing(false);
-    },
-    preserveState: true,
-    preserveScroll: true
-  });
-}
-function userRoleRemove(id, role, setProcessing) {
-  setProcessing(true);
-  _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_5__.Inertia.post(route('user.roles', {
-    user: id
-  }), {
-    role: role,
-    action: 'remove'
-  }, {
-    onFinish: function onFinish() {
-      setProcessing(false);
-    },
-    preserveState: true,
-    preserveScroll: true
-  });
-}
-function LmthdItem(lmthd, filter, editableRoles, setProcessing) {
-  var key = lmthd.credential;
-  key += lmthd.identity ? lmthd.identity.name + lmthd.identity.surname : "";
-  var visible = filter ? key.toLowerCase().includes(filter.toLowerCase()) : true;
-  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(true),
-    _useState2 = _slicedToArray(_useState, 2),
-    dropdownOpen = _useState2[0],
-    setDropdownOpen = _useState2[1];
-
-  // TODO sistemare questa pagina con la gestione delle identità
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-    style: (0,_Utils__WEBPACK_IMPORTED_MODULE_6__.disappearing)(visible),
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-      className: "mylist-item flex flex-row p-2 items-center gap-2",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(react_switch__WEBPACK_IMPORTED_MODULE_3__["default"], {
-        checked: lmthd.enabled,
-        onChange: function onChange(checked) {
-          return userEnabling(lmthd.id, checked, setProcessing);
-        }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-        className: "flex flex-col" + (lmthd.enabled ? "" : " text-gray-400"),
-        children: [lmthd.credential, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-          className: "text-gray-400 text-sm",
-          children: ["Registrato il ", new Date(Date.parse(lmthd.created_at)).toLocaleDateString('it-IT')]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-          className: "text-gray-400 text-sm",
-          children: ["Ultimo accesso ", new Date(Date.parse(lmthd.last_login)).toLocaleString('it-IT')]
-        })]
-      }), lmthd.enabled && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
-        children: [lmthd.identity && lmthd.identity.roles.map(function (role) {
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-            className: "chip",
-            children: [_Utils__WEBPACK_IMPORTED_MODULE_6__.Roles.names[role.name], editableRoles.indexOf(role.name) > -1 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
-              icon: _fortawesome_free_solid_svg_icons_faXmark__WEBPACK_IMPORTED_MODULE_8__.faXmark,
-              className: "ml-1 px-1 hover:text-white hover:bg-gray-700 rounded-full",
-              onClick: function onClick() {
-                return userRoleRemove(lmthd.id, role.name, setProcessing);
-              }
-            }) : ""]
-          }, role);
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-          className: "icon-button dropdown-parent group",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
-            icon: _fortawesome_free_solid_svg_icons_faPlus__WEBPACK_IMPORTED_MODULE_9__.faPlus,
-            onClick: function onClick() {
-              return setDropdownOpen(!dropdownOpen);
-            }
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-            className: "dropdown-content-flex flex-col gap-2",
-            children: editableRoles.map(function (role) {
-              return lmthd.identity && lmthd.identity.roles.indexOf(role) > -1 ? "" : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-                className: "chip cursor-pointer",
-                onClick: function onClick() {
-                  return userRoleAdd(lmthd.id, role, setProcessing);
-                },
-                children: _Utils__WEBPACK_IMPORTED_MODULE_6__.Roles.names[role]
-              }, role);
-            })
-          })]
-        })]
-      })]
-    })
-  }, lmthd.id);
-}
-function List() {
-  var lmthds = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.lmthds;
-  var editableRoles = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.editableRoles;
-  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(""),
-    _useState4 = _slicedToArray(_useState3, 2),
-    filter = _useState4[0],
-    setFilter = _useState4[1];
-  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(false),
-    _useState6 = _slicedToArray(_useState5, 2),
-    processing = _useState6[0],
-    setProcessing = _useState6[1];
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-    className: "main-container",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-      className: "w-full relative mb-4",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("input", {
-        type: "text",
-        className: "w-full text-center",
-        placeholder: "Filtra...",
-        value: filter,
-        onChange: function onChange(e) {
-          return setFilter(e.target.value);
-        }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
-        icon: _fortawesome_free_solid_svg_icons_faMagnifyingGlass__WEBPACK_IMPORTED_MODULE_10__.faMagnifyingGlass,
-        className: "input-icon"
-      })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-      className: "w-full flex flex-col items-stretch mt-4",
-      children: lmthds.map(function (lmthd) {
-        return LmthdItem(lmthd, filter, editableRoles, setProcessing);
-      })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_Layout_Backdrop__WEBPACK_IMPORTED_MODULE_4__["default"], {
       open: processing
     })]
   });
@@ -7590,10 +7511,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Roles": () => (/* binding */ Roles),
 /* harmony export */   "bgAndContrast": () => (/* binding */ bgAndContrast),
 /* harmony export */   "disappearing": () => (/* binding */ disappearing),
+/* harmony export */   "postRequest": () => (/* binding */ postRequest),
 /* harmony export */   "romanize": () => (/* binding */ romanize)
 /* harmony export */ });
-/* harmony import */ var contrast_color__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! contrast-color */ "./node_modules/contrast-color/lib/index.js");
-/* harmony import */ var contrast_color__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(contrast_color__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @inertiajs/inertia */ "./node_modules/@inertiajs/inertia/dist/index.js");
+/* harmony import */ var contrast_color__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! contrast-color */ "./node_modules/contrast-color/lib/index.js");
+/* harmony import */ var contrast_color__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(contrast_color__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var notistack__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! notistack */ "./node_modules/notistack/notistack.esm.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
@@ -7601,6 +7525,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+
+
 
 function romanize(num) {
   if (isNaN(num)) return NaN;
@@ -7680,7 +7606,7 @@ _defineProperty(Documents, "names", {
 function bgAndContrast(bgColor) {
   return {
     backgroundColor: bgColor,
-    color: (0,contrast_color__WEBPACK_IMPORTED_MODULE_0__.contrastColor)({
+    color: (0,contrast_color__WEBPACK_IMPORTED_MODULE_1__.contrastColor)({
       bgColor: bgColor
     })
   };
@@ -7690,6 +7616,24 @@ function disappearing(visible) {
     height: visible ? 'auto' : 0,
     overflow: visible ? 'visible' : 'hidden'
   };
+}
+function postRequest(route_name, data, setProcessing) {
+  var routeParams = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+  var preserveState = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : true;
+  var preserveScroll = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : true;
+  setProcessing(true);
+  _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_0__.Inertia.post(route(route_name, routeParams), data, {
+    onFinish: function onFinish() {
+      setProcessing(false);
+    },
+    onError: function onError() {
+      (0,notistack__WEBPACK_IMPORTED_MODULE_2__.enqueueSnackbar)('Errore generico!', {
+        variant: 'error'
+      });
+    },
+    preserveState: preserveState,
+    preserveScroll: preserveScroll
+  });
 }
 
 /***/ }),
@@ -71820,10 +71764,10 @@ var index =  react__WEBPACK_IMPORTED_MODULE_0__.useLayoutEffect ;
 var map = {
 	"./Accesses/AskAccess": "./resources/js/Accesses/AskAccess.js",
 	"./Accesses/AskAccess.js": "./resources/js/Accesses/AskAccess.js",
+	"./Accesses/IdentityRoles": "./resources/js/Accesses/IdentityRoles.js",
+	"./Accesses/IdentityRoles.js": "./resources/js/Accesses/IdentityRoles.js",
 	"./Accesses/List": "./resources/js/Accesses/List.js",
 	"./Accesses/List.js": "./resources/js/Accesses/List.js",
-	"./Accesses/OldList": "./resources/js/Accesses/OldList.js",
-	"./Accesses/OldList.js": "./resources/js/Accesses/OldList.js",
 	"./Board/Edit": "./resources/js/Board/Edit.js",
 	"./Board/Edit.js": "./resources/js/Board/Edit.js",
 	"./Board/IdSelector": "./resources/js/Board/IdSelector.js",

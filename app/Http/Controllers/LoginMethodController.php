@@ -16,8 +16,8 @@ class LoginMethodController extends Controller
         $this->authorize('viewAny', LoginMethod::class);
 
         $lmthds = [
-            'alumni' => Alumnus::has('loginMethods')->with('loginMethods')->orderBy('surname')->orderBy('name')->get(),
-            'externals' => External::has('loginMethods')->with('loginMethods')->orderBy('surname')->orderBy('name')->get(),
+            'alumni' => Alumnus::has('loginMethods')->with(['loginMethods','roles'])->orderBy('surname')->orderBy('name')->get(),
+            'externals' => External::has('loginMethods')->with(['loginMethods','roles'])->orderBy('surname')->orderBy('name')->get(),
             'requests' => LoginMethod::where('identity_id',null)->orderBy('created_at','desc')->get(),
         ];
 
@@ -75,23 +75,27 @@ class LoginMethodController extends Controller
         return redirect()->back();
     }
 
-    public function roles(Request $request, User $user) {
+    public function edit_roles(Request $request) {
         
         $validated = $request->validate([
+            'id' => 'required|numeric',
+            'type' => 'required|in:alumnus,external',
             'action' => 'required|in:add,remove',
             'role' => 'required|exists:roles,name'
         ]);
         
         $this->authorize( 'user-edit-' . $validated['role'] );
 
-        if( $user->hasRole( $validated['role'] ) && $validated['action'] == 'remove' ) {
-            Log::debug('User roles changed', [$user, $validated]);
-            $user->removeRole( $validated['role'] );
+        $identity = $validated['type'] == 'alumnus' ? Alumnus::find( $validated['id'] ) : External::find( $validated['id'] );
+
+        if( $identity->hasRole( $validated['role'] ) && $validated['action'] == 'remove' ) {
+            Log::debug('Identity roles changed', [$identity, $validated]);
+            $identity->removeRole( $validated['role'] );
         }
 
-        if( !$user->hasRole( $validated['role'] ) && $validated['action'] == 'add' ) {
-            Log::debug('User roles changed', [$user, $validated]);
-            $user->assignRole( $validated['role'] );
+        if( !$identity->hasRole( $validated['role'] ) && $validated['action'] == 'add' ) {
+            Log::debug('Identity roles changed', [$identity, $validated]);
+            $identity->assignRole( $validated['role'] );
         }
         
         return redirect()->back();

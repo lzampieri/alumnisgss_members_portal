@@ -3,27 +3,27 @@ import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import Backdrop from "../Layout/Backdrop";
-import { disappearing } from "../Utils";
+import { disappearing, postRequest } from "../Utils";
 import ReactSwitch from "react-switch";
-import { Inertia } from "@inertiajs/inertia";
 import Dialog from "../Layout/Dialog";
+import IdentityRoles from "./IdentityRoles";
 
 function identityEnabling(id, type, newState, setProcessing) {
-    setProcessing(true);
-    Inertia.post(
-        route('identity.enabling'),
+    postRequest(
+        'identity.enabling',
         { type: type, id: id, enabled: newState },
-        { onFinish: () => { setProcessing(false) }, preserveState: true, preserveScroll: true }
-    )
+        setProcessing
+    );
 }
 
 function lmthDelete(lmth, setProcessing) {
-    setProcessing(true);
-    Inertia.post(
-        route('lmth.delete', { lmth: lmth.id }),
-        { },
-        { onFinish: () => { setProcessing(false) }, preserveState: false }
-    )
+    postRequest(
+        'lmth.delete',
+        {},
+        setProcessing,
+        { lmth: lmth.id },
+        false, false
+    );
 }
 
 function LoginMethodSpan(lmth, setProcessing) {
@@ -40,7 +40,7 @@ function LoginMethodSpan(lmth, setProcessing) {
     )
 }
 
-function Identity(idt, type, filter, editableRoles, setProcessing) {
+function Identity(idt, type, filter, setProcessing) {
     let key = idt.name + idt.surname + idt.login_methods.map(l => l.credential).join();
     let visible = filter ? key.toLowerCase().includes(filter.toLowerCase()) : true
     const [dropdownOpen, setDropdownOpen] = useState(true);
@@ -53,32 +53,26 @@ function Identity(idt, type, filter, editableRoles, setProcessing) {
                     <h3>{idt.surname} {idt.name}</h3>
                     {idt.login_methods.map(lmth => LoginMethodSpan(lmth, setProcessing))}
                 </div>
-                {key}
-                {/* <Switch checked={lmthd.enabled} onChange={(checked) => userEnabling(lmthd.id, checked, setProcessing)} />
-                <div className={"flex flex-col" + (lmthd.enabled ? "" : " text-gray-400")}>
-                    {lmthd.credential}
-                    <div className="text-gray-400 text-sm">Registrato il {new Date(Date.parse(lmthd.created_at)).toLocaleDateString('it-IT')}</div>
-                    <div className="text-gray-400 text-sm">Ultimo accesso {new Date(Date.parse(lmthd.last_login)).toLocaleString('it-IT')}</div>
+                <IdentityRoles identity={idt} type={type} setProcessing={setProcessing} />
+            </div>
+        </div>
+    )
+}
+
+function Request(lmth, filter, setProcessing) {
+    let key = idt.name + idt.surname + idt.login_methods.map(l => l.credential).join();
+    let visible = filter ? key.toLowerCase().includes(filter.toLowerCase()) : true
+    const [dropdownOpen, setDropdownOpen] = useState(true);
+
+    return (
+        <div key={idt.id} style={disappearing(visible)} >
+            <div className="mylist-item flex flex-row p-2 items-center gap-2">
+                <ReactSwitch checked={idt.enabled} onChange={(checked) => identityEnabling(idt.id, type, checked, setProcessing)} />
+                <div className="flex flex-col items-stretch justify-start">
+                    <h3>{idt.surname} {idt.name}</h3>
+                    {idt.login_methods.map(lmth => LoginMethodSpan(lmth, setProcessing))}
                 </div>
-                { lmthd.enabled && <>
-                    {lmthd.identity && lmthd.identity.roles.map(role =>
-                        <div className="chip" key={role}>
-                            {Roles.names[role.name]}
-                            {editableRoles.indexOf(role.name) > -1 ?
-                                <FontAwesomeIcon icon={solid('xmark')} className="ml-1 px-1 hover:text-white hover:bg-gray-700 rounded-full" onClick={() => userRoleRemove(lmthd.id, role.name, setProcessing)} />
-                                : ""}
-                        </div>
-                    )}
-                    <div className="icon-button dropdown-parent group">
-                        <FontAwesomeIcon icon={solid('plus')} onClick={() => setDropdownOpen(!dropdownOpen)} />
-                        <div className="dropdown-content-flex flex-col gap-2">
-                            {editableRoles.map(role => (
-                                lmthd.identity && lmthd.identity.roles.indexOf(role) > -1 ? "" :
-                                    <div className="chip cursor-pointer" key={role} onClick={() => userRoleAdd(lmthd.id, role, setProcessing)} >{Roles.names[role]}</div>
-                            ))}
-                        </div>
-                    </div>
-                </> } */}
+                <IdentityRoles identity={idt} type={type} setProcessing={setProcessing} />
             </div>
         </div>
     )
@@ -86,7 +80,6 @@ function Identity(idt, type, filter, editableRoles, setProcessing) {
 
 export default function List() {
     const lmthds = usePage().props.lmthds
-    const editableRoles = usePage().props.editableRoles
     const [filter, setFilter] = useState("")
     const [processing, setProcessing] = useState(false);
     const [section, setSection] = useState('externals'); // alumni - externals - requests
@@ -111,13 +104,13 @@ export default function List() {
             </div>
             <div className="tabs-container">
                 <div className={"tab " + (section == 'alumni' ? "active" : "")}>
-                    {lmthds.alumni.map(idt => Identity(idt, 'alumnus', filter, editableRoles, setProcessing))}
+                    {lmthds.alumni.map(idt => Identity(idt, 'alumnus', filter, setProcessing))}
                 </div>
                 <div className={"tab " + (section == 'externals' ? "active" : "")}>
-                    {lmthds.externals.map(idt => Identity(idt, 'external', filter, editableRoles, setProcessing))}
+                    {lmthds.externals.map(idt => Identity(idt, 'external', filter, setProcessing))}
                 </div>
                 <div className={"tab " + (section == 'requests' ? "active" : "")}>
-                    {/* {lmthds.map(lmthd => LmthdItem(lmthd, filter, editableRoles, setProcessing))} */}
+                    {/* {lmthds.map(lmthd => LmthdItem(lmthd, filter, setProcessing))} */}
                 </div>
             </div>
             <Backdrop open={processing} />
