@@ -33,13 +33,22 @@ class LoginMethodPolicy
     }
 
     /**
-     * Determine whether the user can enable models.
+     * Determine whether the user can edit the models.
      *
      * @param  \App\Models\User  $user
+     * @param  \App\Models\LoginMethod  $lmth
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function enable(User $user)
+    public function edit(User $user, LoginMethod $lmth)
     {
-        return $user->hasPermissionTo('logins-enabling');
+        if( $user->hasPermissionTo('logins-edit') )
+            return true;
+
+        if( $lmth->identity )
+            if( $lmth->identity_type == $user->identity_type )
+                if( $lmth->identity_id == $user->identity_id )
+                    return true;
+
+        return false;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Alumnus;
 use App\Models\External;
 use App\Models\LoginMethod;
 use Illuminate\Database\Seeder;
@@ -40,6 +41,21 @@ class UsersSeeder extends Seeder
         $secretariat_lm->identity()->associate( $secretariat_user )->save();
 
         $secretariat_user->assignRole('secretariat');
+        $secretariat_user->givePermissionTo('login');
+
+
+        $alumnus_user = Alumnus::create([
+            'name' => 'alumno',
+            'surname' => 'unipd',
+            'coorte' => 12,
+            'status' => 1
+        ]);
+
+        $alumnus_user_lm = LoginMethod::create([
+            'driver' => 'google',
+            'credential' => 'l.zampieri5@campus.unimib.it',
+        ]);
+        $alumnus_user_lm->identity()->associate( $alumnus_user )->save();
     
         $orphan_lm = LoginMethod::create([
             'driver' => 'google',

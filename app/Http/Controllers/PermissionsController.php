@@ -40,7 +40,9 @@ class PermissionsController extends Controller
             // Users
             'login',
             'logins-view',
-            'logins-enabling',
+            'logins-edit',
+            'identity-alumni-enabling',
+            'identity-externals-enabling',
             // Edit roles and permissions
             'permissions-view',
             'permissions-edit',

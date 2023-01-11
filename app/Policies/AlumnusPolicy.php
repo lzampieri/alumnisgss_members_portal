@@ -29,7 +29,7 @@ class AlumnusPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasPermissionTo( 'alumnus-view' );
+        return $user->hasPermissionTo('alumnus-view');
     }
 
     /**
@@ -40,7 +40,7 @@ class AlumnusPolicy
      */
     public function edit(User $user)
     {
-        return $user->hasPermissionTo( 'alumnus-edit' );
+        return $user->hasPermissionTo('alumnus-edit');
     }
 
     /**
@@ -51,6 +51,17 @@ class AlumnusPolicy
      */
     public function bulkEdit(User $user)
     {
-        return $user->hasPermissionTo( 'alumnus-bulk' );
+        return $user->hasPermissionTo('alumnus-bulk');
+    }
+
+    /**
+     * Determine whether the user can enable models.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function enable(User $user)
+    {
+        return $user->hasPermissionTo('identity-alumni-enabling');
     }
 }

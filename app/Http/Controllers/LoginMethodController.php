@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Alumnus;
+use App\Models\External;
 use App\Models\LoginMethod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,32 +14,62 @@ class LoginMethodController extends Controller
     public function list()
     {
         $this->authorize('viewAny', LoginMethod::class);
-        $lmthds = LoginMethod::orderBy('credential')->with(['identity','identity.roles'])->get();
 
-        $lmthds = $lmthds->map( function ( $lmthds ) { $lmthds['enabled'] = $lmthds->enabled(); return $lmthds; } );
+        $lmthds = [
+            'alumni' => Alumnus::has('loginMethods')->with('loginMethods')->orderBy('surname')->orderBy('name')->get(),
+            'externals' => External::has('loginMethods')->with('loginMethods')->orderBy('surname')->orderBy('name')->get(),
+            'requests' => LoginMethod::where('identity_id',null)->orderBy('created_at','desc')->get(),
+        ];
 
         return Inertia::render('Accesses/List', ['lmthds' => $lmthds, 'editableRoles' => Auth::user()->identity->editableRoles() ]);
     }
 
-    public function enabling(Request $request, User $user) {
-        $this->authorize('enabling', User::class);        
-
+    public function enabling(Request $request) {
+        
         $validated = $request->validate([
+            'id' => 'required|numeric',
+            'type' => 'required|in:alumnus,external',
             'enabled' => 'required|boolean'
         ]);
 
-        if( $user->hasRole('webmaster') ) {
+        $classType = $validated['type'] == 'alumnus' ? Alumnus::class : External::class;
+
+        $this->authorize('enable', $classType);        
+
+        $identity = $validated['type'] == 'alumnus' ? Alumnus::find( $validated['id'] ) : External::find( $validated['id'] );
+
+        if( !$identity ) {
+            return redirect()->back()->with( 'notistack', ['error','Identità non trovata']);
+        }
+
+        if( $identity->hasRole('webmaster') ) {
             return redirect()->back()->with( 'notistack', ['error','Impossibile disabilitare il webmaster']);
         }
 
-        if( $user->enabled() && !$validated['enabled'] ) {
-            Log::debug('User disabled', $user);
-            $user->revokePermissionTo( 'login' );
+        if( $identity->enabled && !$validated['enabled'] ) {
+            Log::debug('Identity disabled', $identity);
+            $identity->revokePermissionTo( 'login' );
         }
         
-        if( !$user->enabled() && $validated['enabled'] ) {
-            Log::debug('User enabled', $user);
-            $user->givePermissionTo( 'login' );
+        if( !$identity->enabled && $validated['enabled'] ) {
+            Log::debug('Identity enabled', $identity);
+            $identity->givePermissionTo( 'login' );
+        }
+        
+        return redirect()->back();
+    }
+
+    public function delete(Request $request, LoginMethod $lmth) {
+        
+        $this->authorize('edit', $lmth);
+        $same = ($lmth->id == Auth::user()->id);
+
+        Log::debug('Login method deleted', $lmth);
+        $lmth->delete();
+
+        if( $same ) {
+            Auth::logout();
+            return redirect()->route('home');
         }
         
         return redirect()->back();

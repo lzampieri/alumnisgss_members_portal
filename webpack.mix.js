@@ -2,6 +2,8 @@ require('custom-env').env()
 
 const mix = require('laravel-mix');
 
+console.log(process.env.MIX_ASSET_URL);
+
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management

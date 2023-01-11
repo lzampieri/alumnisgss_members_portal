@@ -1,17 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { useState } from "react"
-// import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-// import { Alert, AlertTitle, IconButton, Modal } from "@mui/material";
-
-// const style = {
-//     position: 'absolute',
-//     top: '50%',
-//     left: '50%',
-//     transform: 'translate(-50%, -50%)',
-//     boxShadow: 24,
-//     p: 4,
-// };
 
 export default function Dialog({ open, undoLabel, confirmLabel, onClose, onConfirm, children }) {
 

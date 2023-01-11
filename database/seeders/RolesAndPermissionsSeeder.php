@@ -21,7 +21,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         
         // create roles
-        Role::create(['name' => 'secretariat']);
+        $sg = Role::create(['name' => 'secretariat']);
         $wm = Role::create(['name' => 'webmaster']);
         
         // create permissions
@@ -29,5 +29,6 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // all permissions to webmaster
         $wm->givePermissionTo(Permission::all());
+        $sg->givePermissionTo(['permissions-view','permissions-edit']);
     }
 }

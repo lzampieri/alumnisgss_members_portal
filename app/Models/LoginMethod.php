@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\Log;
 use Illuminate\Contracts\Auth\Access\Authorizable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 

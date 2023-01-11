@@ -96,5 +96,26 @@
     .chip.disabled {
         @apply opacity-40
     }
+    .tabs-container {
+        @apply w-full flex flex-row
+    }
+    .tab {
+        @apply transition-[width,border] min-h-screen;
+        @apply border-0;
+        @apply rounded-bl-xl rounded-br-xl;
+        @apply w-0 overflow-hidden;
+    }
+    .tab.active {
+        @apply border-x border-b border-black;
+        @apply w-full;
+    }
+    .tab-title {
+        @apply border border-black rounded-tl-xl rounded-tr-xl hover:bg-gray-300;
+        @apply cursor-pointer grow p-2 text-center;
+        @apply text-black;
+    }
+    .tab-title.active {
+        @apply text-primary-main border-b-4 font-bold border-b-primary-main
+    }
 
 }
