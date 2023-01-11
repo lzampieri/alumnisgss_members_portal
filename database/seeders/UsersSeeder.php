@@ -53,13 +53,14 @@ class UsersSeeder extends Seeder
 
         $alumnus_user_lm = LoginMethod::create([
             'driver' => 'google',
-            'credential' => 'l.zampieri5@campus.unimib.it',
+            'credential' => 'leonardo.zampieri@studenti.unipd.it',
         ]);
         $alumnus_user_lm->identity()->associate( $alumnus_user )->save();
+        $alumnus_user->givePermissionTo('login');
     
         $orphan_lm = LoginMethod::create([
             'driver' => 'google',
-            'credential' => 'leonardo.zampieri@studenti.unipd.it',
+            'credential' => 'leonardo.zampieri2@studenti.unipd.it',
         ]);
 
     }

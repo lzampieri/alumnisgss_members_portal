@@ -33,7 +33,9 @@ export class AlumnusStatus {
 export class Roles {
     static names = {
         'secretariat': 'Segreteria',
-        'webmaster': 'WebMaster'
+        'webmaster': 'WebMaster',
+        'member': 'Socio',
+        'student_member': 'Socio studente'
     }
 }
 

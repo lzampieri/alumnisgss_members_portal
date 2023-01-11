@@ -12,7 +12,7 @@ class AlumnusController extends Controller
     public function membersList()
     {
         $this->authorize('viewMembers', Alumnus::class);
-        $members = Alumnus::where('status', Alumnus::Member)->orWhere('status', Alumnus::StudentMember)->orderBy('surname')->orderBy('name')->get();
+        $members = Alumnus::whereIn('status', Alumnus::public_status)->orderBy('surname')->orderBy('name')->get();
 
         return Inertia::render('Members/List', ['members' => $members]);
     }

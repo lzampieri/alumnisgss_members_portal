@@ -6819,13 +6819,14 @@ function AlumnusItem(alumnus) {
       children: (0,_Utils__WEBPACK_IMPORTED_MODULE_2__.romanize)(alumnus.coorte)
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
       className: "chip",
-      style: (0,_Utils__WEBPACK_IMPORTED_MODULE_2__.bgAndContrast)(_Utils__WEBPACK_IMPORTED_MODULE_2__.AlumnusStatus[alumnus.status].color),
-      children: _Utils__WEBPACK_IMPORTED_MODULE_2__.AlumnusStatus[alumnus.status].acronym
+      style: (0,_Utils__WEBPACK_IMPORTED_MODULE_2__.bgAndContrast)(_Utils__WEBPACK_IMPORTED_MODULE_2__.AlumnusStatus.status[alumnus.status].color),
+      children: _Utils__WEBPACK_IMPORTED_MODULE_2__.AlumnusStatus.status[alumnus.status].acronym
     })]
   });
 }
 function List() {
   var members = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.members;
+  console.log(members);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
     className: "main-container",
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_Registry_ListTemplate__WEBPACK_IMPORTED_MODULE_1__["default"], {
@@ -7663,7 +7664,9 @@ var Roles = /*#__PURE__*/_createClass(function Roles() {
 });
 _defineProperty(Roles, "names", {
   'secretariat': 'Segreteria',
-  'webmaster': 'WebMaster'
+  'webmaster': 'WebMaster',
+  'member': 'Socio',
+  'student_member': 'Socio studente'
 });
 var Documents = /*#__PURE__*/_createClass(function Documents() {
   _classCallCheck(this, Documents);
