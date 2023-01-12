@@ -64,4 +64,15 @@ class AlumnusPolicy
     {
         return $user->hasPermissionTo('identity-alumni-enabling');
     }
+
+    /**
+     * Determine whether the user can assign status which usually requires ratification.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function bypassRatification(User $user)
+    {
+        return $user->hasPermissionTo('ratifications-bypass');
+    }
 }

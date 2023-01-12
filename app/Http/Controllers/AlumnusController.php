@@ -29,7 +29,7 @@ class AlumnusController extends Controller
     {
         $this->authorize('edit', Alumnus::class);
 
-        return Inertia::render('Registry/Add', ['availableStatus' => Alumnus::status ]);
+        return Inertia::render('Registry/Add', ['availableStatus' => Alumnus::availableStatus()]);
     }
 
     public function add_post(Request $request)
@@ -40,7 +40,7 @@ class AlumnusController extends Controller
             'surname' => 'required|regex:/^[A-zÀ-ú\s]+$/',
             'name' => 'required|regex:/^[A-zÀ-ú\s]+$/',
             'coorte' => 'required|numeric',
-            'status' => 'required|in:' . implode(',',Alumnus::status )
+            'status' => 'required|in:' . implode(',', Alumnus::availableStatus() )
         ]);
 
         Alumnus::create($validated);
@@ -68,7 +68,7 @@ class AlumnusController extends Controller
             $fields = explode(',', $line);
             if (count($fields) != 4) continue;
             if (!is_numeric($fields[2])) continue;
-            if (!in_array($fields[3],Alumnus::status)) continue;
+            if (!in_array($fields[3], Alumnus::availableStatus())) continue;
 
             $data = [
                 'surname' => $fields[0],
@@ -89,19 +89,19 @@ class AlumnusController extends Controller
     {
         $this->authorize('bulkEdit', Alumnus::class);
 
-        return response()->streamDownload( function() {
+        return response()->streamDownload(function () {
             echo "\xEF\xBB\xBF"; // UTF-8 BOM
             $alumni = Alumnus::all();
-            foreach( $alumni as $a )
-                echo implode( ',', [ $a->name, $a->surname, $a->coorte, $a->status ] ) . "\n";
-        }, 'export_' . date('Ymd') . '_' . env('APP_ENV','debug') .  '.csv' );
+            foreach ($alumni as $a)
+                echo implode(',', [$a->name, $a->surname, $a->coorte, $a->status]) . "\n";
+        }, 'export_' . date('Ymd') . '_' . env('APP_ENV', 'debug') .  '.csv');
     }
 
     public function edit(Request $request, Alumnus $alumnus)
     {
         $this->authorize('edit', Alumnus::class);
 
-        return Inertia::render('Registry/Edit', ['alumnus' => $alumnus, 'availableStatus' => Alumnus::status ]);
+        return Inertia::render('Registry/Edit', ['alumnus' => $alumnus, 'availableStatus' => Alumnus::availableStatus($alumnus)]);
     }
 
     public function edit_post(Request $request, Alumnus $alumnus)
@@ -112,7 +112,7 @@ class AlumnusController extends Controller
             'surname' => 'required|regex:/^[A-zÀ-ú\s]+$/',
             'name' => 'required|regex:/^[A-zÀ-ú\s]+$/',
             'coorte' => 'required|numeric',
-            'status' => 'required|in:' . implode(',',Alumnus::status )
+            'status' => 'required|in:' . implode(',', Alumnus::availableStatus($alumnus))
         ]);
 
         $alumnus->update($validated);

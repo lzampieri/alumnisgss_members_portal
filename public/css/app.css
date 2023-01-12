@@ -696,11 +696,11 @@ a {
 .mb-4 {
   margin-bottom: 1rem;
 }
-.ml-1 {
-  margin-left: 0.25rem;
-}
 .mt-4 {
   margin-top: 1rem;
+}
+.ml-1 {
+  margin-left: 0.25rem;
 }
 .mt-8 {
   margin-top: 2rem;
@@ -1560,6 +1560,10 @@ label.error {
 
 @media (min-width: 768px) {
 
+  .md\:w-3\/4 {
+    width: 75%;
+  }
+
   .md\:w-3\/5 {
     width: 60%;
   }
@@ -1574,10 +1578,6 @@ label.error {
 
   .md\:w-2\/5 {
     width: 40%;
-  }
-
-  .md\:w-3\/4 {
-    width: 75%;
   }
 
   .md\:max-w-\[33\%\] {

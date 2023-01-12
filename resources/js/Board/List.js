@@ -21,7 +21,7 @@ function DocumentItem(document, canEdit) {
                 <span className="text-gray-500 text-sm">Protocollo web {document.handle}</span>
                 <span className="text-xl font-bold">{document.identifier}</span>
                 <span className="text-sm">Visibilità: {Documents.names[document.privacy] || document.privacy} {document.note && " - Nota: " + document.note}</span>
-                <span className="text-gray-500 text-sm">Caricato il {new Date(document.created_at).toLocaleDateString('it-IT', { 'dateStyle': 'long' })} da {document.author.email}</span>
+                <span className="text-gray-500 text-sm">Caricato il {new Date(document.created_at).toLocaleDateString('it-IT', { 'dateStyle': 'long' })} da {document.author.name} {document.author.surname}</span>
             </div>
             {canEdit && <Link href={route('board.edit', { document: document.id })} className="">
                 <FontAwesomeIcon icon={solid('pen')} className="text-4xl !p-4 icon-button" />
@@ -35,7 +35,6 @@ function DocumentItem(document, canEdit) {
 
 export default function List() {
     const documents = usePage().props.documents
-    const total = usePage().props.total
     const canEdit = usePage().props.canEdit
 
     return (

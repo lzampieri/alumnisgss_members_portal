@@ -23,6 +23,10 @@ class AppsController extends Controller
             $apps[] = 'registry';
         }
 
+        if (Auth::user() && Auth::user()->can('view', Ratification::class)) {
+            $apps[] = 'ratifications';
+        }
+
         // Anyone can access board
         $apps[] = 'board';
 

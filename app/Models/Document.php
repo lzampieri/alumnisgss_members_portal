@@ -33,4 +33,8 @@ class Document extends Model
     public function author() {
         return $this->morphTo();
     }
+
+    public function ratifications() {
+        return $this->hasMany( Ratification::class );
+    }
 }
