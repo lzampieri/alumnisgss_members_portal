@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
+use App\Models\External;
+use App\Models\LoginMethod;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log as OriginalLog;
@@ -31,9 +33,11 @@ class Log extends Controller
             return rtrim( rtrim( $output, " "), "|" ) . "]";
         }
         if( $object instanceof Alumnus )
-            return "(" . $object->id . ") " . $object->surname . " "  . $object->name . " [" . $object->status . "]";
-        if( $object instanceof User )
-            return $object->email;
+            return "(" . $object->id . ") " . $object->surname . " "  . $object->name . " (" . $object->coorte . ") [" . $object->status . "]";
+        if( $object instanceof External )
+            return "(" . $object->id . ") " . $object->surname . " "  . $object->name . " [" . $object->note . "]";
+        if( $object instanceof LoginMethod )
+            return $object->credential . " (" . $object->driver . ")";
         if( $object instanceof Permission )
             return $object->name;
         return $object;

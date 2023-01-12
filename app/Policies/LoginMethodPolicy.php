@@ -51,4 +51,16 @@ class LoginMethodPolicy
 
         return false;
     }
+
+    /**
+     * Determine whether the user can associate a login method to an identity.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\LoginMethod  $lmth
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function associate(User $user)
+    {
+        return $user->hasPermissionTo('accesses-associate');
+    }
 }

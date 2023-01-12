@@ -32,7 +32,7 @@ class LoginMethod extends Authenticatable
         return $this->hasPermissionTo('login');
     }
     
-    public function comments() {
-        return $this->morphMany( Comment::class, 'commentable' );
+    public function blocks() {
+        return $this->morphMany( Block::class, 'blockable' );
     }
 }

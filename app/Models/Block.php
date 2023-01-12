@@ -5,16 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Comment extends Model
+class Block extends Model
 {
     protected $fillable = [
+        'type',
         'content',
-        'commentable_type',
-        'commentable_id'
+        'order',
+        'blockable_type',
+        'blockable_id'
     ];
 
     
-    public function commentable()
+    public function blockable()
     {
         return $this->morphTo();
     }

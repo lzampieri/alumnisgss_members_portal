@@ -14,6 +14,10 @@ Route::prefix('/accesses')->group( function () {
 
     // Roles
     Route::post('/edit_roles', [ IdentityController::class, 'edit_roles'])->name('identity.edit_roles');
+
+    // Associate
+    Route::get('/associate/{lmth}', [ LoginMethodController::class, 'associate'])->name('lmth.associate');
+    Route::post('/associate/{lmth}', [ LoginMethodController::class, 'associate_post']);
 });
 
 // Permissions

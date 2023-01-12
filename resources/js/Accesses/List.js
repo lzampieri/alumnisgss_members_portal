@@ -1,12 +1,13 @@
-import { usePage } from "@inertiajs/inertia-react";
+import { Link, usePage } from "@inertiajs/inertia-react";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import Backdrop from "../Layout/Backdrop";
-import { disappearing, postRequest } from "../Utils";
+import { disappearing, postRequest, romanize } from "../Utils";
 import ReactSwitch from "react-switch";
 import Dialog from "../Layout/Dialog";
 import IdentityRoles from "./IdentityRoles";
+import BlockParser from "../Blocks/BlockParser";
 
 function identityEnabling(id, type, newState, setProcessing) {
     postRequest(
@@ -50,6 +51,7 @@ function Identity(idt, type, filter, setProcessing) {
                 <ReactSwitch checked={idt.enabled} onChange={(checked) => identityEnabling(idt.id, type, checked, setProcessing)} />
                 <div className="flex flex-col items-stretch justify-start">
                     <h3>{idt.surname} {idt.name}</h3>
+                    <span className="text-gray-500">{type == 'alumnus' ? romanize(idt.coorte) : idt.notes}</span>
                     {idt.login_methods.map(lmth => LoginMethodSpan(lmth, setProcessing))}
                 </div>
                 <IdentityRoles identity={idt} type={type} setProcessing={setProcessing} />
@@ -59,14 +61,15 @@ function Identity(idt, type, filter, setProcessing) {
 }
 
 function Request(lmth, filter, setProcessing) {
-    let key = lmth.credential + lmth.comments.map(l => l.content).join();
+    let key = lmth.credential + lmth.blocks.map(l => l.content).join();
     let visible = filter ? key.toLowerCase().includes(filter.toLowerCase()) : true
 
     return (
         <div key={lmth.id} style={disappearing(visible)} >
             <div className="mylist-item flex flex-col p-2 items-start gap-2">
                 <b>{lmth.credential}</b>
-                { lmth.comments.map( c => <span key={c.id} className="whitespace-pre">{c.content}</span>)}
+                { lmth.blocks.map( b => BlockParser( b ))}
+                { usePage().props.canAssociate ? <Link className="button" href={ route('lmth.associate',{ lmth: lmth.id } ) }>Associa</Link> : <span className="text-gray-400">Non hai il permesso per accettare questa richiesta</span> }
             </div>
         </div>
     )

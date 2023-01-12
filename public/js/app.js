@@ -5454,6 +5454,182 @@ function AskAccess() {
 
 /***/ }),
 
+/***/ "./resources/js/Accesses/Association.js":
+/*!**********************************************!*\
+  !*** ./resources/js/Accesses/Association.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Association)
+/* harmony export */ });
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faMagnifyingGlass__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faMagnifyingGlass */ "./node_modules/@fortawesome/free-solid-svg-icons/faMagnifyingGlass.js");
+/* harmony import */ var _inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @inertiajs/inertia-react */ "./node_modules/@inertiajs/inertia-react/dist/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var _Layout_Backdrop__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Layout/Backdrop */ "./resources/js/Layout/Backdrop.js");
+/* harmony import */ var _Blocks_BlockParser__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Blocks/BlockParser */ "./resources/js/Blocks/BlockParser.js");
+/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @fortawesome/react-fontawesome */ "./node_modules/@fortawesome/react-fontawesome/index.es.js");
+/* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Utils */ "./resources/js/Utils.js");
+/* harmony import */ var _NewExternal__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./NewExternal */ "./resources/js/Accesses/NewExternal.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0) { ; } } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i["return"] && (_r = _i["return"](), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+
+
+
+
+
+function filterInput(filter, setFilter) {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+    className: "w-full relative mb-4",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("input", {
+      type: "text",
+      className: "w-full text-center",
+      placeholder: "Filtra...",
+      value: filter,
+      onChange: function onChange(e) {
+        return setFilter(e.target.value);
+      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_4__.FontAwesomeIcon, {
+      icon: _fortawesome_free_solid_svg_icons_faMagnifyingGlass__WEBPACK_IMPORTED_MODULE_8__.faMagnifyingGlass,
+      className: "input-icon"
+    })]
+  });
+}
+function associate(lmth, type, id, setProcessing) {
+  (0,_Utils__WEBPACK_IMPORTED_MODULE_5__.postRequest)('lmth.associate', {
+    type: type,
+    id: id
+  }, setProcessing, {
+    lmth: lmth.id
+  });
+}
+function Identity(lmth, idt, type, filter, setProcessing) {
+  var key = idt.name + idt.surname + idt.coorte + (0,_Utils__WEBPACK_IMPORTED_MODULE_5__.romanize)(idt.coorte) + idt.notes;
+  var visible = filter ? key.toLowerCase().includes(filter.toLowerCase()) : true;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+    style: (0,_Utils__WEBPACK_IMPORTED_MODULE_5__.disappearing)(visible),
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+      className: "mylist-item flex flex-row p-2 items-center justify-between gap-2",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+        className: "flex flex-col items-stretch justify-start",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("span", {
+          children: [idt.surname, " ", idt.name]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
+          className: "text-gray-500",
+          children: type == 'alumnus' ? (0,_Utils__WEBPACK_IMPORTED_MODULE_5__.romanize)(idt.coorte) : idt.notes
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+        className: "button",
+        onClick: function onClick() {
+          return associate(lmth, type, idt.id, setProcessing);
+        },
+        children: "Associa"
+      })]
+    })
+  }, idt.id);
+}
+function Association() {
+  var lmth = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.lmth;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(""),
+    _useState2 = _slicedToArray(_useState, 2),
+    filter = _useState2[0],
+    setFilter = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false),
+    _useState4 = _slicedToArray(_useState3, 2),
+    processing = _useState4[0],
+    setProcessing = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(''),
+    _useState6 = _slicedToArray(_useState5, 2),
+    section = _useState6[0],
+    setSection = _useState6[1]; // alumni - externals - new_external
+
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+    className: "main-container",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("h3", {
+      children: "Approvazione richiesta di accesso"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("b", {
+      children: lmth.credential
+    }), "( ", lmth.driver, " ) ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+      className: "text-gray-500",
+      children: ["Richiesta il ", new Date(lmth.created_at).toLocaleDateString('it-IT', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+      className: "w-full md:w-3/4",
+      children: lmth.blocks.map(function (b) {
+        return (0,_Blocks_BlockParser__WEBPACK_IMPORTED_MODULE_3__["default"])(b);
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+      className: "w-full flex flex-row items-stretch mt-4",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+        className: "tab-title " + (section == 'alumni' ? "active" : ""),
+        onClick: function onClick() {
+          return setSection('alumni');
+        },
+        children: "Alumno"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+        className: "tab-title " + (section == 'externals' ? "active" : ""),
+        onClick: function onClick() {
+          return setSection('externals');
+        },
+        children: "Esterno"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+        className: "tab-title " + (section == 'new_external' ? "active" : ""),
+        onClick: function onClick() {
+          return setSection('new_external');
+        },
+        children: "Crea nuovo esterno"
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+      className: "tabs-container",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+        className: "tab " + (section == 'alumni' ? "active" : ""),
+        children: [" ", filterInput(filter, setFilter), (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.alumni.map(function (idt) {
+          return Identity(lmth, idt, 'alumnus', filter, setProcessing);
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+        className: "tab " + (section == 'externals' ? "active" : ""),
+        children: [" ", filterInput(filter, setFilter), (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.externals.map(function (idt) {
+          return Identity(lmth, idt, 'external', filter, setProcessing);
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+        className: "tab " + (section == 'new_external' ? "active" : ""),
+        children: [" ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+          className: "text-error font-bold p-2",
+          children: ["Prima di creare una nuova identit\xE0, controllare con attenzione che non sia gi\xE0 presente nella tab ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("i", {
+            children: "esterni"
+          }), ", per evitare doppioni."]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+          className: "font-bold p-2",
+          children: ["Non \xE8 possibile registrare nuove identit\xE0 di alumni da qui, ma solo di esterni. Per nuovi alumni, usare l'applicativo ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("i", {
+            children: "anagrafe"
+          }), "."]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_NewExternal__WEBPACK_IMPORTED_MODULE_6__["default"], {
+          lmth: lmth
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_Layout_Backdrop__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      open: processing
+    })]
+  });
+}
+
+/***/ }),
+
 /***/ "./resources/js/Accesses/IdentityRoles.js":
 /*!************************************************!*\
   !*** ./resources/js/Accesses/IdentityRoles.js ***!
@@ -5552,8 +5728,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ List)
 /* harmony export */ });
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faMagnifyingGlass__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faMagnifyingGlass */ "./node_modules/@fortawesome/free-solid-svg-icons/faMagnifyingGlass.js");
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faTrash__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faTrash */ "./node_modules/@fortawesome/free-solid-svg-icons/faTrash.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faMagnifyingGlass__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faMagnifyingGlass */ "./node_modules/@fortawesome/free-solid-svg-icons/faMagnifyingGlass.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faTrash__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faTrash */ "./node_modules/@fortawesome/free-solid-svg-icons/faTrash.js");
 /* harmony import */ var _inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @inertiajs/inertia-react */ "./node_modules/@inertiajs/inertia-react/dist/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @fortawesome/react-fontawesome */ "./node_modules/@fortawesome/react-fontawesome/index.es.js");
@@ -5562,7 +5738,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_switch__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-switch */ "./node_modules/react-switch/dist/index.dev.mjs");
 /* harmony import */ var _Layout_Dialog__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../Layout/Dialog */ "./resources/js/Layout/Dialog.js");
 /* harmony import */ var _IdentityRoles__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./IdentityRoles */ "./resources/js/Accesses/IdentityRoles.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _Blocks_BlockParser__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../Blocks/BlockParser */ "./resources/js/Blocks/BlockParser.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
@@ -5571,6 +5748,7 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0) { ; } } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i["return"] && (_r = _i["return"](), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 
 
 
@@ -5598,15 +5776,15 @@ function LoginMethodSpan(lmth, setProcessing) {
     _useState2 = _slicedToArray(_useState, 2),
     open = _useState2[0],
     setOpen = _useState2[1];
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("span", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("span", {
     className: "text-sm",
-    children: [lmth.credential, " (", lmth.driver, ")", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_2__.FontAwesomeIcon, {
-      icon: _fortawesome_free_solid_svg_icons_faTrash__WEBPACK_IMPORTED_MODULE_9__.faTrash,
+    children: [lmth.credential, " (", lmth.driver, ")", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_2__.FontAwesomeIcon, {
+      icon: _fortawesome_free_solid_svg_icons_faTrash__WEBPACK_IMPORTED_MODULE_10__.faTrash,
       className: "icon-button",
       onClick: function onClick() {
         return setOpen(true);
       }
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_Layout_Dialog__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_Layout_Dialog__WEBPACK_IMPORTED_MODULE_6__["default"], {
       open: open,
       onClose: function onClose() {
         return setOpen(false);
@@ -5624,23 +5802,26 @@ function Identity(idt, type, filter, setProcessing) {
     return l.credential;
   }).join();
   var visible = filter ? key.toLowerCase().includes(filter.toLowerCase()) : true;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
     style: (0,_Utils__WEBPACK_IMPORTED_MODULE_4__.disappearing)(visible),
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
       className: "mylist-item flex flex-row p-2 items-center gap-2",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_switch__WEBPACK_IMPORTED_MODULE_5__["default"], {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(react_switch__WEBPACK_IMPORTED_MODULE_5__["default"], {
         checked: idt.enabled,
         onChange: function onChange(checked) {
           return identityEnabling(idt.id, type, checked, setProcessing);
         }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
         className: "flex flex-col items-stretch justify-start",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("h3", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("h3", {
           children: [idt.surname, " ", idt.name]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("span", {
+          className: "text-gray-500",
+          children: type == 'alumnus' ? (0,_Utils__WEBPACK_IMPORTED_MODULE_4__.romanize)(idt.coorte) : idt.notes
         }), idt.login_methods.map(function (lmth) {
           return LoginMethodSpan(lmth, setProcessing);
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_IdentityRoles__WEBPACK_IMPORTED_MODULE_7__["default"], {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_IdentityRoles__WEBPACK_IMPORTED_MODULE_7__["default"], {
         identity: idt,
         type: type,
         setProcessing: setProcessing
@@ -5649,21 +5830,27 @@ function Identity(idt, type, filter, setProcessing) {
   }, idt.id);
 }
 function Request(lmth, filter, setProcessing) {
-  var key = lmth.credential + lmth.comments.map(function (l) {
+  var key = lmth.credential + lmth.blocks.map(function (l) {
     return l.content;
   }).join();
   var visible = filter ? key.toLowerCase().includes(filter.toLowerCase()) : true;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
     style: (0,_Utils__WEBPACK_IMPORTED_MODULE_4__.disappearing)(visible),
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
       className: "mylist-item flex flex-col p-2 items-start gap-2",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("b", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("b", {
         children: lmth.credential
-      }), lmth.comments.map(function (c) {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
-          className: "whitespace-pre",
-          children: c.content
-        }, c.id);
+      }), lmth.blocks.map(function (b) {
+        return (0,_Blocks_BlockParser__WEBPACK_IMPORTED_MODULE_8__["default"])(b);
+      }), (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.canAssociate ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.Link, {
+        className: "button",
+        href: route('lmth.associate', {
+          lmth: lmth.id
+        }),
+        children: "Associa"
+      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("span", {
+        className: "text-gray-400",
+        children: "Non hai il permesso per accettare questa richiesta"
       })]
     })
   }, lmth.id);
@@ -5683,11 +5870,11 @@ function List() {
     section = _useState8[0],
     setSection = _useState8[1]; // alumni - externals - requests
 
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
     className: "main-container",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
       className: "w-full relative mb-4",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("input", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("input", {
         type: "text",
         className: "w-full text-center",
         placeholder: "Filtra...",
@@ -5695,55 +5882,184 @@ function List() {
         onChange: function onChange(e) {
           return setFilter(e.target.value);
         }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_2__.FontAwesomeIcon, {
-        icon: _fortawesome_free_solid_svg_icons_faMagnifyingGlass__WEBPACK_IMPORTED_MODULE_10__.faMagnifyingGlass,
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_2__.FontAwesomeIcon, {
+        icon: _fortawesome_free_solid_svg_icons_faMagnifyingGlass__WEBPACK_IMPORTED_MODULE_11__.faMagnifyingGlass,
         className: "input-icon"
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
       className: "w-full flex flex-row items-stretch",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
         className: "tab-title " + (section == 'alumni' ? "active" : ""),
         onClick: function onClick() {
           return setSection('alumni');
         },
         children: "Alumni"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
         className: "tab-title " + (section == 'externals' ? "active" : ""),
         onClick: function onClick() {
           return setSection('externals');
         },
         children: "Esterni"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
         className: "tab-title " + (section == 'requests' ? "active" : ""),
         onClick: function onClick() {
           return setSection('requests');
         },
-        children: ["Richieste ", lmthds.requests.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("b", {
+        children: ["Richieste ", lmthds.requests.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("b", {
           children: ["(", lmthds.requests.length, ")"]
         })]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
       className: "tabs-container",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
         className: "tab " + (section == 'alumni' ? "active" : ""),
         children: lmthds.alumni.map(function (idt) {
           return Identity(idt, 'alumnus', filter, setProcessing);
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
         className: "tab " + (section == 'externals' ? "active" : ""),
         children: lmthds.externals.map(function (idt) {
           return Identity(idt, 'external', filter, setProcessing);
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
         className: "tab " + (section == 'requests' ? "active" : ""),
         children: lmthds.requests.map(function (lmthd) {
           return Request(lmthd, filter, setProcessing);
         })
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_Layout_Backdrop__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_Layout_Backdrop__WEBPACK_IMPORTED_MODULE_3__["default"], {
       open: processing
     })]
   });
+}
+
+/***/ }),
+
+/***/ "./resources/js/Accesses/NewExternal.js":
+/*!**********************************************!*\
+  !*** ./resources/js/Accesses/NewExternal.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ NewExternal)
+/* harmony export */ });
+/* harmony import */ var _inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @inertiajs/inertia-react */ "./node_modules/@inertiajs/inertia-react/dist/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+
+function NewExternal(_ref) {
+  var lmth = _ref.lmth;
+  var _useForm = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.useForm)({
+      surname: '',
+      name: '',
+      notes: ''
+    }),
+    data = _useForm.data,
+    setData = _useForm.setData,
+    post = _useForm.post,
+    processing = _useForm.processing,
+    errors = _useForm.errors;
+  var submit = function submit(e) {
+    e.preventDefault();
+    if (lmth) post(route('externals.add_and_associate', {
+      lmth: lmth.id
+    }));
+    // else
+    //     post( route( 'externals.add_and_associate', { lmth: lmth.id } ) );
+  };
+
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("form", {
+    className: "flex flex-col mx-2",
+    onSubmit: submit,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("label", {
+      children: "Cognome"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("input", {
+      type: "text",
+      value: data.surname,
+      onChange: function onChange(e) {
+        return setData('surname', e.target.value);
+      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("label", {
+      className: "error",
+      children: errors.surname
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("label", {
+      children: "Nome"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("input", {
+      type: "text",
+      value: data.name,
+      onChange: function onChange(e) {
+        return setData('name', e.target.value);
+      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("label", {
+      className: "error",
+      children: errors.name
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("label", {
+      children: "Note (ad esempio, il motivo per cui ha un rapporto con l'associazione)"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("input", {
+      type: "text",
+      value: data.notes,
+      onChange: function onChange(e) {
+        return setData('notes', e.target.value);
+      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("label", {
+      className: "error",
+      children: errors.notes
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("input", {
+      type: "button",
+      className: "button mt-4",
+      onClick: submit,
+      value: "Salva, associa ed abilita"
+    })]
+  });
+}
+
+/***/ }),
+
+/***/ "./resources/js/Blocks/BlockParser.js":
+/*!********************************************!*\
+  !*** ./resources/js/Blocks/BlockParser.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ BlockParser)
+/* harmony export */ });
+/* harmony import */ var _PlainText__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PlainText */ "./resources/js/Blocks/PlainText.js");
+
+function BlockParser(block) {
+  switch (block.type) {
+    default:
+      return (0,_PlainText__WEBPACK_IMPORTED_MODULE_0__["default"])(block);
+  }
+}
+
+/***/ }),
+
+/***/ "./resources/js/Blocks/PlainText.js":
+/*!******************************************!*\
+  !*** ./resources/js/Blocks/PlainText.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ PlainText)
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+function PlainText(block) {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+    className: "whitespace-pre",
+    children: block.content
+  }, block.id);
 }
 
 /***/ }),
@@ -6453,7 +6769,7 @@ __webpack_require__.r(__webpack_exports__);
   icon: _fortawesome_free_solid_svg_icons_faUsers__WEBPACK_IMPORTED_MODULE_0__.faUsers
 }, {
   id: 'registry',
-  name: 'Anagrafica',
+  name: 'Anagrafe',
   url: route('registry'),
   icon: _fortawesome_free_solid_svg_icons_faStapler__WEBPACK_IMPORTED_MODULE_1__.faStapler
 }, {
@@ -71749,10 +72065,18 @@ var index =  react__WEBPACK_IMPORTED_MODULE_0__.useLayoutEffect ;
 var map = {
 	"./Accesses/AskAccess": "./resources/js/Accesses/AskAccess.js",
 	"./Accesses/AskAccess.js": "./resources/js/Accesses/AskAccess.js",
+	"./Accesses/Association": "./resources/js/Accesses/Association.js",
+	"./Accesses/Association.js": "./resources/js/Accesses/Association.js",
 	"./Accesses/IdentityRoles": "./resources/js/Accesses/IdentityRoles.js",
 	"./Accesses/IdentityRoles.js": "./resources/js/Accesses/IdentityRoles.js",
 	"./Accesses/List": "./resources/js/Accesses/List.js",
 	"./Accesses/List.js": "./resources/js/Accesses/List.js",
+	"./Accesses/NewExternal": "./resources/js/Accesses/NewExternal.js",
+	"./Accesses/NewExternal.js": "./resources/js/Accesses/NewExternal.js",
+	"./Blocks/BlockParser": "./resources/js/Blocks/BlockParser.js",
+	"./Blocks/BlockParser.js": "./resources/js/Blocks/BlockParser.js",
+	"./Blocks/PlainText": "./resources/js/Blocks/PlainText.js",
+	"./Blocks/PlainText.js": "./resources/js/Blocks/PlainText.js",
 	"./Board/Edit": "./resources/js/Board/Edit.js",
 	"./Board/Edit.js": "./resources/js/Board/Edit.js",
 	"./Board/IdSelector": "./resources/js/Board/IdSelector.js",

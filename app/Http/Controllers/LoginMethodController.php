@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
-use App\Models\Comment;
+use App\Models\Block;
 use App\Models\External;
 use App\Models\Identity;
 use App\Models\LoginMethod;
@@ -21,10 +21,10 @@ class LoginMethodController extends Controller
         $lmthds = [
             'alumni' => Alumnus::has('loginMethods')->with(['loginMethods','roles'])->orderBy('surname')->orderBy('name')->get(),
             'externals' => External::has('loginMethods')->with(['loginMethods','roles'])->orderBy('surname')->orderBy('name')->get(),
-            'requests' => LoginMethod::where('identity_id',null)->with('comments')->orderBy('created_at','desc')->get(),
+            'requests' => LoginMethod::where('identity_id',null)->with('blocks')->orderBy('created_at','desc')->get(),
         ];
 
-        return Inertia::render('Accesses/List', ['lmthds' => $lmthds, 'editableRoles' => Auth::user()->identity->editableRoles() ]);
+        return Inertia::render('Accesses/List', ['lmthds' => $lmthds, 'editableRoles' => Auth::user()->identity->editableRoles(), 'canAssociate' => Auth::user()->can('associate', LoginMethod::class) ]);
     }
 
     public function delete(Request $request, LoginMethod $lmth) {
@@ -68,7 +68,7 @@ class LoginMethodController extends Controller
         $lm = LoginMethod::create(['driver' => 'google', 'credential' => $validated['email']]);
         Log::debug('New login created', $lm);
 
-        Comment::create(['content' => $validated['message']])->commentable()->associate($lm)->save();
+        Block::create(['content' => $validated['message']])->blockable()->associate($lm)->save();
         
         $emails = [];
         foreach( LoginMethod::where('driver','google')->hasMorph('identity',[Alumnus::class,External::class])->get() as $lm ) {
@@ -87,5 +87,40 @@ class LoginMethodController extends Controller
         Log::debug('Access request sent', [$emails, $message]);
         
         return redirect()->route('home')->with(['notistack' => ['success', 'La richiesta è stata inoltrata alla segreteria.']]);
+    }
+
+    function associate(Request $request, LoginMethod $lmth) {
+        $this->authorize('associate', LoginMethod::class);
+
+        $lmth->load('blocks');
+
+        return Inertia::render('Accesses/Association', [
+            'lmth' => $lmth,
+            'alumni' => Alumnus::orderBy('surname')->orderBy('name')->get(),
+            'externals' => External::orderBy('surname')->orderBy('name')->get(),
+        ]);
+
+    }
+
+    function associate_post(Request $request, LoginMethod $lmth) {
+        $this->authorize('associate', LoginMethod::class);
+        
+        $validated = $request->validate([
+            'id' => 'required|numeric',
+            'type' => 'required|in:alumnus,external'
+        ]);
+
+        $identity = $validated['type'] == 'alumnus' ? Alumnus::find( $validated['id'] ) : External::find( $validated['id'] );
+
+        $lmth->identity()->associate( $identity )->save();
+
+        Log::debug('Login method associated',['login method' => $lmth, 'identity' => $identity]);
+
+        if( !$identity->enabled ) {
+            Log::debug('Identity enabled', $identity);
+            $identity->givePermissionTo( 'login' );
+        }
+
+        return redirect()->route('accesses')->with(['notistack'=>['success','Utente abilitato']]);
     }
 }

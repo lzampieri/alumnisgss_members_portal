@@ -17,7 +17,8 @@ class UsersSeeder extends Seeder
     public function run()
     {
         $webmaster_user = External::create([
-            'name' => 'webmaster'
+            'name' => 'webmaster',
+            'notes' => 'pollo'
         ]);
 
         $webmaster_lm = LoginMethod::create([

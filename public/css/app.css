@@ -689,11 +689,15 @@ a {
 .z-auto {
   z-index: auto;
 }
-.ml-1 {
-  margin-left: 0.25rem;
+.mx-2 {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
 }
 .mb-4 {
   margin-bottom: 1rem;
+}
+.ml-1 {
+  margin-left: 0.25rem;
 }
 .mt-4 {
   margin-top: 1rem;
@@ -1097,6 +1101,14 @@ a {
 .leading-9 {
   line-height: 2.25rem;
 }
+.text-gray-500 {
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.text-error {
+  --tw-text-opacity: 1;
+  color: rgb(255 51 51 / var(--tw-text-opacity));
+}
 .text-gray-400 {
   --tw-text-opacity: 1;
   color: rgb(156 163 175 / var(--tw-text-opacity));
@@ -1104,10 +1116,6 @@ a {
 .\!text-black {
   --tw-text-opacity: 1 !important;
   color: rgb(0 0 0 / var(--tw-text-opacity)) !important;
-}
-.text-gray-500 {
-  --tw-text-opacity: 1;
-  color: rgb(107 114 128 / var(--tw-text-opacity));
 }
 .text-primary-main {
   --tw-text-opacity: 1;
@@ -1124,10 +1132,6 @@ a {
 .text-header-tx {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
-}
-.text-error {
-  --tw-text-opacity: 1;
-  color: rgb(255 51 51 / var(--tw-text-opacity));
 }
 .text-gray-900 {
   --tw-text-opacity: 1;
@@ -1570,6 +1574,10 @@ label.error {
 
   .md\:w-2\/5 {
     width: 40%;
+  }
+
+  .md\:w-3\/4 {
+    width: 75%;
   }
 
   .md\:max-w-\[33\%\] {

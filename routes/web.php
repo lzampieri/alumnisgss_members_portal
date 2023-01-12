@@ -21,6 +21,7 @@ Route::get('/', [ AppsController::class, 'home' ])->name('home');
 include( 'auth.php' );
 
 include( 'alumni.php' );
+include( 'externals.php' );
 
 include( 'board.php' );
 
