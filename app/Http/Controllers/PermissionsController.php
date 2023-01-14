@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Document;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 use Spatie\Permission\Models\Permission;
@@ -123,7 +124,7 @@ class PermissionsController extends Controller
         if ($validated['permission'] == 'login')
             return redirect()->back()->with(['notistack' => ['error', 'Il permesso di login non è assegnabile direttamente ad un ruolo']]);
 
-        if ($validated['role'] == 'webmaster') {
+        if (($validated['role'] == 'webmaster') && !( Auth::user()->identity->hasRole('webmaster') ) ) {
             Role::findByName('webmaster')->syncPermissions(Permission::all());
             Log::debug('All permissions assigned to webmaster', Permission::all());
             return redirect()->back()->with(['notistack' => ['success', 'Tutti i permessi assegnati al webmaster']]);

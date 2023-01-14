@@ -35,7 +35,6 @@ export default function List() {
             </div>
             <div className="w-full flex flex-col justify-start">
                 <h3>Ratifiche presenti</h3>
-                { Object.keys( AlumnusStatus.status ).map( k => "'" + k + "' => '" + AlumnusStatus.status[k].label + "'," ) }
                 {Object.keys(rats).map(r =>
                     <div className="mt-4">
                         <span>Per il passaggio a <b>{AlumnusStatus.status[r].label}</b></span>

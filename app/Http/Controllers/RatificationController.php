@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
+use App\Models\Identity;
 use App\Models\Ratification;
 use App\Utils\TemplatedPdfGenerator;
 use Illuminate\Http\Request;
@@ -28,7 +29,8 @@ class RatificationController extends Controller
 
         return Inertia::render('Ratifications/Add', [
             'alumni' => Alumnus::with('ratifications')->get(),
-            'possibleStatus' => Alumnus::require_ratification
+            'possibleStatus' => Alumnus::require_ratification,
+            'alumnus' => array_key_exists( 'alumnus', $_GET ) ? Alumnus::find( $_GET['alumnus'] ) : null
         ]);
     }
 

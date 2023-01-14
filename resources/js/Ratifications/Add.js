@@ -5,9 +5,9 @@ import Select, { createFilter } from 'react-select';
 export default function Add() {
     const alumni = usePage().props.alumni
     const possibleStatus = usePage().props.possibleStatus.map((s) => ({ value: s, label: AlumnusStatus.status[s].label }))
-
+    
     const { data, setData, post, transform, processing, errors } = useForm({
-        alumnus: null,
+        alumnus: ( usePage().props.alumnus ? usePage().props.alumnus : null ),
         required_state: null
     })
 

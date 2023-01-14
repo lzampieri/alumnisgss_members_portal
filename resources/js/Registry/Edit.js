@@ -1,22 +1,34 @@
 import { useForm, usePage } from "@inertiajs/inertia-react";
+import { useState } from "react";
 import Select from 'react-select';
 import { AlumnusStatus } from "../Utils";
+import Dialog from '../Layout/Dialog';
+import { Inertia } from "@inertiajs/inertia";
 
 export default function Edit() {
     const prev = usePage().props.alumnus;
+    const [dirtyDialog, setDirtyDialog] = useState(false);
 
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, isDirty } = useForm({
         surname: prev.surname,
         name: prev.name,
         coorte: prev.coorte,
         status: prev.status
     })
 
-    console.log( prev.status )
-
     const submit = ( e ) => {
         e.preventDefault();
         post( route( 'registry.edit', { alumnus: prev.id } ) );
+    }
+
+    const checkIfDirty = ( e ) => {
+        e.preventDefault();
+        if( isDirty ) setDirtyDialog( true );
+        else goToRatification();
+    }
+
+    const goToRatification = ( ) => {
+        Inertia.visit( route('ratifications.add', { alumnus: prev.id } ) );
     }
 
     const options = usePage().props.availableStatus.map( i => { return { value: i, label: AlumnusStatus.status[ i ].label } } )
@@ -37,6 +49,18 @@ export default function Edit() {
             <Select value={ options.find( i => i.value == data.status ) } onChange={ ( sel ) => setData( 'status', sel.value ) } options={ options } />
             <label className="error">{ errors.status }</label>
             <input type="button" className="button mt-4" onClick={ submit } value="Aggiorna" />
+            <div className="flex flex-row-reverse my-4">
+                <button className="button" onClick={checkIfDirty}>Richiedi ratifica</button>
+                <label className="grow">Ricorda che alcuni stati non possono essere assegnati direttamente, ma è necessario richiedere una ratifica al consiglio di amministrazione.</label>
+                <Dialog open={dirtyDialog}
+                    undoLabel="Torna alle modifiche"
+                    onClose={() => setDirtyDialog(false)}
+                    confirmLabel="Abbandona le modifiche"
+                    onConfirm={goToRatification}
+                    >
+                    Ci sono alcune modifiche all'alumno che non hai salvato. Vuoi abbandonarle?
+                </Dialog>
+            </div>
         </form>
     );
 }

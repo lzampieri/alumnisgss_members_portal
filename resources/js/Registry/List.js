@@ -28,7 +28,7 @@ export default function List() {
 
     return (
         <div className="main-container">
-            <div className="w-full flex flex-row justify-end">
+            <div className="w-full flex flex-row justify-end gap-2">
                 <Link className="button" href={route('registry.add')}>
                     <FontAwesomeIcon icon={solid('circle-plus')} />
                     Aggiungi
