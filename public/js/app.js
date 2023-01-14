@@ -7370,30 +7370,112 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ List)
 /* harmony export */ });
-/* harmony import */ var _fortawesome_free_solid_svg_icons_faCirclePlus__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faCirclePlus */ "./node_modules/@fortawesome/free-solid-svg-icons/faCirclePlus.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faTrash__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faTrash */ "./node_modules/@fortawesome/free-solid-svg-icons/faTrash.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faDownload__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faDownload */ "./node_modules/@fortawesome/free-solid-svg-icons/faDownload.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faCirclePlus__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faCirclePlus */ "./node_modules/@fortawesome/free-solid-svg-icons/faCirclePlus.js");
 /* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @fortawesome/react-fontawesome */ "./node_modules/@fortawesome/react-fontawesome/index.es.js");
 /* harmony import */ var _inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @inertiajs/inertia-react */ "./node_modules/@inertiajs/inertia-react/dist/index.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var _Layout_Backdrop__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Layout/Backdrop */ "./resources/js/Layout/Backdrop.js");
+/* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Utils */ "./resources/js/Utils.js");
+/* harmony import */ var _Layout_Dialog__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Layout/Dialog */ "./resources/js/Layout/Dialog.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0) { ; } } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i["return"] && (_r = _i["return"](), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
 
 
+
+
+
+function ratDelete(rat, setProcessing) {
+  (0,_Utils__WEBPACK_IMPORTED_MODULE_4__.postRequest)('ratifications.delete', {}, setProcessing, {
+    rat: rat.id
+  }, false, false);
+}
 function List() {
-  // const alumni = usePage().props.alumni
-
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+  var rats = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.rats;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(null),
+    _useState2 = _slicedToArray(_useState, 2),
+    toDelete = _useState2[0],
+    setToDelete = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(false),
+    _useState4 = _slicedToArray(_useState3, 2),
+    processing = _useState4[0],
+    setProcessing = _useState4[1];
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
     className: "main-container",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-      className: "w-full flex flex-row justify-end",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+      className: "w-full flex flex-row justify-end gap-2",
+      children: [(0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.canAdd && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
         className: "button",
         href: route('ratifications.add'),
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
-          icon: _fortawesome_free_solid_svg_icons_faCirclePlus__WEBPACK_IMPORTED_MODULE_3__.faCirclePlus
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
+          icon: _fortawesome_free_solid_svg_icons_faCirclePlus__WEBPACK_IMPORTED_MODULE_7__.faCirclePlus
         }), "Aggiungi"]
-      })
-    })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("a", {
+        className: "button",
+        href: route('ratifications.export'),
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
+          icon: _fortawesome_free_solid_svg_icons_faDownload__WEBPACK_IMPORTED_MODULE_8__.faDownload
+        }), "Esporta"]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+      className: "w-full flex flex-col justify-start",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("h3", {
+        children: "Ratifiche presenti"
+      }), Object.keys(_Utils__WEBPACK_IMPORTED_MODULE_4__.AlumnusStatus.status).map(function (k) {
+        return "'" + k + "' => '" + _Utils__WEBPACK_IMPORTED_MODULE_4__.AlumnusStatus.status[k].label + "',";
+      }), Object.keys(rats).map(function (r) {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+          className: "mt-4",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("span", {
+            children: ["Per il passaggio a ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("b", {
+              children: _Utils__WEBPACK_IMPORTED_MODULE_4__.AlumnusStatus.status[r].label
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("ul", {
+            className: "list-disc list-inside",
+            children: [console.log(Object.values(rats[r])), Object.values(rats[r]).map(function (a) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("li", {
+                children: [a.alumnus.surname, " ", a.alumnus.name, " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("span", {
+                  className: "text-gray-400",
+                  children: [(0,_Utils__WEBPACK_IMPORTED_MODULE_4__.romanize)(a.alumnus.coorte), a.alumnus.coorte != 0 && " coorte"]
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
+                  className: "icon-button-gray mx-2",
+                  onClick: function onClick() {
+                    return setToDelete(a);
+                  },
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
+                    icon: _fortawesome_free_solid_svg_icons_faTrash__WEBPACK_IMPORTED_MODULE_9__.faTrash
+                  })
+                })]
+              });
+            })]
+          })]
+        });
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_Layout_Dialog__WEBPACK_IMPORTED_MODULE_5__["default"], {
+      open: !!toDelete,
+      onClose: function onClose() {
+        return setToDelete(null);
+      },
+      onConfirm: function onConfirm() {
+        setToDelete(null);
+        ratDelete(toDelete, setProcessing);
+      },
+      children: ["Sei sicuro di voler eliminare la richiesta di ratifica di ", toDelete && toDelete.alumnus.surname + " " + toDelete.alumnus.name, " al ruolo di ", toDelete && _Utils__WEBPACK_IMPORTED_MODULE_4__.AlumnusStatus.status[toDelete.required_state].label, "?"]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_Layout_Backdrop__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      open: processing
+    })]
   });
 }
 

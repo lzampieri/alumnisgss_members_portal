@@ -6,7 +6,7 @@ use App\Models\Document;
 use App\Policies\DocumentPolicy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use setasign\Fpdi\Fpdi;
+use setasign\Fpdi\Tcpdf\Fpdi;
 use Inertia\Inertia;
 
 class DocumentsController extends Controller
@@ -131,6 +131,7 @@ class DocumentsController extends Controller
 
         Log::debug('File generated', ['handle' => $document->handle]);
 
-        return response($pdf->Output('I',$document->handle . '.pdf'));
+        $pdf->Output($document->handle . '.pdf', 'I');
+        exit;
     }
 }

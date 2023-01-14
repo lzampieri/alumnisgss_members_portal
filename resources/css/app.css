@@ -28,6 +28,13 @@
         @apply rounded-full text-primary-main aspect-square px-1;
         @apply hover:text-primary-contrast hover:bg-primary-main;
         @apply no-underline;
+        @apply cursor-pointer;
+    }
+    .icon-button-gray {
+        @apply rounded-full text-gray-400 aspect-square px-1;
+        @apply hover:text-white hover:bg-gray-400;
+        @apply no-underline;
+        @apply cursor-pointer;
     }
     .button svg {
         @apply pr-2

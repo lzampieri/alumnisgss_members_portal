@@ -32,6 +32,10 @@ abstract class Identity extends Model {
 
         return $editableRoles;
     }
+
+    public function surnameAndName() {
+        return $this->surname . " " . $this->name;
+    }
     
     public function loginMethods() {
         return $this->morphMany( LoginMethod::class, 'identity' );

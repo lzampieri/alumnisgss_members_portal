@@ -816,6 +816,12 @@ a {
 .cursor-pointer {
   cursor: pointer;
 }
+.list-inside {
+  list-style-position: inside;
+}
+.list-disc {
+  list-style-type: disc;
+}
 .grid-cols-7 {
   grid-template-columns: repeat(7, minmax(0, 1fr));
 }
@@ -1207,6 +1213,25 @@ a {
 }
 .icon-button {
   text-decoration-line: none;
+  cursor: pointer;
+}
+.icon-button-gray {
+  aspect-ratio: 1 / 1;
+  border-radius: 9999px;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(156 163 175 / var(--tw-text-opacity));
+}
+.icon-button-gray:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(156 163 175 / var(--tw-bg-opacity));
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+.icon-button-gray {
+  text-decoration-line: none;
+  cursor: pointer;
 }
 .button svg {
   padding-right: 0.5rem;

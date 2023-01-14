@@ -23,7 +23,16 @@ class Alumnus extends Identity
             $availableStatus[] = $alumnus;
         return array_values( $availableStatus );
     }
-
+    // Labels
+    const AlumnusStatusLabels = [
+        'member' => 'Socio',
+        'student_member' => 'Socio studente',
+        'not_reached' => 'Non raggiunto',
+        'student_not_reached' => 'Studente non raggiunto',
+        'student_not_agreed' => 'Studente rifiutante',
+        'hasnt_right' => 'Non avente diritto',
+        'dead' => 'Deceduto','not_agreed' => 'Rifiutante'
+    ];
 
     protected $fillable = [
         'name',
@@ -46,5 +55,22 @@ class Alumnus extends Identity
 
     public function ratifications() {
         return $this->hasMany( Ratification::class );
+    }
+
+    // For the ratification export
+    public static function romanize ($num) {
+        if( $num == 0 )
+            return "Socio onorario";
+        $digits = str_split( str_pad( strval( $num ), 3, '0', STR_PAD_LEFT ) );
+        $roman = "";
+        $key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM",
+               "","X","XX","XXX","XL","L","LX","LXX","LXXX","XC",
+               "","I","II","III","IV","V","VI","VII","VIII","IX"];
+
+        $i = count( $digits );
+        while( $i-- )
+            $roman = $key[ intval( $digits[ $i ] ) + $i * 10 ] . $roman;
+
+        return $roman . " coorte";
     }
 }

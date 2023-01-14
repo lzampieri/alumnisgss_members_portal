@@ -43,7 +43,7 @@ class Log extends Controller
         return $object;
     }
 
-    public static function debug(string $message, $params)
+    public static function debug(string $message, $params = [])
     {
         $message .= " " . Log::stringify( $params );
         if( Auth::check() )
