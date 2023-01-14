@@ -78,6 +78,7 @@ class PermissionsController extends Controller
             'alumnus-bulk',
             // Ratifications
             'ratifications-view',
+            'ratifications-edit',
             'ratifications-bypass',
             // Documents
             'documents-upload',

@@ -19,7 +19,7 @@ class CreateRatificationsTable extends Migration
 
             $table->string('required_state',50);
             $table->foreignId('alumnus_id')->constrained();
-            $table->foreignId('document_id')->constrained()->nullable();
+            $table->foreignId('document_id')->nullable()->constrained();
         });
     }
 

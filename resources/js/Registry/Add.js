@@ -3,7 +3,6 @@ import { AlumnusStatus } from "../Utils";
 import Select from 'react-select';
 
 export default function Add() {
-    console.log( usePage().props )
     const options = usePage().props.availableStatus.map( i => { return { value: i, label: AlumnusStatus.status[ i ].label } } )
 
     const { data, setData, post, processing, errors } = useForm({

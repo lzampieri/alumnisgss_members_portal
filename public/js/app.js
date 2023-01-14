@@ -7249,6 +7249,116 @@ function List() {
 
 /***/ }),
 
+/***/ "./resources/js/Ratifications/Add.js":
+/*!*******************************************!*\
+  !*** ./resources/js/Ratifications/Add.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Add)
+/* harmony export */ });
+/* harmony import */ var _inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @inertiajs/inertia-react */ "./node_modules/@inertiajs/inertia-react/dist/index.js");
+/* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Utils */ "./resources/js/Utils.js");
+/* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-select */ "./node_modules/react-select/dist/react-select.esm.js");
+/* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-select */ "./node_modules/react-select/dist/Select-40119e12.esm.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+
+
+
+function Add() {
+  var alumni = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.alumni;
+  var possibleStatus = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.possibleStatus.map(function (s) {
+    return {
+      value: s,
+      label: _Utils__WEBPACK_IMPORTED_MODULE_1__.AlumnusStatus.status[s].label
+    };
+  });
+  var _useForm = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.useForm)({
+      alumnus: null,
+      required_state: null
+    }),
+    data = _useForm.data,
+    setData = _useForm.setData,
+    post = _useForm.post,
+    transform = _useForm.transform,
+    processing = _useForm.processing,
+    errors = _useForm.errors;
+  transform(function (data) {
+    console.log(data);
+    return {
+      alumnus_id: data.alumnus.id,
+      required_state: data.required_state.value
+    };
+  });
+  var submit = function submit(e) {
+    e.preventDefault();
+    post(route('ratifications.add'));
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("form", {
+    className: "flex flex-col w-full md:w-3/5",
+    onSubmit: submit,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h3", {
+      children: "Richiedi retifica"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+      children: "Alumno interessato"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(react_select__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      isSearchable: true,
+      getOptionValue: function getOptionValue(option) {
+        return option.id;
+      },
+      getOptionLabel: function getOptionLabel(option) {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("span", {
+          children: [option.surname, " ", option.name, " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("span", {
+            className: "text-gray-400",
+            children: ["(", (0,_Utils__WEBPACK_IMPORTED_MODULE_1__.romanize)(option.coorte), ")"]
+          })]
+        });
+      },
+      filterOption: (0,react_select__WEBPACK_IMPORTED_MODULE_4__.c)({
+        stringify: function stringify(option) {
+          return option.data.surname + " " + option.data.name + " " + option.data.coorte + " " + (0,_Utils__WEBPACK_IMPORTED_MODULE_1__.romanize)(option.data.coorte);
+        }
+      }),
+      options: alumni,
+      value: data.alumnus,
+      onChange: function onChange(sel) {
+        return setData('alumnus', sel);
+      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("label", {
+      className: "error",
+      children: [errors.alumnus, errors.alumnus_id]
+    }), data.alumnus && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+        children: "Stato corrente:"
+      }), _Utils__WEBPACK_IMPORTED_MODULE_1__.AlumnusStatus.status[data.alumnus.status].label, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+        children: "Stato richiesto:"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(react_select__WEBPACK_IMPORTED_MODULE_3__["default"], {
+        options: possibleStatus,
+        value: data.required_state,
+        onChange: function onChange(sel) {
+          return setData('required_state', sel);
+        }
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+        className: "error",
+        children: errors.required_state
+      })]
+    }), data.alumnus && data.required_state && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+      type: "button",
+      className: "button mt-4",
+      onClick: submit,
+      value: "Inserisci richiesta"
+    })]
+  });
+}
+
+/***/ }),
+
 /***/ "./resources/js/Ratifications/List.js":
 /*!********************************************!*\
   !*** ./resources/js/Ratifications/List.js ***!
@@ -7260,8 +7370,31 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ List)
 /* harmony export */ });
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faCirclePlus__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faCirclePlus */ "./node_modules/@fortawesome/free-solid-svg-icons/faCirclePlus.js");
+/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @fortawesome/react-fontawesome */ "./node_modules/@fortawesome/react-fontawesome/index.es.js");
+/* harmony import */ var _inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @inertiajs/inertia-react */ "./node_modules/@inertiajs/inertia-react/dist/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+
+
 function List() {
-  return "Lista ratifiche";
+  // const alumni = usePage().props.alumni
+
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+    className: "main-container",
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+      className: "w-full flex flex-row justify-end",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
+        className: "button",
+        href: route('ratifications.add'),
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
+          icon: _fortawesome_free_solid_svg_icons_faCirclePlus__WEBPACK_IMPORTED_MODULE_3__.faCirclePlus
+        }), "Aggiungi"]
+      })
+    })
+  });
 }
 
 /***/ }),
@@ -7287,7 +7420,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function Add() {
-  console.log((0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props);
   var options = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.availableStatus.map(function (i) {
     return {
       value: i,
@@ -72170,6 +72302,8 @@ var map = {
 	"./Members/List.js": "./resources/js/Members/List.js",
 	"./Permissions/List": "./resources/js/Permissions/List.js",
 	"./Permissions/List.js": "./resources/js/Permissions/List.js",
+	"./Ratifications/Add": "./resources/js/Ratifications/Add.js",
+	"./Ratifications/Add.js": "./resources/js/Ratifications/Add.js",
 	"./Ratifications/List": "./resources/js/Ratifications/List.js",
 	"./Ratifications/List.js": "./resources/js/Ratifications/List.js",
 	"./Registry/Add": "./resources/js/Registry/Add.js",
