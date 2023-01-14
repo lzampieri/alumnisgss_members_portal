@@ -18,7 +18,8 @@ class RatificationController extends Controller
 
         return Inertia::render('Ratifications/List', [
             'canAdd' => Auth::user()->can('edit', Ratification::class),
-            'rats' => Ratification::with('alumnus')->get()->groupBy('required_state')
+            'open_rats' => Ratification::whereNull('document_id')->with('alumnus')->get()->groupBy('required_state'),
+            'closed_rats' => Ratification::whereNotNull('document_id')->with(['alumnus','document'])->get()->groupBy('required_state')
         ]);
     }
 
@@ -63,7 +64,7 @@ class RatificationController extends Controller
     {
         $this->authorize('view', Ratification::class);
 
-        $rats = Ratification::with('alumnus')->get()->groupBy('required_state');
+        $rats = Ratification::whereNull('document_id')->with('alumnus')->get()->groupBy('required_state');
 
         $pdf = new TemplatedPdfGenerator();
 

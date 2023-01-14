@@ -7403,7 +7403,8 @@ function ratDelete(rat, setProcessing) {
   }, false, false);
 }
 function List() {
-  var rats = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.rats;
+  var open_rats = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.open_rats;
+  var closed_rats = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.closed_rats;
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(null),
     _useState2 = _slicedToArray(_useState, 2),
     toDelete = _useState2[0],
@@ -7432,17 +7433,17 @@ function List() {
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
       className: "w-full flex flex-col justify-start",
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("h3", {
-        children: "Ratifiche presenti"
-      }), Object.keys(rats).map(function (r) {
+        children: "Ratifiche in attesa"
+      }), Object.keys(open_rats).map(function (r) {
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
           className: "mt-4",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("span", {
             children: ["Per il passaggio a ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("b", {
               children: _Utils__WEBPACK_IMPORTED_MODULE_4__.AlumnusStatus.status[r].label
             })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("ul", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("ul", {
             className: "list-disc list-inside",
-            children: [console.log(Object.values(rats[r])), Object.values(rats[r]).map(function (a) {
+            children: Object.values(open_rats[r]).map(function (a) {
               return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("li", {
                 children: [a.alumnus.surname, " ", a.alumnus.name, " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("span", {
                   className: "text-gray-400",
@@ -7456,10 +7457,41 @@ function List() {
                     icon: _fortawesome_free_solid_svg_icons_faTrash__WEBPACK_IMPORTED_MODULE_9__.faTrash
                   })
                 })]
-              });
-            })]
+              }, a.id);
+            })
           })]
-        });
+        }, r);
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+      className: "w-full flex flex-col justify-start mt-8",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("h3", {
+        children: "Ratifiche gi\xE0 approvate"
+      }), Object.keys(closed_rats).map(function (r) {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+          className: "mt-4",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("span", {
+            children: ["Per il passaggio a ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("b", {
+              children: _Utils__WEBPACK_IMPORTED_MODULE_4__.AlumnusStatus.status[r].label
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("ul", {
+            className: "list-disc list-inside",
+            children: Object.values(closed_rats[r]).map(function (a) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("li", {
+                children: [a.alumnus.surname, " ", a.alumnus.name, " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("span", {
+                  className: "text-gray-400",
+                  children: [(0,_Utils__WEBPACK_IMPORTED_MODULE_4__.romanize)(a.alumnus.coorte), a.alumnus.coorte != 0 && " coorte"]
+                }), " Approvata in data ", new Date(a.document.date).toLocaleDateString('it-IT', {
+                  'dateStyle': 'long'
+                }), " - ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("a", {
+                  href: route('board.view', {
+                    document: a.document.id
+                  }),
+                  children: a.document.identifier
+                })]
+              }, a.id);
+            })
+          })]
+        }, r);
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_Layout_Dialog__WEBPACK_IMPORTED_MODULE_5__["default"], {
       open: !!toDelete,

@@ -109,6 +109,10 @@ class DocumentsController extends Controller
         $pdf = new Fpdi();
         $pageCount = $pdf->setSourceFile(storage_path() . '/app/documents/' . $document->handle . '.pdf');
 
+        
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+
         $pdf->SetAutoPageBreak(false);
         $pdf->SetFont('Helvetica');
         $pdf->SetFontSize('10');

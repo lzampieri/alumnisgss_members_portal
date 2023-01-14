@@ -17,7 +17,8 @@ function ratDelete(rat, setProcessing) {
 }
 
 export default function List() {
-    const rats = usePage().props.rats
+    const open_rats = usePage().props.open_rats
+    const closed_rats = usePage().props.closed_rats
     const [toDelete, setToDelete] = useState(null);
     const [processing, setProcessing] = useState(false);
 
@@ -34,18 +35,32 @@ export default function List() {
                 </a>
             </div>
             <div className="w-full flex flex-col justify-start">
-                <h3>Ratifiche presenti</h3>
-                {Object.keys(rats).map(r =>
-                    <div className="mt-4">
+                <h3>Ratifiche in attesa</h3>
+                {Object.keys(open_rats).map(r =>
+                    <div className="mt-4" key={r}>
                         <span>Per il passaggio a <b>{AlumnusStatus.status[r].label}</b></span>
                         <ul className="list-disc list-inside">
-                            {console.log(Object.values(rats[r]))}
-                            {Object.values(rats[r]).map(a =>
-                                <li>
+                            {Object.values(open_rats[r]).map(a =>
+                                <li key={a.id}>
                                     {a.alumnus.surname} {a.alumnus.name} <span className="text-gray-400">{romanize(a.alumnus.coorte)}{a.alumnus.coorte != 0 && " coorte"}</span>
                                     <span className="icon-button-gray mx-2" onClick={() => setToDelete(a)}>
                                         <FontAwesomeIcon icon={solid('trash')} />
                                     </span>
+                                </li>
+                            )}
+                        </ul>
+                    </div>
+                )}
+            </div>
+            <div className="w-full flex flex-col justify-start mt-8">
+                <h3>Ratifiche già approvate</h3>
+                {Object.keys(closed_rats).map(r =>
+                    <div className="mt-4" key={r}>
+                        <span>Per il passaggio a <b>{AlumnusStatus.status[r].label}</b></span>
+                        <ul className="list-disc list-inside">
+                            {Object.values(closed_rats[r]).map(a =>
+                                <li key={a.id}>
+                                    {a.alumnus.surname} {a.alumnus.name} <span className="text-gray-400">{romanize(a.alumnus.coorte)}{a.alumnus.coorte != 0 && " coorte"}</span> Approvata in data {new Date(a.document.date).toLocaleDateString('it-IT', { 'dateStyle': 'long' })} - <a href={route('board.view', { document: a.document.id })}>{ a.document.identifier }</a>
                                 </li>
                             )}
                         </ul>
