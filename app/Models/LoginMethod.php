@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class LoginMethod extends Authenticatable
 {
+    public static $drivers = ['google'];
+    
     protected $fillable = [
         'driver',
         'credential',

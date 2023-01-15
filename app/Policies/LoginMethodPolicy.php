@@ -33,15 +33,26 @@ class LoginMethodPolicy
     }
 
     /**
-     * Determine whether the user can edit the models.
+     * Determine whether the user can add a new instance of the model.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function add(User $user)
+    {
+        return $user->hasPermissionTo('logins-add');
+    }
+
+    /**
+     * Determine whether the user can delete the models.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\LoginMethod  $lmth
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function edit(User $user, LoginMethod $lmth)
+    public function delete(User $user, LoginMethod $lmth)
     {
-        if( $user->hasPermissionTo('logins-edit') )
+        if( $user->hasPermissionTo('logins-delete') )
             return true;
 
         if( $lmth->identity )

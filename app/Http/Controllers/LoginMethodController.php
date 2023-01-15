@@ -24,12 +24,17 @@ class LoginMethodController extends Controller
             'requests' => LoginMethod::where('identity_id',null)->with('blocks')->orderBy('created_at','desc')->get(),
         ];
 
-        return Inertia::render('Accesses/List', ['lmthds' => $lmthds, 'editableRoles' => Auth::user()->identity->editableRoles(), 'canAssociate' => Auth::user()->can('associate', LoginMethod::class) ]);
+        return Inertia::render('Accesses/List', [
+            'lmthds' => $lmthds,
+            'editableRoles' => Auth::user()->identity->editableRoles(),
+            'canAssociate' => Auth::user()->can('associate', LoginMethod::class),
+            'canAdd' => Auth::user()->can('add', LoginMethod::class)
+        ]);
     }
 
     public function delete(Request $request, LoginMethod $lmth) {
         
-        $this->authorize('edit', $lmth);
+        $this->authorize('delete', $lmth);
         $same = ($lmth->id == Auth::user()->id);
 
         Log::debug('Login method deleted', $lmth);
@@ -87,6 +92,28 @@ class LoginMethodController extends Controller
         Log::debug('Access request sent', [$emails, $message]);
         
         return redirect()->route('home')->with(['notistack' => ['success', 'La richiesta è stata inoltrata alla segreteria.']]);
+    }
+
+    function manually_add()
+    {
+        $this->authorize('add', LoginMethod::class );
+        
+        return Inertia::render('Accesses/ManuallyAdd', ['drivers' => LoginMethod::$drivers ] );
+    }
+    
+    function manually_add_post(Request $request)
+    {
+        $this->authorize('add', LoginMethod::class );
+
+        $validated = $request->validate([
+            'driver' => 'required|in:' . implode( ",", LoginMethod::$drivers),
+            'credential' => 'required'
+        ]);
+
+        $lm = LoginMethod::create( $validated );
+        Log::debug('New login created manually', $lm);
+
+        return redirect()->route('accesses')->with(['notistack' => ['success', 'Aggiunto.']]);
     }
 
     function associate(Request $request, LoginMethod $lmth) {

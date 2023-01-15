@@ -60,12 +60,15 @@ class PermissionsController extends Controller
         $count_p = Permission::count();
 
         $permissions_to_assert = [
-            // Users
+            // Identities
             'login',
-            'logins-view',
-            'logins-edit',
             'identity-alumni-enabling',
             'identity-externals-enabling',
+            // Login methods
+            'logins-view',
+            'logins-add',
+            'logins-delete',
+            // Associate login methods and identities
             'accesses-associate',
             'accesses-receive-request-emails',
             // Edit roles and permissions

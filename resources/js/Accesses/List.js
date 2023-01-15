@@ -68,8 +68,8 @@ function Request(lmth, filter, setProcessing) {
         <div key={lmth.id} style={disappearing(visible)} >
             <div className="mylist-item flex flex-col p-2 items-start gap-2">
                 <b>{lmth.credential}</b>
-                { lmth.blocks.map( b => BlockParser( b ))}
-                { usePage().props.canAssociate ? <Link className="button" href={ route('lmth.associate',{ lmth: lmth.id } ) }>Associa</Link> : <span className="text-gray-400">Non hai il permesso per accettare questa richiesta</span> }
+                {lmth.blocks.map(b => BlockParser(b))}
+                {usePage().props.canAssociate ? <Link className="button" href={route('lmth.associate', { lmth: lmth.id })}>Associa</Link> : <span className="text-gray-400">Non hai il permesso per accettare questa richiesta</span>}
             </div>
         </div>
     )
@@ -83,6 +83,12 @@ export default function List() {
 
     return (
         <div className="main-container">
+            {usePage().props.canAdd && <div className="w-full flex flex-row justify-end">
+                <Link className="button" href={route('auth.manually_add')}>
+                    <FontAwesomeIcon icon={solid('circle-plus')} />
+                    Aggiungi
+                </Link>
+            </div>}
             <div className="w-full relative mb-4">
                 <input type="text" className="w-full text-center" placeholder="Filtra..." value={filter} onChange={(e) => setFilter(e.target.value)} />
                 <FontAwesomeIcon icon={solid('magnifying-glass')} className="input-icon" />
