@@ -6140,12 +6140,13 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
+
 function Edit() {
   var prevDoc = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.document;
   var privacies = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.privacies;
+  var rats = prevDoc.grouped_ratifications;
   var _useForm = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.useForm)({
       privacy: prevDoc.privacy,
-      identifier: prevDoc.identifier,
       date: new Date(prevDoc.date),
       note: prevDoc.note || ""
     }),
@@ -6183,16 +6184,11 @@ function Edit() {
       className: "font-bold",
       children: ["Protocollo web: ", prevDoc.handle]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
+      className: "unspaced",
+      children: "Alcune propriet\xE0 topiche del documento, quali l'identiticativo, il file e le ratifiche associate, non possono essere modificate a posteriori."
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
       children: "Identificativo"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_IdSelector__WEBPACK_IMPORTED_MODULE_2__["default"], {
-      onChange: function onChange(idf) {
-        return setData('identifier', idf);
-      },
-      prevIdf: data.identifier
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
-      className: "error",
-      children: errors.identifier
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
+    }), prevDoc.identifier, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
       children: "Visibilit\xE0"
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
       className: "w-full flex flex-row flex-wrap justify-start",
@@ -6239,6 +6235,36 @@ function Edit() {
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
       className: "error",
       children: errors.note
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
+      children: "File"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("a", {
+      href: route('board.view', {
+        document: prevDoc.id
+      }),
+      children: [prevDoc.handle, ".pdf"]
+    }), rats.constructor == Object && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
+        children: "Ratifiche approvate"
+      }), Object.keys(rats).map(function (k) {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+          className: "grid grid-cols-3",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
+            className: "col-span-3",
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("i", {
+              children: ["Per il passaggio allo stato di ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("b", {
+                children: _Utils__WEBPACK_IMPORTED_MODULE_1__.AlumnusStatus.status[k].label
+              })]
+            })
+          }), rats[k].map(function (r) {
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("span", {
+              children: [r.alumnus.surname, " ", r.alumnus.name, " ", r.id, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("span", {
+                className: "text-gray-400",
+                children: [" ", (0,_Utils__WEBPACK_IMPORTED_MODULE_1__.romanize)(r.alumnus.coorte), r.alumnus.coorte != 0 && " coorte"]
+              })]
+            }, r.id);
+          })]
+        }, k);
+      })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("input", {
       type: "button",
       className: "button mt-4",
@@ -6563,14 +6589,21 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
+
 function Upload() {
   var privacies = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.privacies;
+  var rats = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.open_rats;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_4__.useState)(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    datePickerOpen = _useState2[0],
+    setDatePickerOpen = _useState2[1];
   var _useForm = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.useForm)({
       privacy: privacies[0],
       identifier: '',
       date: new Date(),
       prehandle: '',
       note: '',
+      ratifications: [],
       file: ''
     }),
     data = _useForm.data,
@@ -6579,10 +6612,24 @@ function Upload() {
     processing = _useForm.processing,
     errors = _useForm.errors,
     progress = _useForm.progress;
-  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_4__.useState)(false),
-    _useState2 = _slicedToArray(_useState, 2),
-    datePickerOpen = _useState2[0],
-    setDatePickerOpen = _useState2[1];
+  var changeRatification = function changeRatification(id) {
+    if (data.ratifications.includes(id)) {
+      data.ratifications.splice(data.ratifications.indexOf(id), 1);
+      setData('ratifications', data.ratifications.slice());
+    } else setData('ratifications', data.ratifications.concat([id]));
+  };
+  var all = function all(e) {
+    e.preventDefault();
+    setData('ratifications', Object.values(rats).map(function (a) {
+      return a.map(function (r) {
+        return r.id;
+      });
+    }).flat());
+  };
+  var nothing = function nothing(e) {
+    e.preventDefault();
+    setData('ratifications', []);
+  };
   var submit = function submit(e) {
     e.preventDefault();
     data.prehandle = data.date.toLocaleDateString('it-IT', {
@@ -6594,6 +6641,7 @@ function Upload() {
     }) - 1];
     post(route('board.add'));
   };
+  console.log(data.ratifications);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("form", {
     className: "flex flex-col w-full md:w-3/5",
     onSubmit: submit,
@@ -6668,6 +6716,48 @@ function Upload() {
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
       className: "error",
       children: errors.file
+    }), rats.constructor == Object ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("label", {
+      children: ["Ratifiche approvate ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("a", {
+        href: "#",
+        onClick: all,
+        children: "Tutte"
+      }), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("a", {
+        href: "#",
+        onClick: nothing,
+        children: "Nessuna"
+      })]
+    }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+      children: "Nessuna ratifica da approvare"
+    }), rats.constructor == Object && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
+      children: Object.keys(rats).map(function (k) {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+          className: "grid grid-cols-3",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+            className: "col-span-3",
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("i", {
+              children: ["Per il passaggio allo stato di ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("b", {
+                children: _Utils__WEBPACK_IMPORTED_MODULE_1__.AlumnusStatus.status[k].label
+              })]
+            })
+          }), rats[k].map(function (r) {
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("span", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("input", {
+                type: "checkbox",
+                checked: data.ratifications.includes(r.id),
+                onChange: function onChange() {
+                  return changeRatification(r.id);
+                }
+              }), r.alumnus.surname, " ", r.alumnus.name, " ", r.id, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("span", {
+                className: "text-gray-400",
+                children: [" ", (0,_Utils__WEBPACK_IMPORTED_MODULE_1__.romanize)(r.alumnus.coorte), r.alumnus.coorte != 0 && " coorte"]
+              })]
+            }, r.id);
+          })]
+        }, k);
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+      className: "error",
+      children: errors.ratifications
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("input", {
       type: "button",
       className: "button mt-4",

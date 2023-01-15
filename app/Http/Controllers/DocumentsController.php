@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
+use App\Models\Ratification;
 use App\Policies\DocumentPolicy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,7 +33,12 @@ class DocumentsController extends Controller
 
         $canEdit = Auth::check() && Auth::user()->can('edit', Document::class);
 
-        return Inertia::render('Board/Upload', ['privacies' => Document::$privacies, 'canEdit' => $canEdit]);
+        return Inertia::render('Board/Upload', [
+            'privacies' => Document::$privacies, 'canEdit' => $canEdit,
+            'open_rats' => Ratification::whereNull('document_id')->with('alumnus')->get()
+                            ->sortBy( function( $rat, $key ) { return str_pad( $rat->coorte, 4, STR_PAD_LEFT ) . " " . $rat->alumnus->surname . " " . $rat->alumnus->name; } )
+                            ->groupBy('required_state'),
+        ]);
     }
 
     public function add_post(Request $request)
@@ -45,14 +51,14 @@ class DocumentsController extends Controller
             'date' => 'required|date|before_or_equal:now',
             'prehandle' => 'required|min:5|max:5',
             'note' => '',
-            'file' => 'required|mimes:pdf'
+            'ratifications' => 'array',
+            'ratifications.*' => 'integer|exists:ratifications,id',
+            'file' => 'required|mimes:pdf',
         ]);
 
         $validated['author_type'] = Auth::user()->identity_type;
         $validated['author_id'] = Auth::user()->identity_id;
         $validated['handle'] = 'None';
-
-        Log::debug('Test',$validated);
 
         $document = Document::create($validated);
         Log::debug('Document created', $validated);
@@ -65,12 +71,20 @@ class DocumentsController extends Controller
         $document->handle = $handle;
         $document->save();
 
+        if( array_key_exists( 'ratifications', $validated ) )
+            foreach( $validated['ratifications'] as $rat ) {
+                $ratification = Ratification::find( $rat )->document()->associate( $document )->save();
+                Log::debug('Ratification approved',['ratification'=>$ratification,'document'=>$document]);
+            }
+
         return redirect()->route('board')->with(['notistack' => ['success', 'File caricato con protocollo ' . $handle]]);
     }
 
     public function edit(Document $document)
     {
         $this->authorize('edit', Document::class);
+
+        $document->grouped_ratifications = $document->ratifications->load('alumnus')->groupBy('required_state');
 
         return Inertia::render('Board/Edit', ['document' => $document, 'privacies' => Document::$privacies]);
     }
@@ -81,7 +95,6 @@ class DocumentsController extends Controller
 
         $validated = $request->validate([
             'privacy' => 'required|in:' . implode(',', Document::$privacies),
-            'identifier' => 'required|min:3',
             'date' => 'required|date|before_or_equal:now',
             'note' => ''
         ]);
@@ -95,6 +108,12 @@ class DocumentsController extends Controller
     public function delete_post(Request $request, Document $document)
     {
         $this->authorize('edit', Document::class);
+
+        foreach( $document->ratifications as $rat ) {
+            Log::debug('Ratification cancelled', $rat);
+            $rat->document()->associate(null)->save();
+        }
+
         Log::debug('Document deleted', $document);
 
         $document->delete();

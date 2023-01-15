@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\RatificationController;
+use App\Models\Ratification;
 use Illuminate\Support\Facades\Route;
 
 // Documents

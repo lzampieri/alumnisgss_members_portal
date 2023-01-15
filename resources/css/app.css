@@ -56,6 +56,9 @@
     input[type="number"] {
         @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0
     }
+    input[type="checkbox"] {
+        @apply rounded-md bg-gray-100 border-gray-500 focus:border-gray-500 focus:bg-white focus:ring-0 mr-2
+    }
     .input-icon {
         @apply text-gray-500 absolute right-4 text-2xl inset-y-0 my-auto
     }
@@ -67,6 +70,9 @@
     }
     label {
         @apply text-gray-500 text-sm pt-4
+    }
+    label.unspaced {
+        @apply !pt-0
     }
     label.error {
         @apply text-error text-sm pt-0

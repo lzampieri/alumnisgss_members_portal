@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
+use App\Models\Document;
 use App\Models\External;
 use App\Models\LoginMethod;
+use App\Models\Ratification;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log as OriginalLog;
@@ -40,6 +42,10 @@ class Log extends Controller
             return $object->credential . " (" . $object->driver . ")";
         if( $object instanceof Permission )
             return $object->name;
+        if( $object instanceof Ratification )
+            return "Ratification of " . $object->alumnus->surnameAndName() . " to " . $object->required_state;
+        if( $object instanceof Document )
+            return $object->identifier . " (" . $object->handle . ", " . $object->date . ")";
         return $object;
     }
 
@@ -47,7 +53,7 @@ class Log extends Controller
     {
         $message .= " " . Log::stringify( $params );
         if( Auth::check() )
-            $message = "(" . Auth::user()->email . ") " . $message;
+            $message = "(" . Auth::user()->credential . ") " . $message;
         OriginalLog::channel('internal')->debug($message);
     }
 }

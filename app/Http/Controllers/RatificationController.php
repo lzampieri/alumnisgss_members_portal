@@ -18,8 +18,12 @@ class RatificationController extends Controller
 
         return Inertia::render('Ratifications/List', [
             'canAdd' => Auth::user()->can('edit', Ratification::class),
-            'open_rats' => Ratification::whereNull('document_id')->with('alumnus')->get()->groupBy('required_state'),
-            'closed_rats' => Ratification::whereNotNull('document_id')->with(['alumnus','document'])->get()->groupBy('required_state')
+            'open_rats' => Ratification::whereNull('document_id')->with('alumnus')->get()
+                        ->sortBy( function( $rat, $key ) { return str_pad( $rat->coorte, 4, STR_PAD_LEFT ) . " " . $rat->alumnus->surname . " " . $rat->alumnus->name; } )
+                        ->groupBy('required_state'),
+            'closed_rats' => Ratification::whereNotNull('document_id')->with(['alumnus','document'])->get()
+                        ->sortBy( function( $rat, $key ) { return str_pad( $rat->coorte, 4, STR_PAD_LEFT ) . " " . $rat->alumnus->surname . " " . $rat->alumnus->name; } )
+                        ->groupBy('required_state')
         ]);
     }
 
@@ -64,7 +68,9 @@ class RatificationController extends Controller
     {
         $this->authorize('view', Ratification::class);
 
-        $rats = Ratification::whereNull('document_id')->with('alumnus')->get()->groupBy('required_state');
+        $rats = Ratification::whereNull('document_id')->with('alumnus')->get()
+                ->sortBy( function( $rat, $key ) { return str_pad( $rat->coorte, 4, STR_PAD_LEFT ) . " " . $rat->alumnus->surname . " " . $rat->alumnus->name; } )
+                ->groupBy('required_state');
 
         $pdf = new TemplatedPdfGenerator();
 
