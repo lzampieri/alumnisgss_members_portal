@@ -44,12 +44,15 @@ class RatificationController extends Controller
         $this->authorize('edit', Ratification::class);
 
         $validated = $request->validate([
-            'alumnus_id' => 'required|exists:alumni,id',
+            'alumni_id' => 'required|array',
+            'alumni_id.*' => 'exists:alumni,id',
             'required_state' => 'required|in:' . implode(',', Alumnus::require_ratification)
         ]);
 
-        Ratification::create($validated);
-        Log::debug('Ratification created', $validated);
+        foreach( $validated['alumni_id']  as $al_id ) {
+            $rat = Ratification::create(['alumnus_id' => $al_id, 'required_state' => $validated['required_state']]);
+            Log::debug('Ratification created', $rat);
+        }
 
         return redirect()->route('ratifications')->with('notistack', ['success', 'Inserimento riuscito']);
     }
