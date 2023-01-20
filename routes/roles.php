@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\IdentityController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\LoginMethodController;
 use Illuminate\Support\Facades\Route;

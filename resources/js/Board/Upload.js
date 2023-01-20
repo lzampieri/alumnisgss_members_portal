@@ -84,7 +84,7 @@ export default function Upload() {
                     { rats[k].map( r =>
                         <span key={r.id}>
                             <input type="checkbox" checked={ data.ratifications.includes( r.id ) } onChange={ () => changeRatification( r.id ) } />
-                            { r.alumnus.surname } { r.alumnus.name } {r.id}<span className="text-gray-400"> {romanize(r.alumnus.coorte)}{r.alumnus.coorte != 0 && " coorte"}</span>
+                            { r.alumnus.surname } { r.alumnus.name } <span className="text-gray-400"> {romanize(r.alumnus.coorte)}{r.alumnus.coorte != 0 && " coorte"}</span>
                         </span>
                     )}
                 </div>)}

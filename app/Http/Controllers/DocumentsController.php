@@ -36,7 +36,7 @@ class DocumentsController extends Controller
         return Inertia::render('Board/Upload', [
             'privacies' => Document::$privacies, 'canEdit' => $canEdit,
             'open_rats' => Ratification::whereNull('document_id')->with('alumnus')->get()
-                            ->sortBy( function( $rat, $key ) { return str_pad( $rat->coorte, 4, STR_PAD_LEFT ) . " " . $rat->alumnus->surname . " " . $rat->alumnus->name; } )
+                            ->sortBy( function( $rat, $key ) { return str_pad( $rat->alumnus->coorte, 4, 0, STR_PAD_LEFT ) . " " . $rat->alumnus->surname . " " . $rat->alumnus->name; } )
                             ->groupBy('required_state'),
         ]);
     }
