@@ -23,7 +23,8 @@ export default function List() {
             <ul>
                 <li><a href={route('log')}>Log</a></li>
                 <li><RequireConfirmLink href={route('webmaster.backup')}>Backup</RequireConfirmLink></li>
-                <li><RequireConfirmLink href={route('log')}>Log</RequireConfirmLink></li>
+                <li><RequireConfirmLink href={route('webmaster.migrate')}>Migra</RequireConfirmLink></li>
+                <li><RequireConfirmLink href={route('webmaster.remigrate')}>Reset di tutte le migrazioni PERICOLOSO</RequireConfirmLink></li>
             </ul>
         </div>
     );

@@ -13,5 +13,8 @@ Route::prefix('/webmaster')->group( function () {
 
     // backup
     Route::get('/backup', [ WebmasterController::class, 'backup' ])->name('webmaster.backup');
-    // Route::get('/backup', function () { Artisan::call('migrate', ['--force' => true]); } );
+
+    // migrations
+    Route::get('/migrate', [ WebmasterController::class, 'migrate' ])->name('webmaster.migrate');
+    Route::get('/remigrate', [ WebmasterController::class, 'remigrate' ])->name('webmaster.remigrate');
 });
