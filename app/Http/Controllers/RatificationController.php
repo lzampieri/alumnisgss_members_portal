@@ -49,12 +49,28 @@ class RatificationController extends Controller
             'required_state' => 'required|in:' . implode(',', Alumnus::require_ratification)
         ]);
 
+        $inserted = 0;
+        $rejected = 0;
+
         foreach( $validated['alumni_id']  as $al_id ) {
+            // Check that no ratification exists
+            $arethere = Ratification::where('alumnus_id', $al_id )->whereNull('document_id')->count();
+            if( $arethere > 0 ) {
+                $rejected++;
+                continue;
+            }
             $rat = Ratification::create(['alumnus_id' => $al_id, 'required_state' => $validated['required_state']]);
             Log::debug('Ratification created', $rat);
         }
 
-        return redirect()->route('ratifications')->with('notistack', ['success', 'Inserimento riuscito']);
+        $output = "";
+        if( $inserted > 0 ) $output .= $inserted . " ratifiche inserite";
+        if( $inserted * $rejected > 0 ) $output .= ", ";
+        if( $rejected > 0 ) $output .= $inserted . " ratifiche già presenti";
+
+        $type = $rejected > 0 ? 'warning' : 'success';
+
+        return redirect()->route('ratifications')->with('notistack', [$type, $output]);
     }
 
     public function delete_post(Request $request, Ratification $rat)
