@@ -110,17 +110,23 @@ class RatificationController extends Controller
         $pdf->spacing();
 
         foreach ($rats as $k => $v) {
-            $pdf->HTMLhere('Richiedono il passaggio allo stato di <i>' . Alumnus::AlumnusStatusLabels[$k] . '</i>');
+            $pdf->HTMLenqueue('Richiedono il passaggio allo stato di <i>' . Alumnus::AlumnusStatusLabels[$k] . '</i>');
 
             $pdf->HTMLenqueue( '<ul>' );
             foreach ($v as $a) {
                 $pdf->HTMLenqueue( "<li>" . $a->alumnus->surname . " " . $a->alumnus->name . " (" . Alumnus::romanize($a->alumnus->coorte) . ")</li>" );
             }
             $pdf->HTMLenqueue( "</ul>" );
-
-            $pdf->HTMLflush();
-            $pdf->spacing();
+            $pdf->HTMLenqueue( "<br />" );
+            
         }
+        
+        $pdf->HTMLenqueue( "Padova, " . date('d/m/Y') );
+        $pdf->HTMLenqueue( "<br />" );
+        $pdf->HTMLenqueue( "<small>Documento generato automaticamente dal Portale Soci dell'Associazione Alumni Scuola Galileiana</small>" );
+
+        $pdf->HTMLflush();
+        $pdf->spacing();
 
         Log::debug('Ratifications summary generated');
 
