@@ -30,6 +30,11 @@ class LoginMethod extends Authenticatable
         return $this->identity && $this->identity->hasPermissionTo($permission);
     }
 
+    public function hasRole($role)
+    {
+        return $this->identity && $this->identity->hasRole($role);
+    }
+
     public function enabled() {
         return $this->hasPermissionTo('login');
     }

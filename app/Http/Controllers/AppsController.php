@@ -30,8 +30,8 @@ class AppsController extends Controller
         // Anyone can access board
         $apps[] = 'board';
 
-        if (Auth::user() && Auth::user()->hasPermissionTo('log-manage')) {
-            $apps[] = 'logs';
+        if (Auth::user() && Auth::user()->hasRole('webmaster')) {
+            $apps[] = 'webmaster';
         }
 
         if (Auth::user() && Auth::user()->can('viewAny', LoginMethod::class)) {

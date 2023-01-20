@@ -42,8 +42,9 @@ class PermissionsController extends Controller
         $count_r = Role::count();
 
         $roles_to_assert = [
-            'secretariat',
             'webmaster',
+            'secretariat',
+            'cda',
             'member',
             'student_member'
         ];
@@ -74,8 +75,6 @@ class PermissionsController extends Controller
             // Edit roles and permissions
             'permissions-view',
             'permissions-edit',
-            // Log
-            'log-manage',
             // Registry
             'alumnus-view',
             'alumnus-edit',
@@ -86,7 +85,10 @@ class PermissionsController extends Controller
             'ratifications-bypass',
             // Documents
             'documents-upload',
-            'documents-edit'
+            'documents-edit',
+            // Webmaster stuff
+            'log-manage',
+            'db-reset'
         ];
 
         // Roles edit
@@ -107,6 +109,11 @@ class PermissionsController extends Controller
             Permission::findOrCreate($permission);
 
         $count_p = Permission::count() - $count_p;
+
+        // Assign permissions to roles
+        Role::findByName('webmaster')->givePermissionTo(Permission::all());
+        Role::findByName('cda')->givePermissionTo(['documents-view-cda']);
+        Role::findByName('member')->givePermissionTo(['documents-view-members']);
 
         if ($count_p == 0)
             return redirect()->back()->with(['notistack' => ['success', 'Permessi e ruoli corretti']]);

@@ -7006,9 +7006,9 @@ __webpack_require__.r(__webpack_exports__);
   url: route('board'),
   icon: _fortawesome_free_solid_svg_icons_faBookOpen__WEBPACK_IMPORTED_MODULE_3__.faBookOpen
 }, {
-  id: 'logs',
-  name: 'Log',
-  url: route('log'),
+  id: 'webmaster',
+  name: 'Webmaster',
+  url: route('webmaster'),
   icon: _fortawesome_free_solid_svg_icons_faBug__WEBPACK_IMPORTED_MODULE_4__.faBug,
   href: true
 }, {
@@ -8443,8 +8443,9 @@ var Roles = /*#__PURE__*/_createClass(function Roles() {
   _classCallCheck(this, Roles);
 });
 _defineProperty(Roles, "names", {
-  'secretariat': 'Segreteria',
   'webmaster': 'WebMaster',
+  'secretariat': 'Segreteria',
+  'cda': 'Consiglio di amministrazione',
   'member': 'Socio',
   'student_member': 'Socio studente'
 });
@@ -8487,6 +8488,85 @@ function postRequest(route_name, data, setProcessing) {
     },
     preserveState: preserveState,
     preserveScroll: preserveScroll
+  });
+}
+
+/***/ }),
+
+/***/ "./resources/js/Webmaster/List.js":
+/*!****************************************!*\
+  !*** ./resources/js/Webmaster/List.js ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ List)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var _Layout_Dialog__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Layout/Dialog */ "./resources/js/Layout/Dialog.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0) { ; } } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i["return"] && (_r = _i["return"](), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+
+function RequireConfirmLink(_ref) {
+  var href = _ref.href,
+    children = _ref.children;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    open = _useState2[0],
+    setOpen = _useState2[1];
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(_Layout_Dialog__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      open: open,
+      onClose: function onClose() {
+        return setOpen(false);
+      },
+      onConfirm: function onConfirm() {
+        setOpen(false);
+        window.location.href = href;
+      },
+      children: ["Sei sicuro di voler andare a ", children, "?"]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
+      href: "#",
+      onClick: function onClick(e) {
+        e.preventDefault();
+        setOpen(true);
+      },
+      children: children
+    })]
+  });
+}
+function List() {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+    className: "main-container",
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("ul", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("li", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
+          href: route('log'),
+          children: "Log"
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("li", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(RequireConfirmLink, {
+          href: route('webmaster.backup'),
+          children: "Backup"
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("li", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(RequireConfirmLink, {
+          href: route('log'),
+          children: "Log"
+        })
+      })]
+    })
   });
 }
 
@@ -72674,6 +72754,8 @@ var map = {
 	"./Registry/ListTemplate.js": "./resources/js/Registry/ListTemplate.js",
 	"./Utils": "./resources/js/Utils.js",
 	"./Utils.js": "./resources/js/Utils.js",
+	"./Webmaster/List": "./resources/js/Webmaster/List.js",
+	"./Webmaster/List.js": "./resources/js/Webmaster/List.js",
 	"./app": "./resources/js/app.js",
 	"./app.js": "./resources/js/app.js",
 	"./bootstrap": "./resources/js/bootstrap.js",

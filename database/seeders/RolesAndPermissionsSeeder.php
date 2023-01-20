@@ -23,9 +23,9 @@ class RolesAndPermissionsSeeder extends Seeder
         // create roles and permissions
         PermissionsController::verify();
 
-        // all permissions to webmaster
-        Role::findByName('webmaster')->givePermissionTo(Permission::all());
-        Role::findByName('secretariat')->givePermissionTo(['permissions-view','permissions-edit']);
-        Role::findByName('member')->givePermissionTo(['documents-view-members']);
+        // Extra permissions for debug
+        if( env('APP_ENV') == 'local' ) {
+            Role::findByName('secretariat')->givePermissionTo(['permissions-view','permissions-edit']);
+        }
     }
 }

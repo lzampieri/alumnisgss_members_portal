@@ -29,10 +29,7 @@ include( 'ratifications.php' );
 
 include( 'roles.php' );
 
-// Utils
-Route::get('/logs', [ Log::class, 'index' ] )->name('log');
-
-// Migrations
-Route::get('/db/migrate', function () { Artisan::call('migrate', ['--force' => true]); } );
+include( 'webmaster.php' );
 
 Route::redirect('/main','https://www.alumniscuolagalileiana.it')->name('main');
+
