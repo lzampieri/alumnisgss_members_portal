@@ -15,6 +15,12 @@ function AlumnusLink(alumnus) {
                     {AlumnusStatus.status[alumnus.status].label}
                 </span>
             </span>
+            { !!alumnus.ratifications_count && <span className="pr-2 group relative z-auto">
+                <FontAwesomeIcon icon={solid('hourglass-half')} />
+                <span className="tooltip-right">
+                    In attesa di ratifica
+                </span>
+            </span> }
             {alumnus.surname} {alumnus.name}
             <div className="chip">{romanize(alumnus.coorte)}</div>
             <div className="grow"></div>

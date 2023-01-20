@@ -19,10 +19,10 @@ class RatificationController extends Controller
         return Inertia::render('Ratifications/List', [
             'canAdd' => Auth::user()->can('edit', Ratification::class),
             'open_rats' => Ratification::whereNull('document_id')->with('alumnus')->get()
-                        ->sortBy( function( $rat, $key ) { return str_pad( $rat->coorte, 4, STR_PAD_LEFT ) . " " . $rat->alumnus->surname . " " . $rat->alumnus->name; } )
+                        ->sortBy( function( $rat, $key ) { return str_pad( $rat->alumnus->coorte, 4, 0, STR_PAD_LEFT ) . " " . $rat->alumnus->surname . " " . $rat->alumnus->name; } )
                         ->groupBy('required_state'),
             'closed_rats' => Ratification::whereNotNull('document_id')->with(['alumnus','document'])->get()
-                        ->sortBy( function( $rat, $key ) { return str_pad( $rat->coorte, 4, STR_PAD_LEFT ) . " " . $rat->alumnus->surname . " " . $rat->alumnus->name; } )
+                        ->sortBy( function( $rat, $key ) { return str_pad( $rat->alumnus->coorte, 4, 0, STR_PAD_LEFT ) . " " . $rat->alumnus->surname . " " . $rat->alumnus->name; } )
                         ->groupBy('required_state')
         ]);
     }
@@ -59,6 +59,7 @@ class RatificationController extends Controller
                 $rejected++;
                 continue;
             }
+            $inserted++;
             $rat = Ratification::create(['alumnus_id' => $al_id, 'required_state' => $validated['required_state']]);
             Log::debug('Ratification created', $rat);
         }
@@ -66,7 +67,7 @@ class RatificationController extends Controller
         $output = "";
         if( $inserted > 0 ) $output .= $inserted . " ratifiche inserite";
         if( $inserted * $rejected > 0 ) $output .= ", ";
-        if( $rejected > 0 ) $output .= $inserted . " ratifiche già presenti";
+        if( $rejected > 0 ) $output .= $rejected . " ratifiche già presenti";
 
         $type = $rejected > 0 ? 'warning' : 'success';
 

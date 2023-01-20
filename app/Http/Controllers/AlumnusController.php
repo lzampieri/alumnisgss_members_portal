@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -20,7 +21,7 @@ class AlumnusController extends Controller
     public function list()
     {
         $this->authorize('viewAny', Alumnus::class);
-        $alumni = Alumnus::orderBy('surname')->orderBy('name')->get();
+        $alumni = Alumnus::withCount(['ratifications'=> function (Builder $query) { $query->whereNull('document_id'); }])->orderBy('surname')->orderBy('name')->get();
 
         return Inertia::render('Registry/List', ['alumni' => $alumni, 'canImport' => Auth::user()->can('bulkEdit', Alumnus::class)]);
     }
