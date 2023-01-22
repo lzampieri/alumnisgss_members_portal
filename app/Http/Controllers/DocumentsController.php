@@ -73,7 +73,11 @@ class DocumentsController extends Controller
 
         if( array_key_exists( 'ratifications', $validated ) )
             foreach( $validated['ratifications'] as $rat ) {
-                $ratification = Ratification::find( $rat )->document()->associate( $document )->save();
+                $ratification = Ratification::find( $rat );
+                $ratification->document()->associate( $document )->save();
+                $alumnus = $ratification->alumnus;
+                $alumnus->status = $ratification->required_state;
+                $alumnus->save();
                 Log::debug('Ratification approved',['ratification'=>$ratification,'document'=>$document]);
             }
 

@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Document extends Model
 {    
-    use SoftDeletes;
-
     protected $fillable = [
         'identifier',
         'privacy',

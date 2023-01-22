@@ -16,7 +16,6 @@ class CreateDocumentsTable extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->softDeletes();
             $table->string('identifier',100)->unique();
             $table->timestamp('date');
             $table->string('privacy',100);

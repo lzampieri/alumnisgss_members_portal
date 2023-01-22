@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Log;
 use App\Http\Controllers\WebmasterController;
+use App\Models\Document;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('/webmaster')->group( function () {
