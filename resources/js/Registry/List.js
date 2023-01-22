@@ -51,6 +51,12 @@ export default function List() {
                         Esporta
                     </a>
                 }
+                {usePage().props.canImport &&
+                    <a className="button" href={route('registry.bulk.edit')}>
+                        <FontAwesomeIcon icon={solid('file-pen')} />
+                        Modifica
+                    </a>
+                }
             </div>
             <ListTemplate
                 data={alumni}

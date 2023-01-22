@@ -21,4 +21,7 @@ Route::prefix('/registry')->group( function () {
     
     Route::get('/edit/{alumnus}', [ AlumnusController::class, 'edit' ] )->name('registry.edit');
     Route::post('/edit/{alumnus}', [ AlumnusController::class, 'edit_post' ] );
+
+    Route::get('/bulk_edit', [ AlumnusController::class, 'bulk_edit' ] )->name('registry.bulk.edit');
+    Route::post('/bulk_edit', [ AlumnusController::class, 'bulk_edit_post' ] );
 });
