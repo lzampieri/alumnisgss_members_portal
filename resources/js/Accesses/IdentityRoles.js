@@ -36,7 +36,7 @@ export default function IdentityRoles({ identity, type, setProcessing }) {
             )
         }
         <div className="icon-button dropdown-parent group" >
-            <FontAwesomeIcon icon={solid('plus')} onClick={() => setDropdownOpen(!dropdownOpen)} />
+            <FontAwesomeIcon icon={solid('plus')}/>
             <div className="dropdown-content-flex flex-col gap-2">
                 {editableRoles.map(role => (
                     identity.roles.indexOf(role) > -1 ? "" :

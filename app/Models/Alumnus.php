@@ -31,8 +31,21 @@ class Alumnus extends Identity
         'student_not_reached' => 'Studente non raggiunto',
         'student_not_agreed' => 'Studente rifiutante',
         'hasnt_right' => 'Non avente diritto',
-        'dead' => 'Deceduto','not_agreed' => 'Rifiutante'
+        'dead' => 'Deceduto',
+        'not_agreed' => 'Rifiutante'
     ];
+    // Colors ( for export xlsx )
+    const AlumnusStatusColors = [
+        'member' => '00CC00',
+        'student_member' => '00FF99',
+        'not_reached' => 'FFFF00',
+        'student_not_reached' => 'FF9900',
+        'student_not_agreed' => 'FF0000',
+        'hasnt_right' => 'FF00FF',
+        'dead' => '003300',
+        'not_agreed' => 'FF0000',
+    ];
+
 
     protected $fillable = [
         'name',

@@ -15,12 +15,12 @@ function AlumnusLink(alumnus) {
                     {AlumnusStatus.status[alumnus.status].label}
                 </span>
             </span>
-            { !!alumnus.ratifications_count && <span className="pr-2 group relative z-auto">
+            {!!alumnus.ratifications_count && <span className="pr-2 group relative z-auto">
                 <FontAwesomeIcon icon={solid('hourglass-half')} />
                 <span className="tooltip-right">
                     In attesa di ratifica
                 </span>
-            </span> }
+            </span>}
             {alumnus.surname} {alumnus.name}
             <div className="chip">{romanize(alumnus.coorte)}</div>
             <div className="grow"></div>
@@ -39,19 +39,27 @@ export default function List() {
                     <FontAwesomeIcon icon={solid('circle-plus')} />
                     Aggiungi
                 </Link>
-                {usePage().props.canImport &&
+                {usePage().props.canEditBulk &&
                     <Link className="button" href={route('registry.bulk.import')}>
                         <FontAwesomeIcon icon={solid('folder-plus')} />
                         Importa
                     </Link>
                 }
-                {usePage().props.canImport &&
-                    <a className="button" href={route('registry.bulk.export')}>
+                <div className="dropdown-parent group" >
+                    <div className="button">
                         <FontAwesomeIcon icon={solid('download')} />
                         Esporta
-                    </a>
-                }
-                {usePage().props.canImport &&
+                    </div>
+                    <div className="dropdown-content-flex flex-col gap-2">
+                        <a className="button" href={route('registry.bulk.export.csv')}>
+                            CSV
+                        </a>
+                        <a className="button" href={route('registry.bulk.export.xls')}>
+                            Excel
+                        </a>
+                    </div>
+                </div >
+                {usePage().props.canEditBulk &&
                     <a className="button" href={route('registry.bulk.edit')}>
                         <FontAwesomeIcon icon={solid('file-pen')} />
                         Modifica

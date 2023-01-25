@@ -17,7 +17,9 @@ Route::prefix('/registry')->group( function () {
 
     Route::get('/bulk/import', [ AlumnusController::class, 'bulk_im' ] )->name('registry.bulk.import');
     Route::post('/bulk/import', [ AlumnusController::class, 'bulk_im_post' ] );
-    Route::get('/bulk/export', [ AlumnusController::class, 'bulk_ex' ] )->name('registry.bulk.export');
+
+    Route::get('/bulk/export/csv', [ AlumnusController::class, 'bulk_ex_csv' ] )->name('registry.bulk.export.csv');
+    Route::get('/bulk/export/xls', [ AlumnusController::class, 'bulk_ex_xls' ] )->name('registry.bulk.export.xls');
     
     Route::get('/edit/{alumnus}', [ AlumnusController::class, 'edit' ] )->name('registry.edit');
     Route::post('/edit/{alumnus}', [ AlumnusController::class, 'edit_post' ] );
