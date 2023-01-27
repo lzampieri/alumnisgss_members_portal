@@ -85,8 +85,9 @@ class LoginMethodController extends Controller
         $message.= "Indirizzo mail richiedente: " . $validated['email'] . "\n";
         $message.= "Messaggio:\n" . $validated['message'];
 
-        Mail::raw( $message, function ($message) use ($emails) {
+        Mail::raw( $message, function ( \Illuminate\Mail\Message $message) use ($emails, $validated) {
             $message->to($emails);
+            $message->replyTo($validated['email']);
             $message->subject('Nuova richiesta di accesso a soci.alumnuscuolagalileiana.it');
         });
         Log::debug('Access request sent', [$emails, $message]);
