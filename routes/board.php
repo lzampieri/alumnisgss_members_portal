@@ -10,6 +10,9 @@ Route::prefix('/board')->group( function () {
     Route::post('/add', [ DocumentsController::class, 'add_post' ] );
     Route::get('/edit/{document}', [ DocumentsController::class, 'edit' ] )->name('board.edit');
     Route::post('/edit/{document}', [ DocumentsController::class, 'edit_post' ] );
+    Route::get('/new_version/{document}', [ DocumentsController::class, 'new_version' ] )->name('board.new_version');
+    Route::post('/new_version/{document}', [ DocumentsController::class, 'new_version_post' ] );
     Route::post('/delete/{document}', [ DocumentsController::class, 'delete_post' ] )->name('board.delete');
-    Route::get('/view/{document}', [ DocumentsController::class, 'view' ] )->name('board.view');
+    Route::get('/view/{protocol}', [ DocumentsController::class, 'view_document' ] )->name('board.view_document');
+    Route::get('/view_file/{file}', [ DocumentsController::class, 'view_file' ] )->name('board.view_file');
 });

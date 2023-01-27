@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Document extends Model
 {    
     protected $fillable = [
+        'protocol',
         'identifier',
         'privacy',
         'date',
         'note',
-        'handle',
         'author_type',
         'author_id'
     ];
@@ -34,5 +34,9 @@ class Document extends Model
 
     public function ratifications() {
         return $this->hasMany( Ratification::class );
+    }    
+    
+    public function files() {
+        return $this->morphMany( File::class, 'parent' );
     }
 }

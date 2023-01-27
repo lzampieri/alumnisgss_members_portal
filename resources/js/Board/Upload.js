@@ -49,8 +49,6 @@ export default function Upload() {
         post( route( 'board.add' ) );
     }
 
-    console.log( data.ratifications )
-
     return (
         <form className="flex flex-col w-full md:w-3/5" onSubmit={ submit }>
             <h3>Carica documento</h3>

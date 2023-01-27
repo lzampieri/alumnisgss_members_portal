@@ -45,7 +45,7 @@ class Log extends Controller
         if( $object instanceof Ratification )
             return "Ratification of " . $object->alumnus->surnameAndName() . " to " . $object->required_state;
         if( $object instanceof Document )
-            return $object->identifier . " (" . $object->handle . ", " . $object->date . ")";
+            return $object->identifier . " (" . $object->protocol . ", " . $object->date . ")";
         return $object;
     }
 

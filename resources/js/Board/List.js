@@ -26,7 +26,7 @@ function DocumentItem(document, canEdit) {
             {canEdit && <Link href={route('board.edit', { document: document.id })} className="">
                 <FontAwesomeIcon icon={solid('pen')} className="text-4xl !p-4 icon-button" />
             </Link>}
-            <a href={route('board.view', { document: document.id })} className="">
+            <a href={route('board.view_document', { protocol: document.protocol })} className="">
                 <FontAwesomeIcon icon={solid('file-pdf')} className="text-4xl !p-4 icon-button" />
             </a>
         </div>

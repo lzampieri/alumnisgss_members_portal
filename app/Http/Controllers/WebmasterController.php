@@ -65,4 +65,22 @@ class WebmasterController extends Controller
 
         return Artisan::output();
     }
+
+    public function partremigrate( $count )
+    {
+        $this->authorizeRole('webmaster');
+
+        if( $count == 0 ) {
+            return redirect()->back();
+        }
+
+        try {
+            $this->do_backup();
+            Artisan::call('migrate:refresh', ['--force' => true, '--step' => $count ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('notistack', ['error', $e->getMessage()]);
+        }
+
+        return Artisan::output();
+    }
 }

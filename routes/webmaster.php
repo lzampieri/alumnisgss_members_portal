@@ -18,4 +18,5 @@ Route::prefix('/webmaster')->group( function () {
     // migrations
     Route::get('/migrate', [ WebmasterController::class, 'migrate' ])->name('webmaster.migrate');
     Route::get('/remigrate', [ WebmasterController::class, 'remigrate' ])->name('webmaster.remigrate');
+    Route::get('/partremigrate/{count}', [ WebmasterController::class, 'partremigrate' ])->name('webmaster.partremigrate');
 });
