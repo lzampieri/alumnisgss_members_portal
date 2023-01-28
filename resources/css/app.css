@@ -93,6 +93,9 @@
     .separator {
         @apply border-4 rounded border-primary-main self-stretch mx-8 my-8 md:my-0
     }
+    .thin-separator {
+        @apply border rounded border-primary-main self-stretch mx-8 my-8
+    }
 
     /* LISTS */
     .mylist-item {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Alumnus;
 use App\Models\Document;
 use App\Models\File;
 use App\Models\Ratification;
@@ -100,7 +101,12 @@ class DocumentsController extends Controller
         $document->grouped_ratifications = $document->ratifications->load('alumnus')->groupBy('required_state');
         $document->load('files');
 
-        return Inertia::render('Board/Edit', ['document' => $document, 'privacies' => Document::$privacies]);
+        return Inertia::render('Board/Edit', [
+            'document' => $document,
+            'privacies' => Document::$privacies,
+            'available_ratifications' => Ratification::whereNull('document_id')->with('alumnus')->get()->groupBy('required_state'),
+            'available_status' => Alumnus::availableStatus()
+        ]);
     }
    
     public function edit_post(Request $request, Document $document)
@@ -149,7 +155,7 @@ class DocumentsController extends Controller
         $this->authorize('edit', Document::class);
 
         foreach( $document->ratifications as $rat ) {
-            Log::debug('Ratification cancelled', $rat);
+            Log::debug('Ratification nulled', $rat);
             $rat->document()->associate(null)->save();
         }
 
@@ -158,6 +164,50 @@ class DocumentsController extends Controller
         $document->delete();
 
         return redirect()->route('board')->with(['notistack' => ['success', 'Eliminato']]);
+    }
+
+    public function add_ratification_post(Request $request)
+    {
+        $this->authorize('edit', Document::class);
+
+        $validated = $request->validate([
+            'document' => 'required|exists:documents,id',
+            'ratification' => 'required|exists:ratifications,id'
+        ]);
+
+        $doc = Document::find( $validated['document'] );
+        $rat = Ratification::find( $validated['ratification'] );
+
+        if( $rat->document )
+            return redirect()->back()->with('notistack',['error','Ratifica già assegnata']);
+        
+        $rat->document()->associate( $doc )->save();
+        $alumnus = $rat->alumnus;
+        $alumnus->status = $rat->required_state;
+        $alumnus->save();
+        Log::debug('Ratification approved',['ratification'=>$rat,'document'=>$doc]);
+
+        return redirect()->back()->with(['notistack' => ['success', 'Associata']]);
+    }
+    
+    public function remove_ratification_post(Request $request)
+    {
+        $this->authorize('edit', Document::class);
+
+        $validated = $request->validate([
+            'ratification' => 'required|exists:ratifications,id',
+            'new_state' => 'required|in:' . implode(',', Alumnus::availableStatus())
+        ]);
+
+        $rat = Ratification::find( $validated['ratification'] );
+                
+        $rat->document()->associate( null )->save();
+        $alumnus = $rat->alumnus;
+        $alumnus->status = $validated['new_state'];
+        $alumnus->save();
+        Log::debug('Ratification nulled',['ratification'=>$rat,'new alumnus status'=>$alumnus->status]);
+
+        return redirect()->back()->with(['notistack' => ['success', 'Annullata']]);
     }
 
     public function view_document($protocol) {
