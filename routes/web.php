@@ -25,6 +25,8 @@ include( 'externals.php' );
 
 include( 'board.php' );
 
+include( 'resources.php' );
+
 include( 'ratifications.php' );
 
 include( 'roles.php' );

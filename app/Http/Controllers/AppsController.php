@@ -30,6 +30,9 @@ class AppsController extends Controller
         // Anyone can access board
         $apps[] = 'board';
 
+        // Anyone can access resources
+        $apps[] = 'resources';
+
         if (Auth::user() && Auth::user()->hasRole('webmaster')) {
             $apps[] = 'webmaster';
         }

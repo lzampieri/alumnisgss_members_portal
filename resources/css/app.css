@@ -134,4 +134,7 @@
         @apply text-primary-main border-b-4 font-bold border-b-primary-main
     }
 
+    .rounded-first-last {
+        @apply first:rounded-t-xl last:rounded-b-xl
+    }
 }

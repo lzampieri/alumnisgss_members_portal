@@ -5,6 +5,7 @@ export default [
     { id: 'registry', name: 'Anagrafe', url: route('registry'), icon: solid('stapler') },
     { id: 'ratifications', name: 'Ratifiche', url: route('ratifications'), icon: solid('signature') },
     { id: 'board', name: 'Albo', url: route('board'), icon: solid('book-open') },
+    { id: 'resources', name: 'Risorse', url: route('resources'), icon: solid('box-archive') },
     { id: 'webmaster', name: 'Webmaster', url: route('webmaster'), icon: solid('bug'), href: true },
     { id: 'accesses', name: 'Accessi', url: route('accesses'), icon: solid('id-badge') },
     { id: 'permissions', name: 'Ruoli e permessi', url: route('permissions'), icon: solid('id-card') },
