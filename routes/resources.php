@@ -5,5 +5,5 @@ use Illuminate\Support\Facades\Route;
 
 // Documents
 Route::prefix('/resources')->group( function () {
-    Route::get('/', [ ResourceController::class, 'list' ] )->name('resources');
+    Route::get('/{section?}', [ ResourceController::class, 'list' ] )->name('resources');
 });

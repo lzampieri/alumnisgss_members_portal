@@ -10,8 +10,8 @@ function ResponsiveDrawerDrawer({ children }) {
     </>
 }
 
-function ResponsiveDrawer({ children, buttonTitle }) {
-    const [isOpen, setIsOpen] = useState(true);
+function ResponsiveDrawer({ children, buttonTitle, initialState }) {
+    const [isOpen, setIsOpen] = useState( initialState );
     let mainContent = [], drawerContent = [];
 
     Children.forEach(children, (child) => {
@@ -39,15 +39,17 @@ function ResponsiveDrawer({ children, buttonTitle }) {
                     (isOpen ? " translate-x-0 " : " -translate-x-full ") +
                     " md:w-full md:min-h-0 md:sticky md:transform-none " +
                     " bg-white p-4"
-                    } onClick={(e) => {e.stopPropagation()}}>
+                    }>
                     { drawerContent }
                 </div>
         </div>
-        <button className="button md:hidden" onClick={() => setIsOpen(true)}>
-            <FontAwesomeIcon icon={solid('bars')} />
-            { buttonTitle }
-        </button>     
-        { mainContent }
+        <div className="w-full md:w-3/4 flex flex-col items-start p-4">
+            <button className="button md:hidden" onClick={() => setIsOpen(true)}>
+                <FontAwesomeIcon icon={solid('bars')} />
+                { buttonTitle }
+            </button>     
+            { mainContent }
+        </div>
     </>
 }
 

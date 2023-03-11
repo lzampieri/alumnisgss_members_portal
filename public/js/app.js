@@ -7805,8 +7805,9 @@ function ResponsiveDrawerDrawer(_ref) {
 }
 function ResponsiveDrawer(_ref2) {
   var children = _ref2.children,
-    buttonTitle = _ref2.buttonTitle;
-  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    buttonTitle = _ref2.buttonTitle,
+    initialState = _ref2.initialState;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(initialState),
     _useState2 = _slicedToArray(_useState, 2),
     isOpen = _useState2[0],
     setIsOpen = _useState2[1];
@@ -7828,20 +7829,20 @@ function ResponsiveDrawer(_ref2) {
       },
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
         className: "w-4/5 min-h-screen left-0 absolute shadow-xl delay-400 duration-500 ease-in-out transition-all transform " + (isOpen ? " translate-x-0 " : " -translate-x-full ") + " md:w-full md:min-h-0 md:sticky md:transform-none " + " bg-white p-4",
-        onClick: function onClick(e) {
-          e.stopPropagation();
-        },
         children: drawerContent
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("button", {
-      className: "button md:hidden",
-      onClick: function onClick() {
-        return setIsOpen(true);
-      },
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_1__.FontAwesomeIcon, {
-        icon: _fortawesome_free_solid_svg_icons_faBars__WEBPACK_IMPORTED_MODULE_3__.faBars
-      }), buttonTitle]
-    }), mainContent]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      className: "w-full md:w-3/4 flex flex-col items-start p-4",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("button", {
+        className: "button md:hidden",
+        onClick: function onClick() {
+          return setIsOpen(true);
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_1__.FontAwesomeIcon, {
+          icon: _fortawesome_free_solid_svg_icons_faBars__WEBPACK_IMPORTED_MODULE_3__.faBars
+        }), buttonTitle]
+      }), mainContent]
+    })]
   });
 }
 ResponsiveDrawer.Drawer = ResponsiveDrawerDrawer;
@@ -9170,19 +9171,25 @@ __webpack_require__.r(__webpack_exports__);
 
 function Main() {
   var sections = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.sections;
+  var section = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.section;
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
     className: "flex flex-row w-full md:w-4/5",
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_Layout_ResponsiveDrawer__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      buttonTitle: "Sezioni",
+      buttonTitle: section ? section.title : "Sezioni",
+      initialState: !section,
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_Layout_ResponsiveDrawer__WEBPACK_IMPORTED_MODULE_3__["default"].Drawer, {
-        children: sections.map(function (section) {
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-            className: "border border-black rounded-first-last p-2 hover:text-primary-contrast hover:bg-primary-main",
-            children: section.title
+        children: sections.map(function (sec) {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
+            className: "border border-black rounded-first-last p-2 cursor-pointer " + ((section === null || section === void 0 ? void 0 : section.name) == sec.name ? "bg-primary-main text-primary-contrast" : "bg-white text-black hover:text-primary-contrast hover:bg-primary-main"),
+            href: route('resources', {
+              'section': sec.name
+            }),
+            as: "div",
+            children: sec.title
           });
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-        children: "contenutissimo 1"
+        children: section ? section.title : "contenutissimo 1"
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
         children: "contenutissimo 3"
       })]

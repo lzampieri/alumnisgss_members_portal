@@ -968,13 +968,13 @@ a {
   --tw-border-opacity: 1;
   border-color: rgb(156 163 175 / var(--tw-border-opacity));
 }
-.border-gray-300 {
-  --tw-border-opacity: 1;
-  border-color: rgb(209 213 219 / var(--tw-border-opacity));
-}
 .border-black {
   --tw-border-opacity: 1;
   border-color: rgb(0 0 0 / var(--tw-border-opacity));
+}
+.border-gray-300 {
+  --tw-border-opacity: 1;
+  border-color: rgb(209 213 219 / var(--tw-border-opacity));
 }
 .bg-primary-contrast {
   --tw-bg-opacity: 1;
@@ -1002,6 +1002,10 @@ a {
 .bg-gray-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+}
+.bg-primary-main {
+  --tw-bg-opacity: 1;
+  background-color: rgb(203 0 20 / var(--tw-bg-opacity));
 }
 .bg-contain {
   background-size: contain;
@@ -1179,6 +1183,10 @@ a {
 .text-gray-900 {
   --tw-text-opacity: 1;
   color: rgb(17 24 39 / var(--tw-text-opacity));
+}
+.text-primary-contrast {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 .underline {
   text-decoration-line: underline;
@@ -1589,10 +1597,6 @@ label.error {
 .rounded-first-last:last-child {
   border-bottom-right-radius: 0.75rem;
   border-bottom-left-radius: 0.75rem;
-}
-
-.first\:rounded-tl-lg:first-child {
-  border-top-left-radius: 0.5rem;
 }
 
 .hover\:bg-gray-700:hover {

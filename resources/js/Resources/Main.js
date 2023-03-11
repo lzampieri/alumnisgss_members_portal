@@ -36,19 +36,30 @@ import ResponsiveDrawer from "../Layout/ResponsiveDrawer";
 
 export default function Main() {
     const sections = usePage().props.sections
+    const section = usePage().props.section
 
     return (
         <div className="flex flex-row w-full md:w-4/5">
-            <ResponsiveDrawer buttonTitle="Sezioni">
+            <ResponsiveDrawer buttonTitle={ section ? section.title : "Sezioni" } initialState={ !section }>
                 <ResponsiveDrawer.Drawer>
-                    { sections.map( section =>
-                        <div className="border border-black rounded-first-last p-2 hover:text-primary-contrast hover:bg-primary-main">
-                            { section.title }
-                        </div>
+                    { sections.map( sec =>
+                        <Link
+                            className={ 
+                                "border border-black rounded-first-last p-2 cursor-pointer " +
+                                (
+                                    section?.name == sec.name  
+                                    ? "bg-primary-main text-primary-contrast"
+                                    : "bg-white text-black hover:text-primary-contrast hover:bg-primary-main"
+                                ) } 
+                            href={ route('resources',{ 'section': sec.name } ) }
+                            as="div"
+                            >
+                            { sec.title }
+                        </Link>
                     )}
                 </ResponsiveDrawer.Drawer>
                 <div>
-                    contenutissimo 1
+                    { section ? section.title : "contenutissimo 1" }
                 </div>
                 <div>
                     contenutissimo 3

@@ -8,11 +8,15 @@ use Inertia\Inertia;
 
 class ResourceController extends Controller
 {
-    public function list()
+    public function list( ResourcesSection $section = null )
     {
         $params = [];
 
         $params['sections'] = ResourcesSection::all();
+
+        if( $section ) {
+            $params['section'] = $section;
+        }
 
         return Inertia::render( 'Resources/Main', $params );
     }
