@@ -26,7 +26,7 @@ abstract class Identity extends Model {
         foreach( $roles as $role ) {
             if( $role->name == 'member' || $role->name == 'student_member' ) continue;
             if( $this->hasPermissionTo( 'user-edit-' . $role->name ) ) {
-                $editableRoles[] = $role->name;
+                $editableRoles[] = $role;
             }
         }
 

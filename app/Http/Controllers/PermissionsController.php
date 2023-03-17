@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Alumnus;
 use App\Models\Document;
+use App\Models\External;
+use App\Models\Identity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\Permission\Exceptions\PermissionDoesNotExist;
+use Spatie\Permission\Exceptions\RoleDoesNotExist;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -29,6 +33,7 @@ class PermissionsController extends Controller
 
         foreach ($roles as &$role) {
             $role->permissions_names = $role->permissions->pluck('name');
+            $role->identities = Alumnus::role( $role )->get()->concat( External::role( $role )->get() );
         }
 
         return Inertia::render('Permissions/List', ['roles' => $roles, 'perms' => $perms]);
@@ -48,10 +53,22 @@ class PermissionsController extends Controller
             'member',
             'student_member'
         ];
+        $roles_to_assert_names = [
+            'WebMaster',
+            'Segreteria',
+            'Consiglio di Amministrazione',
+            'Socio',
+            'Socio studente'
+        ];
 
         // Find or create!
-        foreach ($roles_to_assert as $role)
-            Role::findOrCreate($role);
+        foreach ($roles_to_assert as $index => $role) {
+            try {
+                Role::findByName( $role );
+            } catch (RoleDoesNotExist $th) {
+                Role::create([ 'name' => $role, 'common_name' => $roles_to_assert_names[ $index ] ] );
+            }
+        }
 
         $count_r = Role::count() - $count_r;
 

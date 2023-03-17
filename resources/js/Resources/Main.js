@@ -39,8 +39,8 @@ export default function Main() {
     const section = usePage().props.section
 
     return (
-        <div className="flex flex-row w-full md:w-4/5">
-            <ResponsiveDrawer buttonTitle={ section ? section.title : "Sezioni" } initialState={ !section }>
+        <div className="main-container-drawer">
+            <ResponsiveDrawer buttonTitle={ section ? section.title : "Sezioni" } initiallyOpen={ !section }>
                 <ResponsiveDrawer.Drawer>
                     { sections.map( sec =>
                         <Link

@@ -5880,11 +5880,17 @@ function IdentityRoles(_ref) {
     type = _ref.type,
     setProcessing = _ref.setProcessing;
   var editableRoles = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_3__.usePage)().props.editableRoles;
+  var editableRolesNames = editableRoles.map(function (role) {
+    return role.name;
+  });
+  var identityRolesNames = identity.roles.map(function (role) {
+    return role.name;
+  });
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
     children: [identity.roles.map(function (role) {
       return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
         className: "chip",
-        children: [_Utils__WEBPACK_IMPORTED_MODULE_1__.Roles.names[role.name], editableRoles.indexOf(role.name) > -1 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_2__.FontAwesomeIcon, {
+        children: [role.common_name, editableRolesNames.indexOf(role.name) > -1 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_2__.FontAwesomeIcon, {
           icon: _fortawesome_free_solid_svg_icons_faXmark__WEBPACK_IMPORTED_MODULE_6__.faXmark,
           className: "ml-1 px-1 hover:text-white hover:bg-gray-700 rounded-full",
           onClick: function onClick() {
@@ -5899,13 +5905,13 @@ function IdentityRoles(_ref) {
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
         className: "dropdown-content-flex flex-col gap-2",
         children: editableRoles.map(function (role) {
-          return identity.roles.indexOf(role) > -1 ? "" : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+          return identityRolesNames.indexOf(role.name) > -1 ? "" : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
             className: "chip cursor-pointer",
             onClick: function onClick() {
-              return userRoleAdd(identity.id, type, role, setProcessing);
+              return userRoleAdd(identity.id, type, role.name, setProcessing);
             },
-            children: _Utils__WEBPACK_IMPORTED_MODULE_1__.Roles.names[role]
-          }, role);
+            children: role.common_name
+          }, role.name);
         })
       })]
     })]
@@ -7806,8 +7812,8 @@ function ResponsiveDrawerDrawer(_ref) {
 function ResponsiveDrawer(_ref2) {
   var children = _ref2.children,
     buttonTitle = _ref2.buttonTitle,
-    initialState = _ref2.initialState;
-  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(initialState),
+    initiallyOpen = _ref2.initiallyOpen;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(initiallyOpen),
     _useState2 = _slicedToArray(_useState, 2),
     isOpen = _useState2[0],
     setIsOpen = _useState2[1];
@@ -7914,7 +7920,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Utils */ "./resources/js/Utils.js");
 /* harmony import */ var _Layout_Backdrop__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Layout/Backdrop */ "./resources/js/Layout/Backdrop.js");
 /* harmony import */ var _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @inertiajs/inertia */ "./node_modules/@inertiajs/inertia/dist/index.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _Layout_ResponsiveDrawer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../Layout/ResponsiveDrawer */ "./resources/js/Layout/ResponsiveDrawer.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -7929,22 +7936,31 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
+
 function RoleCard(role, perms, setProcessing) {
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
-    className: "w-2/5 bg-gray-200 rounded-xl p-4",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+    className: "w-full bg-gray-200 rounded-xl p-4",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("label", {
       children: role.name
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("h3", {
-      children: _Utils__WEBPACK_IMPORTED_MODULE_3__.Roles.names[role.name]
-    }), perms.map(function (pm) {
-      return PermissionSwitch(pm, role.permissions_names.includes(pm), role.name, setProcessing);
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("h3", {
+      children: role.common_name
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+      className: "md:columns-2",
+      children: perms.map(function (pm) {
+        return PermissionSwitch(pm, role.permissions_names.includes(pm), role.name, setProcessing);
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+      className: "flex flex-row flex-wrap justify-center mt-4 gap-2",
+      children: role.identities.map(function (identity) {
+        return IdentityChip(identity, setProcessing);
+      })
     })]
   }, role.name);
 }
 function PermissionSwitch(permission, checked, role, setProcessing) {
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
     className: "w-full flex flex-row items-baseline gap-1",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(react_switch__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(react_switch__WEBPACK_IMPORTED_MODULE_2__["default"], {
       height: 14,
       width: 28,
       checked: checked,
@@ -7953,6 +7969,12 @@ function PermissionSwitch(permission, checked, role, setProcessing) {
       }
     }), " ", permission]
   }, permission);
+}
+function IdentityChip(identity, setProcessing) {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+    className: "chip",
+    children: [identity.name, " ", identity.surname]
+  }, identity.id);
 }
 function _onChange(state, permission, role, setProcessing) {
   setProcessing(true);
@@ -7991,12 +8013,12 @@ function permissionAdd(setProcessing) {
       preserveScroll: true
     });
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("form", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("form", {
     onSubmit: submit,
     className: "w-full flex flex-row items-stretch mt-4",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
       className: "grow",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("input", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("input", {
         type: "text",
         className: "w-full",
         placeholder: "Aggiungi permesso...",
@@ -8004,11 +8026,11 @@ function permissionAdd(setProcessing) {
         onChange: function onChange(e) {
           return setData('name', e.target.value);
         }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("label", {
         className: "error",
         children: errors.name
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("input", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("input", {
       type: "submit",
       className: "button",
       value: "Aggiungi"
@@ -8022,19 +8044,37 @@ function List() {
     _useState2 = _slicedToArray(_useState, 2),
     processing = _useState2[0],
     setProcessing = _useState2[1];
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
-    className: "main-container",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
-      className: "w-full flex flex-row flex-wrap justify-center gap-4",
-      children: roles.map(function (role) {
-        return RoleCard(role, perms, setProcessing);
-      })
-    }), permissionAdd(setProcessing), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.Link, {
-      href: route('permissions.verify'),
-      children: "Verifica permessi"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_Layout_Backdrop__WEBPACK_IMPORTED_MODULE_4__["default"], {
-      open: processing
-    })]
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(roles[0]),
+    _useState4 = _slicedToArray(_useState3, 2),
+    selected = _useState4[0],
+    setSelected = _useState4[1];
+
+  //     <div className="main-container">
+  //     <div className="w-full flex flex-row flex-wrap justify-center gap-4">
+  //         { roles.map( role => RoleCard( role, perms, setProcessing ) ) }
+  //     </div>
+  //     { permissionAdd( setProcessing ) }
+  //     <Link href={ route('permissions.verify') }>Verifica permessi</Link>
+  //     <Backdrop open={processing} />
+  // </div>
+
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+    className: "main-container-drawer",
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_Layout_ResponsiveDrawer__WEBPACK_IMPORTED_MODULE_6__["default"], {
+      buttonTitle: selected ? selected.common_name : "Ruoli",
+      initiallyOpen: !selected,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_Layout_ResponsiveDrawer__WEBPACK_IMPORTED_MODULE_6__["default"].Drawer, {
+        children: roles.map(function (role) {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+            className: "border border-black rounded-first-last p-2 cursor-pointer " + ((selected === null || selected === void 0 ? void 0 : selected.name) == role.name ? "bg-primary-main text-primary-contrast" : "bg-white text-black hover:text-primary-contrast hover:bg-primary-main"),
+            onClick: function onClick() {
+              return setSelected(role);
+            },
+            children: role.common_name
+          });
+        })
+      }), selected && RoleCard(selected, perms, setProcessing)]
+    })
   });
 }
 
@@ -9173,10 +9213,10 @@ function Main() {
   var sections = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.sections;
   var section = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.section;
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-    className: "flex flex-row w-full md:w-4/5",
+    className: "main-container-drawer",
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_Layout_ResponsiveDrawer__WEBPACK_IMPORTED_MODULE_3__["default"], {
       buttonTitle: section ? section.title : "Sezioni",
-      initialState: !section,
+      initiallyOpen: !section,
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_Layout_ResponsiveDrawer__WEBPACK_IMPORTED_MODULE_3__["default"].Drawer, {
         children: sections.map(function (sec) {
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
@@ -9199,16 +9239,6 @@ function Main() {
 
 /***/ }),
 
-/***/ "./resources/js/Resources/SideList.js":
-/*!********************************************!*\
-  !*** ./resources/js/Resources/SideList.js ***!
-  \********************************************/
-/***/ (() => {
-
-
-
-/***/ }),
-
 /***/ "./resources/js/Utils.js":
 /*!*******************************!*\
   !*** ./resources/js/Utils.js ***!
@@ -9220,7 +9250,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AlumnusStatus": () => (/* binding */ AlumnusStatus),
 /* harmony export */   "Documents": () => (/* binding */ Documents),
-/* harmony export */   "Roles": () => (/* binding */ Roles),
 /* harmony export */   "bgAndContrast": () => (/* binding */ bgAndContrast),
 /* harmony export */   "disappearing": () => (/* binding */ disappearing),
 /* harmony export */   "postRequest": () => (/* binding */ postRequest),
@@ -9296,16 +9325,6 @@ _defineProperty(AlumnusStatus, "status", {
     acronym: 'R',
     color: '#FF0000'
   }
-});
-var Roles = /*#__PURE__*/_createClass(function Roles() {
-  _classCallCheck(this, Roles);
-});
-_defineProperty(Roles, "names", {
-  'webmaster': 'WebMaster',
-  'secretariat': 'Segreteria',
-  'cda': 'Consiglio di amministrazione',
-  'member': 'Socio',
-  'student_member': 'Socio studente'
 });
 var Documents = /*#__PURE__*/_createClass(function Documents() {
   _classCallCheck(this, Documents);
@@ -73636,8 +73655,6 @@ var map = {
 	"./Registry/ListTemplate.js": "./resources/js/Registry/ListTemplate.js",
 	"./Resources/Main": "./resources/js/Resources/Main.js",
 	"./Resources/Main.js": "./resources/js/Resources/Main.js",
-	"./Resources/SideList": "./resources/js/Resources/SideList.js",
-	"./Resources/SideList.js": "./resources/js/Resources/SideList.js",
 	"./Utils": "./resources/js/Utils.js",
 	"./Utils.js": "./resources/js/Utils.js",
 	"./Webmaster/List": "./resources/js/Webmaster/List.js",

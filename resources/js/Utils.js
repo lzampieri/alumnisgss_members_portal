@@ -32,16 +32,6 @@ export class AlumnusStatus {
     };
 }
 
-export class Roles {
-    static names = {
-        'webmaster': 'WebMaster',
-        'secretariat': 'Segreteria',
-        'cda': 'Consiglio di amministrazione',
-        'member': 'Socio',
-        'student_member': 'Socio studente'
-    }
-}
-
 export class Documents {
     static names = {
         'everyone': 'Tutti',

@@ -843,6 +843,13 @@ a {
 .list-disc {
   list-style-type: disc;
 }
+.columns-2 {
+  -moz-columns: 2;
+       columns: 2;
+}
+.grid-flow-col {
+  grid-auto-flow: column;
+}
 .grid-cols-3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -851,6 +858,9 @@ a {
 }
 .grid-cols-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
 }
 .flex-row {
   flex-direction: row;
@@ -999,13 +1009,13 @@ a {
   --tw-bg-opacity: 1;
   background-color: rgb(229 231 235 / var(--tw-bg-opacity));
 }
-.bg-gray-50 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
-}
 .bg-primary-main {
   --tw-bg-opacity: 1;
   background-color: rgb(203 0 20 / var(--tw-bg-opacity));
+}
+.bg-gray-50 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
 }
 .bg-contain {
   background-size: contain;
@@ -1180,13 +1190,13 @@ a {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
-.text-gray-900 {
-  --tw-text-opacity: 1;
-  color: rgb(17 24 39 / var(--tw-text-opacity));
-}
 .text-primary-contrast {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+.text-gray-900 {
+  --tw-text-opacity: 1;
+  color: rgb(17 24 39 / var(--tw-text-opacity));
 }
 .underline {
   text-decoration-line: underline;
@@ -1526,6 +1536,17 @@ label.error {
     width: 60%;
   }
 }
+.main-container-drawer {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+}
+@media (min-width: 768px) {
+
+  .main-container-drawer {
+    width: 80%;
+  }
+}
 .chip {
   margin-left: 0.5rem;
   border-radius: 1.5rem;
@@ -1711,6 +1732,10 @@ label.error {
     left: auto;
   }
 
+  .md\:top-0 {
+    top: 0px;
+  }
+
   .md\:hidden {
     display: none;
   }
@@ -1751,16 +1776,26 @@ label.error {
     width: 40%;
   }
 
-  .md\:w-4\/5 {
-    width: 80%;
-  }
-
   .md\:max-w-\[33\%\] {
     max-width: 33%;
   }
 
   .md\:transform-none {
     transform: none;
+  }
+
+  .md\:columns-2 {
+    -moz-columns: 2;
+         columns: 2;
+  }
+
+  .md\:columns-3 {
+    -moz-columns: 3;
+         columns: 3;
+  }
+
+  .md\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .md\:flex-row {

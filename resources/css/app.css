@@ -106,6 +106,9 @@
     .main-container {
         @apply flex flex-col items-center w-full md:w-3/5
     }
+    .main-container-drawer {
+        @apply flex flex-row w-full md:w-4/5
+    }
     .chip {
         @apply bg-gray-600 text-white rounded-3xl ml-2 px-2
     }

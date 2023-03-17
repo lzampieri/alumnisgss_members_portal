@@ -10,8 +10,8 @@ function ResponsiveDrawerDrawer({ children }) {
     </>
 }
 
-function ResponsiveDrawer({ children, buttonTitle, initialState }) {
-    const [isOpen, setIsOpen] = useState( initialState );
+function ResponsiveDrawer({ children, buttonTitle, initiallyOpen }) {
+    const [isOpen, setIsOpen] = useState( initiallyOpen );
     let mainContent = [], drawerContent = [];
 
     Children.forEach(children, (child) => {
