@@ -44,13 +44,8 @@ export default function Main() {
                 <ResponsiveDrawer.Drawer>
                     { sections.map( sec =>
                         <Link
-                            className={ 
-                                "border border-black rounded-first-last p-2 cursor-pointer " +
-                                (
-                                    section?.name == sec.name  
-                                    ? "bg-primary-main text-primary-contrast"
-                                    : "bg-white text-black hover:text-primary-contrast hover:bg-primary-main"
-                                ) } 
+                            className="drawer-item"
+                            aria-selected={ section?.name == sec.name }
                             href={ route('resources',{ 'section': sec.name } ) }
                             as="div"
                             >

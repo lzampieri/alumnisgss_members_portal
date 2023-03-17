@@ -3,6 +3,7 @@
 use App\Http\Controllers\IdentityController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\LoginMethodController;
+use App\Http\Controllers\RolesController;
 use Illuminate\Support\Facades\Route;
 
 // Accesses
@@ -27,4 +28,9 @@ Route::prefix('/permissions')->group( function () {
     Route::post('/', [ PermissionsController::class, 'update' ] );
     Route::post('/add', [ PermissionsController::class, 'add' ] )->name('permissions.add');
     Route::get('/verify', [ PermissionsController::class, 'verify' ] )->name('permissions.verify');
+});
+
+// Roles
+Route::prefix('/roles')->group( function () {
+    Route::post('/add', [ RolesController::class, 'add' ] )->name('roles.add');
 });

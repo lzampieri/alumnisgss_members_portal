@@ -7693,6 +7693,9 @@ function EmptyDialog(_ref) {
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
       className: "fixed inset-0 flex justify-center items-center",
+      onClick: function onClick(e) {
+        e.stopPropagation();
+      },
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
         className: "absolute w-full h-full bg-halfblack z-40",
         onClick: function onClick(e) {
@@ -7700,7 +7703,7 @@ function EmptyDialog(_ref) {
           onClose();
         }
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
-        className: "max-w-full md:max-w-[33%] border rounded-xl bg-white z-50 flex flex-col items-stretch p-8",
+        className: "max-w-full md:max-w-[33%] md:w-[33%] border rounded-xl bg-white z-50 flex flex-col items-stretch p-8",
         onClick: function onClick() {},
         children: children
       })]
@@ -7921,7 +7924,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Layout_Backdrop__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Layout/Backdrop */ "./resources/js/Layout/Backdrop.js");
 /* harmony import */ var _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @inertiajs/inertia */ "./node_modules/@inertiajs/inertia/dist/index.js");
 /* harmony import */ var _Layout_ResponsiveDrawer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../Layout/ResponsiveDrawer */ "./resources/js/Layout/ResponsiveDrawer.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _Layout_EmptyDialog__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../Layout/EmptyDialog */ "./resources/js/Layout/EmptyDialog.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -7937,19 +7941,20 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
+
 function RoleCard(role, perms, setProcessing) {
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
     className: "w-full bg-gray-200 rounded-xl p-4",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("label", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
       children: role.name
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("h3", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("h3", {
       children: role.common_name
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
       className: "md:columns-2",
       children: perms.map(function (pm) {
         return PermissionSwitch(pm, role.permissions_names.includes(pm), role.name, setProcessing);
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
       className: "flex flex-row flex-wrap justify-center mt-4 gap-2",
       children: role.identities.map(function (identity) {
         return IdentityChip(identity, setProcessing);
@@ -7958,9 +7963,9 @@ function RoleCard(role, perms, setProcessing) {
   }, role.name);
 }
 function PermissionSwitch(permission, checked, role, setProcessing) {
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
     className: "w-full flex flex-row items-baseline gap-1",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(react_switch__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_switch__WEBPACK_IMPORTED_MODULE_2__["default"], {
       height: 14,
       width: 28,
       checked: checked,
@@ -7970,11 +7975,11 @@ function PermissionSwitch(permission, checked, role, setProcessing) {
     }), " ", permission]
   }, permission);
 }
-function IdentityChip(identity, setProcessing) {
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+function IdentityChip(identity) {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
     className: "chip",
     children: [identity.name, " ", identity.surname]
-  }, identity.id);
+  }, identity.id + identity.name);
 }
 function _onChange(state, permission, role, setProcessing) {
   setProcessing(true);
@@ -8013,12 +8018,12 @@ function permissionAdd(setProcessing) {
       preserveScroll: true
     });
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("form", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("form", {
     onSubmit: submit,
     className: "w-full flex flex-row items-stretch mt-4",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
       className: "grow",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("input", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("input", {
         type: "text",
         className: "w-full",
         placeholder: "Aggiungi permesso...",
@@ -8026,55 +8031,125 @@ function permissionAdd(setProcessing) {
         onChange: function onChange(e) {
           return setData('name', e.target.value);
         }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("label", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
         className: "error",
         children: errors.name
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("input", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("input", {
       type: "submit",
       className: "button",
       value: "Aggiungi"
     })]
   });
 }
+function roleAdd(setProcessing) {
+  var _useForm2 = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.useForm)({
+      name: "",
+      common_name: ""
+    }),
+    data = _useForm2.data,
+    setData = _useForm2.setData,
+    errors = _useForm2.errors,
+    post = _useForm2.post,
+    reset = _useForm2.reset;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    open = _useState2[0],
+    setOpen = _useState2[1];
+  var submit = function submit(e) {
+    console.log("Submitting");
+    e.preventDefault();
+    setProcessing(true);
+    post(route('roles.add'), {
+      onFinish: function onFinish() {
+        return setProcessing(false);
+      },
+      onSuccess: function onSuccess() {
+        reset(), setOpen(false);
+      },
+      preserveState: true,
+      preserveScroll: true
+    });
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+    className: "drawer-item",
+    onClick: function onClick() {
+      return setOpen(true);
+    },
+    children: ["+ Aggiungi", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_Layout_EmptyDialog__WEBPACK_IMPORTED_MODULE_7__["default"], {
+      open: open,
+      onClose: function onClose() {
+        return setOpen(false);
+      },
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("form", {
+        onSubmit: function onSubmit(e) {
+          return submit(e);
+        },
+        className: "w-full flex flex-col items-stretch mt-4 text-black",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
+          children: "Nome software"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("input", {
+          type: "text",
+          className: "w-full",
+          value: data.name,
+          onChange: function onChange(e) {
+            return setData('name', e.target.value);
+          }
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
+          className: "error",
+          children: errors.name
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
+          children: "Nome comune"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("input", {
+          type: "text",
+          className: "w-full",
+          value: data.common_name,
+          onChange: function onChange(e) {
+            return setData('common_name', e.target.value);
+          }
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("label", {
+          className: "error",
+          children: errors.common_name
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("input", {
+          type: "submit",
+          className: "button",
+          value: "Aggiungi ruolo"
+        })]
+      })
+    })]
+  }, -1);
+}
 function List() {
   var roles = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.roles;
   var perms = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.perms;
-  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false),
-    _useState2 = _slicedToArray(_useState, 2),
-    processing = _useState2[0],
-    setProcessing = _useState2[1];
-  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(roles[0]),
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false),
     _useState4 = _slicedToArray(_useState3, 2),
-    selected = _useState4[0],
-    setSelected = _useState4[1];
-
-  //     <div className="main-container">
-  //     <div className="w-full flex flex-row flex-wrap justify-center gap-4">
-  //         { roles.map( role => RoleCard( role, perms, setProcessing ) ) }
-  //     </div>
-  //     { permissionAdd( setProcessing ) }
-  //     <Link href={ route('permissions.verify') }>Verifica permessi</Link>
-  //     <Backdrop open={processing} />
-  // </div>
-
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+    processing = _useState4[0],
+    setProcessing = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(-1),
+    _useState6 = _slicedToArray(_useState5, 2),
+    selectedIdx = _useState6[0],
+    setSelectedIdx = _useState6[1];
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
     className: "main-container-drawer",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_Layout_ResponsiveDrawer__WEBPACK_IMPORTED_MODULE_6__["default"], {
-      buttonTitle: selected ? selected.common_name : "Ruoli",
-      initiallyOpen: !selected,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_Layout_ResponsiveDrawer__WEBPACK_IMPORTED_MODULE_6__["default"].Drawer, {
-        children: roles.map(function (role) {
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-            className: "border border-black rounded-first-last p-2 cursor-pointer " + ((selected === null || selected === void 0 ? void 0 : selected.name) == role.name ? "bg-primary-main text-primary-contrast" : "bg-white text-black hover:text-primary-contrast hover:bg-primary-main"),
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_Layout_ResponsiveDrawer__WEBPACK_IMPORTED_MODULE_6__["default"], {
+      buttonTitle: selectedIdx >= 0 ? roles[selectedIdx].common_name : "Ruoli",
+      initiallyOpen: selectedIdx < 0,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_Layout_ResponsiveDrawer__WEBPACK_IMPORTED_MODULE_6__["default"].Drawer, {
+        children: [roles.map(function (role, idx) {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+            className: "drawer-item",
+            "aria-selected": selectedIdx >= 0 && roles[selectedIdx].name == role.name,
             onClick: function onClick() {
-              return setSelected(role);
+              return setSelectedIdx(idx);
             },
             children: role.common_name
-          });
-        })
-      }), selected && RoleCard(selected, perms, setProcessing)]
-    })
+          }, role.name);
+        }), roleAdd(setProcessing)]
+      }), selectedIdx >= 0 && RoleCard(roles[selectedIdx], perms, setProcessing), permissionAdd(setProcessing)]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_Layout_Backdrop__WEBPACK_IMPORTED_MODULE_4__["default"], {
+      open: processing
+    })]
   });
 }
 
@@ -9220,7 +9295,8 @@ function Main() {
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_Layout_ResponsiveDrawer__WEBPACK_IMPORTED_MODULE_3__["default"].Drawer, {
         children: sections.map(function (sec) {
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
-            className: "border border-black rounded-first-last p-2 cursor-pointer " + ((section === null || section === void 0 ? void 0 : section.name) == sec.name ? "bg-primary-main text-primary-contrast" : "bg-white text-black hover:text-primary-contrast hover:bg-primary-main"),
+            className: "drawer-item",
+            "aria-selected": (section === null || section === void 0 ? void 0 : section.name) == sec.name,
             href: route('resources', {
               'section': sec.name
             }),
