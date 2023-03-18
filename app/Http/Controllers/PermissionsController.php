@@ -51,14 +51,16 @@ class PermissionsController extends Controller
             'secretariat',
             'cda',
             'member',
-            'student_member'
+            'student_member',
+            'everyone'
         ];
         $roles_to_assert_names = [
             'WebMaster',
             'Segreteria',
             'Consiglio di Amministrazione',
             'Socio',
-            'Socio studente'
+            'Socio studente',
+            'Tutti'
         ];
 
         // Find or create!
@@ -110,15 +112,9 @@ class PermissionsController extends Controller
 
         // Roles edit
         foreach (Role::all()->pluck('name') as $role) {
-            // never for members and student members
-            if ($role == 'member' || $role == 'student_member') continue;
+            // never for members and student members and anyone
+            if ($role == 'member' || $role == 'student_member' || $role == 'everyone' ) continue;
             $permissions_to_assert[] = 'user-edit-' . $role;
-        }
-
-        // Document privacies
-        foreach (Document::$privacies as $privacy) {
-            if ($privacy == 'everyone') continue;
-            $permissions_to_assert[] = 'documents-view-' . $privacy;
         }
 
         // Find or create!
@@ -129,8 +125,6 @@ class PermissionsController extends Controller
 
         // Assign permissions to roles
         Role::findByName('webmaster')->givePermissionTo(Permission::all());
-        Role::findByName('cda')->givePermissionTo(['documents-view-cda']);
-        Role::findByName('member')->givePermissionTo(['documents-view-members']);
 
         if ($count_p == 0)
             return redirect()->back()->with(['notistack' => ['success', 'Permessi e ruoli corretti']]);

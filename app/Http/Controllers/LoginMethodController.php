@@ -19,10 +19,16 @@ class LoginMethodController extends Controller
         $this->authorize('viewAny', LoginMethod::class);
 
         $lmthds = [
-            'alumni' => Alumnus::has('loginMethods')->with(['loginMethods','roles'])->orderBy('surname')->orderBy('name')->get(),
-            'externals' => External::has('loginMethods')->with(['loginMethods','roles'])->orderBy('surname')->orderBy('name')->get(),
+            'alumni' => Alumnus::has('loginMethods')->with('loginMethods')->orderBy('surname')->orderBy('name')->get(),
+            'externals' => External::has('loginMethods')->with('loginMethods')->orderBy('surname')->orderBy('name')->get(),
             'requests' => LoginMethod::where('identity_id',null)->with('blocks')->orderBy('created_at','desc')->get(),
         ];
+
+        foreach( ['alumni','externals'] as $key ) {
+            foreach( $lmthds[$key] as $lmthd ) {
+                $lmthd->roles = $lmthd->getAllRoles();
+            }
+        }
 
         return Inertia::render('Accesses/List', [
             'lmthds' => $lmthds,

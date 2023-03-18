@@ -3,14 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Document extends Model
 {    
     protected $fillable = [
         'protocol',
         'identifier',
-        'privacy',
         'date',
         'note',
         'author_type',
@@ -38,5 +36,14 @@ class Document extends Model
     
     public function files() {
         return $this->morphMany( File::class, 'parent' );
+    }
+    
+    public function dynamicPermissions() {
+        return $this->morphMany( DynamicPermission::class, 'permissable' );
+    }
+    
+    protected $appends = ['canView'];
+    public function getCanViewAttribute() {
+        return DynamicPermission::UserCanViewPermissable($this);
     }
 }

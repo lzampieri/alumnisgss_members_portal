@@ -66,6 +66,14 @@ class Alumnus extends Identity
         return false;
     }
 
+    public function getAllRoles()
+    {
+        $roles = parent::getAllRoles();
+        if( $this->status == 'member' ) $roles->push( Role::findByName('member') );
+        if( $this->status == 'student_member' ) $roles->push( Role::findByName('student_member') );
+        return $roles;
+    }
+
     public function ratifications() {
         return $this->hasMany( Ratification::class );
     }

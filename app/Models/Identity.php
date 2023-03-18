@@ -13,7 +13,7 @@ abstract class Identity extends Model {
     // Is only useful to collect all the possible
     // kinds of authenticated identities
 
-    use HasRoles;
+    use HasRoles { hasPermissionTo as protected traitHasPermissionTo; }
 
     protected $guard_name = 'web';
 
@@ -24,7 +24,7 @@ abstract class Identity extends Model {
         $editableRoles = [];
 
         foreach( $roles as $role ) {
-            if( $role->name == 'member' || $role->name == 'student_member' ) continue;
+            if( $role->name == 'member' || $role->name == 'student_member' || $role->name == 'everyone' ) continue;
             if( $this->hasPermissionTo( 'user-edit-' . $role->name ) ) {
                 $editableRoles[] = $role;
             }
@@ -48,5 +48,17 @@ abstract class Identity extends Model {
     protected $appends = ['enabled'];
     public function getEnabledAttribute() {
         return $this->hasPermissionTo('login');
+    }
+
+    public function hasPermissionTo($permission, $guardName = null): bool
+    {
+        return $this->traitHasPermissionTo($permission) || Role::findByName('everyone')->hasPermissionTo($permission);
+    }
+
+    public function getAllRoles()
+    {
+        $roles = $this->roles;
+        $roles->push( Role::findByName('everyone') );
+        return $roles;
     }
 }

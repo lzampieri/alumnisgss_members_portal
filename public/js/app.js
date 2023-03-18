@@ -6621,10 +6621,12 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function Edit() {
   var prevDoc = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.document;
-  var privacies = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.privacies;
+  var roles = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.roles;
   var rats = prevDoc.grouped_ratifications;
   var _useForm = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.useForm)({
-      privacy: prevDoc.privacy,
+      roles: prevDoc.dynamic_permissions.map(function (dp) {
+        return dp.role_id;
+      }),
       date: new Date(prevDoc.date),
       note: prevDoc.note || ""
     }),
@@ -6634,6 +6636,12 @@ function Edit() {
     processing = _useForm.processing,
     errors = _useForm.errors,
     isDirty = _useForm.isDirty;
+  var changeRole = function changeRole(id) {
+    if (data.roles.includes(id)) {
+      data.roles.splice(data.roles.indexOf(id), 1);
+      setData('roles', data.roles.slice());
+    } else setData('roles', data.roles.concat([id]));
+  };
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_4__.useState)(false),
     _useState2 = _slicedToArray(_useState, 2),
     datePickerOpen = _useState2[0],
@@ -6672,14 +6680,15 @@ function Edit() {
         children: "Visibilit\xE0"
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
         className: "w-full flex flex-row flex-wrap justify-start",
-        children: privacies.map(function (p) {
+        children: roles.map(function (r) {
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
-            className: "chip px-4 py-2 cursor-pointer " + (p == data.privacy ? '' : 'disabled'),
+            className: "chip px-4 py-2 cursor-pointer aria-disabled:disabled",
+            "aria-disabled": !data.roles.includes(r.id),
             onClick: function onClick() {
-              return setData('privacy', p);
+              return changeRole(r.id);
             },
-            children: _Utils__WEBPACK_IMPORTED_MODULE_1__.Documents.names[p] || p
-          }, p);
+            children: r.common_name
+          }, r.id);
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("label", {
         className: "error",
@@ -6988,7 +6997,9 @@ function DocumentItem(document, canEdit) {
         children: document.identifier
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
         className: "text-sm",
-        children: ["Visibilit\xE0: ", _Utils__WEBPACK_IMPORTED_MODULE_2__.Documents.names[document.privacy] || document.privacy, " ", document.note && " - Nota: " + document.note]
+        children: ["Visibilit\xE0:", " " + document.dynamic_permissions.map(function (dp) {
+          return dp.role.common_name;
+        }).join(", "), document.note && " - Nota: " + document.note]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
         className: "text-gray-500 text-sm",
         children: ["Caricato il ", new Date(document.created_at).toLocaleDateString('it-IT', {
@@ -7019,6 +7030,7 @@ function DocumentItem(document, canEdit) {
 function List() {
   var documents = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.documents;
   var canEdit = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.canEdit;
+  console.log(documents);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
     className: "main-container",
     children: [(0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.canUpload && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
@@ -7170,14 +7182,14 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 function Upload() {
-  var privacies = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.privacies;
+  var roles = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.roles;
   var rats = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.open_rats;
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_4__.useState)(false),
     _useState2 = _slicedToArray(_useState, 2),
     datePickerOpen = _useState2[0],
     setDatePickerOpen = _useState2[1];
   var _useForm = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.useForm)({
-      privacy: privacies[0],
+      roles: [],
       identifier: '',
       date: new Date(),
       prehandle: '',
@@ -7191,6 +7203,12 @@ function Upload() {
     processing = _useForm.processing,
     errors = _useForm.errors,
     progress = _useForm.progress;
+  var changeRole = function changeRole(id) {
+    if (data.roles.includes(id)) {
+      data.roles.splice(data.roles.indexOf(id), 1);
+      setData('roles', data.roles.slice());
+    } else setData('roles', data.roles.concat([id]));
+  };
   var changeRatification = function changeRatification(id) {
     if (data.ratifications.includes(id)) {
       data.ratifications.splice(data.ratifications.indexOf(id), 1);
@@ -7241,18 +7259,19 @@ function Upload() {
       children: "Visibilit\xE0"
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
       className: "w-full flex flex-row flex-wrap justify-start",
-      children: privacies.map(function (p) {
+      children: roles.map(function (r) {
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
-          className: "chip px-4 py-2 cursor-pointer " + (p == data.privacy ? '' : 'disabled'),
+          className: "chip px-4 py-2 cursor-pointer aria-disabled:disabled",
+          "aria-disabled": !data.roles.includes(r.id),
           onClick: function onClick() {
-            return setData('privacy', p);
+            return changeRole(r.id);
           },
-          children: _Utils__WEBPACK_IMPORTED_MODULE_1__.Documents.names[p] || p
-        }, p);
+          children: r.common_name
+        }, r.id);
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
       className: "error",
-      children: errors.privacy
+      children: errors.roles
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
       children: "Data di redazione"
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(tailwind_datepicker_react__WEBPACK_IMPORTED_MODULE_3__["default"], {

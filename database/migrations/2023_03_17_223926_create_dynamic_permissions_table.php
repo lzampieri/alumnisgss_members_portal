@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDocumentsTable extends Migration
+class CreateDynamicPermissionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,13 @@ class CreateDocumentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('documents', function (Blueprint $table) {
+        Schema::create('dynamic_permissions', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('protocol',500);
-            $table->string('identifier',100);
-            $table->timestamp('date');
-            $table->text('note')->nullable();
-            $table->morphs('author');
+
+            $table->string('type',20)->default('view');
+            $table->foreignId('role_id')->constrained();
+            $table->morphs('permissable');
         });
     }
 
@@ -31,6 +30,6 @@ class CreateDocumentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('documents');
+        Schema::dropIfExists('dynamic_permissions');
     }
 }

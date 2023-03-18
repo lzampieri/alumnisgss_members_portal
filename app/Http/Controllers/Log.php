@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
 use App\Models\Document;
+use App\Models\DynamicPermission;
 use App\Models\External;
 use App\Models\LoginMethod;
 use App\Models\Ratification;
@@ -46,6 +47,8 @@ class Log extends Controller
             return "Ratification of " . $object->alumnus->surnameAndName() . " to " . $object->required_state;
         if( $object instanceof Document )
             return $object->identifier . " (" . $object->protocol . ", " . $object->date . ")";
+        if( $object instanceof DynamicPermission )
+            return $object->type . " of " . $object->role->name . " for " . Log::stringify( $object->permissable );
         return $object;
     }
 

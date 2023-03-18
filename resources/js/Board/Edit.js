@@ -12,14 +12,22 @@ import DeleteRatification from "./DeleteRatification";
 
 export default function Edit() {
     const prevDoc = usePage().props.document;
-    const privacies = usePage().props.privacies;
+    const roles = usePage().props.roles;
     const rats = prevDoc.grouped_ratifications;
 
     const { data, setData, post, processing, errors, isDirty } = useForm({
-        privacy: prevDoc.privacy,
+        roles: prevDoc.dynamic_permissions.map(dp => dp.role_id),
         date: new Date(prevDoc.date),
         note: prevDoc.note || "",
     })
+
+    const changeRole = (id) => {
+        if (data.roles.includes(id)) {
+            data.roles.splice(data.roles.indexOf(id), 1)
+            setData('roles', data.roles.slice())
+        } else
+            setData('roles', data.roles.concat([id]))
+    }
 
     const [datePickerOpen, setDatePickerOpen] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -44,9 +52,9 @@ export default function Edit() {
                 <label className="unspaced">L'identiticativo non può essere modificato a posteriori.</label>
                 <label>Visibilità</label>
                 <div className="w-full flex flex-row flex-wrap justify-start">
-                    {privacies.map(p =>
-                        <div key={p} className={"chip px-4 py-2 cursor-pointer " + (p == data.privacy ? '' : 'disabled')} onClick={() => setData('privacy', p)}>
-                            {Documents.names[p] || p}
+                    {roles.map(r =>
+                        <div key={r.id} className="chip px-4 py-2 cursor-pointer aria-disabled:disabled" aria-disabled={!data.roles.includes(r.id)} onClick={() => changeRole(r.id)}>
+                            {r.common_name}
                         </div>)}
                 </div>
                 <label className="error">{errors.privacy}</label>
@@ -74,10 +82,10 @@ export default function Edit() {
 
             <label>Ratifiche approvate</label>
             {rats.constructor == Object ? <>
-                <DeleteRatification ratifications = {rats} />
+                <DeleteRatification ratifications={rats} />
             </> : <label className="unspaced">Nessuna ratifica presente</label>}
             <AddRatification document={prevDoc} />
-            
+
             <div className="thin-separator" />
 
             <button className="button mt-8 text-center" onClick={(e) => { e.preventDefault(); setDeleteDialogOpen(true) }}>Elimina</button>

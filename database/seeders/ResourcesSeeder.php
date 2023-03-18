@@ -14,13 +14,13 @@ class ResourcesSeeder extends Seeder
      */
     public function run()
     {
-        ResourcesSection::create([
-            'name' => 'modules',
-            'title' => 'Modulistica'
-        ]);
-        ResourcesSection::create([
-            'name' => 'members_modules',
-            'title' => 'Modulistica soci'
-        ]);
+        // ResourcesSection::create([
+        //     'name' => 'modules',
+        //     'title' => 'Modulistica'
+        // ]);
+        // ResourcesSection::create([
+        //     'name' => 'members_modules',
+        //     'title' => 'Modulistica soci'
+        // ]);
     }
 }

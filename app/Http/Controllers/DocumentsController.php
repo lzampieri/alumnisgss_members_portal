@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
 use App\Models\Document;
+use App\Models\DynamicPermission;
 use App\Models\File;
 use App\Models\Ratification;
 use App\Policies\DocumentPolicy;
@@ -11,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use setasign\Fpdi\Tcpdf\Fpdi;
 use Inertia\Inertia;
+use Spatie\Permission\Models\Role;
 
 class DocumentsController extends Controller
 {
@@ -18,8 +20,9 @@ class DocumentsController extends Controller
     {
         $params = [];
 
-        $privacies = DocumentPolicy::visiblePrivacies();
-        $params['documents'] = Document::whereIn('privacy', $privacies)->with('author')->orderBy('date', 'desc')->orderBy('protocol', 'desc')->get();
+        $params['documents'] = Document::with(['author','dynamicPermissions','dynamicPermissions.role'])
+                               ->orderBy('date', 'desc')->orderBy('protocol', 'desc')->get()
+                               ->filter->canView->values();
 
         $params['total'] = Document::count();
 
@@ -36,7 +39,8 @@ class DocumentsController extends Controller
         $canEdit = Auth::check() && Auth::user()->can('edit', Document::class);
 
         return Inertia::render('Board/Upload', [
-            'privacies' => Document::$privacies, 'canEdit' => $canEdit,
+            'roles' => Role::where('name','!=','webmaster')->orderBy('id')->get(),
+            'canEdit' => $canEdit,
             'open_rats' => Ratification::whereNull('document_id')->with('alumnus')->get()
                             ->sortBy( function( $rat, $key ) { return str_pad( $rat->alumnus->coorte, 4, 0, STR_PAD_LEFT ) . " " . $rat->alumnus->surname . " " . $rat->alumnus->name; } )
                             ->groupBy('required_state'),
@@ -48,11 +52,12 @@ class DocumentsController extends Controller
         $this->authorize('create', Document::class);
 
         $validated = $request->validate([
-            'privacy' => 'required|in:' . implode(',', Document::$privacies),
             'identifier' => 'required|unique:documents,identifier',
             'date' => 'required|date|before_or_equal:now',
             'prehandle' => 'required|min:5|max:5',
             'note' => '',
+            'roles' => 'array',
+            'roles.*' => 'integer|exists:roles,id',
             'ratifications' => 'array',
             'ratifications.*' => 'integer|exists:ratifications,id',
             'file' => 'required|mimes:pdf',
@@ -80,6 +85,15 @@ class DocumentsController extends Controller
         $validated['file']->storeAs('files', $file->handle );
         Log::debug('File uploaded', $file );
 
+        // Save the visibility
+        foreach( $validated['roles'] as $role ) {
+            $dynamicPermission = new DynamicPermission(['type'=>'view']);
+            $dynamicPermission->role()->associate( $role );
+            $dynamicPermission->permissable()->associate( $document );
+            $dynamicPermission->save();
+            Log::debug('Dynamic permission set', $dynamicPermission );
+        }
+
         // Validate ratifications
         if( array_key_exists( 'ratifications', $validated ) )
             foreach( $validated['ratifications'] as $rat ) {
@@ -99,11 +113,11 @@ class DocumentsController extends Controller
         $this->authorize('edit', Document::class);
 
         $document->grouped_ratifications = $document->ratifications->load('alumnus')->groupBy('required_state');
-        $document->load('files');
+        $document->load(['files','dynamicPermissions']);
 
         return Inertia::render('Board/Edit', [
             'document' => $document,
-            'privacies' => Document::$privacies,
+            'roles' => Role::where('name','!=','webmaster')->orderBy('id')->get(),
             'available_ratifications' => Ratification::whereNull('document_id')->with('alumnus')->get()->groupBy('required_state'),
             'available_status' => Alumnus::availableStatus()
         ]);
@@ -114,13 +128,30 @@ class DocumentsController extends Controller
         $this->authorize('edit', Document::class);
 
         $validated = $request->validate([
-            'privacy' => 'required|in:' . implode(',', Document::$privacies),
+            'roles' => 'array',
+            'roles.*' => 'integer|exists:roles,id',
             'date' => 'required|date|before_or_equal:now',
             'note' => ''
         ]);
 
         $document->update($validated);
         Log::debug('Document updated', $validated);
+
+        $current_roles = $document->dynamicPermissions->pluck('role_id')->toArray();
+        foreach( array_diff( $current_roles, $validated['roles'] ) as $role ) {
+            // Roles to remove
+            $dynamicPermission = $document->dynamicPermissions()->where( 'role_id', $role )->first();
+            Log::debug('Dynamic permission removed', $dynamicPermission );
+            $dynamicPermission->delete();
+        }
+        foreach( array_diff( $validated['roles'], $current_roles ) as $role ) {
+            // Roles to add
+            $dynamicPermission = new DynamicPermission(['type'=>'view']);
+            $dynamicPermission->role()->associate( $role );
+            $dynamicPermission->permissable()->associate( $document );
+            $dynamicPermission->save();
+            Log::debug('Dynamic permission set', $dynamicPermission );
+        }
 
         return redirect()->route('board')->with(['notistack' => ['success', 'Dati aggiornati']]);
     }

@@ -3,6 +3,8 @@
 namespace App\Policies;
 
 use App\Models\Document;
+use App\Models\DynamicPermission;
+use App\Models\LoginMethod;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Auth;
@@ -12,29 +14,6 @@ class DocumentPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine the list of visible privacies
-     *
-     * @return string[]
-     */
-    public static function visiblePrivacies()
-    {
-        $visiblePrivacies = [];
-        foreach( Document::$privacies as $privacy ) {
-            if( $privacy == 'everyone' ) {
-                $visiblePrivacies[] = $privacy;
-                continue;
-            }
-            if( Auth::check() ) {
-                if( Auth::user()->hasPermissionTo( 'documents-view-' . $privacy ) ) {
-                    $visiblePrivacies[] = $privacy;
-                }
-            }
-        }
-
-        return $visiblePrivacies;
-    }
-
-    /**
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
@@ -42,8 +21,8 @@ class DocumentPolicy
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function view(?User $user, Document $document)
-    {
-        return $document->privacy == 'everyone' || ( $user && $user->hasPermissionTo( 'documents-view-' . $document->privacy ) );
+    {   
+        return DynamicPermission::UserCanViewPermissable( $document, $user->identity );
     }
 
     /**
