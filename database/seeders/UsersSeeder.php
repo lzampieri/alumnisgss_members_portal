@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Alumnus;
+use App\Models\Block;
 use App\Models\External;
 use App\Models\LoginMethod;
 use Illuminate\Database\Seeder;
@@ -74,6 +75,8 @@ class UsersSeeder extends Seeder
                 'driver' => 'google',
                 'credential' => 'leonardo.zampieri2@studenti.unipd.it',
             ]);
+            Block::create(['content' => 'Qui la richiesta d\'accesso'])->blockable()->associate($orphan_lm)->save();
+            Block::create(['content' => 'Non dovrebbe avere due blocchi in teoria'])->blockable()->associate($orphan_lm)->save();
 
         }
 

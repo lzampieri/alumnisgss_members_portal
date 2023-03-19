@@ -2,93 +2,59 @@
 
 namespace App\Policies;
 
-use App\Models\LoginMethod;
+use App\Models\DynamicPermission;
 use App\Models\Resource;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Foundation\Auth\User;
 
 class ResourcePolicy
 {
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any models.
-     *
-     * @param  \App\Models\LoginMethod  $loginMethod
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function viewAny(LoginMethod $loginMethod)
-    {
-        //
-    }
-
-    /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\Models\LoginMethod  $loginMethod
+     * @param  \App\Models\User  $user
      * @param  \App\Models\Resource  $resource
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(LoginMethod $loginMethod, Resource $resource)
+    public function view(User $user, Resource $resource)
     {
-        //
+        return DynamicPermission::UserCanViewPermissable( $resource, $user->identity );
     }
 
     /**
      * Determine whether the user can create models.
      *
-     * @param  \App\Models\LoginMethod  $loginMethod
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(LoginMethod $loginMethod)
+    public function create(User $user)
     {
-        //
+        return $user->hasPermissionTo( 'documents-upload' );
     }
 
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\Models\LoginMethod  $loginMethod
+     * @param  \App\Models\User  $user
      * @param  \App\Models\Resource  $resource
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(LoginMethod $loginMethod, Resource $resource)
+    public function edit(User $user, Resource $resource)
     {
-        //
+        return DynamicPermission::UserCanEditPermissable( $resource, $user->identity );
     }
 
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\Models\LoginMethod  $loginMethod
+     * @param  \App\Models\User  $user
      * @param  \App\Models\Resource  $resource
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(LoginMethod $loginMethod, Resource $resource)
+    public function delete(User $user, Resource $resource)
     {
-        //
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\LoginMethod  $loginMethod
-     * @param  \App\Models\Resource  $resource
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function restore(LoginMethod $loginMethod, Resource $resource)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\LoginMethod  $loginMethod
-     * @param  \App\Models\Resource  $resource
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function forceDelete(LoginMethod $loginMethod, Resource $resource)
-    {
-        //
+        return DynamicPermission::UserCanEditPermissable( $resource, $user->identity );
     }
 }

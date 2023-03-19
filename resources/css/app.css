@@ -145,4 +145,8 @@
         @apply bg-white text-black hover:text-primary-contrast hover:bg-primary-main;
         @apply aria-selected:bg-primary-main aria-selected:text-primary-contrast;
     }
+    .drawer-item-passive {
+        @apply border border-black rounded-first-last p-2;
+        @apply bg-white text-gray-400 text-sm;
+    }
 }

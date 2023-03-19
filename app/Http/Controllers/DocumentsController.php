@@ -56,7 +56,7 @@ class DocumentsController extends Controller
             'date' => 'required|date|before_or_equal:now',
             'prehandle' => 'required|min:5|max:5',
             'note' => '',
-            'roles' => 'array',
+            'roles' => 'array|min:1',
             'roles.*' => 'integer|exists:roles,id',
             'ratifications' => 'array',
             'ratifications.*' => 'integer|exists:ratifications,id',
@@ -87,10 +87,7 @@ class DocumentsController extends Controller
 
         // Save the visibility
         foreach( $validated['roles'] as $role ) {
-            $dynamicPermission = new DynamicPermission(['type'=>'view']);
-            $dynamicPermission->role()->associate( $role );
-            $dynamicPermission->permissable()->associate( $document );
-            $dynamicPermission->save();
+            $dynamicPermission = DynamicPermission::createFromRelations( 'view', $document, Role::findById( $role ) );
             Log::debug('Dynamic permission set', $dynamicPermission );
         }
 
@@ -146,10 +143,7 @@ class DocumentsController extends Controller
         }
         foreach( array_diff( $validated['roles'], $current_roles ) as $role ) {
             // Roles to add
-            $dynamicPermission = new DynamicPermission(['type'=>'view']);
-            $dynamicPermission->role()->associate( $role );
-            $dynamicPermission->permissable()->associate( $document );
-            $dynamicPermission->save();
+            $dynamicPermission = DynamicPermission::createFromRelations( 'view', $document, Role::findById( $role ) );
             Log::debug('Dynamic permission set', $dynamicPermission );
         }
 

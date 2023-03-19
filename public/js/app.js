@@ -5669,10 +5669,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @inertiajs/inertia-react */ "./node_modules/@inertiajs/inertia-react/dist/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var _Layout_Backdrop__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Layout/Backdrop */ "./resources/js/Layout/Backdrop.js");
-/* harmony import */ var _Blocks_BlockParser__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Blocks/BlockParser */ "./resources/js/Blocks/BlockParser.js");
-/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @fortawesome/react-fontawesome */ "./node_modules/@fortawesome/react-fontawesome/index.es.js");
-/* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Utils */ "./resources/js/Utils.js");
-/* harmony import */ var _NewExternal__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./NewExternal */ "./resources/js/Accesses/NewExternal.js");
+/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @fortawesome/react-fontawesome */ "./node_modules/@fortawesome/react-fontawesome/index.es.js");
+/* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Utils */ "./resources/js/Utils.js");
+/* harmony import */ var _NewExternal__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./NewExternal */ "./resources/js/Accesses/NewExternal.js");
+/* harmony import */ var _Blocks_BlocksList__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../Blocks/BlocksList */ "./resources/js/Blocks/BlocksList.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
@@ -5701,14 +5701,14 @@ function filterInput(filter, setFilter) {
       onChange: function onChange(e) {
         return setFilter(e.target.value);
       }
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_4__.FontAwesomeIcon, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_3__.FontAwesomeIcon, {
       icon: _fortawesome_free_solid_svg_icons_faMagnifyingGlass__WEBPACK_IMPORTED_MODULE_8__.faMagnifyingGlass,
       className: "input-icon"
     })]
   });
 }
 function associate(lmth, type, id, setProcessing) {
-  (0,_Utils__WEBPACK_IMPORTED_MODULE_5__.postRequest)('lmth.associate', {
+  (0,_Utils__WEBPACK_IMPORTED_MODULE_4__.postRequest)('lmth.associate', {
     type: type,
     id: id
   }, setProcessing, {
@@ -5716,10 +5716,10 @@ function associate(lmth, type, id, setProcessing) {
   });
 }
 function Identity(lmth, idt, type, filter, setProcessing) {
-  var key = idt.name + idt.surname + idt.coorte + (0,_Utils__WEBPACK_IMPORTED_MODULE_5__.romanize)(idt.coorte) + idt.notes;
+  var key = idt.name + idt.surname + idt.coorte + (0,_Utils__WEBPACK_IMPORTED_MODULE_4__.romanize)(idt.coorte) + idt.notes;
   var visible = filter ? key.toLowerCase().includes(filter.toLowerCase()) : true;
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-    style: (0,_Utils__WEBPACK_IMPORTED_MODULE_5__.disappearing)(visible),
+    style: (0,_Utils__WEBPACK_IMPORTED_MODULE_4__.disappearing)(visible),
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
       className: "mylist-item flex flex-row p-2 items-center justify-between gap-2",
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
@@ -5728,7 +5728,7 @@ function Identity(lmth, idt, type, filter, setProcessing) {
           children: [idt.surname, " ", idt.name]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
           className: "text-gray-500",
-          children: type == 'alumnus' ? (0,_Utils__WEBPACK_IMPORTED_MODULE_5__.romanize)(idt.coorte) : idt.notes
+          children: type == 'alumnus' ? (0,_Utils__WEBPACK_IMPORTED_MODULE_4__.romanize)(idt.coorte) : idt.notes
         })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
         className: "button",
@@ -5770,8 +5770,8 @@ function Association() {
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
       className: "w-full md:w-3/4",
-      children: lmth.blocks.map(function (b) {
-        return (0,_Blocks_BlockParser__WEBPACK_IMPORTED_MODULE_3__["default"])(b);
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_Blocks_BlocksList__WEBPACK_IMPORTED_MODULE_6__["default"], {
+        blocks: lmth.blocks
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
       className: "w-full flex flex-row items-stretch mt-4",
@@ -5818,7 +5818,7 @@ function Association() {
           children: ["Non \xE8 possibile registrare nuove identit\xE0 di alumni da qui, ma solo di esterni. Per nuovi alumni, usare l'applicativo ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("i", {
             children: "anagrafe"
           }), "."]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_NewExternal__WEBPACK_IMPORTED_MODULE_6__["default"], {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_NewExternal__WEBPACK_IMPORTED_MODULE_5__["default"], {
           lmth: lmth
         })]
       })]
@@ -6333,6 +6333,45 @@ function BlockParser(block) {
     default:
       return (0,_PlainText__WEBPACK_IMPORTED_MODULE_0__["default"])(block);
   }
+}
+
+/***/ }),
+
+/***/ "./resources/js/Blocks/BlocksList.js":
+/*!*******************************************!*\
+  !*** ./resources/js/Blocks/BlocksList.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ BlocksList)
+/* harmony export */ });
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faPen__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faPen */ "./node_modules/@fortawesome/free-solid-svg-icons/faPen.js");
+/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @fortawesome/react-fontawesome */ "./node_modules/@fortawesome/react-fontawesome/index.es.js");
+/* harmony import */ var _BlockParser__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./BlockParser */ "./resources/js/Blocks/BlockParser.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+
+
+function BlocksList(_ref) {
+  var blocks = _ref.blocks,
+    _ref$canEdit = _ref.canEdit,
+    canEdit = _ref$canEdit === void 0 ? false : _ref$canEdit;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+    className: "flex flex-col w-full items-start",
+    children: [canEdit && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      className: "button my-2",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
+        icon: _fortawesome_free_solid_svg_icons_faPen__WEBPACK_IMPORTED_MODULE_3__.faPen
+      }), " Modifica"]
+    }), blocks.map(function (block) {
+      return (0,_BlockParser__WEBPACK_IMPORTED_MODULE_1__["default"])(block);
+    })]
+  });
 }
 
 /***/ }),
@@ -9266,68 +9305,64 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @inertiajs/inertia-react */ "./node_modules/@inertiajs/inertia-react/dist/index.js");
 /* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Utils */ "./resources/js/Utils.js");
 /* harmony import */ var _Layout_ResponsiveDrawer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Layout/ResponsiveDrawer */ "./resources/js/Layout/ResponsiveDrawer.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _Blocks_BlocksList__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Blocks/BlocksList */ "./resources/js/Blocks/BlocksList.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
 
 
 
 
-// function DocumentItem(document, canEdit) {
-//     let date = new Date(document.date);
-
-//     return (
-//         <div key={document.id} className="mylist-item flex flex-col md:flex-row p-2 items-center gap-2">
-//             <div className="flex flex-col items-center mr-4">
-//                 <span className="text-3xl font-bold">
-//                     {date.toLocaleDateString('it-IT', {'day': '2-digit'})}.
-//                     {date.toLocaleDateString('it-IT', {'month': '2-digit'})}
-//                 </span>
-//                 <span className="font-bold">
-//                     {date.toLocaleDateString('it-IT', { 'year': 'numeric' })}
-//                 </span>
-//             </div>
-//             <div className="grow flex flex-col">
-//                 <span className="text-gray-500 text-sm">Protocollo web {document.handle}</span>
-//                 <span className="text-xl font-bold">{document.identifier}</span>
-//                 <span className="text-sm">Visibilità: {Documents.names[document.privacy] || document.privacy} {document.note && " - Nota: " + document.note}</span>
-//                 <span className="text-gray-500 text-sm">Caricato il {new Date(document.created_at).toLocaleDateString('it-IT', { 'dateStyle': 'long' })} da {document.author.name} {document.author.surname}</span>
-//             </div>
-//             {canEdit && <Link href={route('board.edit', { document: document.id })} className="">
-//                 <FontAwesomeIcon icon={solid('pen')} className="text-4xl !p-4 icon-button" />
-//             </Link>}
-//             <a href={route('board.view_document', { protocol: document.protocol })} className="">
-//                 <FontAwesomeIcon icon={solid('file-pdf')} className="text-4xl !p-4 icon-button" />
-//             </a>
-//         </div>
-//     )
-// }
 
 
+function ResourceDetails(resource) {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+    className: "flex flex-col w-full items-start",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h3", {
+      children: resource.title
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+      className: "text-sm text-gray-400",
+      children: ["Visibile da ", resource.dynamic_permissions.filter(function (dp) {
+        return dp.type == 'view';
+      }).map(function (dp) {
+        return dp.role.common_name;
+      }).join(", ")]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+      className: "text-sm text-gray-400",
+      children: ["Modificabile da ", resource.dynamic_permissions.filter(function (dp) {
+        return dp.type == 'edit';
+      }).map(function (dp) {
+        return dp.role.common_name;
+      }).join(", ")]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_Blocks_BlocksList__WEBPACK_IMPORTED_MODULE_4__["default"], {
+      blocks: resource.blocks,
+      canEdit: resource.canEdit
+    })]
+  });
+}
 function Main() {
-  var sections = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.sections;
-  var section = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.section;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+  var resources = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.resources;
+  var resource = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.resource;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
     className: "main-container-drawer",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_Layout_ResponsiveDrawer__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      buttonTitle: section ? section.title : "Sezioni",
-      initiallyOpen: !section,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_Layout_ResponsiveDrawer__WEBPACK_IMPORTED_MODULE_3__["default"].Drawer, {
-        children: sections.map(function (sec) {
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_Layout_ResponsiveDrawer__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      buttonTitle: resource ? resource.title : "Risorse",
+      initiallyOpen: !resource,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_Layout_ResponsiveDrawer__WEBPACK_IMPORTED_MODULE_3__["default"].Drawer, {
+        children: [resources.map(function (res) {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.Link, {
             className: "drawer-item",
-            "aria-selected": (section === null || section === void 0 ? void 0 : section.name) == sec.name,
+            "aria-selected": (resource === null || resource === void 0 ? void 0 : resource.id) == res.id,
             href: route('resources', {
-              'section': sec.name
+              'resource': res.id
             }),
             as: "div",
-            children: sec.title
-          });
-        })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-        children: section ? section.title : "contenutissimo 1"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-        children: "contenutissimo 3"
-      })]
+            children: res.title
+          }, res.id);
+        }), (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.hidden > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+          className: "drawer-item-passive",
+          children: [(0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.hidden, " ", (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.hidden == 1 ? 'risorsa nascosta' : 'risorse nascoste', " con i correnti permessi."]
+        })]
+      }), resource && ResourceDetails(resource)]
     })
   });
 }
@@ -73694,6 +73729,8 @@ var map = {
 	"./Accesses/NewExternal.js": "./resources/js/Accesses/NewExternal.js",
 	"./Blocks/BlockParser": "./resources/js/Blocks/BlockParser.js",
 	"./Blocks/BlockParser.js": "./resources/js/Blocks/BlockParser.js",
+	"./Blocks/BlocksList": "./resources/js/Blocks/BlocksList.js",
+	"./Blocks/BlocksList.js": "./resources/js/Blocks/BlocksList.js",
 	"./Blocks/PlainText": "./resources/js/Blocks/PlainText.js",
 	"./Blocks/PlainText.js": "./resources/js/Blocks/PlainText.js",
 	"./Board/AddRatification": "./resources/js/Board/AddRatification.js",

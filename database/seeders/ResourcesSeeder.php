@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\ResourcesSection;
+use App\Models\DynamicPermission;
+use App\Models\Resource;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 class ResourcesSeeder extends Seeder
 {
@@ -14,13 +16,20 @@ class ResourcesSeeder extends Seeder
      */
     public function run()
     {
-        // ResourcesSection::create([
-        //     'name' => 'modules',
-        //     'title' => 'Modulistica'
-        // ]);
-        // ResourcesSection::create([
-        //     'name' => 'members_modules',
-        //     'title' => 'Modulistica soci'
-        // ]);
+        $res = Resource::create([
+            'title' => 'Modulistica'
+        ]);
+        DynamicPermission::createFromRelations( 'view', $res, Role::findByName( 'everyone' ) );
+        DynamicPermission::createFromRelations( 'edit', $res, Role::findByName( 'member' ) );
+        
+        
+        $res = Resource::create([
+            'title' => 'Modulistica soci'
+        ]);
+        DynamicPermission::createFromRelations( 'view', $res, Role::findByName( 'member' ) );
+        DynamicPermission::createFromRelations( 'edit', $res, Role::findByName( 'webmaster' ) );
+        DynamicPermission::createFromRelations( 'edit', $res, Role::findByName( 'secretariat' ) );
+
+
     }
 }

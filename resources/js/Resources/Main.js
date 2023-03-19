@@ -3,62 +3,44 @@ import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { Link, usePage } from "@inertiajs/inertia-react";
 import { Documents } from "../Utils";
 import ResponsiveDrawer from "../Layout/ResponsiveDrawer";
+import BlocksList from "../Blocks/BlocksList";
 
-// function DocumentItem(document, canEdit) {
-//     let date = new Date(document.date);
-
-//     return (
-//         <div key={document.id} className="mylist-item flex flex-col md:flex-row p-2 items-center gap-2">
-//             <div className="flex flex-col items-center mr-4">
-//                 <span className="text-3xl font-bold">
-//                     {date.toLocaleDateString('it-IT', {'day': '2-digit'})}.
-//                     {date.toLocaleDateString('it-IT', {'month': '2-digit'})}
-//                 </span>
-//                 <span className="font-bold">
-//                     {date.toLocaleDateString('it-IT', { 'year': 'numeric' })}
-//                 </span>
-//             </div>
-//             <div className="grow flex flex-col">
-//                 <span className="text-gray-500 text-sm">Protocollo web {document.handle}</span>
-//                 <span className="text-xl font-bold">{document.identifier}</span>
-//                 <span className="text-sm">Visibilità: {Documents.names[document.privacy] || document.privacy} {document.note && " - Nota: " + document.note}</span>
-//                 <span className="text-gray-500 text-sm">Caricato il {new Date(document.created_at).toLocaleDateString('it-IT', { 'dateStyle': 'long' })} da {document.author.name} {document.author.surname}</span>
-//             </div>
-//             {canEdit && <Link href={route('board.edit', { document: document.id })} className="">
-//                 <FontAwesomeIcon icon={solid('pen')} className="text-4xl !p-4 icon-button" />
-//             </Link>}
-//             <a href={route('board.view_document', { protocol: document.protocol })} className="">
-//                 <FontAwesomeIcon icon={solid('file-pdf')} className="text-4xl !p-4 icon-button" />
-//             </a>
-//         </div>
-//     )
-// }
+function ResourceDetails( resource ) {
+    return <div className="flex flex-col w-full items-start">
+        <h3>{ resource.title }</h3>
+        <div className="text-sm text-gray-400">Visibile da { resource.dynamic_permissions.filter( dp => dp.type == 'view' ).map( dp => dp.role.common_name ).join( ", " )}</div>
+        <div className="text-sm text-gray-400">Modificabile da { resource.dynamic_permissions.filter( dp => dp.type == 'edit' ).map( dp => dp.role.common_name ).join( ", " )}</div>
+        <BlocksList blocks={ resource.blocks } canEdit={ resource.canEdit } />
+    </div>
+}
 
 export default function Main() {
-    const sections = usePage().props.sections
-    const section = usePage().props.section
+    const resources = usePage().props.resources
+    const resource = usePage().props.resource
 
     return (
         <div className="main-container-drawer">
-            <ResponsiveDrawer buttonTitle={ section ? section.title : "Sezioni" } initiallyOpen={ !section }>
+            <ResponsiveDrawer buttonTitle={resource ? resource.title : "Risorse"} initiallyOpen={!resource}>
                 <ResponsiveDrawer.Drawer>
-                    { sections.map( sec =>
+                    {resources.map(res =>
                         <Link
                             className="drawer-item"
-                            aria-selected={ section?.name == sec.name }
-                            href={ route('resources',{ 'section': sec.name } ) }
+                            aria-selected={resource?.id == res.id}
+                            href={route('resources', { 'resource': res.id })}
                             as="div"
-                            >
-                            { sec.title }
+                            key={res.id}
+                        >
+                            {res.title}
                         </Link>
                     )}
+                    {usePage().props.hidden > 0 &&
+                        <div
+                            className="drawer-item-passive">
+                            {usePage().props.hidden} { usePage().props.hidden == 1 ? 'risorsa nascosta' : 'risorse nascoste'} con i correnti permessi.
+                        </div>
+                    }
                 </ResponsiveDrawer.Drawer>
-                <div>
-                    { section ? section.title : "contenutissimo 1" }
-                </div>
-                <div>
-                    contenutissimo 3
-                </div>
+                {resource && ResourceDetails( resource ) }
             </ResponsiveDrawer>
         </div>
     );

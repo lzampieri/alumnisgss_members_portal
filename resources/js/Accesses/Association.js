@@ -1,11 +1,11 @@
 import { usePage } from "@inertiajs/inertia-react";
 import { useState } from "react";
 import Backdrop from "../Layout/Backdrop";
-import BlockParser from "../Blocks/BlockParser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { disappearing, postRequest, romanize } from "../Utils";
 import NewExternal from "./NewExternal";
+import BlocksList from "../Blocks/BlocksList";
 
 function filterInput(filter, setFilter) {
     return <div className="w-full relative mb-4">
@@ -52,7 +52,7 @@ export default function Association() {
             <b>{lmth.credential}</b>( {lmth.driver} ) <br />
             <div className="text-gray-500">Richiesta il {new Date(lmth.created_at).toLocaleDateString('it-IT', { year: 'numeric', month: '2-digit', day: '2-digit' })}</div>
             <div className="w-full md:w-3/4">
-                {lmth.blocks.map(b => BlockParser(b))}
+                <BlocksList blocks={ lmth.blocks } />
             </div>
 
             <div className="w-full flex flex-row items-stretch mt-4">
