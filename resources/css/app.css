@@ -93,6 +93,9 @@
     .separator {
         @apply border-4 rounded border-primary-main self-stretch mx-8 my-8 md:my-0
     }
+    .hseparator {
+        @apply border-4 rounded border-primary-main w-full mx-8 my-8
+    }
     .thin-separator {
         @apply border rounded border-primary-main self-stretch mx-8 my-8
     }
@@ -111,6 +114,9 @@
     }
     .chip.disabled {
         @apply opacity-40
+    }
+    .div-highlighted {
+        @apply rounded-md bg-gray-200 border-transparent
     }
     .tabs-container {
         @apply w-full flex flex-row
@@ -134,6 +140,7 @@
         @apply text-primary-main border-b-4 font-bold border-b-primary-main
     }
 
+    /* DRAWER */
     .main-container-drawer {
         @apply flex flex-row w-full md:w-4/5
     }

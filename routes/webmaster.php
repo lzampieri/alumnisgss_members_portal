@@ -7,6 +7,7 @@ use App\Models\Document;
 use App\Models\DynamicPermission;
 use App\Models\External;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::prefix('/webmaster')->group( function () {
 
@@ -22,4 +23,7 @@ Route::prefix('/webmaster')->group( function () {
     Route::get('/migrate', [ WebmasterController::class, 'migrate' ])->name('webmaster.migrate');
     Route::get('/remigrate', [ WebmasterController::class, 'remigrate' ])->name('webmaster.remigrate');
     Route::get('/partremigrate/{count}', [ WebmasterController::class, 'partremigrate' ])->name('webmaster.partremigrate');
+    
+    // Testing EditorJS
+    Route::get('/editorjs', function() { return Inertia::render('Blocks/BlocksEditor'); } );
 });
