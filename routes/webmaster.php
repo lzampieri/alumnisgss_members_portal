@@ -23,7 +23,4 @@ Route::prefix('/webmaster')->group( function () {
     Route::get('/migrate', [ WebmasterController::class, 'migrate' ])->name('webmaster.migrate');
     Route::get('/remigrate', [ WebmasterController::class, 'remigrate' ])->name('webmaster.remigrate');
     Route::get('/partremigrate/{count}', [ WebmasterController::class, 'partremigrate' ])->name('webmaster.partremigrate');
-    
-    // Testing EditorJS
-    Route::get('/editorjs', function() { return Inertia::render('Blocks/BlocksEditor'); } );
 });

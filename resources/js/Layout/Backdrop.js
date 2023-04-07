@@ -2,7 +2,7 @@ export default function Backdrop({ open, text = "Caricamento..." }) {
     if (!open) return "";
 
     return (
-        <div className="fixed inset-0 flex justify-center items-center">
+        <div className="fixed inset-0 flex justify-center items-center z-50">
             <div className="absolute w-full h-full bg-gray-400" />
             <div className="z-50 flex flex-col items-center text-white gap-4">
                 <svg className="animate-spin -ml-1 mr-3 h-14 w-14" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

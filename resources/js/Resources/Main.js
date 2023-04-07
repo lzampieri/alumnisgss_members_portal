@@ -1,18 +1,9 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { Link, usePage } from "@inertiajs/inertia-react";
-import { Documents } from "../Utils";
 import ResponsiveDrawer from "../Layout/ResponsiveDrawer";
-import BlocksList from "../Blocks/BlocksList";
-
-function ResourceDetails( resource ) {
-    return <div className="flex flex-col w-full items-start">
-        <h3>{ resource.title }</h3>
-        <div className="text-sm text-gray-400">Visibile da { resource.dynamic_permissions.filter( dp => dp.type == 'view' ).map( dp => dp.role.common_name ).join( ", " )}</div>
-        <div className="text-sm text-gray-400">Modificabile da { resource.dynamic_permissions.filter( dp => dp.type == 'edit' ).map( dp => dp.role.common_name ).join( ", " )}</div>
-        <BlocksList blocks={ resource.blocks } canEdit={ resource.canEdit } />
-    </div>
-}
+import BlocksViewer from "../Blocks/BlocksViewer";
+import { useState } from "react";
+import BlocksEditor from "../Blocks/BlocksEditor";
+import ResourceDetails from "./ResourceDetails";
 
 export default function Main() {
     const resources = usePage().props.resources
@@ -36,11 +27,11 @@ export default function Main() {
                     {usePage().props.hidden > 0 &&
                         <div
                             className="drawer-item-passive">
-                            {usePage().props.hidden} { usePage().props.hidden == 1 ? 'risorsa nascosta' : 'risorse nascoste'} con i correnti permessi.
+                            {usePage().props.hidden} {usePage().props.hidden == 1 ? 'risorsa nascosta' : 'risorse nascoste'} con i correnti permessi.
                         </div>
                     }
                 </ResponsiveDrawer.Drawer>
-                {resource && ResourceDetails( resource ) }
+                {resource && <ResourceDetails resource={resource} /> }
             </ResponsiveDrawer>
         </div>
     );

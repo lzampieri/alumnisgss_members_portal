@@ -37,7 +37,7 @@ function ResponsiveDrawer({ children, buttonTitle, initiallyOpen }) {
                 <div className={
                     "w-4/5 min-h-screen left-0 absolute shadow-xl delay-400 duration-500 ease-in-out transition-all transform " +
                     (isOpen ? " translate-x-0 " : " -translate-x-full ") +
-                    " md:w-full md:min-h-0 md:sticky md:transform-none " +
+                    " md:w-full md:min-h-0 md:sticky md:transform-none md:h-full " +
                     " bg-white p-4"
                     }>
                     { drawerContent }

@@ -32,6 +32,8 @@ class UsersSeeder extends Seeder
         // Extra users for debug
         if( env('APP_ENV') == 'local' ) {
 
+            $webmaster_user->assignRole('secretariat');
+
             LoginMethod::create([
                 'driver' => 'google',
                 'credential' => 'zampieri.leonardo99@gmail.com',

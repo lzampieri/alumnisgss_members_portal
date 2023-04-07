@@ -18,6 +18,7 @@ class CreateResourcesTable extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->string('title',200);
+            $table->longText('content')->nullable();
         });
     }
 

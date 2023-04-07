@@ -137,9 +137,11 @@ class DocumentsController extends Controller
         $current_roles = $document->dynamicPermissions->pluck('role_id')->toArray();
         foreach( array_diff( $current_roles, $validated['roles'] ) as $role ) {
             // Roles to remove
-            $dynamicPermission = $document->dynamicPermissions()->where( 'role_id', $role )->first();
-            Log::debug('Dynamic permission removed', $dynamicPermission );
-            $dynamicPermission->delete();
+            $dynamicPermission = $document->dynamicPermissions()->where( 'role_id', $role )->get();
+            foreach( $dynamicPermission as $dp ) {
+                Log::debug('Dynamic permission removed', $dp );
+                $dp->delete();
+            }
         }
         foreach( array_diff( $validated['roles'], $current_roles ) as $role ) {
             // Roles to add

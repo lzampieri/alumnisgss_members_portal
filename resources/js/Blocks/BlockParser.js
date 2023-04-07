@@ -1,9 +1,10 @@
 import PlainText from "./PlainText";
 
 
-export default function BlockParser( block ) {
-    switch ( block.type ) {
+export default function BlockParser(block) {
+    // TODO remove
+    switch (block.type) {
         default:
-            return PlainText( block );
+            return PlainText(block);
     }
 }

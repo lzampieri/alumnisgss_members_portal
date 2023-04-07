@@ -8,6 +8,7 @@ use App\Models\DynamicPermission;
 use App\Models\External;
 use App\Models\LoginMethod;
 use App\Models\Ratification;
+use App\Models\Resource;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log as OriginalLog;
@@ -49,6 +50,8 @@ class Log extends Controller
             return $object->identifier . " (" . $object->protocol . ", " . $object->date . ")";
         if( $object instanceof DynamicPermission )
             return $object->type . " of " . $object->role->name . " for " . Log::stringify( $object->permissable );
+        if( $object instanceof Resource )
+            return "Resource " . $object->title . ": " . json_encode( $object->content );
         return $object;
     }
 

@@ -9,6 +9,7 @@ import { Inertia } from "@inertiajs/inertia";
 import NewVersion from "./NewVersion";
 import AddRatification from "./AddRatification";
 import DeleteRatification from "./DeleteRatification";
+import RolesChips from "../Permissions/RolesChips";
 
 export default function Edit() {
     const prevDoc = usePage().props.document;
@@ -20,15 +21,7 @@ export default function Edit() {
         date: new Date(prevDoc.date),
         note: prevDoc.note || "",
     })
-
-    const changeRole = (id) => {
-        if (data.roles.includes(id)) {
-            data.roles.splice(data.roles.indexOf(id), 1)
-            setData('roles', data.roles.slice())
-        } else
-            setData('roles', data.roles.concat([id]))
-    }
-
+    
     const [datePickerOpen, setDatePickerOpen] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -51,12 +44,7 @@ export default function Edit() {
                 {prevDoc.identifier}
                 <label className="unspaced">L'identiticativo non può essere modificato a posteriori.</label>
                 <label>Visibilità</label>
-                <div className="w-full flex flex-row flex-wrap justify-start">
-                    {roles.map(r =>
-                        <div key={r.id} className="chip px-4 py-2 cursor-pointer aria-disabled:disabled" aria-disabled={!data.roles.includes(r.id)} onClick={() => changeRole(r.id)}>
-                            {r.common_name}
-                        </div>)}
-                </div>
+                <RolesChips roles={roles} list={data.roles} updateList={(newList) => setData('roles', newList)} />
                 <label className="error">{errors.privacy}</label>
                 <label>Data di redazione</label>
                 <Datepicker classNames='w-full' options={{ defaultDate: data.date, maxDate: new Date(), language: 'it', theme: { input: '!text-black' } }} onChange={(date) => setData('date', date)} show={datePickerOpen} setShow={setDatePickerOpen} />

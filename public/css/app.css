@@ -707,6 +707,10 @@ a {
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
+.mx-3 {
+  margin-left: 0.75rem;
+  margin-right: 0.75rem;
+}
 .mb-4 {
   margin-bottom: 1rem;
 }
@@ -727,6 +731,9 @@ a {
 }
 .mr-3 {
   margin-right: 0.75rem;
+}
+.mb-3 {
+  margin-bottom: 0.75rem;
 }
 .mb-2 {
   margin-bottom: 0.5rem;
@@ -1110,6 +1117,10 @@ a {
   font-size: 3.75rem;
   line-height: 1;
 }
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
@@ -1129,10 +1140,6 @@ a {
 .text-5xl {
   font-size: 3rem;
   line-height: 1;
-}
-.text-lg {
-  font-size: 1.125rem;
-  line-height: 1.75rem;
 }
 .font-bold {
   font-weight: 700;
@@ -1797,6 +1804,10 @@ label.error {
 
   .md\:h-auto {
     height: auto;
+  }
+
+  .md\:h-full {
+    height: 100%;
   }
 
   .md\:min-h-0 {

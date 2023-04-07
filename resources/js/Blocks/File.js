@@ -28,7 +28,7 @@ export default class File extends AbstrackBlock {
 
         return <div
             className="w-full div-highlighted flex flex-row items-center gap-4 my-2 p-4">
-            <FontAwesomeIcon icon={ solid('file') } className="text-6xl" />
+            <FontAwesomeIcon icon={solid('file')} className="text-6xl" />
             <div className="flex flex-col grow gap-2">
                 <input
                     type="text"
@@ -43,8 +43,13 @@ export default class File extends AbstrackBlock {
     }
 
     mainElementReadOnly = () => {
-        return <h3>
-            {this.data.content}
-        </h3>
+        return <div
+            className="w-full div-highlighted flex flex-row items-center gap-4 my-2 p-4">
+            <FontAwesomeIcon icon={solid('file')} className="text-6xl" />
+            <div className="flex flex-col grow gap-2">
+                <div className="text-lg">{ this.data.title }</div>
+                <div><b>Estensione:</b> { this.data.fileType }</div>
+            </div>
+        </div>
     }
 }

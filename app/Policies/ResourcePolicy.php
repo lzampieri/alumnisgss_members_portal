@@ -2,10 +2,13 @@
 
 namespace App\Policies;
 
-use App\Models\DynamicPermission;
+use App\Http\Controllers\Log;
 use App\Models\Resource;
-use Illuminate\Auth\Access\HandlesAuthorization;
+use App\Models\DynamicPermission;
+use App\Models\LoginMethod;
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Auth;
 
 class ResourcePolicy
 {
@@ -18,9 +21,9 @@ class ResourcePolicy
      * @param  \App\Models\Resource  $resource
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Resource $resource)
+    public function view(?User $user, Resource $resource)
     {
-        return DynamicPermission::UserCanViewPermissable( $resource, $user->identity );
+        return DynamicPermission::UserCanViewPermissable( $resource, $user->identity ) || DynamicPermission::UserCanEditPermissable( $resource, $user->identity );
     }
 
     /**

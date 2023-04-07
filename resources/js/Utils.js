@@ -60,6 +60,6 @@ export function postRequest( route_name, data, setProcessing, routeParams = {}, 
     Inertia.post(
         route(route_name,routeParams),
         data,
-        { onFinish: () => { setProcessing(false) }, onError: () => { enqueueSnackbar('Errore generico!', { variant: 'error' }) }, preserveState: preserveState, preserveScroll: preserveScroll }
+        { onFinish: () => { setProcessing(false) }, onError: (e) => { enqueueSnackbar('Errore generico!', { variant: 'error' }), console.log( e ) }, preserveState: preserveState, preserveScroll: preserveScroll }
     )
 }

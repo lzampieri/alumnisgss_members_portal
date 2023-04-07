@@ -51,6 +51,9 @@ class DynamicPermission extends Model
             $id = Auth::user()->identity;
         }
 
+        if( $id->hasRole( Role::findByName('webmaster') ) )
+            return true;
+
         return $permissable
             ->morphMany(DynamicPermission::class, 'permissable')
             ->whereIn('role_id', $id->getAllRoles()->pluck('id') )
@@ -74,11 +77,14 @@ class DynamicPermission extends Model
 
             $id = Auth::user()->identity;
         }
+        
+        if( $id->hasRole( Role::findByName('webmaster') ) )
+            return true;
 
         return $permissable
             ->morphMany(DynamicPermission::class, 'permissable')
             ->whereIn('role_id', $id->getAllRoles()->pluck('id') )
-            ->where('type', 'view')
+            ->where('type', 'edit')
             ->count() > 0;
     }
 }

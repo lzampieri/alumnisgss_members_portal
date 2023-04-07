@@ -17,18 +17,22 @@ class ResourcesSeeder extends Seeder
     public function run()
     {
         $res = Resource::create([
-            'title' => 'Modulistica'
+            'title' => 'Vedere'
         ]);
         DynamicPermission::createFromRelations( 'view', $res, Role::findByName( 'everyone' ) );
         DynamicPermission::createFromRelations( 'edit', $res, Role::findByName( 'member' ) );
         
         
         $res = Resource::create([
-            'title' => 'Modulistica soci'
+            'title' => 'Modificare'
         ]);
         DynamicPermission::createFromRelations( 'view', $res, Role::findByName( 'member' ) );
-        DynamicPermission::createFromRelations( 'edit', $res, Role::findByName( 'webmaster' ) );
         DynamicPermission::createFromRelations( 'edit', $res, Role::findByName( 'secretariat' ) );
+
+        $res = Resource::create([
+            'title' => 'Non vedere'
+        ]);
+        DynamicPermission::createFromRelations( 'edit', $res, Role::findByName( 'member' ) );
 
 
     }
