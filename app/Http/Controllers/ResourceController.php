@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DynamicPermission;
+use App\Models\File;
 use App\Models\Resource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,6 +28,8 @@ class ResourceController extends Controller
 
         $params['roles'] = Role::where('name','!=','webmaster')->orderBy('id')->get();
         $params['canCreate'] = Auth::check() && Auth::user()->can('create', Resource::class);
+
+        $params['allowedFormats'] = File::ALLOWED_FORMATS;
 
         return Inertia::render( 'Resources/Main', $params );
     }

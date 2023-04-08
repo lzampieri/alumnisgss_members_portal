@@ -695,6 +695,9 @@ a {
 .col-span-3 {
   grid-column: span 3 / span 3;
 }
+.m-4 {
+  margin: 1rem;
+}
 .mx-2 {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
@@ -803,6 +806,15 @@ a {
 }
 .w-64 {
   width: 16rem;
+}
+.w-\[25vh\] {
+  width: 25vh;
+}
+.w-\[25vw\] {
+  width: 25vw;
+}
+.w-screen {
+  width: 100vw;
 }
 .min-w-\[35vh\] {
   min-width: 35vh;
@@ -958,6 +970,9 @@ a {
 .rounded-lg {
   border-radius: 0.5rem;
 }
+.rounded-md {
+  border-radius: 0.375rem;
+}
 .rounded-t-xl {
   border-top-left-radius: 0.75rem;
   border-top-right-radius: 0.75rem;
@@ -970,6 +985,12 @@ a {
 }
 .border-0 {
   border-width: 0px;
+}
+.border-2 {
+  border-width: 2px;
+}
+.border-dashed {
+  border-style: dashed;
 }
 .border-primary-main {
   --tw-border-opacity: 1;
@@ -1844,6 +1865,10 @@ label.error {
 
   .md\:w-2\/5 {
     width: 40%;
+  }
+
+  .md\:w-\[25vw\] {
+    width: 25vw;
   }
 
   .md\:max-w-\[33\%\] {

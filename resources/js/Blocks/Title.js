@@ -14,7 +14,7 @@ export default class Title extends AbstrackBlock {
     }
 
     mainElementEditable = () => {
-        const [content, setContent] = useState(this.data.content)
+        const [content, setContent] = useState(this.data.content || "")
         const updateContent = (e) => {
             setContent(e.target.value)
             this.updateData({ 'content': e.target.value })

@@ -45,7 +45,7 @@ function EditRoles({ type, initialList, resourceId, setProcessing }) {
 }
 
 function Content({ resource, setProcessing }) {
-    const [isEditing, setIsEditing] = useState(false)
+    const [isEditing, setIsEditing] = useState(true) // todo must be false
 
     const save = (newContent) => {
         setIsEditing(false)

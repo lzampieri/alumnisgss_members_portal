@@ -32,6 +32,7 @@
         "contrast-color": "^1.0.1",
         "custom-env": "^2.0.1",
         "notistack": "^3.0.0-alpha.11",
+        "react-dropzone": "^14.2.3",
         "react-editor-js": "^2.1.0",
         "react-select": "^5.7.0",
         "react-switch": "^7.0.0",

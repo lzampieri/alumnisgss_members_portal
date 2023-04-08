@@ -2,6 +2,8 @@ import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import AbstrackBlock from "./AbstrackBlock";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import EmptyDialog from "../Layout/EmptyDialog";
+import FileUploadModal from "./FileUploadModal";
 
 
 export default class File extends AbstrackBlock {
@@ -10,16 +12,14 @@ export default class File extends AbstrackBlock {
 
     getDefaultData() {
         return {
-            'fileId': -1,
-            'fileType': '--',
-            'title': ''
+            'file': null,
+            'title': ""
         }
     }
 
     mainElementEditable = () => {
-        const [title, setTitle] = useState(this.data.title)
+        const [title, setTitle] = useState(this.data.title || "")
         const [fileId, setFileId] = useState(this.data.fileId)
-        const [fileType, setFileType] = useState(this.data.fileType)
 
         const updateTitle = (e) => {
             setTitle(e.target.value)
@@ -37,7 +37,8 @@ export default class File extends AbstrackBlock {
                     onChange={updateTitle}
                     placeholder="Titolo"
                 />
-                <div><b>Estensione:</b> {fileType}</div>
+                <div><b>Estensione:</b> {this.data.fileName && this.data.fileName.split('.').pop()}</div>
+                <FileUploadModal fileId={ fileId } />
             </div>
         </div>
     }
@@ -47,8 +48,8 @@ export default class File extends AbstrackBlock {
             className="w-full div-highlighted flex flex-row items-center gap-4 my-2 p-4">
             <FontAwesomeIcon icon={solid('file')} className="text-6xl" />
             <div className="flex flex-col grow gap-2">
-                <div className="text-lg">{ this.data.title }</div>
-                <div><b>Estensione:</b> { this.data.fileType }</div>
+                <div className="text-lg">{this.data.title}</div>
+                <div><b>Estensione:</b> {this.data.fileName && this.data.fileName.split('.').pop()}</div>
             </div>
         </div>
     }
