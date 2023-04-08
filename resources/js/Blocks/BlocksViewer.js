@@ -15,7 +15,7 @@ export default function BlocksViewer({ content }) {
         }
     }
 
-    useEffect( update, [ content.time ] )
+    useEffect( update, [ content?.time ] )
 
     return <>
         <ReactEditorJS

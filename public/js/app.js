@@ -7092,7 +7092,7 @@ function BlocksViewer(_ref) {
       return _ref2.apply(this, arguments);
     };
   }();
-  (0,react__WEBPACK_IMPORTED_MODULE_2__.useEffect)(update, [content.time]);
+  (0,react__WEBPACK_IMPORTED_MODULE_2__.useEffect)(update, [content === null || content === void 0 ? void 0 : content.time]);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ReactEditorJS, {
       holder: "editorjs_container",
@@ -10542,6 +10542,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ ResourceDetails)
 /* harmony export */ });
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faTrash__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faTrash */ "./node_modules/@fortawesome/free-solid-svg-icons/faTrash.js");
 /* harmony import */ var _fortawesome_free_solid_svg_icons_faPencil__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faPencil */ "./node_modules/@fortawesome/free-solid-svg-icons/faPencil.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var _Blocks_BlocksEditor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Blocks/BlocksEditor */ "./resources/js/Blocks/BlocksEditor.js");
@@ -10553,6 +10554,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../Utils */ "./resources/js/Utils.js");
 /* harmony import */ var _Layout_Backdrop__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../Layout/Backdrop */ "./resources/js/Layout/Backdrop.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -10640,26 +10643,83 @@ function Content(_ref2) {
     }, setProcessing);
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
-    children: [resource.canEdit && !isEditing && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
+    children: [resource.canEdit && !isEditing && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
       className: "button items-end self-end",
       onClick: function onClick() {
         return setIsEditing(true);
       },
-      children: "Modifica"
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_4__.FontAwesomeIcon, {
+        icon: _fortawesome_free_solid_svg_icons_faPencil__WEBPACK_IMPORTED_MODULE_10__.faPencil,
+        className: ""
+      }), "Modifica"]
     }), isEditing ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_Blocks_BlocksEditor__WEBPACK_IMPORTED_MODULE_1__["default"], {
       initialContent: JSON.parse(resource.content),
       saveCallback: save
     }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_Blocks_BlocksViewer__WEBPACK_IMPORTED_MODULE_2__["default"], {
       content: JSON.parse(resource.content)
+    }), resource.canEdit && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(Delete, {
+      resource: resource,
+      setProcessing: setProcessing
     })]
   });
 }
-function ResourceDetails(_ref3) {
-  var resource = _ref3.resource;
+function Delete(_ref3) {
+  var resource = _ref3.resource,
+    setProcessing = _ref3.setProcessing;
   var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
     _useState8 = _slicedToArray(_useState7, 2),
-    processing = _useState8[0],
-    setProcessing = _useState8[1];
+    deleting = _useState8[0],
+    setIsDeleting = _useState8[1];
+  var deletingPost = function deletingPost() {
+    setIsDeleting(false);
+    (0,_Utils__WEBPACK_IMPORTED_MODULE_7__.postRequest)('resources.delete', {
+      resourceId: resource.id
+    }, setProcessing, {}, false);
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
+      className: "button items-end self-end",
+      onClick: function onClick() {
+        return setIsDeleting(true);
+      },
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_4__.FontAwesomeIcon, {
+        icon: _fortawesome_free_solid_svg_icons_faTrash__WEBPACK_IMPORTED_MODULE_11__.faTrash
+      }), "Elimina"]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_Layout_EmptyDialog__WEBPACK_IMPORTED_MODULE_5__["default"], {
+      open: deleting,
+      onClose: function onClose() {
+        return setIsDeleting(false);
+      },
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("h3", {
+        className: "mb-3",
+        children: "Attenzione!"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("span", {
+        children: ["Sei sicuro di voler eliminare la risorsa ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("i", {
+          children: resource.title
+        }), "? Questa azione \xE8 irreversibile."]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
+        className: "w-full flex flex-row justify-end my-2 gap-2",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
+          className: "button items-end self-end",
+          onClick: function onClick() {
+            return setIsDeleting(false);
+          },
+          children: "Annulla"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
+          className: "button items-end self-end",
+          onClick: deletingPost,
+          children: "Conferma"
+        })]
+      })]
+    })]
+  });
+}
+function ResourceDetails(_ref4) {
+  var resource = _ref4.resource;
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState10 = _slicedToArray(_useState9, 2),
+    processing = _useState10[0],
+    setProcessing = _useState10[1];
   var canView = resource.dynamic_permissions.filter(function (dp) {
     return dp.type == 'view';
   }).map(function (dp) {
@@ -10826,7 +10886,7 @@ function postRequest(route_name, data, setProcessing) {
   setProcessing(true);
   _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_0__.Inertia.post(route(route_name, routeParams), data, {
     onFinish: function onFinish() {
-      setProcessing(false);
+      preserveState && setProcessing(false);
     },
     onError: function onError(e) {
       (0,notistack__WEBPACK_IMPORTED_MODULE_2__.enqueueSnackbar)('Errore generico!', {

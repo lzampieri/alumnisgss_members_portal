@@ -83,4 +83,20 @@ class ResourceController extends Controller
         return redirect()->back()->with(['notistack' => ['success', 'Salvato']]);
     }
 
+    public function delete(Request $request)
+    {
+        $validated = $request->validate([
+            'resourceId' => 'required|integer|exists:resources,id',
+        ]);
+
+        $res = Resource::find( $validated['resourceId'] );
+        
+        $this->authorize('edit', $res);
+
+        Log::debug('Resource deleted', $res );
+        $res->delete();
+
+        return redirect()->route('resources')->with(['notistack' => ['success', 'Eliminata']]);
+    }
+
 }

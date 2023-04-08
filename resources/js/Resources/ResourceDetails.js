@@ -46,10 +46,10 @@ function EditRoles({ type, initialList, resourceId, setProcessing }) {
 
 function Content({ resource, setProcessing }) {
     const [isEditing, setIsEditing] = useState(false)
-    
-    const save = ( newContent ) => {
-        setIsEditing( false )
-        
+
+    const save = (newContent) => {
+        setIsEditing(false)
+
         postRequest(
             'resources.updateContent',
             { content: newContent, resourceId: resource.id },
@@ -58,17 +58,48 @@ function Content({ resource, setProcessing }) {
     }
 
     return <>
-        {resource.canEdit && !isEditing && <div className='button items-end self-end' onClick={() => setIsEditing(true)}>Modifica</div>}
+        {resource.canEdit && !isEditing && <div className='button items-end self-end' onClick={() => setIsEditing(true)}><FontAwesomeIcon icon={solid('pencil')} className="" />Modifica</div>}
         {isEditing ?
-            <BlocksEditor initialContent={ JSON.parse( resource.content ) } saveCallback={save} /> :
-            <BlocksViewer content={ JSON.parse( resource.content ) } /> }
+            <BlocksEditor initialContent={JSON.parse(resource.content)} saveCallback={save} /> :
+            <BlocksViewer content={JSON.parse(resource.content)} />}
+        {resource.canEdit && <Delete resource={resource} setProcessing={setProcessing} />}
     </>
 
 }
 
+function Delete({ resource, setProcessing }) {
+    const [deleting, setIsDeleting] = useState(false);
+
+    const deletingPost = () => {
+        setIsDeleting(false);
+
+        postRequest(
+            'resources.delete',
+            { resourceId: resource.id },
+            setProcessing,
+            {},
+            false
+        )
+    }
+
+    return <>
+        <div className='button items-end self-end' onClick={() => setIsDeleting(true)}><FontAwesomeIcon icon={solid('trash')} />Elimina</div>
+        <EmptyDialog open={deleting} onClose={() => setIsDeleting(false)}>
+            <h3 className="mb-3">
+                Attenzione!
+            </h3>
+            <span>Sei sicuro di voler eliminare la risorsa <i>{resource.title}</i>? Questa azione è irreversibile.</span>
+            <div className="w-full flex flex-row justify-end my-2 gap-2">
+                <div className='button items-end self-end' onClick={() => setIsDeleting(false)}>Annulla</div>
+                <div className='button items-end self-end' onClick={deletingPost}>Conferma</div>
+            </div>
+        </EmptyDialog>
+    </>
+}
+
 export default function ResourceDetails({ resource }) {
     const [processing, setProcessing] = useState(false);
-    
+
     const canView = resource.dynamic_permissions.filter(dp => dp.type == 'view').map(dp => dp.role)
     const canEdit = resource.dynamic_permissions.filter(dp => dp.type == 'edit').map(dp => dp.role)
 
@@ -82,7 +113,7 @@ export default function ResourceDetails({ resource }) {
             Modificabile da {canEdit.map(r => r.common_name).join(", ")}
             {resource.canEdit && <EditRoles type="edit" initialList={canEdit.map(r => r.id)} resourceId={resource.id} setProcessing={setProcessing} />}
         </div>
-        <Content resource={ resource } setProcessing={ setProcessing } />
+        <Content resource={resource} setProcessing={setProcessing} />
         <Backdrop open={processing} />
     </div>
 }
