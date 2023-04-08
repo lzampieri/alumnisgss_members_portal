@@ -1,4 +1,4 @@
-import { useForm } from "@inertiajs/inertia-react";
+import { useForm } from "@inertiajs/react";
 import { AlumnusStatus } from "../Utils";
 import Select from 'react-select';
 import { useState } from "react";
@@ -22,7 +22,7 @@ export default function Bulk() {
                 tempWrongLines.push(i)
             if (!(/^\d+$/.test(sections[2])))
                 tempWrongLines.push(i)
-            if (!Object.keys( AlumnusStatus.status ).includes(sections[3]))
+            if (!Object.keys(AlumnusStatus.status).includes(sections[3]))
                 tempWrongLines.push(i)
         });
         setWrongLines(tempWrongLines);

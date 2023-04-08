@@ -1,11 +1,11 @@
-import { useForm, usePage } from "@inertiajs/inertia-react";
+import { useForm, usePage } from "@inertiajs/react";
 import { AlumnusStatus, Documents, romanize } from "../Utils";
 import IdSelector from "./IdSelector";
 import Datepicker from "tailwind-datepicker-react"
 import { useState } from "react";
 import Backdrop from "../Layout/Backdrop";
 import Dialog from "../Layout/Dialog";
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/react";
 import NewVersion from "./NewVersion";
 import AddRatification from "./AddRatification";
 import DeleteRatification from "./DeleteRatification";
@@ -21,7 +21,7 @@ export default function Edit() {
         date: new Date(prevDoc.date),
         note: prevDoc.note || "",
     })
-    
+
     const [datePickerOpen, setDatePickerOpen] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -31,7 +31,7 @@ export default function Edit() {
     }
 
     const submitDelete = () => {
-        Inertia.post(route('board.delete', { document: prevDoc.id }));
+        router.post(route('board.delete', { document: prevDoc.id }));
     }
 
     return (

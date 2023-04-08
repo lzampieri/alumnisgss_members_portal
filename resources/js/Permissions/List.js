@@ -1,9 +1,9 @@
-import { Link, useForm, usePage } from "@inertiajs/inertia-react";
+import { Link, useForm, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import ReactSwitch from "react-switch";
 import { Roles } from "../Utils";
 import Backdrop from "../Layout/Backdrop";
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/react";
 import ResponsiveDrawer from "../Layout/ResponsiveDrawer";
 import EmptyDialog from "../Layout/EmptyDialog";
 
@@ -34,7 +34,7 @@ function IdentityChip(identity) {
 
 function onChange(state, permission, role, setProcessing) {
     setProcessing(true);
-    Inertia.post(
+    router.post(
         route('permissions'),
         { role: role, permission: permission, action: state ? 'add' : 'remove' },
         { onFinish: () => { setProcessing(false) }, preserveState: true, preserveScroll: true }
@@ -61,7 +61,7 @@ function permissionAdd(setProcessing) {
 
 function roleAdd(setProcessing) {
     const { data, setData, errors, post, reset } = useForm({ name: "", common_name: "" });
-    const [open,setOpen] = useState( false );
+    const [open, setOpen] = useState(false);
 
     const submit = (e) => {
         console.log("Submitting");
@@ -71,16 +71,16 @@ function roleAdd(setProcessing) {
     }
 
     return <div className="drawer-item" onClick={() => setOpen(true)} key={-1}>
-            + Aggiungi
+        + Aggiungi
         <EmptyDialog open={open} onClose={() => setOpen(false)}>
-            <form onSubmit={ (e) => submit(e) } className="w-full flex flex-col items-stretch mt-4 text-black">
+            <form onSubmit={(e) => submit(e)} className="w-full flex flex-col items-stretch mt-4 text-black">
                 <label>Nome software</label>
                 <input type="text" className="w-full" value={data.name} onChange={(e) => setData('name', e.target.value)} />
                 <label className="error">{errors.name}</label>
                 <label>Nome comune</label>
                 <input type="text" className="w-full" value={data.common_name} onChange={(e) => setData('common_name', e.target.value)} />
                 <label className="error">{errors.common_name}</label>
-                <input type="submit" className="button" value="Aggiungi ruolo"/>
+                <input type="submit" className="button" value="Aggiungi ruolo" />
             </form >
         </EmptyDialog>
     </div>
@@ -93,13 +93,13 @@ export default function List() {
     const [selectedIdx, setSelectedIdx] = useState(-1);
 
     return <div className="main-container-drawer">
-        <ResponsiveDrawer buttonTitle={selectedIdx >= 0 ? roles[ selectedIdx ].common_name : "Ruoli"} initiallyOpen={ selectedIdx < 0 }>
+        <ResponsiveDrawer buttonTitle={selectedIdx >= 0 ? roles[selectedIdx].common_name : "Ruoli"} initiallyOpen={selectedIdx < 0}>
             <ResponsiveDrawer.Drawer>
                 {roles.map((role, idx) =>
                     <div
                         className="drawer-item"
-                        aria-selected={ selectedIdx >= 0 && roles[ selectedIdx ].name == role.name}
-                        onClick={() => setSelectedIdx( idx )}
+                        aria-selected={selectedIdx >= 0 && roles[selectedIdx].name == role.name}
+                        onClick={() => setSelectedIdx(idx)}
                         key={role.name}
                     >
                         {role.common_name}
@@ -107,7 +107,7 @@ export default function List() {
                 )}
                 {roleAdd(setProcessing)}
             </ResponsiveDrawer.Drawer>
-            {selectedIdx >= 0 && RoleCard(roles[ selectedIdx ], perms, setProcessing)}
+            {selectedIdx >= 0 && RoleCard(roles[selectedIdx], perms, setProcessing)}
             {permissionAdd(setProcessing)}
         </ResponsiveDrawer>
         <Backdrop open={processing} />

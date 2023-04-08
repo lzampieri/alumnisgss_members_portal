@@ -1,4 +1,4 @@
-import { usePage } from "@inertiajs/inertia-react";
+import { usePage } from '@inertiajs/react';
 import { useState } from "react";
 import Backdrop from "../Layout/Backdrop";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -52,7 +52,7 @@ export default function Association() {
             <b>{lmth.credential}</b>( {lmth.driver} ) <br />
             <div className="text-gray-500">Richiesta il {new Date(lmth.created_at).toLocaleDateString('it-IT', { year: 'numeric', month: '2-digit', day: '2-digit' })}</div>
             <div className="w-full md:w-3/4">
-                <BlocksList blocks={ lmth.blocks } />
+                <BlocksList blocks={lmth.blocks} />
             </div>
 
             <div className="w-full flex flex-row items-stretch mt-4">
@@ -79,7 +79,7 @@ export default function Association() {
                 <div className={"tab " + (section == 'new_external' ? "active" : "")}> {/* New external */}
                     <div className="text-error font-bold p-2">Prima di creare una nuova identità, controllare con attenzione che non sia già presente nella tab <i>esterni</i>, per evitare doppioni.</div>
                     <div className="font-bold p-2">Non è possibile registrare nuove identità di alumni da qui, ma solo di esterni. Per nuovi alumni, usare l'applicativo <i>anagrafe</i>.</div>
-                    <NewExternal lmth={ lmth } />
+                    <NewExternal lmth={lmth} />
                 </div>
             </div>
             <Backdrop open={processing} />

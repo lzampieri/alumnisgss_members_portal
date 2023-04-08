@@ -1,6 +1,6 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useForm, usePage } from "@inertiajs/inertia-react";
+import { useForm, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import Backdrop from "../Layout/Backdrop";
 import EmptyDialog from "../Layout/EmptyDialog";
@@ -12,7 +12,7 @@ export default function AddRatification({ document }) {
 
     const rats = usePage().props.available_ratifications;
 
-    const submit = ( rat_id ) => {
+    const submit = (rat_id) => {
         postRequest(
             'board.add_ratification',
             { document: document.id, ratification: rat_id },
@@ -24,13 +24,13 @@ export default function AddRatification({ document }) {
         <div className="button self-start mt-4" onClick={() => setOpen(true)}>Associa ratifica</div>
         <EmptyDialog open={open}
             onClose={() => setOpen(false)}>
-            { rats.constructor == Object ? <>
-                { Object.keys( rats ).map( k => <div className="flex flex-col items-stretch" key={k}>
-                    <label className="col-span-3"><i>Per il passaggio allo stato di <b>{ AlumnusStatus.status[k].label }</b></i></label>
-                    { rats[k].map( r =>
+            {rats.constructor == Object ? <>
+                {Object.keys(rats).map(k => <div className="flex flex-col items-stretch" key={k}>
+                    <label className="col-span-3"><i>Per il passaggio allo stato di <b>{AlumnusStatus.status[k].label}</b></i></label>
+                    {rats[k].map(r =>
                         <span key={r.id}>
-                            <span className="icon-button" onClick={() => submit( r.id )}><FontAwesomeIcon icon={solid('plus')} /></span>
-                            { r.alumnus.surname } { r.alumnus.name } <span className="text-gray-400"> {romanize(r.alumnus.coorte)}{r.alumnus.coorte != 0 && " coorte"}</span>
+                            <span className="icon-button" onClick={() => submit(r.id)}><FontAwesomeIcon icon={solid('plus')} /></span>
+                            {r.alumnus.surname} {r.alumnus.name} <span className="text-gray-400"> {romanize(r.alumnus.coorte)}{r.alumnus.coorte != 0 && " coorte"}</span>
                         </span>
                     )}
                 </div>)}

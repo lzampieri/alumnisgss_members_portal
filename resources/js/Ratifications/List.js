@@ -1,6 +1,6 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, usePage } from "@inertiajs/inertia-react";
+import { Link, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import Backdrop from "../Layout/Backdrop";
 import { AlumnusStatus, postRequest, romanize } from "../Utils";
@@ -25,10 +25,10 @@ export default function List() {
     return (
         <div className="main-container">
             <div className="w-full flex flex-row justify-end gap-2">
-                { usePage().props.canAdd && <Link className="button" href={route('ratifications.add')}>
+                {usePage().props.canAdd && <Link className="button" href={route('ratifications.add')}>
                     <FontAwesomeIcon icon={solid('circle-plus')} />
                     Aggiungi
-                </Link> }
+                </Link>}
                 <a className="button" href={route('ratifications.export')}>
                     <FontAwesomeIcon icon={solid('download')} />
                     Esporta
@@ -60,7 +60,7 @@ export default function List() {
                         <ul className="list-disc list-inside">
                             {Object.values(closed_rats[r]).map(a =>
                                 <li key={a.id}>
-                                    {a.alumnus.surname} {a.alumnus.name} <span className="text-gray-400">{romanize(a.alumnus.coorte)}{a.alumnus.coorte != 0 && " coorte"}</span> Approvata in data {new Date(a.document.date).toLocaleDateString('it-IT', { 'dateStyle': 'long' })} - <a href={route('board.view', { document: a.document.id })}>{ a.document.identifier }</a>
+                                    {a.alumnus.surname} {a.alumnus.name} <span className="text-gray-400">{romanize(a.alumnus.coorte)}{a.alumnus.coorte != 0 && " coorte"}</span> Approvata in data {new Date(a.document.date).toLocaleDateString('it-IT', { 'dateStyle': 'long' })} - <a href={route('board.view', { document: a.document.id })}>{a.document.identifier}</a>
                                 </li>
                             )}
                         </ul>

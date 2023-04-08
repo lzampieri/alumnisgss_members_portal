@@ -1,17 +1,17 @@
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/react";
 import { contrastColor } from "contrast-color";
 import { enqueueSnackbar } from "notistack";
 
 
-export function romanize (num) {
+export function romanize(num) {
     if (isNaN(num))
         return NaN;
-    if( num == 0 )
+    if (num == 0)
         return "ON"
     var digits = String(+num).split(""),
-        key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM",
-               "","X","XX","XXX","XL","L","LX","LXX","LXXX","XC",
-               "","I","II","III","IV","V","VI","VII","VIII","IX"],
+        key = ["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM",
+            "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC",
+            "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"],
         roman = "",
         i = 3;
     while (i--)
@@ -41,25 +41,25 @@ export class Documents {
     }
 }
 
-export function bgAndContrast( bgColor ) {
+export function bgAndContrast(bgColor) {
     return {
         backgroundColor: bgColor,
         color: contrastColor({ bgColor: bgColor })
     }
 }
 
-export function disappearing( visible ) {
+export function disappearing(visible) {
     return {
         height: visible ? 'auto' : 0,
         overflow: visible ? 'visible' : 'hidden'
     }
 }
 
-export function postRequest( route_name, data, setProcessing, routeParams = {}, preserveState = true, preserveScroll = true ) {
+export function postRequest(route_name, data, setProcessing, routeParams = {}, preserveState = true, preserveScroll = true) {
     setProcessing(true);
-    Inertia.post(
-        route(route_name,routeParams),
+    router.post(
+        route(route_name, routeParams),
         data,
-        { onFinish: () => { preserveState && setProcessing(false) }, onError: (e) => { enqueueSnackbar('Errore generico!', { variant: 'error' }), console.log( e ) }, preserveState: preserveState, preserveScroll: preserveScroll }
+        { onFinish: () => { preserveState && setProcessing(false) }, onError: (e) => { enqueueSnackbar('Errore generico!', { variant: 'error' }), console.log(e) }, preserveState: preserveState, preserveScroll: preserveScroll }
     )
 }

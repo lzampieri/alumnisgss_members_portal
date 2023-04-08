@@ -1,6 +1,6 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useForm, usePage } from "@inertiajs/inertia-react";
+import { useForm, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import Backdrop from "../Layout/Backdrop";
 import EmptyDialog from "../Layout/EmptyDialog";
@@ -12,13 +12,13 @@ export default function DeleteRatification({ ratifications }) {
 
     const available_status = usePage().props.available_status;
 
-    const submit = ( new_state ) => {
+    const submit = (new_state) => {
         postRequest(
             'board.remove_ratification',
             { new_state: new_state, ratification: selected.id },
             setProcessing
-            )
-        setSelected( null );
+        )
+        setSelected(null);
     }
 
     return (<>
@@ -33,11 +33,11 @@ export default function DeleteRatification({ ratifications }) {
         </div>)}
         <EmptyDialog open={selected}
             onClose={() => setSelected(null)}>
-            <span>Quale stato si vuole assegnare a <b>{ selected && selected.alumnus.name } { selected && selected.alumnus.surname }</b> dopo l'annullamento della ratifica?</span>
+            <span>Quale stato si vuole assegnare a <b>{selected && selected.alumnus.name} {selected && selected.alumnus.surname}</b> dopo l'annullamento della ratifica?</span>
             <div className="w-full flex flex-row justify-center flex-wrap">
-                { available_status.map( s => 
-                    <div className="button" onClick={() => submit( s )} key={s}>
-                        { AlumnusStatus.status[s].label }
+                {available_status.map(s =>
+                    <div className="button" onClick={() => submit(s)} key={s}>
+                        {AlumnusStatus.status[s].label}
                     </div>
                 )}
             </div>

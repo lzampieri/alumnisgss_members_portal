@@ -1,4 +1,4 @@
-import { Link, usePage } from "@inertiajs/inertia-react";
+import { Link, usePage } from "@inertiajs/react";
 import ResponsiveDrawer from "../Layout/ResponsiveDrawer";
 import BlocksViewer from "../Blocks/BlocksViewer";
 import { useState } from "react";
@@ -35,7 +35,7 @@ export default function Main() {
                         <Create />
                     }
                 </ResponsiveDrawer.Drawer>
-                {resource && <ResourceDetails resource={resource} /> }
+                {resource && <ResourceDetails resource={resource} />}
             </ResponsiveDrawer>
         </div>
     );

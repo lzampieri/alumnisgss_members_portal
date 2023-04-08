@@ -1,9 +1,9 @@
-import { useForm, usePage } from "@inertiajs/inertia-react";
+import { useForm, usePage } from "@inertiajs/react";
 import { AlumnusStatus } from "../Utils";
 import Select from 'react-select';
 
 export default function ManuallyAdd() {
-    const drivers = usePage().props.drivers.map( i => ({ value: i, label: i}))
+    const drivers = usePage().props.drivers.map(i => ({ value: i, label: i }))
 
     const { data, setData, post, processing, errors } = useForm({
         driver: null,
@@ -12,7 +12,7 @@ export default function ManuallyAdd() {
 
 
     const submit = (e) => {
-        console.log( data );
+        console.log(data);
         e.preventDefault();
         post(route('auth.manually_add'));
     }
@@ -22,7 +22,7 @@ export default function ManuallyAdd() {
         <form className="flex flex-col w-full md:w-3/5" onSubmit={submit}>
             <h3>Crea nuovo metodo di accesso</h3>
             <label>Driver</label>
-            <Select value={drivers.find( i => i.value == data.driver)} onChange={(sel) => setData('driver', sel.value)} options={drivers}/>
+            <Select value={drivers.find(i => i.value == data.driver)} onChange={(sel) => setData('driver', sel.value)} options={drivers} />
             <label className="error">{errors.driver}</label>
             <label>Credenziali</label>
             <input type="text" value={data.credential} onChange={(e) => setData('credential', e.target.value)} />

@@ -2,7 +2,7 @@ import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import EmptyDialog from "../Layout/EmptyDialog";
 import { useState } from "react";
-import { useForm, usePage } from "@inertiajs/inertia-react";
+import { useForm, usePage } from "@inertiajs/react";
 import RolesChips from "../Permissions/RolesChips";
 
 
@@ -19,7 +19,7 @@ export default function Create() {
     const submit = (e) => {
         e.preventDefault();
 
-        post(route('resources.create'), { onSuccess: () => { reset(); setIsCreating( false ) } } );
+        post(route('resources.create'), { onSuccess: () => { reset(); setIsCreating(false) } });
     }
 
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import BlocksEditor from "../Blocks/BlocksEditor";
 import BlocksViewer from "../Blocks/BlocksViewer";
-import { usePage } from "@inertiajs/inertia-react";
+import { usePage } from '@inertiajs/react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import EmptyDialog from "../Layout/EmptyDialog";
