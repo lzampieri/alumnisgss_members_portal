@@ -105,6 +105,8 @@ class PermissionsController extends Controller
             // Documents
             'documents-upload',
             'documents-edit',
+            // Resources
+            'resources-create',
             // Webmaster stuff
             'log-manage',
             'db-reset'

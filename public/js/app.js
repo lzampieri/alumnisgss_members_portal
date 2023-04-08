@@ -2155,6 +2155,39 @@ var weakMemoize = function weakMemoize(func) {
 
 /***/ }),
 
+/***/ "./node_modules/@fortawesome/free-solid-svg-icons/faAdd.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/@fortawesome/free-solid-svg-icons/faAdd.js ***!
+  \*****************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+var source = __webpack_require__(/*! ./faPlus */ "./node_modules/@fortawesome/free-solid-svg-icons/faPlus.js");
+exports.definition = {
+  prefix: source.prefix,
+  iconName: source.iconName,
+  icon: [
+    source.width,
+    source.height,
+    source.aliases,
+    source.unicode,
+    source.svgPathData
+  ]};
+
+exports.faAdd = exports.definition;
+exports.prefix = source.prefix;
+exports.iconName = source.iconName;
+exports.width = source.width;
+exports.height = source.height;
+exports.ligatures = source.aliases;
+exports.unicode = source.unicode;
+exports.svgPathData = source.svgPathData;
+exports.aliases = source.aliases;
+
+/***/ }),
+
 /***/ "./node_modules/@fortawesome/free-solid-svg-icons/faBars.js":
 /*!******************************************************************!*\
   !*** ./node_modules/@fortawesome/free-solid-svg-icons/faBars.js ***!
@@ -8442,14 +8475,18 @@ function Upload() {
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
       className: "w-full flex flex-row flex-wrap justify-start",
       children: roles.map(function (r) {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
-          className: "chip px-4 py-2 cursor-pointer aria-disabled:disabled",
-          "aria-disabled": !data.roles.includes(r.id),
-          onClick: function onClick() {
-            return changeRole(r.id);
-          },
-          children: r.common_name
-        }, r.id);
+        return (
+          /*#__PURE__*/
+          // TODO mettere RolesChip
+          (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+            className: "chip px-4 py-2 cursor-pointer aria-disabled:disabled",
+            "aria-disabled": !data.roles.includes(r.id),
+            onClick: function onClick() {
+              return changeRole(r.id);
+            },
+            children: r.common_name
+          }, r.id)
+        );
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
       className: "error",
@@ -10473,6 +10510,139 @@ function ListTemplate(_ref) {
 
 /***/ }),
 
+/***/ "./resources/js/Resources/Create.js":
+/*!******************************************!*\
+  !*** ./resources/js/Resources/Create.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Create)
+/* harmony export */ });
+/* harmony import */ var _fortawesome_free_solid_svg_icons_faAdd__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons/faAdd */ "./node_modules/@fortawesome/free-solid-svg-icons/faAdd.js");
+/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @fortawesome/react-fontawesome */ "./node_modules/@fortawesome/react-fontawesome/index.es.js");
+/* harmony import */ var _Layout_EmptyDialog__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Layout/EmptyDialog */ "./resources/js/Layout/EmptyDialog.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var _inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @inertiajs/inertia-react */ "./node_modules/@inertiajs/inertia-react/dist/index.js");
+/* harmony import */ var _Permissions_RolesChips__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Permissions/RolesChips */ "./resources/js/Permissions/RolesChips.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0) { ; } } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i["return"] && (_r = _i["return"](), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+
+
+
+
+function Create() {
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    creating = _useState2[0],
+    setIsCreating = _useState2[1];
+  var roles = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_3__.usePage)().props.roles;
+  var _useForm = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_3__.useForm)({
+      title: '',
+      canView: [],
+      canEdit: []
+    }),
+    data = _useForm.data,
+    setData = _useForm.setData,
+    post = _useForm.post,
+    processing = _useForm.processing,
+    errors = _useForm.errors,
+    reset = _useForm.reset;
+  var submit = function submit(e) {
+    e.preventDefault();
+    post(route('resources.create'), {
+      onSuccess: function onSuccess() {
+        reset();
+        setIsCreating(false);
+      }
+    });
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_Layout_EmptyDialog__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      open: creating,
+      onClose: function onClose() {
+        return setIsCreating(false);
+      },
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h3", {
+        className: "mb-3",
+        children: "Nuova risorsa"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("form", {
+        onSubmit: submit,
+        className: "flex flex-col items-stretch",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("label", {
+          children: "Titolo"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
+          type: "text",
+          value: data.title,
+          onChange: function onChange(e) {
+            return setData('title', e.target.value);
+          }
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("label", {
+          className: "error",
+          children: errors.title
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("label", {
+          children: "Visibile da:"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_Permissions_RolesChips__WEBPACK_IMPORTED_MODULE_4__["default"], {
+          roles: roles,
+          list: data.canView,
+          updateList: function updateList(newList) {
+            return setData('canView', newList);
+          }
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("label", {
+          className: "error",
+          children: errors.canView
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("label", {
+          children: "Modificabile da:"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_Permissions_RolesChips__WEBPACK_IMPORTED_MODULE_4__["default"], {
+          roles: roles,
+          list: data.canEdit,
+          updateList: function updateList(newList) {
+            return setData('canEdit', newList);
+          }
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("label", {
+          className: "error",
+          children: errors.canEdit
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+          className: "w-full flex flex-row justify-end mt-4 gap-2",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+            className: "button items-end self-end",
+            onClick: function onClick() {
+              return setIsCreating(false);
+            },
+            children: "Annulla"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+            className: "button items-end self-end",
+            onClick: submit,
+            children: "Salva"
+          })]
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+      className: "drawer-item",
+      onClick: function onClick() {
+        return setIsCreating(true);
+      },
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__.FontAwesomeIcon, {
+        icon: _fortawesome_free_solid_svg_icons_faAdd__WEBPACK_IMPORTED_MODULE_6__.faAdd
+      }), " Crea nuova"]
+    })]
+  });
+}
+
+/***/ }),
+
 /***/ "./resources/js/Resources/Main.js":
 /*!****************************************!*\
   !*** ./resources/js/Resources/Main.js ***!
@@ -10490,7 +10660,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var _Blocks_BlocksEditor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Blocks/BlocksEditor */ "./resources/js/Blocks/BlocksEditor.js");
 /* harmony import */ var _ResourceDetails__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ResourceDetails */ "./resources/js/Resources/ResourceDetails.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _Create__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Create */ "./resources/js/Resources/Create.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
 
 
 
@@ -10502,14 +10674,14 @@ __webpack_require__.r(__webpack_exports__);
 function Main() {
   var resources = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.resources;
   var resource = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.resource;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
     className: "main-container-drawer",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_Layout_ResponsiveDrawer__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_Layout_ResponsiveDrawer__WEBPACK_IMPORTED_MODULE_1__["default"], {
       buttonTitle: resource ? resource.title : "Risorse",
       initiallyOpen: !resource,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_Layout_ResponsiveDrawer__WEBPACK_IMPORTED_MODULE_1__["default"].Drawer, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_Layout_ResponsiveDrawer__WEBPACK_IMPORTED_MODULE_1__["default"].Drawer, {
         children: [resources.map(function (res) {
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.Link, {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.Link, {
             className: "drawer-item",
             "aria-selected": (resource === null || resource === void 0 ? void 0 : resource.id) == res.id,
             href: route('resources', {
@@ -10518,11 +10690,11 @@ function Main() {
             as: "div",
             children: res.title
           }, res.id);
-        }), (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.hidden > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+        }), (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.hidden > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
           className: "drawer-item-passive",
           children: [(0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.hidden, " ", (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.hidden == 1 ? 'risorsa nascosta' : 'risorse nascoste', " con i correnti permessi."]
-        })]
-      }), resource && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_ResourceDetails__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        }), (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.canCreate > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_Create__WEBPACK_IMPORTED_MODULE_6__["default"], {})]
+      }), resource && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_ResourceDetails__WEBPACK_IMPORTED_MODULE_5__["default"], {
         resource: resource
       })]
     })
@@ -75230,6 +75402,8 @@ var map = {
 	"./Registry/List.js": "./resources/js/Registry/List.js",
 	"./Registry/ListTemplate": "./resources/js/Registry/ListTemplate.js",
 	"./Registry/ListTemplate.js": "./resources/js/Registry/ListTemplate.js",
+	"./Resources/Create": "./resources/js/Resources/Create.js",
+	"./Resources/Create.js": "./resources/js/Resources/Create.js",
 	"./Resources/Main": "./resources/js/Resources/Main.js",
 	"./Resources/Main.js": "./resources/js/Resources/Main.js",
 	"./Resources/ResourceDetails": "./resources/js/Resources/ResourceDetails.js",

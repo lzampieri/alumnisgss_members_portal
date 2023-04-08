@@ -67,7 +67,7 @@ export default function Upload() {
             <label className="error">{errors.identifier}</label>
             <label>Visibilità</label>
             <div className="w-full flex flex-row flex-wrap justify-start">
-                {roles.map(r =>
+                {roles.map(r => // TODO mettere RolesChip
                     <div key={r.id} className="chip px-4 py-2 cursor-pointer aria-disabled:disabled" aria-disabled={!data.roles.includes(r.id)} onClick={() => changeRole(r.id)}>
                         {r.common_name}
                     </div>)}

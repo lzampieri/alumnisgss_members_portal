@@ -34,7 +34,7 @@ class ResourcePolicy
      */
     public function create(User $user)
     {
-        return $user->hasPermissionTo( 'documents-upload' );
+        return $user->hasPermissionTo( 'resources-create' );
     }
 
     /**

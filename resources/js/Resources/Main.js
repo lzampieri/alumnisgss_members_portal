@@ -4,6 +4,7 @@ import BlocksViewer from "../Blocks/BlocksViewer";
 import { useState } from "react";
 import BlocksEditor from "../Blocks/BlocksEditor";
 import ResourceDetails from "./ResourceDetails";
+import Create from "./Create";
 
 export default function Main() {
     const resources = usePage().props.resources
@@ -29,6 +30,9 @@ export default function Main() {
                             className="drawer-item-passive">
                             {usePage().props.hidden} {usePage().props.hidden == 1 ? 'risorsa nascosta' : 'risorse nascoste'} con i correnti permessi.
                         </div>
+                    }
+                    {usePage().props.canCreate > 0 &&
+                        <Create />
                     }
                 </ResponsiveDrawer.Drawer>
                 {resource && <ResourceDetails resource={resource} /> }

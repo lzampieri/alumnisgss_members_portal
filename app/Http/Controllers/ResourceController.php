@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DynamicPermission;
 use App\Models\Resource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 
@@ -25,10 +26,52 @@ class ResourceController extends Controller
         }
 
         $params['roles'] = Role::where('name','!=','webmaster')->orderBy('id')->get();
+        $params['canCreate'] = Auth::check() && Auth::user()->can('create', Resource::class);
 
         return Inertia::render( 'Resources/Main', $params );
     }
    
+
+    public function create(Request $request)
+    {
+        $this->authorize('create', Resource::class);
+
+        $validated = $request->validate([
+            'title' => 'required|min:3',
+            'canView' => 'array|min:1',
+            'canView.*' => 'integer|exists:roles,id',
+            'canEdit' => 'array|min:1',
+            'canEdit.*' => 'integer|exists:roles,id',
+        ]);
+
+        // Check the current user have the permissions to edit the resource
+        $current_user = Auth::user()->identity;
+        if( !$current_user->hasRole( Role::findByName('webmaster') )  ) {
+            $current_roles = $current_user->getAllRoles()->pluck('id')->toArray();
+            if( count( array_intersect( $current_roles, $validated['canEdit'] ) ) == 0 ) {
+                return back()->withErrors(['canEdit'=>'Stai creando una risorsa che non avresti i permessi di modificare. Aggiungi un tuo ruolo.'])->withInput();
+            }
+        }
+
+        // Create the resource
+        $res = Resource::create(['title' => $validated['title']]);
+        Log::debug('Resource created', $res);
+
+        // Save the canView
+        foreach( $validated['canView'] as $role ) {
+            $dynamicPermission = DynamicPermission::createFromRelations( 'view', $res, Role::findById( $role ) );
+            Log::debug('Dynamic permission set', $dynamicPermission );
+        }
+
+        // Save the canEdit
+        foreach( $validated['canEdit'] as $role ) {
+            $dynamicPermission = DynamicPermission::createFromRelations( 'edit', $res, Role::findById( $role ) );
+            Log::debug('Dynamic permission set', $dynamicPermission );
+        }
+
+        return redirect()->route('resources', [ 'resource' => $res ] );
+    }
+
     public function update_permissions(Request $request)
     {
         $validated = $request->validate([
@@ -91,7 +134,7 @@ class ResourceController extends Controller
 
         $res = Resource::find( $validated['resourceId'] );
         
-        $this->authorize('edit', $res);
+        $this->authorize('delete', $res);
 
         Log::debug('Resource deleted', $res );
         $res->delete();
