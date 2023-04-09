@@ -5,15 +5,15 @@ export default class Separator extends AbstrackBlock {
     static title = "Separatore"
     static icon = solid('grip-lines')
 
-    getDefaultData() {
+    static getDefaultData() {
         return {}
     }
 
-    mainElementEditable = () => {
+    static mainElementEditable = () => {
         return <div className="hseparator"></div>
     }
 
-    mainElementReadOnly = () => {
+    static mainElementReadOnly = () => {
         return <div className="hseparator"></div>
     }
 
