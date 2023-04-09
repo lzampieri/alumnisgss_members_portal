@@ -7,6 +7,7 @@ import BlockParser from './BlockParser';
 import BlockEnvironment from './BlockEnvironment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
+import AddBlock from './AddBlock';
 
 export default function BlocksEditor({ initialContent, saveCallback }) {
 
@@ -46,8 +47,8 @@ export default function BlocksEditor({ initialContent, saveCallback }) {
                 </BlockEnvironment>
             } />
             <div className="w-full flex flex-col items-end mt-2">
-                <div className="button !p-0 w-6 aspect-square flex justify-center items-center">
-                    <FontAwesomeIcon icon={solid('add')} className="!pr-0" />
+                <div className="self-end w-6">
+                    <AddBlock alwaysVisible={true} />
                 </div>
             </div>
         </div>

@@ -679,6 +679,9 @@ a {
 .left-0 {
   left: 0px;
 }
+.right-0 {
+  right: 0px;
+}
 .top-10 {
   top: 2.5rem;
 }
@@ -696,9 +699,6 @@ a {
 }
 .col-span-3 {
   grid-column: span 3 / span 3;
-}
-.m-4 {
-  margin: 1rem;
 }
 .m-2 {
   margin: 0.5rem;
@@ -785,9 +785,6 @@ a {
 .h-full {
   height: 100%;
 }
-.h-1 {
-  height: 0.25rem;
-}
 .max-h-\[3rem\] {
   max-height: 3rem;
 }
@@ -796,12 +793,6 @@ a {
 }
 .min-h-screen {
   min-height: 100vh;
-}
-.min-h-\[18\] {
-  min-height: 18;
-}
-.min-h-\[4\.5rem\] {
-  min-height: 4.5rem;
 }
 .w-14 {
   width: 3.5rem;
@@ -815,20 +806,14 @@ a {
 .w-5 {
   width: 1.25rem;
 }
+.w-6 {
+  width: 1.5rem;
+}
 .w-64 {
   width: 16rem;
 }
 .w-full {
   width: 100%;
-}
-.w-12 {
-  width: 3rem;
-}
-.w-8 {
-  width: 2rem;
-}
-.w-6 {
-  width: 1.5rem;
 }
 .min-w-\[35vh\] {
   min-width: 35vh;
@@ -975,6 +960,9 @@ a {
 .whitespace-pre-line {
   white-space: pre-line;
 }
+.rounded {
+  border-radius: 0.25rem;
+}
 .rounded-3xl {
   border-radius: 1.5rem;
 }
@@ -989,9 +977,6 @@ a {
 }
 .rounded-xl {
   border-radius: 0.75rem;
-}
-.rounded {
-  border-radius: 0.25rem;
 }
 .rounded-t-xl {
   border-top-left-radius: 0.75rem;
@@ -1012,6 +997,10 @@ a {
 .border-dashed {
   border-style: dashed;
 }
+.border-black {
+  --tw-border-opacity: 1;
+  border-color: rgb(0 0 0 / var(--tw-border-opacity));
+}
 .border-gray-300 {
   --tw-border-opacity: 1;
   border-color: rgb(209 213 219 / var(--tw-border-opacity));
@@ -1023,6 +1012,10 @@ a {
 .border-primary-main {
   --tw-border-opacity: 1;
   border-color: rgb(203 0 20 / var(--tw-border-opacity));
+}
+.bg-black {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
 }
 .bg-gray-200 {
   --tw-bg-opacity: 1;
@@ -1060,6 +1053,9 @@ a {
 .bg-no-repeat {
   background-repeat: no-repeat;
 }
+.\!p-0 {
+  padding: 0px !important;
+}
 .\!p-4 {
   padding: 1rem !important;
 }
@@ -1077,12 +1073,6 @@ a {
 }
 .p-8 {
   padding: 2rem;
-}
-.p-0 {
-  padding: 0px;
-}
-.\!p-0 {
-  padding: 0px !important;
 }
 .px-1 {
   padding-left: 0.25rem;
@@ -1132,6 +1122,9 @@ a {
   padding-top: 2rem;
   padding-bottom: 2rem;
 }
+.\!pr-0 {
+  padding-right: 0px !important;
+}
 .pb-2 {
   padding-bottom: 0.5rem;
 }
@@ -1152,12 +1145,6 @@ a {
 }
 .pt-4 {
   padding-top: 1rem;
-}
-.pr-0 {
-  padding-right: 0px;
-}
-.\!pr-0 {
-  padding-right: 0px !important;
 }
 .text-center {
   text-align: center;
@@ -1734,6 +1721,30 @@ label.error {
   --tw-text-opacity: 1;
   color: rgb(156 163 175 / var(--tw-text-opacity));
 }
+.drawer-item-noborder {
+  cursor: pointer;
+  padding: 0.5rem;
+}
+.drawer-item-noborder:first-child {
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+}
+.drawer-item-noborder:last-child {
+  border-bottom-right-radius: 0.75rem;
+  border-bottom-left-radius: 0.75rem;
+}
+.drawer-item-noborder {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+.drawer-item-noborder:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(203 0 20 / var(--tw-bg-opacity));
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
 
 .hover\:bg-gray-100:hover {
   --tw-bg-opacity: 1;
@@ -1789,10 +1800,6 @@ label.error {
 
 .group:hover .group-hover\:visible {
   visibility: visible;
-}
-
-.group:hover .group-hover\:flex {
-  display: flex;
 }
 
 .aria-disabled\:disabled[aria-disabled="true"].chip {

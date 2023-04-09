@@ -5,9 +5,8 @@ import Separator from './Separator';
 import File from './File';
 
 export default {
-    paragraph: { class: Paragraph, inlineToolbar: true },  
+    // paragraph: { class: Paragraph, inlineToolbar: true },  
     title: Title,  
-    image: Image,
     file: File,
     separator: Separator
 }

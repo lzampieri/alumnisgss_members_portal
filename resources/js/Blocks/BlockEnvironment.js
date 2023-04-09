@@ -1,6 +1,7 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
+import AddBlock from "./AddBlock";
 
 export default function BlockEnvironment({ children, index, updateOrder, deleteItem }) {
     const [isTrash, setIsTrash] = useState(false)
@@ -39,9 +40,7 @@ export default function BlockEnvironment({ children, index, updateOrder, deleteI
         </div>
         <div className="grow">{children}</div>
         <div className="self-end w-6">
-            <div className="button !p-0 aspect-square flex justify-center items-center invisible group-hover:visible">
-                <FontAwesomeIcon icon={solid('add')} className="!pr-0" />
-            </div>
+            <AddBlock />
         </div>
     </div>
 }
