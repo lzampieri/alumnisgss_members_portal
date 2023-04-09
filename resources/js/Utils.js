@@ -63,3 +63,13 @@ export function postRequest(route_name, data, setProcessing, routeParams = {}, p
         { onFinish: () => { preserveState && setProcessing(false) }, onError: (e) => { enqueueSnackbar('Errore generico!', { variant: 'error' }), console.log(e) }, preserveState: preserveState, preserveScroll: preserveScroll }
     )
 }
+
+export function randomHex( length ) {
+    let output = ""
+    const chars = "0123456789ABCDEF"
+    while( length > 0 ) {
+        output += chars[ Math.floor( Math.random() * 16 ) ]
+        length --;
+    }
+    return output
+}

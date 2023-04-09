@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import AddBlock from "./AddBlock";
 
-export default function BlockEnvironment({ children, index, updateOrder, deleteItem }) {
+export default function BlockEnvironment({ children, index, addBlockAt, updateOrder, deleteItem }) {
     const [isTrash, setIsTrash] = useState(false)
     const trashRef = useRef(null);
 
@@ -40,7 +40,7 @@ export default function BlockEnvironment({ children, index, updateOrder, deleteI
         </div>
         <div className="grow">{children}</div>
         <div className="self-end w-6">
-            <AddBlock />
+            <AddBlock addBlock={(props) => addBlockAt(props,index+1)} />
         </div>
     </div>
 }
