@@ -18,6 +18,10 @@ class Resource extends Model
         return $this->morphMany( DynamicPermission::class, 'permissable' );
     }
     
+    public function files() {
+        return $this->morphMany( File::class, 'parent' );
+    }
+    
     public function getCanViewAttribute() {
         return DynamicPermission::UserCanViewPermissable($this) || DynamicPermission::UserCanEditPermissable($this);
     }

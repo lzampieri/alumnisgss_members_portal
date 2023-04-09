@@ -51,7 +51,7 @@ export default function Association() {
             <b>{lmth.credential}</b>( {lmth.driver} ) <br />
             <div className="text-gray-500">Richiesta il {new Date(lmth.created_at).toLocaleDateString('it-IT', { year: 'numeric', month: '2-digit', day: '2-digit' })}</div>
             <div className="w-full md:w-3/4">
-                <span className='whitespace-pre-line'>{ lmth.comment }</span>
+                <span className='whitespace-pre-line'>{lmth.comment}</span>
             </div>
 
             <div className="w-full flex flex-row items-stretch mt-4">

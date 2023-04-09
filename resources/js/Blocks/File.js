@@ -12,20 +12,13 @@ export default class File extends AbstrackBlock {
 
     static getDefaultData() {
         return {
-            'file': null,
+            'fileId': null,
+            'fileExt': null,
             'title': ""
         }
     }
 
-    static mainElementEditable = (item) => {
-        const [title, setTitle] = useState(item.title || "")
-        const [fileId, setFileId] = useState(item.fileId)
-
-        const updateTitle = (e) => {
-            setTitle(e.target.value)
-            this.updateData({ 'title': e.target.value })
-        }
-
+    static mainElementEditable = ({ item, setItemValue }) => {
         return <div
             className="w-full div-highlighted flex flex-row items-center gap-4 my-2 p-4">
             <FontAwesomeIcon icon={solid('file')} className="text-6xl" />
@@ -33,23 +26,27 @@ export default class File extends AbstrackBlock {
                 <input
                     type="text"
                     className="w-full"
-                    value={title}
-                    onChange={updateTitle}
+                    value={item.title}
+                    onChange={(e)=> setItemValue('title',e.target.value)}
                     placeholder="Titolo"
                 />
-                <div><b>Estensione:</b> {item.fileName && item.fileName.split('.').pop()}</div>
-                <FileUploadModal fileId={fileId} />
+                <div><b>Estensione:</b> {item.fileExt}</div>
+                <FileUploadModal
+                    fileId={item.fileId}
+                    setFileId={(newId) => setItemValue('fileId',newId)}
+                    setFileExt={(newExt) => setItemValue('fileExt',newExt)}
+                    />
             </div>
         </div>
     }
 
-    static mainElementReadOnly = (item) => {
+    static mainElementReadOnly = ({item}) => {
         return <div
             className="w-full div-highlighted flex flex-row items-center gap-4 my-2 p-4">
             <FontAwesomeIcon icon={solid('file')} className="text-6xl" />
             <div className="flex flex-col grow gap-2">
                 <div className="text-lg">{item.title}</div>
-                <div><b>Estensione:</b> {item.fileName && item.fileName.split('.').pop()}</div>
+                <div><b>Estensione:</b> {item.fileExt}</div>
             </div>
         </div>
     }

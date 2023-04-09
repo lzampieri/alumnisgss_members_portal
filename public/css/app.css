@@ -788,6 +788,9 @@ a {
 .max-h-\[3rem\] {
   max-height: 3rem;
 }
+.max-h-screen {
+  max-height: 100vh;
+}
 .min-h-\[35vh\] {
   min-height: 35vh;
 }
@@ -945,11 +948,20 @@ a {
 .self-stretch {
   align-self: stretch;
 }
+.overflow-auto {
+  overflow: auto;
+}
 .overflow-hidden {
   overflow: hidden;
 }
 .overflow-x-auto {
   overflow-x: auto;
+}
+.overflow-y-auto {
+  overflow-y: auto;
+}
+.overflow-x-hidden {
+  overflow-x: hidden;
 }
 .whitespace-nowrap {
   white-space: nowrap;

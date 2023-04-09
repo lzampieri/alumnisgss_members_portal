@@ -9,22 +9,16 @@ export default class Title {
 
     static getDefaultData() {
         return {
-            'content': ''
+            content: ''
         }
     }
 
-    static mainElementEditable = ({ item }) => {
-        const [content, setContent] = useState(item.content || "")
-        const updateContent = (e) => {
-            setContent(e.target.value)
-            this.updateData({ 'content': e.target.value })
-        }
-
+    static mainElementEditable = ({ item, setItemValue }) => {
         return <input
             type="text"
             className="w-full text-2xl"
-            value={content}
-            onChange={updateContent}
+            value={item.content}
+            onChange={(e)=>setItemValue('content',e.target.value)}
             placeholder="Titolo"
         />
     }

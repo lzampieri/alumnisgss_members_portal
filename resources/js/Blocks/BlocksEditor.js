@@ -1,24 +1,13 @@
 import { useState } from 'react';
-import { createReactEditorJS } from 'react-editor-js'
-import RegisteredTools from './RegisteredTools';
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import DraggingManagement from './DraggingManagement';
 import BlockParser from './BlockParser';
 import BlockEnvironment from './BlockEnvironment';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 import AddBlock from './AddBlock';
 import { randomHex } from '../Utils';
 
 export default function BlocksEditor({ initialContent, saveCallback }) {
 
-    const [list, setList] = useState([ // todo set initialContent
-        { id: 1, type: 'title', content: 'primo' },
-        { id: 2, type: 'title', content: 'secondo' },
-        { id: 3, type: 'title', content: 'terzo' },
-        { id: 4, type: 'title', content: 'quarto' },
-        { id: 5, type: 'title', content: 'quinto' },
-    ])
+    const [list, setList] = useState(initialContent)
 
     const save = () => {
         saveCallback(list)
@@ -53,12 +42,20 @@ export default function BlocksEditor({ initialContent, saveCallback }) {
         setList(list.slice())
     }
 
+    const setData = (index,key,value) => {
+        const oldData = list.slice()
+        console.log( oldData )
+        oldData[index][key] = value
+        console.log( oldData )
+        setList(oldData)
+    }
+
     return <>
         <div className='button items-end self-end' onClick={save}>Salva</div>
         <div className="w-full border rounded m-2 p-2">
             <DraggingManagement list={list} updateOrder={updateOrder} renderItem={(item, index) =>
                 <BlockEnvironment index={index} addBlockAt={addBlockAt} updateOrder={updateOrder} deleteItem={deleteItem}>
-                    {BlockParser(item, true)}
+                    {BlockParser(item, (key,value)=>setData(index,key,value), true)}
                 </BlockEnvironment>
             } />
             <div className="w-full flex flex-col items-end mt-2">

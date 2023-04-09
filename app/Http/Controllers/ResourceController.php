@@ -23,7 +23,7 @@ class ResourceController extends Controller
             $this->authorize('view', $resource);
 
             $params['resource'] = $resource->append(['canView','canEdit'])
-                ->load(['dynamicPermissions','dynamicPermissions.role']);
+                ->load(['dynamicPermissions','dynamicPermissions.role','files']);
         }
 
         $params['roles'] = Role::where('name','!=','webmaster')->orderBy('id')->get();
@@ -127,6 +127,34 @@ class ResourceController extends Controller
         Log::debug('Resource content updated', $res );
 
         return redirect()->back()->with(['notistack' => ['success', 'Salvato']]);
+    }
+
+    public function upload_file(Request $request)
+    {
+        $validated = $request->validate([
+            'resourceId' => 'required|integer|exists:resources,id',
+            'file' => 'required|mimes:' . implode(",",File::ALLOWED_FORMATS),
+        ]);
+        $res = Resource::find( $validated['resourceId'] );
+
+        // Validate file extension
+        $filename = $validated['file']->getClientOriginalName();
+        $extension = pathinfo($filename)['extension'];
+        if( !in_array( $extension, File::ALLOWED_FORMATS ) )
+            return back()->withErrors(['file'=>'Estensione non riconosciuta'])->withInput();
+
+        // Compute cleaned file name
+        $cleaned_name = preg_replace( "([^\w\s\d\_])", "", str_replace( " ", "_", pathinfo($filename)['filename'] ) );
+
+        // Upload file
+        $file = File::create();
+        $file->handle =  'f' . $file->id . '_' . $cleaned_name . '.' . $extension;
+        $file->parent()->associate( $res )->save();
+        $file->save();
+        $validated['file']->storeAs('files', $file->handle );
+        Log::debug('File uploaded', $file );
+
+        return redirect()->back()->with(['notistack' => ['success', 'File caricato'], 'inertiaFlash' => ['selectedFileId' => $file->id, 'selectedFileExt' => $extension ]]);
     }
 
     public function delete(Request $request)
