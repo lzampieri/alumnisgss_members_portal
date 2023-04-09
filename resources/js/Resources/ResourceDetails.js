@@ -52,7 +52,7 @@ function Content({ resource, setProcessing }) {
 
         postRequest(
             'resources.updateContent',
-            { content: newContent, resourceId: resource.id },
+            { content: JSON.stringify(newContent), resourceId: resource.id },
             setProcessing
         )
     }

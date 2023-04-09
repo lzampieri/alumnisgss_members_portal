@@ -1,11 +1,11 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import AbstrackBlock from "./AbstrackBlock";
+import AbstrackBlock from "./BlockEnvironment";
 import { useState } from "react";
 
 
 export default class Image extends AbstrackBlock {
     static title = "Image"
-    static icon = solid( 'image' )
+    static icon = solid('image')
 
     getDefaultData() {
         return {
@@ -13,21 +13,21 @@ export default class Image extends AbstrackBlock {
         }
     }
 
-    mainElementEditable = ( props ) => {
-        const [content,setContent] = useState( this.data.content )
-        const updateContent = ( e ) => {
-            setContent( e.target.value )
-            this.updateData( { 'content': e.target.value } )
+    mainElementEditable = (props) => {
+        const [content, setContent] = useState(this.data.content)
+        const updateContent = (e) => {
+            setContent(e.target.value)
+            this.updateData({ 'content': e.target.value })
         }
 
         return <input
             type="text"
-            value={ content }
-            onChange={ updateContent }
-            />
+            value={content}
+            onChange={updateContent}
+        />
     }
 
     getMainElementReadOnly() {
-        return <span>{ this.data.content }</span>
+        return <span>{this.data.content}</span>
     }
 }

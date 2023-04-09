@@ -1,20 +1,20 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import AbstrackBlock from "./AbstrackBlock";
+import AbstrackBlock from "./BlockEnvironment";
 import { useState } from "react";
 
 
-export default class Title extends AbstrackBlock {
+export default class Title {
     static title = "Titolo"
     static icon = solid('heading')
 
-    getDefaultData() {
+    static getDefaultData() {
         return {
             'content': ''
         }
     }
 
-    mainElementEditable = () => {
-        const [content, setContent] = useState(this.data.content || "")
+    static mainElementEditable = ({ item }) => {
+        const [content, setContent] = useState(item.content || "")
         const updateContent = (e) => {
             setContent(e.target.value)
             this.updateData({ 'content': e.target.value })
@@ -29,9 +29,9 @@ export default class Title extends AbstrackBlock {
         />
     }
 
-    mainElementReadOnly = () => {
+    static mainElementReadOnly = ({ item }) => {
         return <h3>
-            {this.data.content}
+            {item.content}
         </h3>
     }
 }

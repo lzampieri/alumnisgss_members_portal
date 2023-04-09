@@ -1,5 +1,5 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import AbstrackBlock from "./AbstrackBlock";
+import AbstrackBlock from "./BlockEnvironment";
 
 export default class Separator extends AbstrackBlock {
     static title = "Separatore"
@@ -12,7 +12,7 @@ export default class Separator extends AbstrackBlock {
     mainElementEditable = () => {
         return <div className="hseparator"></div>
     }
-    
+
     mainElementReadOnly = () => {
         return <div className="hseparator"></div>
     }

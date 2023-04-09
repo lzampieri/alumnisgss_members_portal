@@ -1,5 +1,5 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import AbstrackBlock from "./AbstrackBlock";
+import AbstrackBlock from "./BlockEnvironment";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import EmptyDialog from "../Layout/EmptyDialog";
@@ -38,7 +38,7 @@ export default class File extends AbstrackBlock {
                     placeholder="Titolo"
                 />
                 <div><b>Estensione:</b> {this.data.fileName && this.data.fileName.split('.').pop()}</div>
-                <FileUploadModal fileId={ fileId } />
+                <FileUploadModal fileId={fileId} />
             </div>
         </div>
     }
