@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
-use App\Models\Block;
 use App\Models\External;
 use App\Models\Identity;
 use App\Models\LoginMethod;
@@ -21,7 +20,7 @@ class LoginMethodController extends Controller
         $lmthds = [
             'alumni' => Alumnus::has('loginMethods')->with('loginMethods')->orderBy('surname')->orderBy('name')->get(),
             'externals' => External::has('loginMethods')->with('loginMethods')->orderBy('surname')->orderBy('name')->get(),
-            'requests' => LoginMethod::where('identity_id',null)->with('blocks')->orderBy('created_at','desc')->get(),
+            'requests' => LoginMethod::where('identity_id',null)->orderBy('created_at','desc')->get(),
         ];
 
         foreach( ['alumni','externals'] as $key ) {
@@ -76,10 +75,8 @@ class LoginMethodController extends Controller
             'email' => 'required|email'
         ]);
 
-        $lm = LoginMethod::create(['driver' => 'google', 'credential' => $validated['email']]);
-        Log::debug('New login created', $lm);
-
-        Block::create(['content' => $validated['message']])->blockable()->associate($lm)->save();
+        $lm = LoginMethod::create(['driver' => 'google', 'credential' => $validated['email'], 'comment' => $validated['message']]);
+        Log::debug('New login created', ['lm'=>$lm,'comment'=> $validated['message']]);
         
         $emails = [];
         foreach( LoginMethod::where('driver','google')->hasMorph('identity',[Alumnus::class,External::class])->get() as $lm ) {
@@ -125,8 +122,6 @@ class LoginMethodController extends Controller
 
     function associate(Request $request, LoginMethod $lmth) {
         $this->authorize('associate', LoginMethod::class);
-
-        $lmth->load('blocks');
 
         return Inertia::render('Accesses/Association', [
             'lmth' => $lmth,

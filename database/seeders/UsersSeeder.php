@@ -76,10 +76,8 @@ class UsersSeeder extends Seeder
             $orphan_lm = LoginMethod::create([
                 'driver' => 'google',
                 'credential' => 'leonardo.zampieri2@studenti.unipd.it',
+                'comment' => "Qui la richiesta d'accesso\nche in teoria può occupare\ntre linee"
             ]);
-            Block::create(['content' => 'Qui la richiesta d\'accesso'])->blockable()->associate($orphan_lm)->save();
-            Block::create(['content' => 'Non dovrebbe avere due blocchi in teoria'])->blockable()->associate($orphan_lm)->save();
-
         }
 
     }

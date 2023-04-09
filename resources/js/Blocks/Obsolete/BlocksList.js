@@ -1,6 +1,6 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import BlockParser from "./BlockParser";
+import BlockParser from "../BlockParser";
 
 export default function BlocksList({ blocks, canEdit = false }) {
     // TODO remove

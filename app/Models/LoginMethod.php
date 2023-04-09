@@ -13,7 +13,8 @@ class LoginMethod extends Authenticatable
     protected $fillable = [
         'driver',
         'credential',
-        'identity'
+        'identity',
+        'comment'
     ];
 
     protected $casts = [
@@ -37,9 +38,5 @@ class LoginMethod extends Authenticatable
 
     public function enabled() {
         return $this->hasPermissionTo('login');
-    }
-    
-    public function blocks() {
-        return $this->morphMany( Block::class, 'blockable' );
     }
 }

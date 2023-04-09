@@ -61,14 +61,14 @@ function Identity(idt, type, filter, setProcessing) {
 }
 
 function Request(lmth, filter, setProcessing) {
-    let key = lmth.credential + lmth.blocks.map(l => l.content).join();
+    let key = lmth.credential + lmth.comment;
     let visible = filter ? key.toLowerCase().includes(filter.toLowerCase()) : true
 
     return (
         <div key={lmth.id} style={disappearing(visible)} >
             <div className="mylist-item flex flex-col p-2 items-start gap-2">
                 <b>{lmth.credential}</b>
-                {lmth.blocks.map(b => BlockParser(b))}
+                <span className='whitespace-pre-line'>{lmth.comment}</span>
                 {usePage().props.canAssociate ? <Link className="button" href={route('lmth.associate', { lmth: lmth.id })}>Associa</Link> : <span className="text-gray-400">Non hai il permesso per accettare questa richiesta</span>}
             </div>
         </div>
