@@ -14,10 +14,4 @@ export default function BlockParser(item, setItemValue, isEditable) {
     }
 
     return <label className="error">{ item.type } not defined</label>
-
-    // // TODO remove
-    // switch (block.type) {
-    //     default:
-    //         return PlainText(block);
-    // }
 }

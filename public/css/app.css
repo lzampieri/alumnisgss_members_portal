@@ -948,9 +948,6 @@ a {
 .self-stretch {
   align-self: stretch;
 }
-.overflow-auto {
-  overflow: auto;
-}
 .overflow-hidden {
   overflow: hidden;
 }

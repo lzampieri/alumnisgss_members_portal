@@ -10,11 +10,11 @@ import Backdrop from "../Layout/Backdrop";
 import { postRequest } from "../Utils";
 
 
-export default function FileUploadModal({ fileId, setFileId, setFileExt }) {
+export default function FileUploadModal({ fileHandle, setFileHandle, setFileExt }) {
     const allowed_formats = usePage().props.allowedFormats
     const files = usePage().props.resource.files.sort((a, b) => b.id - a.id)
-    const selectedFile = files.find(f => f.id == fileId)
-    const [isEditing, setIsEditing] = useState(true)
+    const selectedFile = files.find(f => f.handle == fileHandle)
+    const [isEditing, setIsEditing] = useState(false)
 
     const { data, setData, post, processing, reset, errors } = useForm({
         resourceId: usePage().props.resource?.id,
@@ -23,7 +23,7 @@ export default function FileUploadModal({ fileId, setFileId, setFileExt }) {
 
     const selectFile = (id) => {
         const newSelectedFile = files.find(f => f.id == id)
-        setFileId(newSelectedFile.id)
+        setFileHandle(newSelectedFile.handle)
         setFileExt(newSelectedFile.handle.split('.').pop())
         setIsEditing(false)
     }
@@ -35,8 +35,8 @@ export default function FileUploadModal({ fileId, setFileId, setFileExt }) {
         data.file = acceptedFiles[0]
         post(route('resources.uploadFile'), {
             onSuccess: (page) => {
-                if (page.props?.flash?.selectedFileId) {
-                    setFileId( page.props?.flash?.selectedFileId )
+                if (page.props?.flash?.selectedFileHandle ) {
+                    setFileHandle( page.props?.flash?.selectedFileHandle )
                     setFileExt( page.props?.flash?.selectedFileExt )
                     setIsEditing(false)
                 }
@@ -51,7 +51,7 @@ export default function FileUploadModal({ fileId, setFileId, setFileExt }) {
             <i>
                 {selectedFile ? selectedFile.handle : "Nessun file selezionato"}
             </i>
-            <div className='button' onClick={() => setIsEditing(true)}>{fileId ? "Modifica" : "Scegli"}</div>
+            <div className='button' onClick={() => setIsEditing(true)}>{fileHandle ? "Modifica" : "Scegli"}</div>
         </div>
         <EmptyDialog open={isEditing} onClose={() => setIsEditing(false)}>
             <h3>Seleziona file</h3>

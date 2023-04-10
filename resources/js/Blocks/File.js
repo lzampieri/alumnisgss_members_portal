@@ -1,8 +1,6 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import AbstrackBlock from "./BlockEnvironment";
-import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import EmptyDialog from "../Layout/EmptyDialog";
 import FileUploadModal from "./FileUploadModal";
 
 
@@ -12,7 +10,7 @@ export default class File extends AbstrackBlock {
 
     static getDefaultData() {
         return {
-            'fileId': null,
+            'fileHandle': null,
             'fileExt': null,
             'title': ""
         }
@@ -32,8 +30,8 @@ export default class File extends AbstrackBlock {
                 />
                 <div><b>Estensione:</b> {item.fileExt}</div>
                 <FileUploadModal
-                    fileId={item.fileId}
-                    setFileId={(newId) => setItemValue('fileId',newId)}
+                    fileHandle={item.fileHandle}
+                    setFileHandle={(newHandle) => setItemValue('fileHandle',newHandle)}
                     setFileExt={(newExt) => setItemValue('fileExt',newExt)}
                     />
             </div>
@@ -41,13 +39,15 @@ export default class File extends AbstrackBlock {
     }
 
     static mainElementReadOnly = ({item}) => {
-        return <div
-            className="w-full div-highlighted flex flex-row items-center gap-4 my-2 p-4">
+        console
+        return <a
+            className="w-full div-highlighted flex flex-row items-center gap-4 my-2 p-4 no-underline"
+            href={ item.fileHandle && route('resources.file', { 'handle': item.fileHandle } ) }>
             <FontAwesomeIcon icon={solid('file')} className="text-6xl" />
             <div className="flex flex-col grow gap-2">
                 <div className="text-lg">{item.title}</div>
                 <div><b>Estensione:</b> {item.fileExt}</div>
             </div>
-        </div>
+        </a>
     }
 }

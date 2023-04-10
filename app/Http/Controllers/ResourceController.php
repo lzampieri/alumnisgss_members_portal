@@ -154,7 +154,7 @@ class ResourceController extends Controller
         $validated['file']->storeAs('files', $file->handle );
         Log::debug('File uploaded', $file );
 
-        return redirect()->back()->with(['notistack' => ['success', 'File caricato'], 'inertiaFlash' => ['selectedFileId' => $file->id, 'selectedFileExt' => $extension ]]);
+        return redirect()->back()->with(['notistack' => ['success', 'File caricato'], 'inertiaFlash' => ['selectedFileHandle' => $file->handle, 'selectedFileExt' => $extension ]]);
     }
 
     public function delete(Request $request)
