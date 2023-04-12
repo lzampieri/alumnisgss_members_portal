@@ -68,6 +68,12 @@
     .textarea-reset {
         @apply py-0 px-1 border-0 bg-transparent
     }
+    .react-draft-wysiwys-container {
+        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 cursor-default
+    }
+    .react-draft-wysiwys-editor {
+        @apply px-4
+    }
     label {
         @apply text-gray-500 text-sm pt-4
     }

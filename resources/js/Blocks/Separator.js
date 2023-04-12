@@ -1,7 +1,6 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import AbstrackBlock from "./BlockEnvironment";
 
-export default class Separator extends AbstrackBlock {
+export default class Separator {
     static title = "Separatore"
     static icon = solid('grip-lines')
 

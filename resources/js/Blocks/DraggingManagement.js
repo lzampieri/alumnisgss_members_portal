@@ -14,7 +14,7 @@ export default function DraggingManagement({ list, updateOrder, renderItem }) {
     return <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable_area">
             {(provided) =>
-                <ul {...provided.droppableProps} ref={provided.innerRef} className="w-full">
+                <ul {...provided.droppableProps} ref={provided.innerRef} className="w-full flex flex-col gap-2">
                     {list.map((item, index) =>
                         <Draggable key={item.id} draggableId={"" + item.id} index={index}>
                             {(provided) =>

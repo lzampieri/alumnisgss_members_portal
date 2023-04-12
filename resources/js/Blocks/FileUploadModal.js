@@ -7,7 +7,6 @@ import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { enqueueSnackbar } from "notistack";
 import { useForm, usePage } from '@inertiajs/react';
 import Backdrop from "../Layout/Backdrop";
-import { postRequest } from "../Utils";
 
 
 export default function FileUploadModal({ fileHandle, setFileHandle, setFileExt }) {

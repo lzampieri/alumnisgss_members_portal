@@ -1,10 +1,9 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import AbstrackBlock from "./BlockEnvironment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FileUploadModal from "./FileUploadModal";
 
 
-export default class File extends AbstrackBlock {
+export default class File {
     static title = "File"
     static icon = solid('file')
 
