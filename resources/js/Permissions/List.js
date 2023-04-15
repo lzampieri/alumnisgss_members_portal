@@ -64,7 +64,6 @@ function roleAdd(setProcessing) {
     const [open, setOpen] = useState(false);
 
     const submit = (e) => {
-        console.log("Submitting");
         e.preventDefault()
         setProcessing(true)
         post(route('roles.add'), { onFinish: () => setProcessing(false), onSuccess: () => { reset(), setOpen(false) }, preserveState: true, preserveScroll: true });

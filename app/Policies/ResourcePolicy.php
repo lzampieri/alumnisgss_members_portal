@@ -23,7 +23,7 @@ class ResourcePolicy
      */
     public function view(?User $user, Resource $resource)
     {
-        return DynamicPermission::UserCanViewPermissable( $resource, $user->identity ) || DynamicPermission::UserCanEditPermissable( $resource, $user->identity );
+        return DynamicPermission::UserCanViewPermissable( $resource, $user ? $user->identity : NULL ) || DynamicPermission::UserCanEditPermissable( $resource, $user ? $user->identity : NULL );
     }
 
     /**
@@ -46,7 +46,7 @@ class ResourcePolicy
      */
     public function edit(User $user, Resource $resource)
     {
-        return DynamicPermission::UserCanEditPermissable( $resource, $user->identity );
+        return DynamicPermission::UserCanEditPermissable( $resource, $user ? $user->identity : NULL );
     }
 
     /**
@@ -58,6 +58,6 @@ class ResourcePolicy
      */
     public function delete(User $user, Resource $resource)
     {
-        return DynamicPermission::UserCanEditPermissable( $resource, $user->identity );
+        return DynamicPermission::UserCanEditPermissable( $resource, $user ? $user->identity : NULL );
     }
 }

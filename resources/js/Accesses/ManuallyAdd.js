@@ -12,7 +12,6 @@ export default function ManuallyAdd() {
 
 
     const submit = (e) => {
-        console.log(data);
         e.preventDefault();
         post(route('auth.manually_add'));
     }

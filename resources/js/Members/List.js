@@ -17,7 +17,6 @@ function AlumnusItem(alumnus) {
 export default function List() {
     const members = usePage().props.members
 
-    console.log(members)
     return (
         <div className="main-container">
             <ListTemplate

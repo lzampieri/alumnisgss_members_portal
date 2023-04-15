@@ -13,7 +13,7 @@ export default function BulkState() {
     })
 
     transform((data) => {
-        console.log(data); return {
+        return {
             alumni_id: data.alumni.map(a => a.id),
             new_state: data.new_state.value
         }

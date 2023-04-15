@@ -39,7 +39,6 @@ function DocumentItem(document, canEdit) {
 export default function List() {
     const documents = usePage().props.documents
     const canEdit = usePage().props.canEdit
-    console.log(documents);
 
     return (
         <div className="main-container">

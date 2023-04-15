@@ -13,7 +13,7 @@ export default function Add() {
     })
 
     transform((data) => {
-        console.log(data); return {
+        return {
             alumni_id: data.alumni.map(a => a.id),
             required_state: data.required_state.value
         }

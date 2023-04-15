@@ -7,7 +7,7 @@ import { randomHex } from '../Utils';
 
 export default function BlocksEditor({ initialContent, saveCallback }) {
 
-    const [list, setList] = useState(initialContent)
+    const [list, setList] = useState(initialContent || [])
 
     const save = () => {
         saveCallback(list)
@@ -16,7 +16,6 @@ export default function BlocksEditor({ initialContent, saveCallback }) {
     const addBlockAt = (props, pos) => {
         let id = randomHex(6);
         while( list.map( item => item.id ).includes( id ) ) {
-            console.log("Regenerating...");
             id = randomHex(6);
         }
         props['id'] = id;
@@ -44,9 +43,7 @@ export default function BlocksEditor({ initialContent, saveCallback }) {
 
     const setData = (index,key,value) => {
         const oldData = list.slice()
-        console.log( oldData )
         oldData[index][key] = value
-        console.log( oldData )
         setList(oldData)
     }
 
