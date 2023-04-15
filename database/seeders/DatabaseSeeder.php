@@ -16,7 +16,14 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolesAndPermissionsSeeder::class,
             UsersSeeder::class,
-            ResourcesSeeder::class
         ]);
+
+        // Extra stuff for debug
+        if( env('APP_ENV') == 'local' ) {
+            $this->call([
+                ResourcesSeeder::class,
+                RatificationSeeder::class
+            ]);
+        }
     }
 }

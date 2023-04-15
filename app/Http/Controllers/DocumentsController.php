@@ -251,9 +251,10 @@ class DocumentsController extends Controller
         $pdf = new Fpdi();
         $pageCount = $pdf->setSourceFile(storage_path() . '/app/files/' . $file->handle);
 
-        $all_versions = $file->parent->files()->latest()->first()->pluck('id')->toArray();
+        
+        $all_versions = $file->parent->files()->oldest()->pluck('id')->toArray();
         $this_version = array_search( $file->id, $all_versions ) + 1;
-        $latest = $this_version == count( $all_versions );
+        $latest = ( $this_version == count( $all_versions ) );
         
         $pdf->setPrintHeader(false);
         $pdf->setPrintFooter(false);

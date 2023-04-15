@@ -7,6 +7,7 @@ use App\Models\Document;
 use App\Models\DynamicPermission;
 use App\Models\External;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 
 Route::prefix('/webmaster')->group( function () {

@@ -59,8 +59,8 @@ export default function Edit() {
 
             <label>Versioni</label>
             <ol className="list-disc list-inside">
-                {prevDoc.files.map(f =>
-                    <li key={f.id}><a href={route('board.view_file', { file: f.id })}>Versione {f.id}</a></li>
+                {prevDoc.files.map( (f, index) =>
+                    <li key={f.id}><a href={route('board.view_file', { file: f.id })} className={ index == prevDoc.files.length - 1 ? "font-bold" : ""}>Versione {index+1}</a></li>
                 )}
             </ol>
             <label className="unspaced">Si noti che solo l'ultima versione rimane visibile, secondo le opzioni di privacy selezionate. Inoltre, per questioni di protocollazione, vecchie versioni non possono essere eliminate, nemmeno se errate.</label>
