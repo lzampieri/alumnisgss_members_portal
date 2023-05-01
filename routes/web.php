@@ -33,5 +33,7 @@ include( 'roles.php' );
 
 include( 'webmaster.php' );
 
+include( 'permalinks.php' );
+
 Route::redirect('/main','https://www.alumniscuolagalileiana.it')->name('main');
 

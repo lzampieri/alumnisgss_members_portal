@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DynamicPermission;
 use App\Models\File;
+use App\Models\Permalink;
 use App\Models\Resource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,14 +17,14 @@ class ResourceController extends Controller
     {
         $params = [];
 
-        $params['resources'] = Resource::all()->filter->canView;
+        $params['resources'] = Resource::with('permalinks')->get()->filter->canView;
         $params['hidden'] = Resource::count() - $params['resources']->count();
 
         if( $resource ) {
             $this->authorize('view', $resource);
 
             $params['resource'] = $resource->append(['canView','canEdit'])
-                ->load(['dynamicPermissions','dynamicPermissions.role','files']);
+                ->load(['dynamicPermissions','dynamicPermissions.role','files','permalinks']);
         }
 
         $params['roles'] = Role::where('name','!=','webmaster')->orderBy('id')->get();
@@ -173,4 +174,21 @@ class ResourceController extends Controller
         return redirect()->route('resources')->with(['notistack' => ['success', 'Eliminata']]);
     }
 
+    public function add_permalink(Request $request)
+    {
+        $validated = $request->validate([
+            'resourceId' => 'required|integer|exists:resources,id',
+            'link' => 'required|string|max:125|alpha_dash|unique:permalinks,id'
+        ]);
+
+        $res = Resource::find( $validated['resourceId'] );
+        
+        $permalink = new Permalink([ 'id' => $validated['link'] ]);
+        $permalink->linkable()->associate( $res );
+        $permalink->save();
+
+        Log::debug('New permalink created', $permalink );
+
+        return redirect()->route('permalink',['permalink'=>$permalink])->with(['notistack' => ['success', 'Salvato']]);
+    }
 }

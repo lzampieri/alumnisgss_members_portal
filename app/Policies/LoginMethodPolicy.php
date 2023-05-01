@@ -13,7 +13,7 @@ class LoginMethodPolicy
     /**
      * Determine whether the user can login.
      *
-     * @param  \App\Models\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function login(User $user)
@@ -24,7 +24,7 @@ class LoginMethodPolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @param  \App\Models\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function viewAny(User $user)
@@ -35,7 +35,7 @@ class LoginMethodPolicy
     /**
      * Determine whether the user can add a new instance of the model.
      *
-     * @param  \App\Models\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function add(User $user)
@@ -46,18 +46,18 @@ class LoginMethodPolicy
     /**
      * Determine whether the user can delete the models.
      *
-     * @param  \App\Models\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
      * @param  \App\Models\LoginMethod  $lmth
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function delete(User $user, LoginMethod $lmth)
     {
-        if( $user->hasPermissionTo('logins-delete') )
+        if ($user->hasPermissionTo('logins-delete'))
             return true;
 
-        if( $lmth->identity )
-            if( $lmth->identity_type == $user->identity_type )
-                if( $lmth->identity_id == $user->identity_id )
+        if ($lmth->identity)
+            if ($lmth->identity_type == $user->identity_type)
+                if ($lmth->identity_id == $user->identity_id)
                     return true;
 
         return false;
@@ -66,7 +66,7 @@ class LoginMethodPolicy
     /**
      * Determine whether the user can associate a login method to an identity.
      *
-     * @param  \App\Models\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
      * @param  \App\Models\LoginMethod  $lmth
      * @return \Illuminate\Auth\Access\Response|bool
      */

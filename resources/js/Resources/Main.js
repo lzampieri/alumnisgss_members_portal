@@ -5,6 +5,7 @@ import { useState } from "react";
 import BlocksEditor from "../Blocks/BlocksEditor";
 import ResourceDetails from "./ResourceDetails";
 import Create from "./Create";
+import computeResourceLink from "./computeResourceLink";
 
 export default function Main() {
     const resources = usePage().props.resources
@@ -18,7 +19,7 @@ export default function Main() {
                         <Link
                             className="drawer-item"
                             aria-selected={resource?.id == res.id}
-                            href={route('resources', { 'resource': res.id })}
+                            href={ computeResourceLink( res ) }
                             as="div"
                             key={res.id}
                         >

@@ -12,7 +12,7 @@ class RatificationPolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @param  \App\Models\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function view(User $user)
@@ -23,7 +23,7 @@ class RatificationPolicy
     /**
      * Determine whether the user can add any models.
      *
-     * @param  \App\Models\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function edit(User $user)

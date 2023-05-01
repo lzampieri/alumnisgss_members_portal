@@ -13,7 +13,7 @@ class AlumnusPolicy
     /**
      * Determine whether the user can view the REGISTERED MEMBERS with only BASIC DETAILS
      *
-     * @param  \App\Models\User  $user optional
+     * @param  \Illuminate\Support\Facades\Auth\User  $user optional
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function viewMembers(?User $user)
@@ -24,7 +24,7 @@ class AlumnusPolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @param  \App\Models\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function viewAny(User $user)
@@ -35,7 +35,7 @@ class AlumnusPolicy
     /**
      * Determine whether the user can edit models.
      *
-     * @param  \App\Models\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function edit(User $user)
@@ -46,7 +46,7 @@ class AlumnusPolicy
     /**
      * Determine whether the user can edit models in bulk.
      *
-     * @param  \App\Models\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function bulkEdit(User $user)
@@ -57,7 +57,7 @@ class AlumnusPolicy
     /**
      * Determine whether the user can enable models.
      *
-     * @param  \App\Models\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function enable(User $user)
@@ -68,7 +68,7 @@ class AlumnusPolicy
     /**
      * Determine whether the user can assign status which usually requires ratification.
      *
-     * @param  \App\Models\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function bypassRatification(User $user)

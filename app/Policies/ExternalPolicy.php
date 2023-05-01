@@ -14,7 +14,7 @@ class ExternalPolicy
     /**
      * Determine whether the user can enable models.
      *
-     * @param  \App\Models\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function enable(User $user)

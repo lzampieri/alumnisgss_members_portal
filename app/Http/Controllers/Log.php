@@ -7,6 +7,7 @@ use App\Models\Document;
 use App\Models\DynamicPermission;
 use App\Models\External;
 use App\Models\LoginMethod;
+use App\Models\Permalink;
 use App\Models\Ratification;
 use App\Models\Resource;
 use App\Models\User;
@@ -52,6 +53,8 @@ class Log extends Controller
             return $object->type . " of " . $object->role->name . " for " . Log::stringify( $object->permissable );
         if( $object instanceof Resource )
             return "Resource " . $object->title . ": " . json_encode( $object->content );
+        if( $object instanceof Permalink )
+            return "Permalink " . $object->id . " to " . $object->linkable_type . " #" . $object->linkable_id;
         return $object;
     }
 

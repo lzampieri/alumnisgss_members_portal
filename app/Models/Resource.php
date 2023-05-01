@@ -28,4 +28,9 @@ class Resource extends Model
     public function getCanEditAttribute() {
         return DynamicPermission::UserCanEditPermissable($this);
     }
+
+    public function permalinks() {
+        return $this->morphMany( Permalink::class, 'linkable' );
+    }
+
 }

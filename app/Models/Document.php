@@ -19,13 +19,6 @@ class Document extends Model
         'date' => 'datetime',
     ];
 
-    public static $privacies = [
-        'everyone',
-        'members',
-        'cda',
-        'secretariat'
-    ];
-
     public function author() {
         return $this->morphTo();
     }
