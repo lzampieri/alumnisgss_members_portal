@@ -2,7 +2,10 @@ require('custom-env').env()
 
 const mix = require('laravel-mix');
 
+console.log("=================================")
+console.log("Compiling using as mix asset url:")
 console.log(process.env.MIX_ASSET_URL);
+console.log("=================================")
 
 /*
  |--------------------------------------------------------------------------

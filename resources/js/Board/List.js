@@ -18,7 +18,7 @@ function DocumentItem(document, canEdit) {
                 </span>
             </div>
             <div className="grow flex flex-col">
-                <span className="text-gray-500 text-sm">Protocollo web {document.handle}</span>
+                <span className="text-gray-500 text-sm">Protocollo web {document.protocol}</span>
                 <span className="text-xl font-bold">{document.identifier}</span>
                 <span className="text-sm">Visibilità:
                     {" " + document.dynamic_permissions.map(dp => dp.role.common_name).join(", ")}

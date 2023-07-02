@@ -60,7 +60,7 @@ export default function List() {
                         <ul className="list-disc list-inside">
                             {Object.values(closed_rats[r]).map(a =>
                                 <li key={a.id}>
-                                    {a.alumnus.surname} {a.alumnus.name} <span className="text-gray-400">{romanize(a.alumnus.coorte)}{a.alumnus.coorte != 0 && " coorte"}</span> Approvata in data {new Date(a.document.date).toLocaleDateString('it-IT', { 'dateStyle': 'long' })} - <a href={route('board.view', { document: a.document.id })}>{a.document.identifier}</a>
+                                    {a.alumnus.surname} {a.alumnus.name} <span className="text-gray-400">{romanize(a.alumnus.coorte)}{a.alumnus.coorte != 0 && " coorte"}</span> Approvata in data {new Date(a.document.date).toLocaleDateString('it-IT', { 'dateStyle': 'long' })} - <a href={route('board.view_document', { protocol: a.document.protocol })}>{a.document.identifier}</a>
                                 </li>
                             )}
                         </ul>
