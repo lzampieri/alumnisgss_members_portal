@@ -23,6 +23,12 @@ class Alumnus extends Identity
             $availableStatus[] = $alumnus->status;
         return array_values( $availableStatus );
     }
+    // All used tags
+    public static function allTags() {
+        $all_tags = array_filter( Alumnus::all('tags')->pluck('tags')->toArray() );
+        if( count( $all_tags ) == 0 ) return [];
+        return array_merge( ...$all_tags );
+    }
     // Labels
     const AlumnusStatusLabels = [
         'member' => 'Socio',
@@ -51,7 +57,11 @@ class Alumnus extends Identity
         'name',
         'surname',
         'coorte',
-        'status'
+        'status',
+        'tags'
+    ];
+    protected $casts = [
+        'tags' => 'array',
     ];
 
     public function hasPermissionTo($permission, $guardName = null): bool

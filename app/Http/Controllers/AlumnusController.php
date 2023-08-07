@@ -43,30 +43,6 @@ class AlumnusController extends Controller
         return Inertia::render('Registry/List', ['alumni' => $alumni, 'canEditBulk' => Auth::user()->can('bulkEdit', Alumnus::class)]);
     }
 
-    public function add()
-    {
-        $this->authorize('edit', Alumnus::class);
-
-        return Inertia::render('Registry/Add', ['availableStatus' => Alumnus::availableStatus()]);
-    }
-
-    public function add_post(Request $request)
-    {
-        $this->authorize('edit', Alumnus::class);
-
-        $validated = $request->validate([
-            'surname' => 'required|regex:/^[A-zÀ-ú\s]+$/',
-            'name' => 'required|regex:/^[A-zÀ-ú\s]+$/',
-            'coorte' => 'required|numeric',
-            'status' => 'required|in:' . implode(',', Alumnus::availableStatus())
-        ]);
-
-        Alumnus::create($validated);
-        Log::debug('Alumnus created', $validated);
-
-        return redirect()->route('registry')->with('notistack', ['success', 'Inserimento riuscito']);
-    }
-
     public function bulk_im()
     {
         $this->authorize('bulkEdit', Alumnus::class);
@@ -206,14 +182,18 @@ class AlumnusController extends Controller
         }, 'export_' . date('Ymd') . '_' . env('APP_ENV', 'debug') .  '.xlsx');
     }
 
-    public function edit(Request $request, Alumnus $alumnus)
+    public function edit(Request $request, ?Alumnus $alumnus = null)
     {
         $this->authorize('edit', Alumnus::class);
 
-        return Inertia::render('Registry/Edit', ['alumnus' => $alumnus, 'availableStatus' => Alumnus::availableStatus($alumnus)]);
+        return Inertia::render('Registry/Edit', [
+            'alumnus' => $alumnus,
+            'availableStatus' => Alumnus::availableStatus($alumnus),
+            'allTags' => Alumnus::allTags()
+        ]);
     }
 
-    public function edit_post(Request $request, Alumnus $alumnus)
+    public function edit_post(Request $request, ?Alumnus $alumnus = null)
     {
         $this->authorize('edit', Alumnus::class);
 
@@ -221,16 +201,26 @@ class AlumnusController extends Controller
             'surname' => 'required|regex:/^[A-zÀ-ú\s]+$/',
             'name' => 'required|regex:/^[A-zÀ-ú\s]+$/',
             'coorte' => 'required|numeric',
-            'status' => 'required|in:' . implode(',', Alumnus::availableStatus($alumnus))
+            'status' => 'required|in:' . implode(',', Alumnus::availableStatus($alumnus)),
+            'tags' => 'nullable|array'
         ]);
 
-        $alumnus->update($validated);
-        Log::debug('Alumnus updated', $validated);
+        if( $alumnus ) {
 
-        return redirect()->route('registry')->with('notistack', ['success', 'Aggiornamento riuscito']);
+            $alumnus->update($validated);
+            Log::debug('Alumnus updated', $validated);
+
+            return redirect()->route('registry')->with('notistack', ['success', 'Aggiornamento riuscito']);
+
+        }
+
+        Alumnus::create($validated);
+        Log::debug('Alumnus created', $validated);
+
+        return redirect()->route('registry')->with('notistack', ['success', 'Inserimento riuscito']);
     }
 
-
+    
     public function bulk_edit()
     {
         $this->authorize('bulkEdit', Alumnus::class);

@@ -3,8 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, usePage } from "@inertiajs/react";
 import { AlumnusStatus, bgAndContrast, romanize } from "../Utils";
 import ListTemplate from "./ListTemplate";
+import { useState } from "react";
 
-function AlumnusLink(alumnus) {
+function AlumnusLink(alumnus, showTags, tagsDict) {
     return (
         <div className="mylist-item flex flex-row p-2">
             <span style={{ color: AlumnusStatus.status[alumnus.status].color }} className="pr-2 group relative z-auto">
@@ -23,6 +24,13 @@ function AlumnusLink(alumnus) {
             </span>}
             {alumnus.surname} {alumnus.name}
             <div className="chip">{romanize(alumnus.coorte)}</div>
+            { showTags && alumnus.tags?.map( i =>
+                <div className="chip group relative z-auto !mx-0" key={i} style={bgAndContrast('#1f77b4')} >
+                    {tagsDict[i]}  
+                    <span className="tooltip-right">
+                        {i}
+                    </span>
+                </div> ) }
             <div className="grow"></div>
             <Link className="icon-button" href={route('registry.edit', { alumnus: alumnus.id })}><FontAwesomeIcon icon={solid('pen')} /></Link>
         </div>
@@ -31,6 +39,13 @@ function AlumnusLink(alumnus) {
 
 export default function List() {
     const alumni = usePage().props.alumni
+    const tagsList = [...new Set( alumni.map( (i) => i.tags || [] ).flat() )];
+    const tagsDict = {}
+    tagsList.forEach( i => {
+        let letters = 1;
+        while( Object.values( tagsDict ).includes( i.substring(0,letters).toUpperCase() ) ) letters += 1;
+        tagsDict[i] = i.substring(0,letters).toUpperCase();
+    });
 
     return (
         <div className="main-container">
@@ -68,7 +83,8 @@ export default function List() {
             </div>
             <ListTemplate
                 data={alumni}
-                itemFunction={AlumnusLink} />
+                itemFunction={AlumnusLink}
+                tagsDict={tagsDict}/>
         </div>
     );
 }
