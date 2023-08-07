@@ -19,7 +19,7 @@ class Alumnus extends Identity
             $availableStatus = Alumnus::status;
         else
             $availableStatus = array_diff(Alumnus::status, Alumnus::require_ratification);
-        if( $alumnus && !in_array( $alumnus->status, $availableStatus ) )
+        if( $alumnus && $alumnus->id && !in_array( $alumnus->status, $availableStatus ) )
             $availableStatus[] = $alumnus->status;
         return array_values( $availableStatus );
     }

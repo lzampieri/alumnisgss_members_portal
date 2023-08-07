@@ -10,15 +10,15 @@ export default function Edit() {
     const [dirtyDialog, setDirtyDialog] = useState(false);
 
     const { data, setData, post, processing, errors, isDirty } = useForm({
-        surname: prev.surname,
-        name: prev.name,
-        coorte: prev.coorte,
-        status: prev.status
+        surname: prev?.surname || '',
+        name: prev?.name || '',
+        coorte: prev?.coorte || 1,
+        status: prev?.status || 'not_reached'
     })
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('registry.edit', { alumnus: prev.id }));
+        post(route('registry.edit', { alumnus: prev?.id }));
     }
 
     const checkIfDirty = (e) => {
@@ -35,7 +35,7 @@ export default function Edit() {
 
     return (
         <form className="flex flex-col w-full md:w-3/5" onSubmit={submit}>
-            <h3>Aggiorna alumno</h3>
+            <h3>{ prev ? "Aggiorna" : "Crea nuovo"} alumno</h3>
             <label>Cognome</label>
             <input type="text" value={data.surname} onChange={(e) => setData('surname', e.target.value)} />
             <label className="error">{errors.surname}</label>
