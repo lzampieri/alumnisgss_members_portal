@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 // Members
 Route::prefix('/members')->group( function () {
     Route::get('/', [ AlumnusController::class, 'membersList' ] )->name('members');
+
+    Route::get('/counters', [ AlumnusController::class, 'membersCounters' ] )->name('members.counters');
 });
 
 // Registry

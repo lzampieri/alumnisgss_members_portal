@@ -14,11 +14,30 @@ function AlumnusItem(alumnus) {
     )
 }
 
+function Counters({members, students}) {
+    return <div className="w-full flex flex-row justify-center mb-8">
+        <div className="flex flex-col justify-right text-right basis-0 grow">
+            <div className="text-6xl">{members}</div>
+            <div className="text-xl italic">Soci</div>
+        </div>
+        <div className="separator"></div>
+        <div className="flex flex-col justify-left text-left basis-0 grow">
+            <div className="text-6xl">{students}</div>
+            <div className="text-xl italic">Soci studenti</div>
+        </div>
+    </div>
+}
+
 export default function List() {
     const members = usePage().props.members
 
+    const members_count = members.map(alumnus => alumnus.status).filter((v) => v === 'member').length;
+    const students_count = members.map(alumnus => alumnus.status).filter((v) => v === 'student_member').length;
+
+
     return (
         <div className="main-container">
+            <Counters members={members_count} students={students_count} />
             <ListTemplate
                 data={members} itemFunction={AlumnusItem} />
         </div>

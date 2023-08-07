@@ -21,6 +21,18 @@ class AlumnusController extends Controller
         return Inertia::render('Members/List', ['members' => $members]);
     }
 
+    public function membersCounters()
+    {
+        $this->authorize('viewMembers', Alumnus::class);
+        $members = Alumnus::where('status', 'member')->count();
+        $students = Alumnus::where('status', 'student_member')->count();
+
+        return response()->json([
+            'members' => $members,
+            'student_members' => $students
+        ]);
+    }
+
     public function list()
     {
         $this->authorize('viewAny', Alumnus::class);
