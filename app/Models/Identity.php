@@ -46,6 +46,10 @@ abstract class Identity extends Model {
         return $this->morphMany( Document::class, 'author' );
     }
 
+    public function details() {
+        return $this->morphMany( IdentityDetail::class, 'identity' );
+    }
+
     protected $appends = ['enabled'];
     public function getEnabledAttribute() {
         return $this->hasPermissionTo('login');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
+use App\Models\IdentityDetail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -185,38 +186,75 @@ class AlumnusController extends Controller
     public function edit(Request $request, ?Alumnus $alumnus = null)
     {
         $this->authorize('edit', Alumnus::class);
+        
+        if( $alumnus )
+            $alumnus->load('details');
 
         return Inertia::render('Registry/Edit', [
             'alumnus' => $alumnus,
             'availableStatus' => Alumnus::availableStatus($alumnus),
-            'allTags' => Alumnus::allTags()
+            'allTags' => Alumnus::allTags(),
+            'allDetails' => IdentityDetail::allDetailsNames()
         ]);
     }
 
     public function edit_post(Request $request, ?Alumnus $alumnus = null)
     {
         $this->authorize('edit', Alumnus::class);
+        $update = false;
 
         $validated = $request->validate([
             'surname' => 'required|regex:/^[A-zÀ-ú\s]+$/',
             'name' => 'required|regex:/^[A-zÀ-ú\s]+$/',
             'coorte' => 'required|numeric',
             'status' => 'required|in:' . implode(',', Alumnus::availableStatus($alumnus)),
-            'tags' => 'nullable|array'
+            'tags' => 'nullable|array',
+            'details' => 'nullable|array',
+            'details.*' => 'nullable|array',
+            'details.*.delete' => 'nullable|boolean',
+            'details.*.key' => 'exclude_if:details.*.delete,true|required|min:3|max:200',
+            'details.*.value' => 'exclude_if:details.*.delete,true|nullable',
         ]);
 
         if( $alumnus ) {
 
             $alumnus->update($validated);
             Log::debug('Alumnus updated', $validated);
+            $update = true;
+            
+        }
+        else { 
 
-            return redirect()->route('registry')->with('notistack', ['success', 'Aggiornamento riuscito']);
-
+            $alumnus = Alumnus::create($validated);
+            Log::debug('Alumnus created', $validated);
         }
 
-        Alumnus::create($validated);
-        Log::debug('Alumnus created', $validated);
+        foreach( $validated['details'] as $detail ) {
+            if( array_key_exists( 'id', $detail ) && $detail['id'] >= 0 ) {
+                $det = IdentityDetail::find( $detail['id'] );
 
+                // Details already exists; check if to delete)
+                if( array_key_exists( 'delete', $detail ) && $detail['delete'] ) {
+                    Log::debug("Deleted detail", $detail);
+                    $det->delete();
+                } else {
+                    // Update if necessary
+                    if( $det->key != $detail['key'] || $det->value != $detail['value'] ) {
+                        $det->update( [ 'key' => $detail['key'], 'value' => $detail['value'] ] );
+                        Log::debug("Updated detail", $detail);
+                    }
+                }
+            }
+            else {
+                // New details must be created
+                if( !array_key_exists( 'delete', $detail ) || !$detail['delete'] ) {
+                    $alumnus->details()->create([ 'key' => $detail['key'], 'value' => $detail['value'] ] );
+                    Log::debug("New detail created", $detail);
+                }
+            }
+        }
+        
+        if( $update ) return redirect()->route('registry')->with('notistack', ['success', 'Aggiornamento riuscito']);
         return redirect()->route('registry')->with('notistack', ['success', 'Inserimento riuscito']);
     }
 

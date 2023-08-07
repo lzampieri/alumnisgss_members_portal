@@ -63,7 +63,8 @@ class UsersSeeder extends Seeder
                 'name' => 'alumno',
                 'surname' => 'unipd',
                 'coorte' => 12,
-                'status' => 'member'
+                'status' => 'member',
+                'tags' => ''
             ]);
 
             $alumnus_user_lm = LoginMethod::create([

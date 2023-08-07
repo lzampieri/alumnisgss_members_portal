@@ -27,7 +27,7 @@ class Alumnus extends Identity
     public static function allTags() {
         $all_tags = array_filter( Alumnus::all('tags')->pluck('tags')->toArray() );
         if( count( $all_tags ) == 0 ) return [];
-        return array_merge( ...$all_tags );
+        return array_unique( array_merge( ...$all_tags ) );
     }
     // Labels
     const AlumnusStatusLabels = [
