@@ -10,7 +10,10 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
+use function Psy\debug;
 
 class AlumnusExportImportController extends Controller
 {
@@ -250,5 +253,159 @@ class AlumnusExportImportController extends Controller
         return response()->streamDownload(function () use ($writer) {
             $writer->save('php://output');
         }, 'detailedexport_' . date('Ymd') . '_' . env('APP_ENV', 'debug') .  '.xlsx');
+    }
+
+    public function importExcelDetails()
+    {
+        $this->authorize('import', Alumnus::class);
+
+        return Inertia::render('Registry_ImpExp/ImportDetails');
+    }
+
+    public function importExcelDetails_post(Request $request)
+    {
+        $this->authorize('import', Alumnus::class);
+        $output = "";
+
+        $validated = $request->validate([
+            'file' => 'required|mimes:xlsx',
+        ]);
+
+        // Load file
+        $spreadsheet = IOFactory::load( $validated['file'] );
+        $sheet = $spreadsheet->getActiveSheet();
+        
+        // Checking compatibility: title
+        $title = $sheet->getCellByColumnAndRow(1,1)->getValue();
+        if( $title != "Soci - Lista dettagliata" )
+            return redirect()->back()->with('notistack', ['error', "File non compatibile."]);
+            
+        // Check compatibility: length
+        $alumnusNumber = $sheet->getHighestRow() - 6;
+        if( $alumnusNumber < 1 )
+            return redirect()->back()->with('notistack', ['error', "Nessun alumno nella lista."]);
+        $columnsNumber = Coordinate::columnIndexFromString( $sheet->getHighestColumn() );
+        if( $columnsNumber < 6 )
+            return redirect()->back()->with('notistack', ['error', "File non compatibile."]);
+
+        // Compute the details dictionary
+        $detailsKeys = [];
+        for( $i = 7; $i < $columnsNumber; $i += 2 ) {
+            $detailsKeys[ $i ] = $sheet->getCellByColumnAndRow( $i + 1, 6 )->getValue();
+        }
+
+        $keys   = [ 'id', 'surname', 'name', 'coorte', 'status', 'tags'];
+
+        // Go alumnus by alumnus
+        for( $i = 0; $i < $alumnusNumber; $i++ ) {
+            $row = $i + 7;
+
+            // Load data
+            $newPars = array_combine( $keys, $sheet->rangeToArray( "A$row:F$row" )[0] );
+            $alumnus = Alumnus::find( $newPars['id'] );
+
+            // Check surname and name
+            if( !$newPars['surname'] || !$newPars['name'] ) {
+                $output .= "Skipped alumnus $i due to invalid name or surname";
+                continue;
+            }
+
+            // Check status
+            $newPars['status'] = array_search( $newPars['status'], Alumnus::AlumnusStatusLabels );
+            if( !in_array( $newPars['status'], Alumnus::status ) )
+                $newPars['status'] = 'not_reached';
+            if( !in_array( $newPars['status'], Alumnus::availableStatus( $alumnus ) ) )
+                $newPars['status'] = $alumnus ? $alumnus['status'] : 'not_reached';
+
+            // Check coorte
+            $newPars['coorte'] = intval( $newPars['coorte'] );
+
+            // Check tags
+            $newPars['tags_array'] = array_filter( array_map( 'trim', explode( ';', $newPars['tags'] ) ), 'strlen' );
+
+            if( $alumnus ) {
+
+                $toSave = false;
+
+                // Check par by par
+                foreach( ['surname','name','coorte','status'] as $field ) {
+                    if( $alumnus[$field] != $newPars[$field] ) {
+                        $toSave = true;
+                        Log::debug( 'Updating', ['field' => $field, 'alumnus' => $alumnus, 'new value' => $newPars[$field] ] );
+                        $output .= "Updated ".$field." for ".$alumnus['surname']." ".$alumnus['name']." to ".$newPars[$field]."\n";
+
+                        $alumnus[$field] = $newPars[$field];
+                    }
+                }
+
+                // Check tags
+                $oldTags = is_array( $alumnus['tags'] ) ? implode( '; ',$alumnus['tags'] ) : "";
+                if( $oldTags != $newPars['tags']) {
+
+                    $toSave = true;
+                    Log::debug( 'Updating', ['field' => 'tags', 'alumnus' => $alumnus, 'new value' => $newPars['tags_array'] ] );
+                    $output .= "Updated tags for ".$alumnus['surname']." ".$alumnus['name']." to ".$newPars['tags']."\n";
+
+                    $alumnus['tags'] = $newPars['tags_array'];
+                }
+
+                if( $toSave )
+                    $alumnus->save();
+
+            } else {
+                $alumnus = Alumnus::create( [
+                    'surname' => $newPars['surname'],
+                    'name' => $newPars['name'],
+                    'coorte' => $newPars['coorte'],
+                    'status' => $newPars['status'],
+                    'tags' => $newPars['tags_array'],
+                ] );
+
+                Log::debug('New alumnus created!',[$alumnus]);
+                $output .= "Created new alumnus ".$alumnus['surname']." ".$alumnus['name']."\n";
+            }
+
+            // Check details
+            foreach( $detailsKeys as $col => $key ) {
+                $oldId = $sheet->getCellByColumnAndRow( $col, $row )->getValue();
+                $newValue = $sheet->getCellByColumnAndRow( $col + 1, $row )->getValue();
+
+                $detail = IdentityDetail::find( $oldId );
+
+                if( $detail ) {
+
+                    // Detail already exists: check if updated needed
+                    if( $newValue && strlen( $key ) > 0 ) {
+                        
+                        if( $newValue != $detail['value'] || $key != $detail['key'] ) {
+                            $detail->update( [ 'key ' => $key, 'value' => $newValue ] );
+                            Log::debug( 'Updating detail', $detail );
+                            $output .= "Updated " . $key . " for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newValue . "\n";
+                        }
+
+                    } else {
+
+                        // New value is empty; must be deleted
+                        Log::debug( 'Deleting detail', $detail );
+                        $output .= "Deleted " . $key . " for " . $alumnus['surname'] . " " . $alumnus['name'] . "\n";
+                        $detail->delete();
+                    }
+
+                } else {
+
+                    if( $newValue && strlen( $key ) > 0 ) {
+                        // New detail must be created
+                        $alumnus->details()->create([ 'key' => $key, 'value' => $newValue ] );
+                        Log::debug("New detail created", $detail);
+                        $output .= "Added " . $key . " for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newValue . "\n";
+                    }
+                }
+            }
+
+        }
+
+        return redirect()->back()
+            ->with('notistack',['success', "Importazione eseguita con successo. " . $alumnusNumber . " alumni analizzati."])
+            ->with('inertiaFlash',$output);
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Block;
 use App\Models\External;
 use App\Models\LoginMethod;
 use Illuminate\Database\Seeder;
+use PhpOption\None;
 
 class UsersSeeder extends Seeder
 {
@@ -64,7 +65,7 @@ class UsersSeeder extends Seeder
                 'surname' => 'unipd',
                 'coorte' => 12,
                 'status' => 'member',
-                'tags' => ''
+                'tags' => []
             ]);
 
             $alumnus_user_lm = LoginMethod::create([

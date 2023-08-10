@@ -59,6 +59,14 @@ function permissionAdd(setProcessing) {
     </form >
 }
 
+function permissionVerify(setProcessing) {
+
+
+    return <div className="w-full flex flex-row items-stretch mt-4">
+        <Link className="button" href={route('permissions.verify')}>Verifica lista permessi</Link>
+    </div>
+}
+
 function roleAdd(setProcessing) {
     const { data, setData, errors, post, reset } = useForm({ name: "", common_name: "" });
     const [open, setOpen] = useState(false);
@@ -108,6 +116,7 @@ export default function List() {
             </ResponsiveDrawer.Drawer>
             {selectedIdx >= 0 && RoleCard(roles[selectedIdx], perms, setProcessing)}
             {permissionAdd(setProcessing)}
+            {permissionVerify(setProcessing)}
         </ResponsiveDrawer>
         <Backdrop open={processing} />
     </div>

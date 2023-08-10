@@ -97,7 +97,7 @@ class PermissionsController extends Controller
             // Registry
             'alumnus-view',
             'alumnus-edit',
-            'alumnus-bulk',
+            'alumnus-import',
             // Ratifications
             'ratifications-view',
             'ratifications-edit',

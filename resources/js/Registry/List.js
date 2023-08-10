@@ -54,12 +54,6 @@ export default function List() {
                     <FontAwesomeIcon icon={solid('circle-plus')} />
                     Aggiungi
                 </Link>
-                {/*usePage().props.canEditBulk &&
-                    <Link className="button" href={route('registry.bulk.import')}>
-                        <FontAwesomeIcon icon={solid('folder-plus')} />
-                        Importa
-                    </Link>
-                */}
                 <div className="dropdown-parent group" >
                     <div className="button">
                         <FontAwesomeIcon icon={solid('download')} />
@@ -77,6 +71,12 @@ export default function List() {
                         </a>
                     </div>
                 </div >
+                { usePage().props.canImport &&
+                    <Link className="button" href={route('registry.impexp.import.xls_details')}>
+                        <FontAwesomeIcon icon={solid('folder-plus')} />
+                        Importa
+                    </Link>
+                }
                 {/* {usePage().props.canEditBulk &&
                     <a className="button" href={route('registry.bulk.edit')}>
                         <FontAwesomeIcon icon={solid('file-pen')} />

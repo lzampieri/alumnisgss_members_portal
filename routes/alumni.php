@@ -28,6 +28,8 @@ Route::prefix('/registry/impexp')->group( function () {
 
     // Members detailed list
     Route::get('/bulk/export/xls_details', [ AlumnusExportImportController::class, 'exportExcelDetails' ] )->name('registry.impexp.export.xls_details');
+    Route::get('/bulk/import/xls_details', [ AlumnusExportImportController::class, 'importExcelDetails' ] )->name('registry.impexp.import.xls_details');
+    Route::post('/bulk/import/xls_details', [ AlumnusExportImportController::class, 'importExcelDetails_post' ] );
 
 
     // Route::get('/bulk/import', [ AlumnusController::class, 'bulk_im' ] )->name('registry.bulk.import');

@@ -50,9 +50,9 @@ class AlumnusPolicy
      * @param  \Illuminate\Support\Facades\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function bulkEdit(User $user)
+    public function import(User $user)
     {
-        return $user->hasPermissionTo('alumnus-bulk');
+        return $user->hasPermissionTo('alumnus-import');
     }
 
     /**

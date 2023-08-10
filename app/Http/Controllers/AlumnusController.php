@@ -41,7 +41,7 @@ class AlumnusController extends Controller
             $query->whereNull('document_id');
         }])->orderBy('surname')->orderBy('name')->get();
 
-        return Inertia::render('Registry/List', ['alumni' => $alumni, 'canEditBulk' => Auth::user()->can('bulkEdit', Alumnus::class)]);
+        return Inertia::render('Registry/List', ['alumni' => $alumni, 'canImport' => Auth::user()->can('import', Alumnus::class)]);
     }
 
     public function edit(Request $request, ?Alumnus $alumnus = null)
@@ -119,40 +119,40 @@ class AlumnusController extends Controller
         return redirect()->route('registry')->with('notistack', ['success', 'Inserimento riuscito']);
     }
     
-    public function bulk_edit()
-    {
-        $this->authorize('bulkEdit', Alumnus::class);
+    // public function bulk_edit()
+    // {
+    //     $this->authorize('bulkEdit', Alumnus::class);
 
-        return Inertia::render('Registry/BulkEdit', [
-            'alumni' => Alumnus::all(),
-            'availableStatus' => Alumnus::availableStatus(),
-        ]);
-    }
+    //     return Inertia::render('Registry/BulkEdit', [
+    //         'alumni' => Alumnus::all(),
+    //         'availableStatus' => Alumnus::availableStatus(),
+    //     ]);
+    // }
 
-    public function bulk_edit_post(Request $request)
-    {
-        $this->authorize('bulkEdit', Alumnus::class);
+    // public function bulk_edit_post(Request $request)
+    // {
+    //     $this->authorize('bulkEdit', Alumnus::class);
 
-        $validated = $request->validate([
-            'alumni_id' => 'required|array',
-            'alumni_id.*' => 'exists:alumni,id',
-            'new_state' => 'required|in:' . implode(',', Alumnus::availableStatus())
-        ]);
+    //     $validated = $request->validate([
+    //         'alumni_id' => 'required|array',
+    //         'alumni_id.*' => 'exists:alumni,id',
+    //         'new_state' => 'required|in:' . implode(',', Alumnus::availableStatus())
+    //     ]);
 
-        $edited = 0;
-        $toUpdate = Alumnus::whereIn('id', $validated['alumni_id'])->get();
+    //     $edited = 0;
+    //     $toUpdate = Alumnus::whereIn('id', $validated['alumni_id'])->get();
 
-        foreach ($toUpdate as $alumnus) {
-            if ($alumnus->status != $validated['new_state']) {
-                $edited++;
-                Log::debug('Alumnus status edited (bulk)', ['alumnus' => $alumnus, 'new_state' => $validated['new_state']]);
-                $alumnus->status = $validated['new_state'];
-                $alumnus->save();
-            }
-        }
+    //     foreach ($toUpdate as $alumnus) {
+    //         if ($alumnus->status != $validated['new_state']) {
+    //             $edited++;
+    //             Log::debug('Alumnus status edited (bulk)', ['alumnus' => $alumnus, 'new_state' => $validated['new_state']]);
+    //             $alumnus->status = $validated['new_state'];
+    //             $alumnus->save();
+    //         }
+    //     }
 
-        $output = "" . $edited . " su " . count($toUpdate) . " stati modificati";
+    //     $output = "" . $edited . " su " . count($toUpdate) . " stati modificati";
 
-        return redirect()->route('registry.bulk.edit')->with('notistack', ['success', $output]);
-    }
+    //     return redirect()->route('registry.bulk.edit')->with('notistack', ['success', $output]);
+    // }
 }
