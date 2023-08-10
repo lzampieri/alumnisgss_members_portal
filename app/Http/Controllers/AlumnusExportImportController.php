@@ -306,7 +306,7 @@ class AlumnusExportImportController extends Controller
 
             // Check surname and name
             if( !$newPars['surname'] || !$newPars['name'] ) {
-                $output .= "Skipped alumnus $i due to invalid name or surname";
+                $output .= "Skipped alumnus $i due to invalid name or surname\n";
                 continue;
             }
 
