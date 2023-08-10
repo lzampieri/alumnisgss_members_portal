@@ -215,7 +215,7 @@ class AlumnusExportImportController extends Controller
                 $content = $alumnus[$key];
                 if( $key == 'status' )
                     $content = Alumnus::AlumnusStatusLabels[$content];
-                if( $key == 'tags' )
+                if( is_array( $content ) )
                     $content = implode('; ', $content);
 
                 $this->writeXY( $sheet, $col + 1, $i + 7, $content );
