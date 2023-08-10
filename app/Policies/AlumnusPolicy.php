@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Http\Controllers\Log;
 use App\Models\Alumnus;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User;
