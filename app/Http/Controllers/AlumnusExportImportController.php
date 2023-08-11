@@ -240,6 +240,15 @@ class AlumnusExportImportController extends Controller
             $col_str = Coordinate::stringFromColumnIndex( $col );
             $sheet->getStyle( $col_str . ':' . $col_str )->getProtection()->setLocked(\PhpOffice\PhpSpreadsheet\Style\Protection::PROTECTION_PROTECTED);
         }
+        
+        // Prepare space for extra details
+        for( $col = 0; $col < 3; $col++ ) {
+            $cumcol = count( $titles ) + 2 * count( $detailsTitles ) + 2 * $col + 1;
+            $cumcolstr = Coordinate::stringFromColumnIndex( $cumcol );
+            $sheet->getColumnDimension( $cumcolstr )->setWidth( 4 );
+            $sheet->getColumnDimension( Coordinate::stringFromColumnIndex( $cumcol + 1 ) )->setWidth( 30 );
+            $sheet->getStyle( $cumcolstr . ':' . $cumcolstr )->getProtection()->setLocked(\PhpOffice\PhpSpreadsheet\Style\Protection::PROTECTION_PROTECTED);
+        }
 
         // Layout stuff:
         // - locking first 6 rows
