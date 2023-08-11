@@ -11,8 +11,10 @@ class IdentityDetail extends Model
     use SoftDeletes;
 
     // All used details
-    public static function allDetailsNames() {
-        $all_keys = IdentityDetail::select(['key'])->distinct()->get()->pluck('key')->toArray();
+    public static function allDetails() {
+        $all_keys = IdentityDetail::select(['key','value'])->distinct()->get()
+            ->groupBy('key')->map( function ( $subarr ) { return $subarr->pluck('value'); } )
+            ->toArray();
         return $all_keys;
     }
     

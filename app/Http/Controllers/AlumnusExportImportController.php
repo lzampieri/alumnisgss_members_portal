@@ -175,7 +175,7 @@ class AlumnusExportImportController extends Controller
             ->with('details')
             ->get();
 
-        $detailsTitles = IdentityDetail::allDetailsNames();
+        $detailsTitles = array_keys( IdentityDetail::allDetails() );
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();

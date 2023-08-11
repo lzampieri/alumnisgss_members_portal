@@ -55,7 +55,7 @@ class AlumnusController extends Controller
             'alumnus' => $alumnus,
             'availableStatus' => Alumnus::availableStatus($alumnus),
             'allTags' => Alumnus::allTags(),
-            'allDetails' => IdentityDetail::allDetailsNames()
+            'allDetails' => IdentityDetail::allDetails()
         ]);
     }
 

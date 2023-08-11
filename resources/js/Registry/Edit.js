@@ -8,10 +8,19 @@ import { router } from "@inertiajs/react";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-function DetailRow({ data, setData, options, errors, errors_prename }) {
+function DetailRow({ data, setData, options, val_options, errors, errors_prename }) {
     return <><div className={"w-full flex flex-row my-1 gap-1 items-center " + (data.delete ? "text-error line-through	" : "")}>
-        <CreatableSelect className="basis-0 grow" value={ { value: data.key, label: data.key } } onChange={(e) => setData('key', e.value ) } options={options} />
-        <input className="basis-0 grow" type="text" value={data.value} onChange={(e) => setData('value', e.target.value)} />
+        <CreatableSelect
+            className="basis-0 grow"
+            value={ { value: data.key, label: data.key } }
+            onChange={(e) => setData('key', e.value ) }
+            options={options} />
+            :
+        <CreatableSelect
+            className="basis-0 grow"
+            value={ { value: data.value, label: data.value } }
+            onChange={(e) => setData('value', e.value ) }
+            options={val_options} />
         <button className={"icon-button h-8 w-8 grow-0 " + (data.delete ? "button-active" : "")} onClick={(e) => { e.preventDefault(); setData('delete', !data.delete) }}>
             <FontAwesomeIcon icon={solid('trash')} />
         </button>
@@ -50,10 +59,19 @@ export default function Edit() {
         Inertia.visit(route('ratifications.add', { alumnus: prev.id }));
     }
 
-    const status_options = usePage().props.availableStatus.map(i => { return { value: i, label: AlumnusStatus.status[i].label } })
     const opt_arrs = ( tags ) => tags.map(i => { return { value: i, label: i } })
+
+    // Stato
+    const status_options = usePage().props.availableStatus.map(i => { return { value: i, label: AlumnusStatus.status[i].label } })
+
+    // Tags
     const tags_options = opt_arrs( usePage().props.allTags || [] )
-    const details_options = opt_arrs( usePage().props.allDetails || [] )
+
+    // Details: keys
+    const details_keys_options = opt_arrs( Object.keys( usePage().props.allDetails || {} ) )
+    const details_values_options_list = Object.values( usePage().props.allDetails || {} ).map( i => opt_arrs( i ) )
+    const details_values_options = {}
+    details_keys_options.forEach( (k, i) => details_values_options[ k.value ] = details_values_options_list[ i ] )
 
     const updateDetails = ( idx, key, value ) => {
         let newDetails = data.details.slice();
@@ -97,7 +115,8 @@ export default function Edit() {
                     key={idx}
                     data={det}
                     setData={(k, v) => updateDetails(idx,k,v)}
-                    options={details_options}
+                    options={details_keys_options}
+                    val_options={details_values_options[det.key]}
                     errors={errors}
                     errors_prename={"details."+idx+"."}
                     />
