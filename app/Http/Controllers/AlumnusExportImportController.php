@@ -232,6 +232,7 @@ class AlumnusExportImportController extends Controller
 
         // Locking some cells
         $spreadsheet->getActiveSheet()->getProtection()->setSheet(true);
+        $spreadsheet->getActiveSheet()->getProtection()->setSort(true);
         $spreadsheet->getDefaultStyle()->getProtection()->setLocked(false);
         $sheet->getStyle('1:6')->getProtection()->setLocked(\PhpOffice\PhpSpreadsheet\Style\Protection::PROTECTION_PROTECTED);
         $sheet->getStyle('A:A')->getProtection()->setLocked(\PhpOffice\PhpSpreadsheet\Style\Protection::PROTECTION_PROTECTED);
