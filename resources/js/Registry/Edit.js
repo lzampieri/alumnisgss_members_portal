@@ -65,7 +65,7 @@ export default function Edit() {
     const status_options = usePage().props.availableStatus.map(i => { return { value: i, label: AlumnusStatus.status[i].label } })
 
     // Tags
-    const tags_options = opt_arrs( usePage().props.allTags || [] )
+    const tags_options = opt_arrs( Object.values( usePage().props.allTags ) || [] )
 
     // Details: keys
     const details_keys_options = opt_arrs( Object.keys( usePage().props.allDetails || {} ) )
