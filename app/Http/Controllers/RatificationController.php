@@ -110,7 +110,7 @@ class RatificationController extends Controller
         $pdf->spacing();
 
         foreach ($rats as $k => $v) {
-            $pdf->HTMLenqueue('Richiedono il passaggio allo stato di <i>' . Alumnus::AlumnusStatusLabels[$k] . '</i>');
+            $pdf->HTMLenqueue('Richiedono il passaggio allo stato di <i>' . Alumnus::AlumnusStatusLabels[$k] . '</i> (' . count( $v ) . '):' );
 
             $pdf->HTMLenqueue( '<ul>' );
             foreach ($v as $a) {
