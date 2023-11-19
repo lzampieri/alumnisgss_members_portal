@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
+use App\Models\AwsSession;
 use App\Models\Document;
 use App\Models\DynamicPermission;
 use App\Models\External;
@@ -55,6 +56,12 @@ class Log extends Controller
             return "Resource " . $object->title . ": " . json_encode( $object->content );
         if( $object instanceof Permalink )
             return "Permalink " . $object->id . " to " . $object->linkable_type . " #" . $object->linkable_id;
+        if( $object instanceof AwsSession ) {
+            if( $object->endtime )
+                return "Session of machine " . $object->aws_id . " from " . $object->ip . " (duration " . $object->duration . " min)";
+            else
+                return "Session of machine " . $object->aws_id . " from " . $object->ip . " (started " . $object->starttime . " min)";
+        }
         return $object;
     }
 
@@ -64,5 +71,13 @@ class Log extends Controller
         if( Auth::check() )
             $message = "(" . Auth::user()->credential . ") " . $message;
         OriginalLog::channel('internal')->debug($message);
+    }
+
+    public static function error(string $message, $params = [])
+    {
+        $message .= " " . Log::stringify( $params );
+        if( Auth::check() )
+            $message = "(" . Auth::user()->credential . ") " . $message;
+        OriginalLog::channel('internal')->error($message);
     }
 }
