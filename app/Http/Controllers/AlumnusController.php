@@ -65,8 +65,8 @@ class AlumnusController extends Controller
         $update = false;
 
         $validated = $request->validate([
-            'surname' => 'required|regex:/^[A-zÀ-ú\s]+$/',
-            'name' => 'required|regex:/^[A-zÀ-ú\s]+$/',
+            'surname' => 'required|regex:/^[A-zÀ-ú\s\'_]+$/',
+            'name' => 'required|regex:/^[A-zÀ-ú\s\'_]+$/',
             'coorte' => 'required|numeric',
             'status' => 'required|in:' . implode(',', Alumnus::availableStatus($alumnus)),
             'tags' => 'nullable|array',
