@@ -20,11 +20,18 @@ class AwsSession extends Model
     ];
 
     
-    protected $appends = ['duration'];
+    protected $appends = ['duration','day'];
     public function getDurationAttribute() {
         if( $this->starttime && $this->endtime ) {
             return $this->endtime->diffInMinutes($this->starttime);
         }
         return 0;
+    }
+    public function getDayAttribute() {
+        if( $this->starttime )
+            return $this->starttime->format( 'Y-m-d' );
+        if( $this->endtime )
+            return $this->endtime->format( 'Y-m-d' );
+        return '0';
     }
 }

@@ -94,6 +94,7 @@ class PermissionsController extends Controller
             // Edit roles and permissions
             'permissions-view',
             'permissions-edit',
+            'roles-edit',
             // Registry
             'alumnus-view',
             'alumnus-edit',
@@ -107,6 +108,8 @@ class PermissionsController extends Controller
             'documents-edit',
             // Resources
             'resources-create',
+            // Aws session
+            'aws-session-view',
             // Webmaster stuff
             'log-manage',
             'db-reset'
@@ -121,7 +124,7 @@ class PermissionsController extends Controller
 
         // Find or create!
         foreach ($permissions_to_assert as $permission)
-            Permission::findOrCreate($permission);
+            Permission::findOrCreate($permission, 'web');
 
         $count_p = Permission::count() - $count_p;
 
@@ -176,7 +179,7 @@ class PermissionsController extends Controller
         $this->authorize('permissions-edit');
 
         Log::debug('New permission created', $validated);
-        Permission::create($validated);
+        Permission::findOrCreate($validated,'web');
 
         return redirect()->back();
     }

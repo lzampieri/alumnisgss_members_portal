@@ -5,13 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\AwsSession;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Log;
+use Inertia\Inertia;
 
 class AwsSessionController extends Controller
 {
     public function list()
     {
         $this->authorize('viewAny', AwsSession::class);
-        return response()->json(AwsSession::all());
+        
+        return Inertia::render(
+            'AwsSessions/List',
+            [
+                'sessions' => AwsSession::latest()->get()->groupBy('day'),
+                'count' => AwsSession::count()
+            ]
+        );
     }
 
     public function start(int $id)

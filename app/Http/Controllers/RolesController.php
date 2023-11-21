@@ -27,6 +27,10 @@ class RolesController extends Controller
 
         Log::debug('New role created', $validated);
         Role::create($validated);
+        Permission::findOrCreate('user-edit-' . $validated['name'], 'web');
+
+        // Assign all permissions to webmaster
+        Role::findByName('webmaster')->givePermissionTo(Permission::all());
 
         return redirect()->back();
     }

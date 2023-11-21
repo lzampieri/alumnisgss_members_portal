@@ -45,6 +45,10 @@ class AppsController extends Controller
             $apps[] = 'permissions';
         }
 
+        if (Auth::user() && Auth::user()->hasPermissionTo('aws-session-view')) {
+            $apps[] = 'aws_sessions';
+        }
+
         return Inertia::render('Home', ['apps' => $apps]);
     }
 }
