@@ -116,7 +116,11 @@ class AlumnusExportImportController extends Controller
 
         $max_alumnus = 0;
 
+        $counts = [];
+
         foreach ($coorts as $coort_i => $coort) {
+            $counts[ $coort_i ] = [ 'total' => 0]; // Stats for the last rows
+
             $column = Coordinate::stringFromColumnIndex($horizontalOffset + $coort_i);
 
             $sheet->setCellValue($column . $verticalOffset, Alumnus::romanize($coort));
@@ -126,6 +130,11 @@ class AlumnusExportImportController extends Controller
             foreach ($alumni[$coort] as $alumnus_i => $alumnus) {
                 $sheet->setCellValue($column . ($verticalOffset + $alumnus_i + 1), $alumnus->surnameAndName());
                 $sheet->getStyle($column . ($verticalOffset + $alumnus_i + 1))->applyFromArray($alumnusStyle($alumnus));
+
+                if( array_key_exists( $alumnus->status, $counts[ $coort_i ] ) ) $counts[ $coort_i ][$alumnus->status]++;
+                else $counts[ $coort_i ][$alumnus->status] = 1; 
+
+                $counts[ $coort_i ][ 'total' ]++;
             }
 
             $max_alumnus = max( $max_alumnus, count( $alumni[$coort] ) );
@@ -139,8 +148,24 @@ class AlumnusExportImportController extends Controller
         foreach( Alumnus::AlumnusStatusLabels as $key => $label ) {
             $sheet->setCellValue( 'A' . ( $verticalOffset + $i ), $label );
             $sheet->getStyle('A' . ( $verticalOffset + $i ))->applyFromArray($legendStyle($key));
+            
+            foreach ($coorts as $coort_i => $coort) {
+                $column = Coordinate::stringFromColumnIndex($horizontalOffset + $coort_i);
+                $sheet->setCellValue( $column . ( $verticalOffset + $i ),
+                array_key_exists( $key, $counts[ $coort_i ] ) ? $counts[ $coort_i ][$key] : 0
+                );
+            }
+
             $i++;
         }
+
+        // Totale
+        $sheet->setCellValue( 'A' . ( $verticalOffset + $i ), 'Totale' );
+        foreach ($coorts as $coort_i => $coort) {
+            $column = Coordinate::stringFromColumnIndex($horizontalOffset + $coort_i);
+            $sheet->setCellValue( $column . ( $verticalOffset + $i ), $counts[ $coort_i ]['total']);
+        }
+        
 
         $sheet->setCellValue( 'B1', "Soci" );
         $sheet->getStyle('B1')->applyFromArray($titleStyle);
