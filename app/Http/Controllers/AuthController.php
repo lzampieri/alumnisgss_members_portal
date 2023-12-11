@@ -19,7 +19,7 @@ class AuthController extends Controller
         if (Auth::check())
             return redirect()->route('home');
 
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver('google')->setScopes(['openid','email'])->redirect();
     }
 
     // Callback
