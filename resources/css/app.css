@@ -108,7 +108,10 @@
 
     /* LISTS */
     .mylist-item {
-        @apply bg-gray-100 border-gray-400 border
+        @apply bg-gray-100 border-gray-400 border p-2
+    }
+    .mylist-subitem {
+        @apply bg-gray-50 border-gray-400 border ml-8 mt-2 p-2
     }
 
     /* GRAPHICAL CONTAINERS */

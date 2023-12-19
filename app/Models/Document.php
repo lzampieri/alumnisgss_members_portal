@@ -12,7 +12,8 @@ class Document extends Model
         'date',
         'note',
         'author_type',
-        'author_id'
+        'author_id',
+        'attached_to_id'
     ];
 
     protected $casts = [
@@ -33,6 +34,14 @@ class Document extends Model
     
     public function dynamicPermissions() {
         return $this->morphMany( DynamicPermission::class, 'permissable' );
+    }
+    
+    public function attached_to() {
+        return $this->belongsTo( Document::class, 'attached_to_id' );
+    }
+
+    public function attachments() {
+        return $this->hasMany( Document::class, 'attached_to_id' );
     }
     
     protected $appends = ['canView'];

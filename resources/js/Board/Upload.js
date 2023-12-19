@@ -1,24 +1,30 @@
 import { useForm, usePage } from "@inertiajs/react";
 import { AlumnusStatus, Documents, romanize } from "../Utils";
 import IdSelector from "./IdSelector";
+import IdSelector_Attachment from "./IdSelector_Attachment";
 import Datepicker from "tailwind-datepicker-react"
 import { useState } from "react";
 import Backdrop from "../Layout/Backdrop";
+import ReactSwitch from "react-switch";
+import Select from 'react-select';
 
 export default function Upload() {
     const roles = usePage().props.roles;
     const rats = usePage().props.open_rats;
+    const parentable = usePage().props.parentable.map( p => ({ value: p.id, label: p.identifier }) );
 
     const [datePickerOpen, setDatePickerOpen] = useState(false);
 
-    const { data, setData, post, processing, errors, progress } = useForm({
+    const { data, setData, post, processing, errors, progress, transform } = useForm({
         roles: [],
         identifier: '',
         date: new Date(),
         prehandle: '',
         note: '',
         ratifications: [],
-        file: ''
+        file: '',
+        isAttachment: false,
+        attachedTo: null
     })
 
 
@@ -58,16 +64,36 @@ export default function Upload() {
         post(route('board.add'));
     }
 
+    transform((data) => ({
+        ...data,
+        attached_to_id: data.isAttachment ? data.attachedTo.value : null
+    }))
+
     return (
         <form className="flex flex-col w-full md:w-3/5" onSubmit={submit}>
             <h3>Carica documento</h3>
             {!usePage().props.canEdit && <label className="error">Attenzione: possiedi i permessi di caricare documenti, ma non di modificare documenti già caricati. Rivedi con attenzione tutti i campi prima di salvare.</label>}
+            <label>È un allegato</label>
+            <ReactSwitch height={21} width={42} checked={data.isAttachment} onChange={(newState) => setData('isAttachment', newState)} />
+            { data.isAttachment && 
+                <div className="w-full flex flex-row flex-wrap gap-2 items-center">
+                    <label>Allegato a:</label>
+                    <Select className="grow" value={data.attachedTo} options={ parentable } onChange={(newDocument)=>setData('attachedTo',newDocument)} />
+                </div>
+            }
+            
             <label>Identificativo</label>
-            <IdSelector onChange={(idf) => setData('identifier', idf)} />
+            {!data.isAttachment && <>
+                <IdSelector onChange={(idf) => setData('identifier', idf)} />
+            </>}
+            {data.isAttachment && <>
+                <IdSelector_Attachment onChange={(idf) => setData('identifier', idf)} />
+            </>}
             <label className="error">{errors.identifier}</label>
+
             <label>Visibilità</label>
-            <div className="w-full flex flex-row flex-wrap justify-start">
-                {roles.map(r => // TODO mettere RolesChip
+            <div className="w-full flex flex-row flex-wrap justify-start gap-y-2">
+                {roles.map(r =>
                     <div key={r.id} className="chip px-4 py-2 cursor-pointer aria-disabled:disabled" aria-disabled={!data.roles.includes(r.id)} onClick={() => changeRole(r.id)}>
                         {r.common_name}
                     </div>)}

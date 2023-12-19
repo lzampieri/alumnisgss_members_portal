@@ -10,16 +10,22 @@ import NewVersion from "./NewVersion";
 import AddRatification from "./AddRatification";
 import DeleteRatification from "./DeleteRatification";
 import RolesChips from "../Permissions/RolesChips";
+import ReactSwitch from "react-switch";
+import Select from 'react-select';
 
 export default function Edit() {
     const prevDoc = usePage().props.document;
     const roles = usePage().props.roles;
     const rats = prevDoc.grouped_ratifications;
+    const parentable = usePage().props.parentable.map( p => ({ value: p.id, label: p.identifier }) );
 
-    const { data, setData, post, processing, errors, isDirty } = useForm({
+    const { data, setData, post, processing, errors, isDirty, transform } = useForm({
+        identifier: prevDoc.identifier,
         roles: prevDoc.dynamic_permissions.map(dp => dp.role_id),
         date: new Date(prevDoc.date),
         note: prevDoc.note || "",
+        isAttachment: !! prevDoc.attached_to_id,
+        attachedTo: prevDoc.attached_to ? { value: prevDoc.attached_to.id, label: prevDoc.attached_to.identifier } : null
     })
 
     const [datePickerOpen, setDatePickerOpen] = useState(false);
@@ -34,6 +40,11 @@ export default function Edit() {
         router.post(route('board.delete', { document: prevDoc.id }));
     }
 
+    transform((data) => ({
+        ...data,
+        attached_to_id: data.isAttachment ? data.attachedTo.value : null
+    }))      
+
     return (
         <div className="flex flex-col w-full md:w-3/5">
             <h3>Modifica documento</h3>
@@ -41,8 +52,16 @@ export default function Edit() {
 
             <form className="flex flex-col w-full" onSubmit={submit}>
                 <label>Identificativo</label>
-                {prevDoc.identifier}
-                <label className="unspaced">L'identiticativo non può essere modificato a posteriori.</label>
+                <input type="text" className="w-full" value={data.identifier} onChange={(e) => setData('identifier', e.target.value)} />
+                {/* <label className="unspaced">L'identiticativo non può essere modificato a posteriori.</label> */}
+                <label>Mostra come allegato</label>
+                <ReactSwitch height={21} width={42} checked={data.isAttachment} onChange={(newState) => setData('isAttachment', newState)} />
+                { data.isAttachment && 
+                    <div className="w-full flex flex-row flex-wrap gap-2 items-center">
+                        <label>Allegato a:</label>
+                        <Select className="grow" value={data.attachedTo} options={ parentable } onChange={(newDocument)=>setData('attachedTo',newDocument)} />
+                    </div>
+                }
                 <label>Visibilità</label>
                 <RolesChips roles={roles} list={data.roles} updateList={(newList) => setData('roles', newList)} />
                 <label className="error">{errors.privacy}</label>

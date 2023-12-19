@@ -20,10 +20,11 @@ class DocumentsController extends Controller
     {
         $params = [];
 
-        $params['documents'] = Document::with(['author','dynamicPermissions','dynamicPermissions.role'])
+        $params['documents'] = Document::whereNull('attached_to_id')
+                               ->with(['author','dynamicPermissions','dynamicPermissions.role'])
+                               ->with(['attachments','attachments.author', 'attachments.dynamicPermissions','attachments.dynamicPermissions.role'])
                                ->orderBy('date', 'desc')->orderBy('protocol', 'desc')->get()
                                ->filter->canView->values();
-
         $params['total'] = Document::count();
 
         $params['canUpload'] = Auth::check() && Auth::user()->can('create', Document::class);
@@ -44,6 +45,8 @@ class DocumentsController extends Controller
             'open_rats' => Ratification::whereNull('document_id')->with('alumnus')->get()
                             ->sortBy( function( $rat, $key ) { return str_pad( $rat->alumnus->coorte, 4, 0, STR_PAD_LEFT ) . " " . $rat->alumnus->surname . " " . $rat->alumnus->name; } )
                             ->groupBy('required_state'),
+            'parentable' => Document::whereNull('attached_to_id')->latest()->get()
+
         ]);
     }
 
@@ -61,6 +64,7 @@ class DocumentsController extends Controller
             'ratifications' => 'array',
             'ratifications.*' => 'integer|exists:ratifications,id',
             'file' => 'required|mimes:pdf',
+            'attached_to_id' => 'integer|exists:documents,id|nullable'
         ]);
 
         $validated['author_type'] = Auth::user()->identity_type;
@@ -110,13 +114,14 @@ class DocumentsController extends Controller
         $this->authorize('edit', Document::class);
 
         $document->grouped_ratifications = $document->ratifications->load('alumnus')->groupBy('required_state');
-        $document->load(['files','dynamicPermissions']);
+        $document->load(['files','dynamicPermissions','attached_to']);
 
         return Inertia::render('Board/Edit', [
             'document' => $document,
             'roles' => Role::where('name','!=','webmaster')->orderBy('id')->get(),
             'available_ratifications' => Ratification::whereNull('document_id')->with('alumnus')->get()->groupBy('required_state'),
-            'available_status' => Alumnus::availableStatus()
+            'available_status' => Alumnus::availableStatus(),
+            'parentable' => Document::whereNull('attached_to_id')->where('id','!=',$document->id)->latest()->get()
         ]);
     }
    
@@ -125,14 +130,16 @@ class DocumentsController extends Controller
         $this->authorize('edit', Document::class);
 
         $validated = $request->validate([
+            'identifier' => 'required|unique:documents,identifier',
             'roles' => 'array',
             'roles.*' => 'integer|exists:roles,id',
             'date' => 'required|date|before_or_equal:now',
-            'note' => ''
+            'note' => '',
+            'attached_to_id' => 'integer|exists:documents,id|nullable'
         ]);
 
         $document->update($validated);
-        Log::debug('Document updated', $validated);
+        Log::debug('Document updated', ['document_id' => $document->id, 'new_params' => $validated]);
 
         $current_roles = $document->dynamicPermissions->pluck('role_id')->toArray();
         foreach( array_diff( $current_roles, $validated['roles'] ) as $role ) {

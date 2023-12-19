@@ -136,7 +136,6 @@ export default function ResourceDetails({ resource }) {
     const canView = resource.dynamic_permissions.filter(dp => dp.type == 'view').map(dp => dp.role)
     const canEdit = resource.dynamic_permissions.filter(dp => dp.type == 'edit').map(dp => dp.role)
     const hasPermalinks = resource?.permalinks?.length
-    console.log( hasPermalinks );
 
     return <div className="flex flex-col w-full items-start">
         <h3>{resource.title}</h3>
