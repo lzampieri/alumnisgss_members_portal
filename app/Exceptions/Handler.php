@@ -40,7 +40,7 @@ class Handler extends ExceptionHandler
     {
         $this->renderable(function (HttpException $e, Request $request) {
             if( $e->getStatusCode() == 403 )
-                return ErrorsController::e403();
+                return ErrorsController::e403($request);
         });
     }
     

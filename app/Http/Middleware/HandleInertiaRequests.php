@@ -47,6 +47,10 @@ class HandleInertiaRequests extends Middleware
             $data = array_merge( $data, [ 'notistack' => session('notistack') ] );
         }
 
+        if( session()->has( 'errorsDialogs' ) ) {
+            $data = array_merge( $data, [ 'errorsDialogs' => session('errorsDialogs') ] );
+        }
+
         if( session()->has( 'inertiaFlash' ) ) {
             $data = array_merge( $data, [ 'flash' => session('inertiaFlash') ] );
         }

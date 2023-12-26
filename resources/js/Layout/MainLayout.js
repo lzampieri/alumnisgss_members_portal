@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react';
 import { enqueueSnackbar, SnackbarProvider } from 'notistack';
 import { useEffect } from 'react';
+import ErrorDialog from './ErrorDialog';
 
 export default function MainLayout(page) {
     useEffect(() => {
@@ -26,5 +27,6 @@ export default function MainLayout(page) {
         <div className="flex flex-col items-center w-full p-8">
             {page}
         </div>
+        { page.props.errorsDialogs && page.props.errorsDialogs.map( inside => <ErrorDialog inside={inside} key={Math.random()} /> ) }
     </SnackbarProvider>
 }
