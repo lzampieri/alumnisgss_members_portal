@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use setasign\Fpdi\Tcpdf\Fpdi;
 use Inertia\Inertia;
+use PhpOption\None;
 use Spatie\Permission\Models\Role;
 
 class DocumentsController extends Controller
@@ -55,7 +56,6 @@ class DocumentsController extends Controller
         $this->authorize('create', Document::class);
 
         $validated = $request->validate([
-            'identifier' => 'required|unique:documents,identifier',
             'date' => 'required|date|before_or_equal:now',
             'prehandle' => 'required|min:5|max:5',
             'note' => '',
@@ -64,7 +64,20 @@ class DocumentsController extends Controller
             'ratifications' => 'array',
             'ratifications.*' => 'integer|exists:ratifications,id',
             'file' => 'required|mimes:pdf',
-            'attached_to_id' => 'integer|exists:documents,id|nullable'
+            'attached_to_id' => 'integer|exists:documents,id|nullable',
+            'identifier' => [
+                'required',
+                function ($attribute, $value, $fail) use ( $request ) {
+                    $att_to_id = $request->input('attached_to_id');
+                    if( $att_to_id ) {
+                        if( Document::where('identifier', $value)->where('attached_to_id',$att_to_id )->exists() )
+                            $fail('Esiste già un allegato con lo stesso nome per questo documento');
+                    } else {
+                        if( Document::where('identifier', $value)->whereNull('attached_to_id')->exists() )
+                            $fail('Identificativo già registrato');
+                    }
+                }
+            ]
         ]);
 
         $validated['author_type'] = Auth::user()->identity_type;
@@ -130,12 +143,24 @@ class DocumentsController extends Controller
         $this->authorize('edit', Document::class);
 
         $validated = $request->validate([
-            'identifier' => 'required|unique:documents,identifier',
             'roles' => 'array',
             'roles.*' => 'integer|exists:roles,id',
             'date' => 'required|date|before_or_equal:now',
             'note' => '',
-            'attached_to_id' => 'integer|exists:documents,id|nullable'
+            'attached_to_id' => 'integer|exists:documents,id|nullable',
+            'identifier' => [
+                'required',
+                function ($attribute, $value, $fail) use ( $request ) {
+                    $att_to_id = $request->input('attached_to_id');
+                    if( $att_to_id ) {
+                        if( Document::where('identifier', $value)->where('attached_to_id',$att_to_id )->exists() )
+                            $fail('Esiste già un allegato con lo stesso nome per questo documento');
+                    } else {
+                        if( Document::where('identifier', $value)->whereNull('attached_to_id')->exists() )
+                            $fail('Identificativo già registrato');
+                    }
+                }
+            ]
         ]);
 
         $document->update($validated);

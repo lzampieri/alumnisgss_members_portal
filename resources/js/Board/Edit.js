@@ -54,6 +54,7 @@ export default function Edit() {
                 <label>Identificativo</label>
                 <input type="text" className="w-full" value={data.identifier} onChange={(e) => setData('identifier', e.target.value)} />
                 {/* <label className="unspaced">L'identiticativo non può essere modificato a posteriori.</label> */}
+                <label className="error">{errors.identifier}</label>
                 <label>Mostra come allegato</label>
                 <ReactSwitch height={21} width={42} checked={data.isAttachment} onChange={(newState) => setData('isAttachment', newState)} />
                 { data.isAttachment && 
