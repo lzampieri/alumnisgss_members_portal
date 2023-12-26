@@ -150,13 +150,13 @@ class DocumentsController extends Controller
             'attached_to_id' => 'integer|exists:documents,id|nullable',
             'identifier' => [
                 'required',
-                function ($attribute, $value, $fail) use ( $request ) {
+                function ($attribute, $value, $fail) use ( $request, $document ) {
                     $att_to_id = $request->input('attached_to_id');
                     if( $att_to_id ) {
-                        if( Document::where('identifier', $value)->where('attached_to_id',$att_to_id )->exists() )
+                        if( Document::where('identifier', $value)->where('attached_to_id',$att_to_id )->where('id','!=',$document->id)->exists() )
                             $fail('Esiste già un allegato con lo stesso nome per questo documento');
                     } else {
-                        if( Document::where('identifier', $value)->whereNull('attached_to_id')->exists() )
+                        if( Document::where('identifier', $value)->whereNull('attached_to_id')->where('id','!=',$document->id)->exists() )
                             $fail('Identificativo già registrato');
                     }
                 }
