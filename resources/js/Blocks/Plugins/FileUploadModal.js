@@ -1,12 +1,12 @@
 import { useDropzone } from "react-dropzone";
-import EmptyDialog from "../Layout/EmptyDialog";
+import EmptyDialog from "../../Layout/EmptyDialog";
 import { useCallback } from "react";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { enqueueSnackbar } from "notistack";
 import { useForm, usePage } from '@inertiajs/react';
-import Backdrop from "../Layout/Backdrop";
+import Backdrop from "../../Layout/Backdrop";
 
 
 export default function FileUploadModal({ fileHandle, setFileHandle, setFileExt }) {
@@ -34,9 +34,9 @@ export default function FileUploadModal({ fileHandle, setFileHandle, setFileExt 
         data.file = acceptedFiles[0]
         post(route('resources.uploadFile'), {
             onSuccess: (page) => {
-                if (page.props?.flash?.selectedFileHandle ) {
-                    setFileHandle( page.props?.flash?.selectedFileHandle )
-                    setFileExt( page.props?.flash?.selectedFileExt )
+                if (page.props?.flash?.selectedFileHandle) {
+                    setFileHandle(page.props?.flash?.selectedFileHandle)
+                    setFileExt(page.props?.flash?.selectedFileExt)
                     setIsEditing(false)
                 }
             }

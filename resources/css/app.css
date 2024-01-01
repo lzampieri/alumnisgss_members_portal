@@ -24,8 +24,11 @@
     .button-active {
         @apply text-primary-contrast bg-primary-main;
     }
-    .icon-button {
+    .icon {
         @apply rounded-full text-primary-main aspect-square px-1;
+    }
+    .icon-button {
+        @apply icon;
         @apply hover:text-primary-contrast hover:bg-primary-main;
         @apply no-underline;
         @apply cursor-pointer;

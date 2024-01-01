@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import DraggingManagement from './DraggingManagement';
-import BlockParser from './BlockParser';
+import BlockParser, { postProcess } from './BlockParser';
 import BlockEnvironment from './BlockEnvironment';
 import AddBlock from './AddBlock';
 import { randomHex } from '../Utils';
 
 export default function BlocksEditor({ initialContent, saveCallback }) {
 
-    const [list, setList] = useState(initialContent || [])
+    const [list, setList] = useState( initialContent?.map( block => BlockParser.preProcess( block ) ) || [])
 
     const save = () => {
-        saveCallback(list)
+        saveCallback( list.map( block => BlockParser.postProcess( block ) ) )
     }
 
     const addBlockAt = (props, pos) => {
@@ -52,7 +52,7 @@ export default function BlocksEditor({ initialContent, saveCallback }) {
         <div className="w-full border rounded m-2 p-2">
             <DraggingManagement list={list} updateOrder={updateOrder} renderItem={(item, index) =>
                 <BlockEnvironment index={index} addBlockAt={addBlockAt} updateOrder={updateOrder} deleteItem={deleteItem}>
-                    {BlockParser(item, (key,value)=>setData(index,key,value), true)}
+                    {BlockParser.render(item, (key,value)=>setData(index,key,value), true)}
                 </BlockEnvironment>
             } />
             <div className="w-full flex flex-col items-end mt-2">
