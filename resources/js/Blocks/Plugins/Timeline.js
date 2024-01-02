@@ -8,68 +8,84 @@ import DatePicker from "tailwind-datepicker-react";
 export default class Timeline {
     static title = "Linea temporale"
     static icon = solid('chart-gantt')
+    static dateOptions = { year: 'numeric', month: '2-digit', day: '2-digit' }
+    static stillAlive = new Date("3000/01/01")
 
     static getDefaultData() {
         return {
             data: [
                 { from: new Date("2020/02/01"), to: new Date("2022/08/06"), label: "Primo" },
                 { from: new Date("2022/06/02"), to: new Date("2022/08/05"), label: "Secondo" },
-                { from: new Date("2023/09/03"), to: new Date("2024/11/04"), label: "Terzo" }
+                { from: new Date("2023/09/03"), to: this.stillAlive, label: "Terzo" }
             ]
         }
     }
 
     static mainElementEditable = ({ item, setItemValue }) => {
-        // const [lines,setLines] = useState( 5 );
-        // const onChange = (e) => {
-        //     setItemValue('content',e.target.value)
-        //     setLines(e.target.value.split(/\r\n|\r|\n/).length + 5);
-        // }
         const update = (id, field, newValue) => {
             let newData = item.data.slice();
             newData[id][field] = newValue;
             setItemValue('data', newData);
         }
 
-        const [fromDatePickerOpen, setFromDatePickerOpen] = useState(false);
-        const [toDatePickerOpen, setToDatePickerOpen] = useState(false);
-
         return <div className="w-full flex flex-col">
             <h2 className="font-bold text-primary-main text-xl">Timeline</h2>
-            {item.data.map((line, id) => <div className="w-full flex flex-row" key={id}>
-                <DatePicker
-                    options={{ defaultDate: line.from, maxDate: new Date(), language: 'it', theme: { input: '!text-black' } }}
-                    onChange={(date) => update(id, 'from', date)}
-                    show={fromDatePickerOpen}
-                    setShow={setFromDatePickerOpen}
-                    />
-                <DatePicker
-                    options={{ defaultDate: line.to  , maxDate: new Date(), language: 'it', theme: { input: '!text-black' } }}
-                    onChange={(date) => update(id, 'to', date)}
-                    show={toDatePickerOpen}
-                    setShow={setToDatePickerOpen}
-                    />
-                <input
-                    type="text"
-                    className="grow"
-                    value={line.label}
-                    onChange={(e) => update(id, 'label', e.target.value)}
-                    placeholder="Nome"
+            <label>Inserisci data di inizio, data di fine e nome. Le righe vuote verranno ignorate. Qualsiasi data futura verrà interpretata come <i>ancora in carica</i>.</label>
+            <label className="error">Bug noto: può essere che la timeline generata quando si clicca <i>salva</i> non sia correttamente dimensionata. Ricaricare la pagina (F5) per rigenerarla.</label>
+            {item.data.map((line, id) => this.formLine( line, id, ( field, value ) => update( id, field, value ) ) )}
+        </div>
+    }
+
+    static formLine(content, id, update) {
+        const [fdatePickerOpen, setFDatePickerOpen] = useState(false)
+        const [tdatePickerOpen, setTDatePickerOpen] = useState(false)
+
+        return <div className="w-full flex flex-row" key={id}>
+            <DatePicker
+                options={{
+                    defaultDate: content.from,
+                    language: 'it',
+                    theme: { input: '!text-black' } }}
+                onChange={(date) => update('from', date)}
+                show={fdatePickerOpen}
+                setShow={setFDatePickerOpen}
                 />
-            </div>)}
+            <DatePicker
+                options={{
+                    defaultDate: content.to,
+                    language: 'it',
+                    theme: { input: '!text-black' } }}
+                onChange={(date) => update('to', date)}
+                show={tdatePickerOpen}
+                setShow={setTDatePickerOpen}
+                />
+            <input
+                type="text"
+                className="grow"
+                value={content.label}
+                onChange={(e) => update('label', e.target.value)}
+                placeholder="Nome"
+            />
         </div>
     }
 
     static mainElementReadOnly = ({ item }) => {
         return <div>
-            <Timesheet data={item.data} />
+            <Timesheet data={item.data} limitToToday={true} />
             <div className="m-3 p-1 border-l-2 border-primary-main">
                 {item.data.map((i, id) => <div key={id}>
                     <FontAwesomeIcon icon={solid('circle-user')} className="icon" />
-                    {i.from.toLocaleDateString()} - {i.to.toLocaleDateString()}: <b>{i.label}</b>
+                    { this.parseDate( i.from ) } - { this.parseDate( i.to ) }: <b>{i.label}</b>
                 </div>)}
             </div>
         </div>
+    }
+
+    static parseDate(date) {
+        if( date < new Date() ) {
+            return date.toLocaleDateString( 'it-IT', this.dateOptions )
+        }
+        return 'oggi';
     }
 
     static preProcess(item) {
@@ -85,11 +101,12 @@ export default class Timeline {
     }
 
     static postProcess(item) {
+        let today = new Date( (new Date()).toLocaleDateString() ); // Beginning of today
         return {
             data: item.data.map(i => {
                 return {
                     from: i.from.toString(),
-                    to: i.to.toString(),
+                    to: ( i.to > today ) ? this.stillAlive.toString() : i.to.toString(),
                     label: i.label
                 }
             })

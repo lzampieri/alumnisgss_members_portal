@@ -9,8 +9,11 @@ export default class Bubble extends Component {
     }
 
     getYearsDistanceFromBegin( date ) {
-        let yearsDifference = date.getFullYear() - this.props.fromYear;
-        let daysDifference = ( date - new Date(date.getFullYear(), 0, 0) ) / 1000 / 60 / 60 / 24;
+        let actualDate = date;
+        if( actualDate > new Date() && this.props.limitToToday )
+            actualDate = new Date();
+        let yearsDifference = actualDate.getFullYear() - this.props.fromYear;
+        let daysDifference = ( actualDate - new Date(actualDate.getFullYear(), 0, 0) ) / 1000 / 60 / 60 / 24;
         return yearsDifference + daysDifference / 365.0
     }
 
@@ -34,5 +37,10 @@ Bubble.propTypes = {
     data: PropTypes.object.isRequired,
     yearWidth: PropTypes.number.isRequired,
     fromYear: PropTypes.number.isRequired,
-    color: PropTypes.string.isRequired
+    color: PropTypes.string.isRequired,
+    limitToToday: PropTypes.bool
 };
+
+Bubble.defaultProps = {
+    limitToToday: false
+}

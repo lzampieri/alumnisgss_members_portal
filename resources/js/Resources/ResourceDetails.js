@@ -78,7 +78,7 @@ function AddPermalink({ resourceId }) {
 }
 
 function Content({ resource, setProcessing }) {
-    const [isEditing, setIsEditing] = useState(false)
+    const [isEditing, setIsEditing] = useState(false) // todo set false
 
     const save = (newContent) => {
         setIsEditing(false)
