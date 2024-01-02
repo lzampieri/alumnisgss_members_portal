@@ -3,6 +3,7 @@ import { useState } from "react";
 import Timesheet from "../../Libs/Timesheet/Timesheet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DatePicker from "tailwind-datepicker-react";
+import ReactSwitch from "react-switch";
 
 
 export default class Timeline {
@@ -17,7 +18,8 @@ export default class Timeline {
                 { from: new Date("2020/02/01"), to: new Date("2022/08/06"), label: "Primo" },
                 { from: new Date("2022/06/02"), to: new Date("2022/08/05"), label: "Secondo" },
                 { from: new Date("2023/09/03"), to: this.stillAlive, label: "Terzo" }
-            ]
+            ],
+            onlyYears: false
         }
     }
 
@@ -34,8 +36,15 @@ export default class Timeline {
 
         return <div className="w-full flex flex-col">
             <h2 className="font-bold text-primary-main text-xl">Timeline</h2>
-            <label>Inserisci data di inizio, data di fine e nome. Le righe vuote verranno ignorate. Qualsiasi data futura verrà interpretata come <i>ancora in carica</i>.</label>
+            <label className="unspaced">Inserisci data di inizio, data di fine e nome. Le righe vuote verranno ignorate. Qualsiasi data futura verrà interpretata come <i>ancora in carica</i>.</label>
             <label className="error">Bug noto: può essere che la timeline generata quando si clicca <i>salva</i> non sia correttamente dimensionata. Ricaricare la pagina (F5) per rigenerarla.</label>
+            <label className="unspaced">
+                <ReactSwitch
+                    height={14} width={28} className="px-1"
+                    checked={item.onlyYears} onChange={(newState) => setItemValue('onlyYears', newState)}
+                    />
+                Mostra solo l'anno
+            </label>
             {item.data.map((line, id) =>
                 <Timeline.formLine
                     content = {line}
@@ -89,14 +98,16 @@ export default class Timeline {
             <div className="m-3 p-1 border-l-2 border-primary-main">
                 {item.data.map((i, id) => <div key={id}>
                     <FontAwesomeIcon icon={solid('circle-user')} className="icon" />
-                    { this.parseDate( i.from ) } - { this.parseDate( i.to ) }: <b>{i.label}</b>
+                    { this.parseDate( i.from, item.onlyYears ) } - { this.parseDate( i.to, item.onlyYears ) }: <b>{i.label}</b>
                 </div>)}
             </div>
         </div>
     }
 
-    static parseDate(date) {
+    static parseDate(date, onlyYears) {
         if( date < new Date() ) {
+            if( onlyYears )
+                return date.getFullYear()
             return date.toLocaleDateString( 'it-IT', this.dateOptions )
         }
         return 'oggi';
@@ -108,9 +119,10 @@ export default class Timeline {
                 return {
                     from: new Date(i.from),
                     to: new Date(i.to),
-                    label: i.label
+                    label: i.label,
                 }
-            })
+            }),
+            onlyYears: Boolean( parseInt( item.onlyYears ) )
         }
     }
 
@@ -120,10 +132,11 @@ export default class Timeline {
             data: item.data.filter( i => i.label.length > 0 ).map(i => {
                 return {
                     from: i.from.toString(),
-                    to: ( i.to > today ) ? this.stillAlive.toString() : i.to.toString(),
+                    to: ( i.to >= today ) ? this.stillAlive.toString() : i.to.toString(),
                     label: i.label
                 }
-            })
+            }),
+            onlyYears: item.onlyYears ? '1' : '0'
         }
     }
 }
