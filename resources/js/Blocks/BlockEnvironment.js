@@ -2,6 +2,7 @@ import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import AddBlock from "./AddBlock";
+import { enqueueSnackbar } from "notistack";
 
 export default function BlockEnvironment({ children, index, addBlockAt, updateOrder, deleteItem }) {
     const [isTrash, setIsTrash] = useState(false)
@@ -9,7 +10,10 @@ export default function BlockEnvironment({ children, index, addBlockAt, updateOr
 
     const clickTrash = () => {
         if (isTrash) deleteItem(index)
-        else setIsTrash(true)
+        else {
+            setIsTrash(true)
+            enqueueSnackbar('Clicca di nuovo per eliminare', { variant: 'info' })
+        }
     }
 
     useEffect(() => {

@@ -28,15 +28,29 @@ export default class Timeline {
             setItemValue('data', newData);
         }
 
+        const addRow = () => {
+            setItemValue('data', [ ...item.data, { id: item.data.length, from: new Date(), to: new Date(), label: "" } ] );
+        }
+
         return <div className="w-full flex flex-col">
             <h2 className="font-bold text-primary-main text-xl">Timeline</h2>
             <label>Inserisci data di inizio, data di fine e nome. Le righe vuote verranno ignorate. Qualsiasi data futura verrà interpretata come <i>ancora in carica</i>.</label>
             <label className="error">Bug noto: può essere che la timeline generata quando si clicca <i>salva</i> non sia correttamente dimensionata. Ricaricare la pagina (F5) per rigenerarla.</label>
-            {item.data.map((line, id) => this.formLine( line, id, ( field, value ) => update( id, field, value ) ) )}
+            {item.data.map((line, id) =>
+                <Timeline.formLine
+                    content = {line}
+                    key = {id}
+                    id = {id}
+                    update = { ( field, value ) => update( id, field, value ) }
+                    />
+            )}
+            <div className="w-full flex flex-row justify-center">
+                <FontAwesomeIcon icon={solid('circle-plus')} className="icon-button" onClick={addRow} />
+            </div>
         </div>
     }
 
-    static formLine(content, id, update) {
+    static formLine({content, id, update}) {
         const [fdatePickerOpen, setFDatePickerOpen] = useState(false)
         const [tdatePickerOpen, setTDatePickerOpen] = useState(false)
 
@@ -103,7 +117,7 @@ export default class Timeline {
     static postProcess(item) {
         let today = new Date( (new Date()).toLocaleDateString() ); // Beginning of today
         return {
-            data: item.data.map(i => {
+            data: item.data.filter( i => i.label.length > 0 ).map(i => {
                 return {
                     from: i.from.toString(),
                     to: ( i.to > today ) ? this.stillAlive.toString() : i.to.toString(),
