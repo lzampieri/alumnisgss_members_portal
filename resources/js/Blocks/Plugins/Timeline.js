@@ -31,7 +31,7 @@ export default class Timeline {
         }
 
         const addRow = () => {
-            setItemValue('data', [ ...item.data, { id: item.data.length, from: new Date(), to: new Date(), label: "" } ] );
+            setItemValue('data', [...item.data, { id: item.data.length, from: new Date(), to: new Date(), label: "" }]);
         }
 
         return <div className="w-full flex flex-col">
@@ -42,16 +42,17 @@ export default class Timeline {
                 <ReactSwitch
                     height={14} width={28} className="px-1"
                     checked={item.onlyYears} onChange={(newState) => setItemValue('onlyYears', newState)}
-                    />
+                />
                 Mostra solo l'anno
             </label>
             {item.data.map((line, id) =>
                 <Timeline.formLine
-                    content = {line}
-                    key = {id}
-                    id = {id}
-                    update = { ( field, value ) => update( id, field, value ) }
-                    />
+                    content={line}
+                    onlyYears={item.onlyYears}
+                    key={id}
+                    id={id}
+                    update={(field, value) => update(id, field, value)}
+                />
             )}
             <div className="w-full flex flex-row justify-center">
                 <FontAwesomeIcon icon={solid('circle-plus')} className="icon-button" onClick={addRow} />
@@ -59,29 +60,16 @@ export default class Timeline {
         </div>
     }
 
-    static formLine({content, id, update}) {
-        const [fdatePickerOpen, setFDatePickerOpen] = useState(false)
-        const [tdatePickerOpen, setTDatePickerOpen] = useState(false)
-
+    static formLine({ content, onlyYears, id, update }) {
         return <div className="w-full flex flex-row" key={id}>
-            <DatePicker
-                options={{
-                    defaultDate: content.from,
-                    language: 'it',
-                    theme: { input: '!text-black' } }}
-                onChange={(date) => update('from', date)}
-                show={fdatePickerOpen}
-                setShow={setFDatePickerOpen}
-                />
-            <DatePicker
-                options={{
-                    defaultDate: content.to,
-                    language: 'it',
-                    theme: { input: '!text-black' } }}
-                onChange={(date) => update('to', date)}
-                show={tdatePickerOpen}
-                setShow={setTDatePickerOpen}
-                />
+            { Timeline.yearOrDatePicker({
+                defaultDate: content.from,
+                onChange: (date) => update('from', date),
+                onlyYear: onlyYears }) }
+            { Timeline.yearOrDatePicker({
+                defaultDate: content.to,
+                onChange: (date) => update('to', date),
+                onlyYear: onlyYears }) }
             <input
                 type="text"
                 className="grow"
@@ -92,23 +80,54 @@ export default class Timeline {
         </div>
     }
 
+    static yearOrDatePicker({ defaultDate, onChange, onlyYear }) {
+        if (onlyYear)
+            return <Timeline.yearPicker defaultDate={defaultDate} onChange={onChange} />
+
+        return <Timeline.datePicker defaultDate={defaultDate} onChange={onChange} />
+    }
+
+    static datePicker({ defaultDate, onChange }) {
+        const [open, setOpen] = useState(false)
+        return <DatePicker
+            options={{
+                defaultDate: defaultDate,
+                language: 'it',
+                theme: { input: '!text-black' }
+            }}
+            onChange={onChange}
+            show={open}
+            setShow={setOpen}
+        />
+    }
+
+    static yearPicker({ defaultDate, onChange }) {
+        return <input
+            type="number"
+            className="grow"
+            value={ defaultDate.getFullYear() }
+            onChange={(e) => onChange( new Date( e.target.value, 1, 15) )}
+            placeholder="Anno"
+        />
+    }
+
     static mainElementReadOnly = ({ item }) => {
         return <div>
             <Timesheet data={item.data} limitToToday={true} />
             <div className="m-3 p-1 border-l-2 border-primary-main">
                 {item.data.map((i, id) => <div key={id}>
                     <FontAwesomeIcon icon={solid('circle-user')} className="icon" />
-                    { this.parseDate( i.from, item.onlyYears ) } - { this.parseDate( i.to, item.onlyYears ) }: <b>{i.label}</b>
+                    {this.parseDate(i.from, item.onlyYears)} - {this.parseDate(i.to, item.onlyYears)}: <b>{i.label}</b>
                 </div>)}
             </div>
         </div>
     }
 
     static parseDate(date, onlyYears) {
-        if( date < new Date() ) {
-            if( onlyYears )
+        if (date < new Date()) {
+            if (onlyYears)
                 return date.getFullYear()
-            return date.toLocaleDateString( 'it-IT', this.dateOptions )
+            return date.toLocaleDateString('it-IT', this.dateOptions)
         }
         return 'oggi';
     }
@@ -122,17 +141,17 @@ export default class Timeline {
                     label: i.label,
                 }
             }),
-            onlyYears: Boolean( parseInt( item.onlyYears ) )
+            onlyYears: Boolean(parseInt(item.onlyYears))
         }
     }
 
     static postProcess(item) {
-        let today = new Date( (new Date()).toLocaleDateString() ); // Beginning of today
+        let today = new Date((new Date()).toLocaleDateString()); // Beginning of today
         return {
-            data: item.data.filter( i => i.label.length > 0 ).map(i => {
+            data: item.data.filter(i => i.label.length > 0).map(i => {
                 return {
                     from: i.from.toString(),
-                    to: ( i.to >= today ) ? this.stillAlive.toString() : i.to.toString(),
+                    to: (i.to >= today) ? this.stillAlive.toString() : i.to.toString(),
                     label: i.label
                 }
             }),
