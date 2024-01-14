@@ -23,11 +23,18 @@ class AppsController extends Controller
             $apps[] = 'registry';
         }
 
+        if (Auth::user() && Auth::user()->can('view', Ratification::class)) {
+            $apps[] = 'ratifications';
+        }
+
         // Anyone can access board
         $apps[] = 'board';
 
-        if (Auth::user() && Auth::user()->hasPermissionTo('log-manage')) {
-            $apps[] = 'logs';
+        // Anyone can access resources
+        $apps[] = 'resources';
+
+        if (Auth::user() && Auth::user()->hasRole('webmaster')) {
+            $apps[] = 'webmaster';
         }
 
         if (Auth::user() && Auth::user()->can('viewAny', LoginMethod::class)) {
@@ -36,6 +43,10 @@ class AppsController extends Controller
 
         if (Auth::user() && Auth::user()->hasPermissionTo('permissions-view')) {
             $apps[] = 'permissions';
+        }
+
+        if (Auth::user() && Auth::user()->hasPermissionTo('aws-session-view')) {
+            $apps[] = 'aws_sessions';
         }
 
         return Inertia::render('Home', ['apps' => $apps]);

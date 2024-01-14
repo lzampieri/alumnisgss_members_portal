@@ -24,10 +24,20 @@
     .button-active {
         @apply text-primary-contrast bg-primary-main;
     }
-    .icon-button {
+    .icon {
         @apply rounded-full text-primary-main aspect-square px-1;
+    }
+    .icon-button {
+        @apply icon;
         @apply hover:text-primary-contrast hover:bg-primary-main;
         @apply no-underline;
+        @apply cursor-pointer;
+    }
+    .icon-button-gray {
+        @apply rounded-full text-gray-400 aspect-square px-1;
+        @apply hover:text-white hover:bg-gray-400;
+        @apply no-underline;
+        @apply cursor-pointer;
     }
     .button svg {
         @apply pr-2
@@ -49,6 +59,9 @@
     input[type="number"] {
         @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0
     }
+    input[type="checkbox"] {
+        @apply rounded-md bg-gray-100 border-gray-500 focus:border-gray-500 focus:bg-white focus:ring-0 mr-2
+    }
     .input-icon {
         @apply text-gray-500 absolute right-4 text-2xl inset-y-0 my-auto
     }
@@ -58,8 +71,17 @@
     .textarea-reset {
         @apply py-0 px-1 border-0 bg-transparent
     }
+    .react-draft-wysiwys-container {
+        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 cursor-default
+    }
+    .react-draft-wysiwys-editor {
+        @apply px-4
+    }
     label {
         @apply text-gray-500 text-sm pt-4
+    }
+    label.unspaced {
+        @apply !pt-0
     }
     label.error {
         @apply text-error text-sm pt-0
@@ -80,10 +102,19 @@
     .separator {
         @apply border-4 rounded border-primary-main self-stretch mx-8 my-8 md:my-0
     }
+    .hseparator {
+        @apply border-4 rounded border-primary-main w-full mx-8 my-8
+    }
+    .thin-separator {
+        @apply border rounded border-primary-main self-stretch mx-8 my-8
+    }
 
     /* LISTS */
     .mylist-item {
-        @apply bg-gray-100 border-gray-400 border
+        @apply bg-gray-100 border-gray-400 border p-2
+    }
+    .mylist-subitem {
+        @apply bg-gray-50 border-gray-400 border ml-8 mt-2 p-2
     }
 
     /* GRAPHICAL CONTAINERS */
@@ -96,5 +127,49 @@
     .chip.disabled {
         @apply opacity-40
     }
+    .div-highlighted {
+        @apply rounded-md bg-gray-200 border-transparent
+    }
+    .tabs-container {
+        @apply w-full flex flex-row
+    }
+    .tab {
+        @apply transition-[width,border] min-h-screen;
+        @apply border-0;
+        @apply rounded-bl-xl rounded-br-xl;
+        @apply w-0 overflow-hidden;
+    }
+    .tab.active {
+        @apply border-x border-b border-black;
+        @apply w-full;
+    }
+    .tab-title {
+        @apply border border-black rounded-tl-xl rounded-tr-xl hover:bg-gray-300;
+        @apply cursor-pointer grow p-2 text-center;
+        @apply text-black;
+    }
+    .tab-title.active {
+        @apply text-primary-main border-b-4 font-bold border-b-primary-main
+    }
 
+    /* DRAWER */
+    .main-container-drawer {
+        @apply flex flex-row w-full md:w-4/5
+    }
+    .rounded-first-last {
+        @apply first:rounded-t-xl last:rounded-b-xl
+    }
+    .drawer-item {
+        @apply border border-black rounded-first-last p-2 cursor-pointer;
+        @apply bg-white text-black hover:text-primary-contrast hover:bg-primary-main;
+        @apply aria-selected:bg-primary-main aria-selected:text-primary-contrast;
+    }
+    .drawer-item-passive {
+        @apply border border-black rounded-first-last p-2;
+        @apply bg-white text-gray-400 text-sm;
+    }
+    .drawer-item-noborder {
+        @apply rounded-first-last p-2 cursor-pointer;
+        @apply bg-white text-black hover:text-primary-contrast hover:bg-primary-main;
+    }
 }

@@ -2,7 +2,11 @@
 
 namespace App\Exceptions;
 
+use App\Http\Controllers\ErrorsController;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -13,7 +17,7 @@ class Handler extends ExceptionHandler
      * @var array<int, class-string<Throwable>>
      */
     protected $dontReport = [
-        //
+        \Illuminate\Auth\Access\AuthorizationException::class,
     ];
 
     /**
@@ -34,8 +38,10 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->renderable(function (HttpException $e, Request $request) {
+            if( $e->getStatusCode() == 403 )
+                return ErrorsController::e403($request);
         });
     }
+    
 }

@@ -13,7 +13,7 @@ class LoginMethodPolicy
     /**
      * Determine whether the user can login.
      *
-     * @param  \App\Models\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function login(User $user)
@@ -24,7 +24,7 @@ class LoginMethodPolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @param  \App\Models\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function viewAny(User $user)
@@ -33,13 +33,45 @@ class LoginMethodPolicy
     }
 
     /**
-     * Determine whether the user can enable models.
+     * Determine whether the user can add a new instance of the model.
      *
-     * @param  \App\Models\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function enable(User $user)
+    public function add(User $user)
     {
-        return $user->hasPermissionTo('logins-enabling');
+        return $user->hasPermissionTo('logins-add');
+    }
+
+    /**
+     * Determine whether the user can delete the models.
+     *
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \App\Models\LoginMethod  $lmth
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function delete(User $user, LoginMethod $lmth)
+    {
+        if ($user->hasPermissionTo('logins-delete'))
+            return true;
+
+        if ($lmth->identity)
+            if ($lmth->identity_type == $user->identity_type)
+                if ($lmth->identity_id == $user->identity_id)
+                    return true;
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can associate a login method to an identity.
+     *
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \App\Models\LoginMethod  $lmth
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function associate(User $user)
+    {
+        return $user->hasPermissionTo('accesses-associate');
     }
 }

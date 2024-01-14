@@ -12,19 +12,28 @@ class Controller extends BaseController
 {
     use DispatchesJobs, ValidatesRequests;
 
-    use AuthorizesRequests { authorize as traitAuthorize; }
+    use AuthorizesRequests {
+        authorize as traitAuthorize;
+    }
 
-    public function authorize($ability, $arguments = null )
+    public function authorize($ability, $arguments = null)
     {
         // Prevent the direct call of authorize without passing through a policy
-
-        if( $arguments == null ) {
-            if( Auth::user() && Auth::user()->hasPermissionTo( $ability ) )
+        if ($arguments == null) {
+            if (Auth::user() && Auth::user()->hasPermissionTo($ability))
                 return true;
 
-            return abort(403,'THIS ACTION IS UNAUTHORIZED.');
+            return abort(403, 'THIS ACTION IS UNAUTHORIZED.');
         }
 
-        return $this->traitAuthorize( $ability, $arguments );
+        return $this->traitAuthorize($ability, $arguments);
+    }
+
+    public function authorizeRole($role)
+    {
+        if (Auth::user() && Auth::user()->hasRole($role))
+            return true;
+
+        return abort(403, 'THIS ACTION IS UNAUTHORIZED.');
     }
 }

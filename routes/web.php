@@ -21,15 +21,21 @@ Route::get('/', [ AppsController::class, 'home' ])->name('home');
 include( 'auth.php' );
 
 include( 'alumni.php' );
+include( 'externals.php' );
 
 include( 'board.php' );
 
+include( 'resources.php' );
+
+include( 'ratifications.php' );
+
 include( 'roles.php' );
 
-// Utils
-Route::get('/logs', [ Log::class, 'index' ] )->name('log');
+include( 'webmaster.php' );
 
-// Migrations
-Route::get('/db/migrate', function () { Artisan::call('migrate', ['--force' => true]); } );
+include( 'permalinks.php' );
+
+include( 'aws_sessions.php' );
 
 Route::redirect('/main','https://www.alumniscuolagalileiana.it')->name('main');
+

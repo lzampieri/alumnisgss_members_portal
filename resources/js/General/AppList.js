@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Link, usePage } from '@inertiajs/inertia-react'
+import { Link, usePage } from '@inertiajs/react'
 import RegisteredApps from './RegisteredApps'
 
 export default function AppList() {
@@ -14,19 +14,21 @@ export default function AppList() {
 
     return (
         <div className="w-full flex flex-row flex-wrap justify-center items-center gap-14 px-14 py-8">
-            { RegisteredApps.map ( app => {
-                if( apps.includes( app.id ) ) {
-                    if( app.href ) return (
-                        <a className={classes} href={ app.url } key={ app.name }>
-                            <FontAwesomeIcon icon={ app.icon } className="text-5xl" />
-                            { app.name }
+            {RegisteredApps.map(app => {
+                if (apps.includes(app.id)) {
+                    if (app.href) return (
+                        <a className={classes} href={app.url} key={app.name}>
+                            <FontAwesomeIcon icon={app.icon} className="text-5xl" />
+                            {app.name}
                         </a>
                     ); else return (
-                        <Link className={classes} href={ app.url } key={ app.name }>
-                            <FontAwesomeIcon icon={ app.icon } className="text-5xl" />
-                            { app.name }
+                        <Link className={classes} href={app.url} key={app.name}>
+                            <FontAwesomeIcon icon={app.icon} className="text-5xl" />
+                            {app.name}
                         </Link>
-            )}})}
+                    )
+                }
+            })}
         </div>
     )
 }

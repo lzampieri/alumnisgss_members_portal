@@ -20,6 +20,8 @@ class CreateLoginMethodsTable extends Migration
             $table->string('driver', 50);
             $table->string('credential', 200);
             $table->nullableMorphs('identity');
+            
+            $table->text('comment')->nullable();
 
             $table->unique(['driver', 'credential']);
         });

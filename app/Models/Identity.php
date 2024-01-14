@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\Log;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
@@ -13,7 +14,7 @@ abstract class Identity extends Model {
     // Is only useful to collect all the possible
     // kinds of authenticated identities
 
-    use HasRoles;
+    use HasRoles { hasPermissionTo as protected traitHasPermissionTo; }
 
     protected $guard_name = 'web';
 
@@ -24,12 +25,17 @@ abstract class Identity extends Model {
         $editableRoles = [];
 
         foreach( $roles as $role ) {
+            if( $role->name == 'member' || $role->name == 'student_member' || $role->name == 'everyone' ) continue;
             if( $this->hasPermissionTo( 'user-edit-' . $role->name ) ) {
-                $editableRoles[] = $role->name;
+                $editableRoles[] = $role;
             }
         }
 
         return $editableRoles;
+    }
+
+    public function surnameAndName() {
+        return $this->surname . " " . $this->name;
     }
     
     public function loginMethods() {
@@ -38,5 +44,26 @@ abstract class Identity extends Model {
 
     public function documents() {
         return $this->morphMany( Document::class, 'author' );
+    }
+
+    public function details() {
+        return $this->morphMany( IdentityDetail::class, 'identity' );
+    }
+
+    protected $appends = ['enabled'];
+    public function getEnabledAttribute() {
+        return $this->hasPermissionTo('login');
+    }
+
+    public function hasPermissionTo($permission, $guardName = null): bool
+    {
+        return $this->traitHasPermissionTo($permission) || Role::findByName('everyone')->hasPermissionTo($permission);
+    }
+
+    public function getAllRoles()
+    {
+        $roles = $this->roles;
+        $roles->push( Role::findByName('everyone') );
+        return $roles;
     }
 }

@@ -3,34 +3,49 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Document extends Model
 {    
-    use SoftDeletes;
-
     protected $fillable = [
+        'protocol',
         'identifier',
-        'privacy',
         'date',
         'note',
-        'handle',
-        'author_id'
+        'author_type',
+        'author_id',
+        'attached_to_id'
     ];
-
 
     protected $casts = [
         'date' => 'datetime',
-    ];    
-
-    public static $privacies = [
-        'everyone',
-        // 'members', Still to implement
-        'cda',
-        'secretariat'
     ];
 
     public function author() {
         return $this->morphTo();
+    }
+
+    public function ratifications() {
+        return $this->hasMany( Ratification::class );
+    }    
+    
+    public function files() {
+        return $this->morphMany( File::class, 'parent' );
+    }
+    
+    public function dynamicPermissions() {
+        return $this->morphMany( DynamicPermission::class, 'permissable' );
+    }
+    
+    public function attached_to() {
+        return $this->belongsTo( Document::class, 'attached_to_id' );
+    }
+
+    public function attachments() {
+        return $this->hasMany( Document::class, 'attached_to_id' );
+    }
+    
+    protected $appends = ['canView'];
+    public function getCanViewAttribute() {
+        return DynamicPermission::UserCanViewPermissable($this);
     }
 }

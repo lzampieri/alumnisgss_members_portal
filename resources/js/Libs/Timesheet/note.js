@@ -1,0 +1,1 @@
+// Inspired to https://github.com/jaketrent/react-stint and https://github.com/sbstjn/timesheet.js

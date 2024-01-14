@@ -16,13 +16,11 @@ class CreateDocumentsTable extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->softDeletes();
-            $table->string('identifier',100)->unique();
+            $table->string('protocol',500);
+            $table->string('identifier',100);
             $table->timestamp('date');
-            $table->string('privacy',100);
             $table->text('note')->nullable();
             $table->morphs('author');
-            $table->string('handle',500);
         });
     }
 

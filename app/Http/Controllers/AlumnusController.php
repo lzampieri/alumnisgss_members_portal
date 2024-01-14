@@ -3,121 +3,156 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
+use App\Models\IdentityDetail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class AlumnusController extends Controller
 {
     public function membersList()
     {
         $this->authorize('viewMembers', Alumnus::class);
-        $members = Alumnus::where('status', Alumnus::Member)->orWhere('status', Alumnus::StudentMember)->orderBy('surname')->orderBy('name')->get();
+        $members = Alumnus::whereIn('status', Alumnus::public_status)->orderBy('surname')->orderBy('name')->get();
 
         return Inertia::render('Members/List', ['members' => $members]);
+    }
+
+    public function membersCounters()
+    {
+        $this->authorize('viewMembers', Alumnus::class);
+        $members = Alumnus::where('status', 'member')->count();
+        $students = Alumnus::where('status', 'student_member')->count();
+
+        return response()->json([
+            'members' => $members,
+            'student_members' => $students
+        ]);
     }
 
     public function list()
     {
         $this->authorize('viewAny', Alumnus::class);
-        $alumni = Alumnus::orderBy('surname')->orderBy('name')->get();
+        $alumni = Alumnus::withCount(['ratifications' => function (Builder $query) {
+            $query->whereNull('document_id');
+        }])->orderBy('surname')->orderBy('name')->get();
 
-        return Inertia::render('Registry/List', ['alumni' => $alumni, 'canImport' => Auth::user()->can('bulkEdit', Alumnus::class)]);
+        return Inertia::render('Registry/List', ['alumni' => $alumni, 'canImport' => Auth::user()->can('import', Alumnus::class)]);
     }
 
-    public function add()
+    public function edit(Request $request, ?Alumnus $alumnus = null)
     {
         $this->authorize('edit', Alumnus::class);
+        
+        if( $alumnus )
+            $alumnus->load('details');
 
-        return Inertia::render('Registry/Add');
+        return Inertia::render('Registry/Edit', [
+            'alumnus' => $alumnus,
+            'availableStatus' => Alumnus::availableStatus($alumnus),
+            'allTags' => Alumnus::allTags(),
+            'allDetails' => IdentityDetail::allDetails()
+        ]);
     }
 
-    public function add_post(Request $request)
+    public function edit_post(Request $request, ?Alumnus $alumnus = null)
     {
         $this->authorize('edit', Alumnus::class);
+        $update = false;
 
         $validated = $request->validate([
-            'surname' => 'required|regex:/^[A-zÀ-ú\s]+$/',
-            'name' => 'required|regex:/^[A-zÀ-ú\s]+$/',
+            'surname' => 'required|regex:/^[A-zÀ-ú\s\'_]+$/',
+            'name' => 'required|regex:/^[A-zÀ-ú\s\'_]+$/',
             'coorte' => 'required|numeric',
-            'status' => 'required|numeric'
+            'status' => 'required|in:' . implode(',', Alumnus::availableStatus($alumnus)),
+            'tags' => 'nullable|array',
+            'details' => 'nullable|array',
+            'details.*' => 'nullable|array',
+            'details.*.delete' => 'nullable|boolean',
+            'details.*.key' => 'exclude_if:details.*.delete,true|required|min:3|max:200',
+            'details.*.value' => 'exclude_if:details.*.delete,true|nullable',
         ]);
 
-        Alumnus::create($validated);
-        Log::debug('Alumnus created', $validated);
+        if( $alumnus ) {
 
-        return redirect()->route('registry')->with('notistack', ['success', 'Inserimento riuscito']);
-    }
+            $alumnus->update($validated);
+            Log::debug('Alumnus updated', $validated);
+            $update = true;
+            
+        }
+        else { 
 
-    public function bulk_im()
-    {
-        $this->authorize('bulkEdit', Alumnus::class);
-
-        return Inertia::render('Registry/Bulk');
-    }
-
-    public function bulk_im_post(Request $request)
-    {
-        $this->authorize('bulkEdit', Alumnus::class);
-
-        $content = preg_split("/\r\n|\n|\r/", $request->input('content'));
-
-        $count = 0;
-        foreach ($content as $line) {
-            if (strlen($line) < 3) continue;
-            $fields = explode(',', $line);
-            if (count($fields) != 4) continue;
-            if (!is_numeric($fields[2])) continue;
-            if (!is_numeric($fields[3])) continue;
-
-            $data = [
-                'surname' => $fields[0],
-                'name' => $fields[1],
-                'coorte' => $fields[2],
-                'status' => $fields[3]
-            ];
-
-            Alumnus::create($data);
-            Log::debug('Alumnus created from bulk', $data);
-            $count++;
+            $alumnus = Alumnus::create($validated);
+            Log::debug('Alumnus created', $validated);
         }
 
-        return redirect()->route('registry')->with('notistack', ['success', 'Anagrafiche inserite: ' . $count]);
+        foreach( $validated['details'] as $detail ) {
+            if( array_key_exists( 'id', $detail ) && $detail['id'] >= 0 ) {
+                $det = IdentityDetail::find( $detail['id'] );
+
+                // Details already exists; check if to delete)
+                if( array_key_exists( 'delete', $detail ) && $detail['delete'] ) {
+                    Log::debug("Deleted detail", $detail);
+                    $det->delete();
+                } else {
+                    // Update if necessary
+                    if( $det->key != $detail['key'] || $det->value != $detail['value'] ) {
+                        $det->update( [ 'key' => $detail['key'], 'value' => $detail['value'] ] );
+                        Log::debug("Updated detail", $detail);
+                    }
+                }
+            }
+            else {
+                // New details must be created
+                if( !array_key_exists( 'delete', $detail ) || !$detail['delete'] ) {
+                    $alumnus->details()->create([ 'key' => $detail['key'], 'value' => $detail['value'] ] );
+                    Log::debug("New detail created", $detail);
+                }
+            }
+        }
+        
+        if( $update ) return redirect()->route('registry')->with('notistack', ['success', 'Aggiornamento riuscito']);
+        return redirect()->route('registry')->with('notistack', ['success', 'Inserimento riuscito']);
     }
+    
+    // public function bulk_edit()
+    // {
+    //     $this->authorize('bulkEdit', Alumnus::class);
 
-    public function bulk_ex()
-    {
-        $this->authorize('bulkEdit', Alumnus::class);
+    //     return Inertia::render('Registry/BulkEdit', [
+    //         'alumni' => Alumnus::all(),
+    //         'availableStatus' => Alumnus::availableStatus(),
+    //     ]);
+    // }
 
-        return response()->streamDownload( function() {
-            echo "\xEF\xBB\xBF"; // UTF-8 BOM
-            $alumni = Alumnus::all();
-            foreach( $alumni as $a )
-                echo implode( ',', [ $a->name, $a->surname, $a->coorte, $a->status ] ) . "\n";
-        }, 'export_' . date('Ymd') . '_' . env('APP_ENV','debug') .  '.csv' );
-    }
+    // public function bulk_edit_post(Request $request)
+    // {
+    //     $this->authorize('bulkEdit', Alumnus::class);
 
-    public function edit(Request $request, Alumnus $alumnus)
-    {
-        $this->authorize('edit', Alumnus::class);
+    //     $validated = $request->validate([
+    //         'alumni_id' => 'required|array',
+    //         'alumni_id.*' => 'exists:alumni,id',
+    //         'new_state' => 'required|in:' . implode(',', Alumnus::availableStatus())
+    //     ]);
 
-        return Inertia::render('Registry/Edit', ['alumnus' => $alumnus]);
-    }
+    //     $edited = 0;
+    //     $toUpdate = Alumnus::whereIn('id', $validated['alumni_id'])->get();
 
-    public function edit_post(Request $request, Alumnus $alumnus)
-    {
-        $this->authorize('edit', Alumnus::class);
+    //     foreach ($toUpdate as $alumnus) {
+    //         if ($alumnus->status != $validated['new_state']) {
+    //             $edited++;
+    //             Log::debug('Alumnus status edited (bulk)', ['alumnus' => $alumnus, 'new_state' => $validated['new_state']]);
+    //             $alumnus->status = $validated['new_state'];
+    //             $alumnus->save();
+    //         }
+    //     }
 
-        $validated = $request->validate([
-            'surname' => 'required|regex:/^[A-zÀ-ú\s]+$/',
-            'name' => 'required|regex:/^[A-zÀ-ú\s]+$/',
-            'coorte' => 'required|numeric',
-            'status' => 'required|numeric'
-        ]);
+    //     $output = "" . $edited . " su " . count($toUpdate) . " stati modificati";
 
-        $alumnus->update($validated);
-        Log::debug('Alumnus updated', $validated);
-
-        return redirect()->route('registry')->with('notistack', ['success', 'Aggiornamento riuscito']);
-    }
+    //     return redirect()->route('registry.bulk.edit')->with('notistack', ['success', $output]);
+    // }
 }

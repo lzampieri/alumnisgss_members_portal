@@ -1,15 +1,17 @@
+import { router } from "@inertiajs/react";
 import { contrastColor } from "contrast-color";
+import { enqueueSnackbar } from "notistack";
 
 
-export function romanize (num) {
+export function romanize(num) {
     if (isNaN(num))
         return NaN;
-    if( num == 0 )
+    if (num == 0)
         return "ON"
     var digits = String(+num).split(""),
-        key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM",
-               "","X","XX","XXX","XL","L","LX","LXX","LXXX","XC",
-               "","I","II","III","IV","V","VI","VII","VIII","IX"],
+        key = ["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM",
+            "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC",
+            "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"],
         roman = "",
         i = 3;
     while (i--)
@@ -18,24 +20,16 @@ export function romanize (num) {
 }
 
 export class AlumnusStatus {
-    static HasRight = 0;
-    static HasntRight = 1;
-    static Candidate = 2;
-    static Member = 3;
-    static Dead = 4;
-    static Disallow = 5;
-    static StudentNotMember = 6;
-    static StudentMember = 7;
-    static names = [ 'Avente diritto', 'Non avente diritto', 'Da ratificare', 'Socio', 'Deceduto', 'Rifiuta', 'Studente socio', 'Studente non socio' ]
-    static acronym = [ 'AD', 'NAD', 'DR', 'S', 'D', 'R', 'SS', 'SNS' ]
-    static colors = [ '#FFFF00', '#FF00FF', '#0000FF', '#00CC00', '#003300', '#FF0000', '#00FF99', '#FF9900']
-}
-
-export class Roles {
-    static names = {
-        'secretariat': 'Segreteria',
-        'webmaster': 'WebMaster'
-    }
+    static status = {
+        member: { label: 'Socio', acronym: 'S', color: '#00CC00' },
+        student_member: { label: 'Socio studente', acronym: 'SS', color: '#00FF99' },
+        not_reached: { label: 'Non raggiunto', acronym: '?', color: '#FFFF00' },
+        student_not_reached: { label: 'Studente non raggiunto', acronym: 'S?', color: '#FF9900' },
+        student_not_agreed: { label: 'Studente rifiutante', acronym: 'SR', color: '#FF0000' },
+        hasnt_right: { label: 'Non avente diritto', acronym: 'NAD', color: '#FF00FF' },
+        dead: { label: 'Deceduto', acronym: 'D', color: '#003300' },
+        not_agreed: { label: 'Rifiutante', acronym: 'R', color: '#FF0000' },
+    };
 }
 
 export class Documents {
@@ -47,16 +41,35 @@ export class Documents {
     }
 }
 
-export function bgAndContrast( bgColor ) {
+export function bgAndContrast(bgColor) {
     return {
         backgroundColor: bgColor,
         color: contrastColor({ bgColor: bgColor })
     }
 }
 
-export function disappearing( visible ) {
+export function disappearing(visible) {
     return {
         height: visible ? 'auto' : 0,
         overflow: visible ? 'visible' : 'hidden'
     }
+}
+
+export function postRequest(route_name, data, setProcessing, routeParams = {}, preserveState = true, preserveScroll = true) {
+    setProcessing(true);
+    router.post(
+        route(route_name, routeParams),
+        data,
+        { onFinish: () => { preserveState && setProcessing(false) }, onError: (e) => { enqueueSnackbar('Errore generico!', { variant: 'error' }), console.log(e) }, preserveState: preserveState, preserveScroll: preserveScroll }
+    )
+}
+
+export function randomHex( length ) {
+    let output = ""
+    const chars = "0123456789ABCDEF"
+    while( length > 0 ) {
+        output += chars[ Math.floor( Math.random() * 16 ) ]
+        length --;
+    }
+    return output
 }
