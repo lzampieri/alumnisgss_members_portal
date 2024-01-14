@@ -88,6 +88,22 @@ export default function Edit() {
         <form className="flex flex-col w-full md:w-3/5" onSubmit={submit}>
             <h3>{ prev ? "Aggiorna" : "Crea nuovo"} alumno</h3>
 
+            { prev && 
+            <div className="flex flex-col my-4 border-l-4 pl-2 border-l-primary-main">
+                <div className="font-bold text-primary-main">Storico</div>
+                <ul className="list-disc list-inside">
+                    <li>Creazione: { new Date(prev.created_at).toLocaleDateString("it-IT")}</li>
+                    <li>Ultima modifica: { new Date(prev.updated_at).toLocaleDateString("it-IT")}</li>
+                    { prev.ratifications.map( r => 
+                        <li key={r.id}>Passaggio allo stato di {AlumnusStatus.status[r.required_state].label}: {
+                            r.document_id == null ? <span className="italic">in attesa</span> : <span>
+                                { new Date(r.document.date).toLocaleDateString("it-IT")} (<a href={route('board.view_document', { protocol: r.document.protocol })}>{r.document.identifier}</a>)
+                            </span>
+                        }</li>
+                    )}
+                </ul>
+            </div> }
+
             <label>Cognome</label>
             <input type="text" value={data.surname} onChange={(e) => setData('surname', e.target.value)} />
             <label className="error">{errors.surname}</label>

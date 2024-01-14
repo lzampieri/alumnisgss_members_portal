@@ -49,7 +49,7 @@ class AlumnusController extends Controller
         $this->authorize('edit', Alumnus::class);
         
         if( $alumnus )
-            $alumnus->load('details');
+            $alumnus->load(['details', 'ratifications', 'ratifications.document']);
 
         return Inertia::render('Registry/Edit', [
             'alumnus' => $alumnus,
