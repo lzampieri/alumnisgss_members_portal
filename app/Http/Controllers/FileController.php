@@ -13,6 +13,6 @@ class FileController extends Controller
 
         $this->authorize( 'view', $file );
 
-        return response()->file( storage_path() . '/app/files/' . $file->handle );
+        return response()->file( $file->path() );
     }
 }

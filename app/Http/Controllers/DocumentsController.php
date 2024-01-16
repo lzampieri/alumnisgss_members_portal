@@ -202,8 +202,12 @@ class DocumentsController extends Controller
         $file = File::create();
         $file->handle =  'file_' . $file->id . '.pdf';
         $file->parent()->associate( $document )->save();
-        $file->save();
+        
         $validated['file']->storeAs('files', $file->handle );
+
+        $file->sha256 = $file->computeSha256();
+        $file->save();
+        
         Log::debug('New version for document uploaded', ['file' => $file, 'document' => $document ] );
 
         return redirect()->route('board.edit', [ 'document' => $document->id ] )->with(['notistack' => ['success', 'Nuova versione caricata']]);
@@ -253,7 +257,7 @@ class DocumentsController extends Controller
     {
         $this->authorize('edit', Document::class);
 
-        $validated = $request->validate([
+        $validated = $request->validate([   
             'ratification' => 'required|exists:ratifications,id',
             'new_state' => 'required|in:' . implode(',', Alumnus::availableStatus())
         ]);
@@ -280,8 +284,20 @@ class DocumentsController extends Controller
 
     public function view_file(File $file)
     {
+        if( $file->parent_type == Document::class ) {
+            $this->authorize('view', $file->parent);
+        } else {
+            return abort('403');
+        }
+
+        // Check for sha256
+        if( ! $file->verifyHash() ) {
+            Log::error('File hash mismatch', ['file' => $file, 'fromDatabase' => $file->sha256, 'fromFile' => $file->computeSha256()] );
+            return redirect()->back()->with('errorsDialogs', ["Il file richiesto è corrotto. Contatta gli amministratori."]);
+        }
+
         $pdf = new Fpdi();
-        $pageCount = $pdf->setSourceFile(storage_path() . '/app/files/' . $file->handle);
+        $pageCount = $pdf->setSourceFile($file->path());
 
         
         $all_versions = $file->parent->files()->oldest()->pluck('id')->toArray();

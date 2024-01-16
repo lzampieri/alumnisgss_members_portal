@@ -21,4 +21,18 @@ class File extends Model
     {
         return $this->morphTo();
     }
+
+    public function path()
+    {
+        return storage_path() . '/app/files/' . $this->handle;
+    }
+
+    public function computeSha256()
+    {
+        return hash_file( 'sha256', $this->path() );
+    }
+    public function verifyHash()
+    {
+        return ( $this->sha256 == $this->computeSha256() );
+    }
 }
