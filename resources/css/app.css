@@ -24,6 +24,12 @@
     .button-active {
         @apply text-primary-contrast bg-primary-main;
     }
+    .discrete-button {
+        @apply px-2 py-1 rounded border border-gray-300;
+        @apply hover:bg-gray-300;
+        @apply no-underline;
+        @apply cursor-pointer;
+    }
     .icon {
         @apply rounded-full text-primary-main aspect-square px-1;
     }

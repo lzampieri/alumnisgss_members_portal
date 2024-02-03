@@ -16,7 +16,7 @@ class AwsSessionController extends Controller
         return Inertia::render(
             'AwsSessions/List',
             [
-                'sessions' => AwsSession::latest()->get()->groupBy('day'),
+                'sessions' => AwsSession::orderBy('starttime')->get()->groupBy(['month','day']),
                 'count' => AwsSession::count()
             ]
         );
