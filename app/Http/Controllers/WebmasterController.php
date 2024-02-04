@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Policies\GeneralPolicy;
 use Illuminate\Support\Facades\Artisan;
 use Inertia\Inertia;
 use Ifsnop\Mysqldump\Mysqldump;
+use Illuminate\Encryption\Encrypter;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\File;
+use RuntimeException;
 
 class WebmasterController extends Controller
 {
@@ -18,12 +22,23 @@ class WebmasterController extends Controller
 
     public function do_backup()
     {
+        $tempFile = storage_path() . '/app/backups/temp.sql';
+
         $dump = new Mysqldump(
             env('DB_CONNECTION') . ':host=' . env('DB_HOST') . ';dbname=' . env('DB_DATABASE'),
             env('DB_USERNAME'),
-            env('DB_PASSWORD')
+            env('DB_PASSWORD'),
+            array(
+                'no-create-db' => true,
+                'no-create-info' => true,
+            )
         );
-        $dump->start(storage_path() . '/app/backups/database_' . date('Ymd') . '.sql');
+        $dump->start($tempFile);
+
+        $encrypted = Crypt::encryptString(file_get_contents($tempFile));
+
+        file_put_contents(storage_path() . '/app/backups/database_' . date('Ymd') . '.sql', $encrypted);
+        File::delete($tempFile);
     }
 
     public function backup()
@@ -36,6 +51,38 @@ class WebmasterController extends Controller
         }
 
         return redirect()->back()->with('notistack', ['success', 'Backup effettuato']);
+    }
+
+    public function decryptUtility()
+    {
+        return Inertia::render('Webmaster/DecryptUtility', [
+            '_token' => csrf_token()
+        ]);
+    }
+
+    public function decryptUtilityPost(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'file' => 'required',
+                'key' => 'required',
+            ]);
+
+            $key = base64_decode($validated['key']);
+            $encrypter = new Encrypter($key, 'AES-256-CBC');
+
+            $content = $validated['file']->get();
+            $filename = $validated['file']->getClientOriginalName();
+
+            $output =  $encrypter->decryptString($content);
+
+            return response()->streamDownload(function () use ($output) {
+                echo $output;
+            }, $filename . "_dec");
+            
+        } catch (RuntimeException $e) {
+            return redirect()->back()->with('notistack', ['error', 'Unable to decrypt. ' . $e->getMessage()]);
+        }
     }
 
     public function migrate()
@@ -66,17 +113,17 @@ class WebmasterController extends Controller
         return Artisan::output();
     }
 
-    public function partremigrate( $count )
+    public function partremigrate($count)
     {
         $this->authorizeRole('webmaster');
 
-        if( $count == 0 ) {
+        if ($count == 0) {
             return redirect()->back();
         }
 
         try {
             $this->do_backup();
-            Artisan::call('migrate:refresh', ['--force' => true, '--step' => $count ]);
+            Artisan::call('migrate:refresh', ['--force' => true, '--step' => $count]);
         } catch (\Exception $e) {
             return redirect()->back()->with('notistack', ['error', $e->getMessage()]);
         }

@@ -19,6 +19,8 @@ Route::prefix('/webmaster')->group( function () {
 
     // backup
     Route::get('/backup', [ WebmasterController::class, 'backup' ])->name('webmaster.backup');
+    Route::get('/decryptUtility', [ WebmasterController::class, 'decryptUtility' ])->name('webmaster.decryptUtility');
+    Route::post('/decryptUtility', [ WebmasterController::class, 'decryptUtilityPost' ])->name('webmaster.decryptUtility');
 
     // migrations
     Route::get('/migrate', [ WebmasterController::class, 'migrate' ])->name('webmaster.migrate');
