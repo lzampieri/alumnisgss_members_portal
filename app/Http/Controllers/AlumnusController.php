@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
+use App\Models\Identity;
 use App\Models\IdentityDetail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -44,11 +45,27 @@ class AlumnusController extends Controller
         return Inertia::render('Registry/List', ['alumni' => $alumni, 'canImport' => Auth::user()->can('import', Alumnus::class)]);
     }
 
+    public function table()
+    {
+        $this->authorize('viewAny', Alumnus::class);
+
+        $data = Alumnus::orderBy('coorte')
+            ->orderBy('surname')->orderBy('name')
+            ->with('details')
+            ->get()
+            ->append('pending_ratifications');
+
+        return Inertia::render(
+            'Registry/Table',
+            ['data' => $data, 'detailsTitles' => array_keys( IdentityDetail::allDetails() )]
+        );
+    }
+
     public function edit(Request $request, ?Alumnus $alumnus = null)
     {
         $this->authorize('edit', Alumnus::class);
-        
-        if( $alumnus )
+
+        if ($alumnus)
             $alumnus->load(['details', 'ratifications', 'ratifications.document']);
 
         return Inertia::render('Registry/Edit', [
@@ -77,48 +94,45 @@ class AlumnusController extends Controller
             'details.*.value' => 'exclude_if:details.*.delete,true|nullable',
         ]);
 
-        if( $alumnus ) {
+        if ($alumnus) {
 
             $alumnus->update($validated);
             Log::debug('Alumnus updated', $validated);
             $update = true;
-            
-        }
-        else { 
+        } else {
 
             $alumnus = Alumnus::create($validated);
             Log::debug('Alumnus created', $validated);
         }
 
-        foreach( $validated['details'] as $detail ) {
-            if( array_key_exists( 'id', $detail ) && $detail['id'] >= 0 ) {
-                $det = IdentityDetail::find( $detail['id'] );
+        foreach ($validated['details'] as $detail) {
+            if (array_key_exists('id', $detail) && $detail['id'] >= 0) {
+                $det = IdentityDetail::find($detail['id']);
 
                 // Details already exists; check if to delete)
-                if( array_key_exists( 'delete', $detail ) && $detail['delete'] ) {
+                if (array_key_exists('delete', $detail) && $detail['delete']) {
                     Log::debug("Deleted detail", $detail);
                     $det->delete();
                 } else {
                     // Update if necessary
-                    if( $det->key != $detail['key'] || $det->value != $detail['value'] ) {
-                        $det->update( [ 'key' => $detail['key'], 'value' => $detail['value'] ] );
+                    if ($det->key != $detail['key'] || $det->value != $detail['value']) {
+                        $det->update(['key' => $detail['key'], 'value' => $detail['value']]);
                         Log::debug("Updated detail", $detail);
                     }
                 }
-            }
-            else {
+            } else {
                 // New details must be created
-                if( !array_key_exists( 'delete', $detail ) || !$detail['delete'] ) {
-                    $alumnus->details()->create([ 'key' => $detail['key'], 'value' => $detail['value'] ] );
+                if (!array_key_exists('delete', $detail) || !$detail['delete']) {
+                    $alumnus->details()->create(['key' => $detail['key'], 'value' => $detail['value']]);
                     Log::debug("New detail created", $detail);
                 }
             }
         }
-        
-        if( $update ) return redirect()->route('registry')->with('notistack', ['success', 'Aggiornamento riuscito']);
+
+        if ($update) return redirect()->route('registry')->with('notistack', ['success', 'Aggiornamento riuscito']);
         return redirect()->route('registry')->with('notistack', ['success', 'Inserimento riuscito']);
     }
-    
+
     // public function bulk_edit()
     // {
     //     $this->authorize('bulkEdit', Alumnus::class);

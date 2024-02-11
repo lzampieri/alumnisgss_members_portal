@@ -14,6 +14,7 @@ Route::prefix('/members')->group( function () {
 // Registry
 Route::prefix('/registry')->group( function () {
     Route::get('/', [ AlumnusController::class, 'list' ] )->name('registry');
+    Route::get('/table', [ AlumnusController::class, 'table' ] )->name('registry.table');
 
     Route::get('/add', [ AlumnusController::class, 'edit' ] )->name('registry.add');
 
