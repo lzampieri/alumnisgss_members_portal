@@ -57,7 +57,7 @@ class AlumnusController extends Controller
 
         return Inertia::render(
             'Registry/Table',
-            ['data' => $data, 'detailsTitles' => array_keys( IdentityDetail::allDetails() )]
+            ['data' => $data, 'detailsTitles' => array_keys(IdentityDetail::allDetails())]
         );
     }
 
@@ -90,47 +90,86 @@ class AlumnusController extends Controller
             'details' => 'nullable|array',
             'details.*' => 'nullable|array',
             'details.*.delete' => 'nullable|boolean',
-            'details.*.key' => 'exclude_if:details.*.delete,true|required|min:3|max:200',
+            'details.*.key' => 'exclude_if:details.*.delete,true|required|min:3|max:100|distinct',
             'details.*.value' => 'exclude_if:details.*.delete,true|nullable',
         ]);
 
+        // Check for errors on the details, e.g. switching the names of two keys
         if ($alumnus) {
+            $details_errors = [];
+            foreach ($validated['details'] as $idx => $detail) {
+                if ($detail['delete'] ?? false) continue;
 
+                $others = $alumnus->details->where('key', $detail['key'])->where('id', '!=', $detail['id'] ?? -1)->count();
+                if ($others > 0)
+                    $details_errors['details.' . $idx . '.key'] = "Esiste già un dettaglio con questo nome";
+            }
+            if (count($details_errors) > 0) {
+                return back()->withErrors($details_errors);
+            }
+        }
+
+        if ($alumnus) {
             $alumnus->update($validated);
             Log::debug('Alumnus updated', $validated);
             $update = true;
         } else {
-
             $alumnus = Alumnus::create($validated);
             Log::debug('Alumnus created', $validated);
         }
 
+        // Go with order: firstly, trash the one which should be trashed
         foreach ($validated['details'] as $detail) {
-            if (array_key_exists('id', $detail) && $detail['id'] >= 0) {
+            if (($detail['id'] ?? -1) >= 0 && ($detail['delete'] ?? false)) {
+                $det = IdentityDetail::find($detail['id']);
+                if ($det) {
+                    Log::debug("Deleted detail", $det);
+                    $det->delete();
+                }
+            }
+        }
+
+        // Now, update existing details and create new ones
+        foreach ($validated['details'] as $detail) {
+            if ($detail['delete'] ?? false) continue; // skip deletes
+
+            // If already existing, update
+            if (($detail['id'] ?? -1) >= 0) {
                 $det = IdentityDetail::find($detail['id']);
 
-                // Details already exists; check if to delete)
-                if (array_key_exists('delete', $detail) && $detail['delete']) {
-                    Log::debug("Deleted detail", $detail);
+                // If update is needed...
+                if ($det->key == $detail['key'] && $det->value == $detail['value']) continue;
+
+                // Check if there is a trashed detail with the same name
+                $trashed = $alumnus->details()->onlyTrashed()->where('key', $detail['key'])->first();
+                if ($trashed) {
+                    Log::debug("Detail deleted to be replaced", $det);
                     $det->delete();
+                    $trashed->restore();
+                    $trashed->value = $detail['value'];
+                    $trashed->save();
+                    Log::debug("Detail restored and updated as a replacement", $trashed);
                 } else {
-                    // Update if necessary
-                    if ($det->key != $detail['key'] || $det->value != $detail['value']) {
-                        $det->update(['key' => $detail['key'], 'value' => $detail['value']]);
-                        Log::debug("Updated detail", $detail);
-                    }
+                    $det->update(['key' => $detail['key'], 'value' => $detail['value']]);
+                    Log::debug("Updated detail", $detail);
                 }
             } else {
                 // New details must be created
-                if (!array_key_exists('delete', $detail) || !$detail['delete']) {
+                // Check if there is already a trashed detail with the same name
+                $trashed = $alumnus->details()->onlyTrashed()->where('key', $detail['key'])->first();
+                if ($trashed) {
+                    $trashed->restore();
+                    $trashed->value = $detail['value'];
+                    $trashed->save();
+                    Log::debug("Detail restored and updated", $trashed);
+                } else {
                     $alumnus->details()->create(['key' => $detail['key'], 'value' => $detail['value']]);
                     Log::debug("New detail created", $detail);
                 }
             }
         }
 
-        if ($update) return redirect()->route('registry')->with('notistack', ['success', 'Aggiornamento riuscito']);
-        return redirect()->route('registry')->with('notistack', ['success', 'Inserimento riuscito']);
+        return redirect()->route('registry.edit', ['alumnus' => $alumnus])->with('notistack', ['success', $update ? 'Alumno aggiornato' : 'Alumno creato']);
     }
 
     // public function bulk_edit()
