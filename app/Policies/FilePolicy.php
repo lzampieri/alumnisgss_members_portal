@@ -25,26 +25,27 @@ class FilePolicy
         $parent_type = $file->parent_type;
 
         // Resource
-        if( $parent_type == Resource::class ) {
-            $resource = $file->parent; /** @var Resource $resource */
-            
+        if ($parent_type == Resource::class) {
+            $resource = $file->parent;
+            /** @var Resource $resource */
+
             // Assert that the resource can be seen
-            if( !( new ResourcePolicy)->view( $user, $resource ) )
+            if (!(new ResourcePolicy)->view($user, $resource))
                 return false;
 
             // Assert that the file is actually present in the resource
-            $resource_blocks = json_decode( $resource->content, true );
+            $resource_blocks = json_decode($resource->content, true);
 
-            foreach( $resource_blocks as $block ) {
-                if( $block['type'] == 'file' ) {
-                    if( $block['fileHandle'] == $file->handle )
+            foreach ($resource_blocks as $block) {
+                if ($block['type'] == 'file') {
+                    if ($block['fileHandle'] == $file->handle)
                         return true;
                 }
             }
         }
 
         // Document
-        if( $parent_type == Document::class ) {
+        if ($parent_type == Document::class) {
             return false;
             // Document cannot be seen from here, but must be seen from the document app
             // which will add the footer and everything else

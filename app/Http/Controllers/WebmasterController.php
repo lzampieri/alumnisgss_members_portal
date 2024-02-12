@@ -79,7 +79,6 @@ class WebmasterController extends Controller
             return response()->streamDownload(function () use ($output) {
                 echo $output;
             }, $filename . "_dec");
-            
         } catch (RuntimeException $e) {
             return redirect()->back()->with('notistack', ['error', 'Unable to decrypt. ' . $e->getMessage()]);
         }

@@ -17,14 +17,14 @@ export default function Edit() {
     const prevDoc = usePage().props.document;
     const roles = usePage().props.roles;
     const rats = prevDoc.grouped_ratifications;
-    const parentable = usePage().props.parentable.map( p => ({ value: p.id, label: p.identifier }) );
+    const parentable = usePage().props.parentable.map(p => ({ value: p.id, label: p.identifier }));
 
     const { data, setData, post, processing, errors, isDirty, transform } = useForm({
         identifier: prevDoc.identifier,
         roles: prevDoc.dynamic_permissions.map(dp => dp.role_id),
         date: new Date(prevDoc.date),
         note: prevDoc.note || "",
-        isAttachment: !! prevDoc.attached_to_id,
+        isAttachment: !!prevDoc.attached_to_id,
         attachedTo: prevDoc.attached_to ? { value: prevDoc.attached_to.id, label: prevDoc.attached_to.identifier } : null
     })
 
@@ -43,7 +43,7 @@ export default function Edit() {
     transform((data) => ({
         ...data,
         attached_to_id: data.isAttachment ? data.attachedTo.value : null
-    }))      
+    }))
 
     return (
         <div className="flex flex-col w-full md:w-3/5">
@@ -57,10 +57,10 @@ export default function Edit() {
                 <label className="error">{errors.identifier}</label>
                 <label>Mostra come allegato</label>
                 <ReactSwitch height={21} width={42} checked={data.isAttachment} onChange={(newState) => setData('isAttachment', newState)} />
-                { data.isAttachment && 
+                {data.isAttachment &&
                     <div className="w-full flex flex-row flex-wrap gap-2 items-center">
                         <label>Allegato a:</label>
-                        <Select className="grow" value={data.attachedTo} options={ parentable } onChange={(newDocument)=>setData('attachedTo',newDocument)} />
+                        <Select className="grow" value={data.attachedTo} options={parentable} onChange={(newDocument) => setData('attachedTo', newDocument)} />
                     </div>
                 }
                 <label>Visibilità</label>
@@ -79,8 +79,8 @@ export default function Edit() {
 
             <label>Versioni</label>
             <ol className="list-disc list-inside">
-                {prevDoc.files.map( (f, index) =>
-                    <li key={f.id}><a href={route('board.view_file', { file: f.id })} className={ index == prevDoc.files.length - 1 ? "font-bold" : ""}>Versione {index+1}</a></li>
+                {prevDoc.files.map((f, index) =>
+                    <li key={f.id}><a href={route('board.view_file', { file: f.id })} className={index == prevDoc.files.length - 1 ? "font-bold" : ""}>Versione {index + 1}</a></li>
                 )}
             </ol>
             <label className="unspaced">Si noti che solo l'ultima versione rimane visibile, secondo le opzioni di privacy selezionate. Inoltre, per questioni di protocollazione, vecchie versioni non possono essere eliminate, nemmeno se errate.</label>

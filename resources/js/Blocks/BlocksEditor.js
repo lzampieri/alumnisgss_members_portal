@@ -7,21 +7,21 @@ import { randomHex } from '../Utils';
 
 export default function BlocksEditor({ initialContent, saveCallback }) {
 
-    const [list, setList] = useState( initialContent?.map( block => BlockParser.preProcess( block ) ) || [])
+    const [list, setList] = useState(initialContent?.map(block => BlockParser.preProcess(block)) || [])
 
     const save = () => {
-        saveCallback( list.map( block => BlockParser.postProcess( block ) ) )
+        saveCallback(list.map(block => BlockParser.postProcess(block)))
     }
 
     const addBlockAt = (props, pos) => {
         let id = randomHex(6);
-        while( list.map( item => item.id ).includes( id ) ) {
+        while (list.map(item => item.id).includes(id)) {
             id = randomHex(6);
         }
         props['id'] = id;
 
-        if( pos < 0 ) pos = 0
-        if( pos > list.length ) pos = list.length
+        if (pos < 0) pos = 0
+        if (pos > list.length) pos = list.length
         list.splice(pos, 0, props)
         setList(list.slice())
     }
@@ -41,7 +41,7 @@ export default function BlocksEditor({ initialContent, saveCallback }) {
         setList(list.slice())
     }
 
-    const setData = (index,key,value) => {
+    const setData = (index, key, value) => {
         const oldData = list.slice()
         oldData[index][key] = value
         setList(oldData)
@@ -52,12 +52,12 @@ export default function BlocksEditor({ initialContent, saveCallback }) {
         <div className="w-full border rounded m-2 p-2">
             <DraggingManagement list={list} updateOrder={updateOrder} renderItem={(item, index) =>
                 <BlockEnvironment index={index} addBlockAt={addBlockAt} updateOrder={updateOrder} deleteItem={deleteItem}>
-                    {BlockParser.render(item, (key,value)=>setData(index,key,value), true)}
+                    {BlockParser.render(item, (key, value) => setData(index, key, value), true)}
                 </BlockEnvironment>
             } />
             <div className="w-full flex flex-col items-end mt-2">
                 <div className="self-end w-6">
-                    <AddBlock alwaysVisible={true} addBlock={(props) => addBlockAt(props,list.length)} />
+                    <AddBlock alwaysVisible={true} addBlock={(props) => addBlockAt(props, list.length)} />
                 </div>
             </div>
         </div>

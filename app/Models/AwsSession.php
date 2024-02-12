@@ -19,25 +19,28 @@ class AwsSession extends Model
         'endtime' => 'datetime',
     ];
 
-    
-    protected $appends = ['duration','month','day'];
-    public function getDurationAttribute() {
-        if( $this->starttime && $this->endtime ) {
+
+    protected $appends = ['duration', 'month', 'day'];
+    public function getDurationAttribute()
+    {
+        if ($this->starttime && $this->endtime) {
             return $this->endtime->diffInMinutes($this->starttime);
         }
         return 0;
     }
-    public function getMonthAttribute() {
-        if( $this->starttime )
+    public function getMonthAttribute()
+    {
+        if ($this->starttime)
             return $this->starttime->year * 100 + $this->starttime->month;
-        if( $this->endtime )
+        if ($this->endtime)
             return $this->endtime->year * 100 + $this->endtime->month;
         return 0;
     }
-    public function getDayAttribute() {
-        if( $this->starttime )
+    public function getDayAttribute()
+    {
+        if ($this->starttime)
             return $this->month * 100 + $this->starttime->day;
-        if( $this->endtime )
+        if ($this->endtime)
             return $this->month * 100 + $this->endtime->day;
         return '0';
     }

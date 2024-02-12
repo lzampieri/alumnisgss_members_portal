@@ -16,7 +16,7 @@ class File extends Model
         'parent_id'
     ];
 
-    
+
     public function parent()
     {
         return $this->morphTo();
@@ -29,10 +29,10 @@ class File extends Model
 
     public function computeSha256()
     {
-        return hash_file( 'sha256', $this->path() );
+        return hash_file('sha256', $this->path());
     }
     public function verifyHash()
     {
-        return ( $this->sha256 == $this->computeSha256() );
+        return ($this->sha256 == $this->computeSha256());
     }
 }

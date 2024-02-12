@@ -22,10 +22,10 @@ class DocumentsController extends Controller
         $params = [];
 
         $params['documents'] = Document::whereNull('attached_to_id')
-                               ->with(['author','dynamicPermissions','dynamicPermissions.role'])
-                               ->with(['attachments','attachments.author', 'attachments.dynamicPermissions','attachments.dynamicPermissions.role'])
-                               ->orderBy('date', 'desc')->orderBy('protocol', 'desc')->get()
-                               ->filter->canView->values();
+            ->with(['author', 'dynamicPermissions', 'dynamicPermissions.role'])
+            ->with(['attachments', 'attachments.author', 'attachments.dynamicPermissions', 'attachments.dynamicPermissions.role'])
+            ->orderBy('date', 'desc')->orderBy('protocol', 'desc')->get()
+            ->filter->canView->values();
         $params['total'] = Document::count();
 
         $params['canUpload'] = Auth::check() && Auth::user()->can('create', Document::class);
@@ -41,11 +41,13 @@ class DocumentsController extends Controller
         $canEdit = Auth::check() && Auth::user()->can('edit', Document::class);
 
         return Inertia::render('Board/Upload', [
-            'roles' => Role::where('name','!=','webmaster')->orderBy('id')->get(),
+            'roles' => Role::where('name', '!=', 'webmaster')->orderBy('id')->get(),
             'canEdit' => $canEdit,
             'open_rats' => Ratification::whereNull('document_id')->with('alumnus')->get()
-                            ->sortBy( function( $rat, $key ) { return str_pad( $rat->alumnus->coorte, 4, 0, STR_PAD_LEFT ) . " " . $rat->alumnus->surname . " " . $rat->alumnus->name; } )
-                            ->groupBy('required_state'),
+                ->sortBy(function ($rat, $key) {
+                    return str_pad($rat->alumnus->coorte, 4, 0, STR_PAD_LEFT) . " " . $rat->alumnus->surname . " " . $rat->alumnus->name;
+                })
+                ->groupBy('required_state'),
             'parentable' => Document::whereNull('attached_to_id')->latest()->get()
 
         ]);
@@ -67,13 +69,13 @@ class DocumentsController extends Controller
             'attached_to_id' => 'integer|exists:documents,id|nullable',
             'identifier' => [
                 'required',
-                function ($attribute, $value, $fail) use ( $request ) {
+                function ($attribute, $value, $fail) use ($request) {
                     $att_to_id = $request->input('attached_to_id');
-                    if( $att_to_id ) {
-                        if( Document::where('identifier', $value)->where('attached_to_id',$att_to_id )->exists() )
+                    if ($att_to_id) {
+                        if (Document::where('identifier', $value)->where('attached_to_id', $att_to_id)->exists())
                             $fail('Esiste già un allegato con lo stesso nome per questo documento');
                     } else {
-                        if( Document::where('identifier', $value)->whereNull('attached_to_id')->exists() )
+                        if (Document::where('identifier', $value)->whereNull('attached_to_id')->exists())
                             $fail('Identificativo già registrato');
                     }
                 }
@@ -97,26 +99,26 @@ class DocumentsController extends Controller
         // Save the file
         $file = File::create();
         $file->handle =  'file_' . $file->id . '.pdf';
-        $file->parent()->associate( $document )->save();
+        $file->parent()->associate($document)->save();
         $file->save();
-        $validated['file']->storeAs('files', $file->handle );
-        Log::debug('File uploaded', $file );
+        $validated['file']->storeAs('files', $file->handle);
+        Log::debug('File uploaded', $file);
 
         // Save the visibility
-        foreach( $validated['roles'] as $role ) {
-            $dynamicPermission = DynamicPermission::createFromRelations( 'view', $document, Role::findById( $role ) );
-            Log::debug('Dynamic permission set', $dynamicPermission );
+        foreach ($validated['roles'] as $role) {
+            $dynamicPermission = DynamicPermission::createFromRelations('view', $document, Role::findById($role));
+            Log::debug('Dynamic permission set', $dynamicPermission);
         }
 
         // Validate ratifications
-        if( array_key_exists( 'ratifications', $validated ) )
-            foreach( $validated['ratifications'] as $rat ) {
-                $ratification = Ratification::find( $rat );
-                $ratification->document()->associate( $document )->save();
+        if (array_key_exists('ratifications', $validated))
+            foreach ($validated['ratifications'] as $rat) {
+                $ratification = Ratification::find($rat);
+                $ratification->document()->associate($document)->save();
                 $alumnus = $ratification->alumnus;
                 $alumnus->status = $ratification->required_state;
                 $alumnus->save();
-                Log::debug('Ratification approved',['ratification'=>$ratification,'document'=>$document]);
+                Log::debug('Ratification approved', ['ratification' => $ratification, 'document' => $document]);
             }
 
         return redirect()->route('board')->with(['notistack' => ['success', 'Documento caricato con protocollo ' . $protocol]]);
@@ -127,17 +129,17 @@ class DocumentsController extends Controller
         $this->authorize('edit', Document::class);
 
         $document->grouped_ratifications = $document->ratifications->load('alumnus')->groupBy('required_state');
-        $document->load(['files','dynamicPermissions','attached_to']);
+        $document->load(['files', 'dynamicPermissions', 'attached_to']);
 
         return Inertia::render('Board/Edit', [
             'document' => $document,
-            'roles' => Role::where('name','!=','webmaster')->orderBy('id')->get(),
+            'roles' => Role::where('name', '!=', 'webmaster')->orderBy('id')->get(),
             'available_ratifications' => Ratification::whereNull('document_id')->with('alumnus')->get()->groupBy('required_state'),
             'available_status' => Alumnus::availableStatus(),
-            'parentable' => Document::whereNull('attached_to_id')->where('id','!=',$document->id)->latest()->get()
+            'parentable' => Document::whereNull('attached_to_id')->where('id', '!=', $document->id)->latest()->get()
         ]);
     }
-   
+
     public function edit_post(Request $request, Document $document)
     {
         $this->authorize('edit', Document::class);
@@ -150,13 +152,13 @@ class DocumentsController extends Controller
             'attached_to_id' => 'integer|exists:documents,id|nullable',
             'identifier' => [
                 'required',
-                function ($attribute, $value, $fail) use ( $request, $document ) {
+                function ($attribute, $value, $fail) use ($request, $document) {
                     $att_to_id = $request->input('attached_to_id');
-                    if( $att_to_id ) {
-                        if( Document::where('identifier', $value)->where('attached_to_id',$att_to_id )->where('id','!=',$document->id)->exists() )
+                    if ($att_to_id) {
+                        if (Document::where('identifier', $value)->where('attached_to_id', $att_to_id)->where('id', '!=', $document->id)->exists())
                             $fail('Esiste già un allegato con lo stesso nome per questo documento');
                     } else {
-                        if( Document::where('identifier', $value)->whereNull('attached_to_id')->where('id','!=',$document->id)->exists() )
+                        if (Document::where('identifier', $value)->whereNull('attached_to_id')->where('id', '!=', $document->id)->exists())
                             $fail('Identificativo già registrato');
                     }
                 }
@@ -167,18 +169,18 @@ class DocumentsController extends Controller
         Log::debug('Document updated', ['document_id' => $document->id, 'new_params' => $validated]);
 
         $current_roles = $document->dynamicPermissions->pluck('role_id')->toArray();
-        foreach( array_diff( $current_roles, $validated['roles'] ) as $role ) {
+        foreach (array_diff($current_roles, $validated['roles']) as $role) {
             // Roles to remove
-            $dynamicPermission = $document->dynamicPermissions()->where( 'role_id', $role )->get();
-            foreach( $dynamicPermission as $dp ) {
-                Log::debug('Dynamic permission removed', $dp );
+            $dynamicPermission = $document->dynamicPermissions()->where('role_id', $role)->get();
+            foreach ($dynamicPermission as $dp) {
+                Log::debug('Dynamic permission removed', $dp);
                 $dp->delete();
             }
         }
-        foreach( array_diff( $validated['roles'], $current_roles ) as $role ) {
+        foreach (array_diff($validated['roles'], $current_roles) as $role) {
             // Roles to add
-            $dynamicPermission = DynamicPermission::createFromRelations( 'view', $document, Role::findById( $role ) );
-            Log::debug('Dynamic permission set', $dynamicPermission );
+            $dynamicPermission = DynamicPermission::createFromRelations('view', $document, Role::findById($role));
+            Log::debug('Dynamic permission set', $dynamicPermission);
         }
 
         return redirect()->route('board')->with(['notistack' => ['success', 'Dati aggiornati']]);
@@ -189,7 +191,7 @@ class DocumentsController extends Controller
         $this->authorize('edit', Document::class);
         return Inertia::render('Board/NewVersion', ['document' => $document]);
     }
- 
+
     public function new_version_post(Request $request, Document $document)
     {
         $this->authorize('edit', Document::class);
@@ -201,23 +203,23 @@ class DocumentsController extends Controller
         // Save the file
         $file = File::create();
         $file->handle =  'file_' . $file->id . '.pdf';
-        $file->parent()->associate( $document )->save();
-        
-        $validated['file']->storeAs('files', $file->handle );
+        $file->parent()->associate($document)->save();
+
+        $validated['file']->storeAs('files', $file->handle);
 
         $file->sha256 = $file->computeSha256();
         $file->save();
-        
-        Log::debug('New version for document uploaded', ['file' => $file, 'document' => $document ] );
 
-        return redirect()->route('board.edit', [ 'document' => $document->id ] )->with(['notistack' => ['success', 'Nuova versione caricata']]);
+        Log::debug('New version for document uploaded', ['file' => $file, 'document' => $document]);
+
+        return redirect()->route('board.edit', ['document' => $document->id])->with(['notistack' => ['success', 'Nuova versione caricata']]);
     }
 
     public function delete_post(Request $request, Document $document)
     {
         $this->authorize('edit', Document::class);
 
-        foreach( $document->ratifications as $rat ) {
+        foreach ($document->ratifications as $rat) {
             Log::debug('Ratification nulled', $rat);
             $rat->document()->associate(null)->save();
         }
@@ -238,72 +240,73 @@ class DocumentsController extends Controller
             'ratification' => 'required|exists:ratifications,id'
         ]);
 
-        $doc = Document::find( $validated['document'] );
-        $rat = Ratification::find( $validated['ratification'] );
+        $doc = Document::find($validated['document']);
+        $rat = Ratification::find($validated['ratification']);
 
-        if( $rat->document )
-            return redirect()->back()->with('notistack',['error','Ratifica già assegnata']);
-        
-        $rat->document()->associate( $doc )->save();
+        if ($rat->document)
+            return redirect()->back()->with('notistack', ['error', 'Ratifica già assegnata']);
+
+        $rat->document()->associate($doc)->save();
         $alumnus = $rat->alumnus;
         $alumnus->status = $rat->required_state;
         $alumnus->save();
-        Log::debug('Ratification approved',['ratification'=>$rat,'document'=>$doc]);
+        Log::debug('Ratification approved', ['ratification' => $rat, 'document' => $doc]);
 
         return redirect()->back()->with(['notistack' => ['success', 'Associata']]);
     }
-    
+
     public function remove_ratification_post(Request $request)
     {
         $this->authorize('edit', Document::class);
 
-        $validated = $request->validate([   
+        $validated = $request->validate([
             'ratification' => 'required|exists:ratifications,id',
             'new_state' => 'required|in:' . implode(',', Alumnus::availableStatus())
         ]);
 
-        $rat = Ratification::find( $validated['ratification'] );
-                
-        $rat->document()->associate( null )->save();
+        $rat = Ratification::find($validated['ratification']);
+
+        $rat->document()->associate(null)->save();
         $alumnus = $rat->alumnus;
         $alumnus->status = $validated['new_state'];
         $alumnus->save();
-        Log::debug('Ratification nulled',['ratification'=>$rat,'new alumnus status'=>$alumnus->status]);
+        Log::debug('Ratification nulled', ['ratification' => $rat, 'new alumnus status' => $alumnus->status]);
 
         return redirect()->back()->with(['notistack' => ['success', 'Annullata']]);
     }
 
-    public function view_document($protocol) {
+    public function view_document($protocol)
+    {
         $document = Document::where('protocol', $protocol)->first();
-        if( !$document )
-            return redirect()->back()->with('notistack',['error','Documento non trovato']);
+        if (!$document)
+            return redirect()->back()->with('notistack', ['error', 'Documento non trovato']);
 
         $this->authorize('view', $document);
-        return $this->view_file( $document->files()->latest()->first() );
+        return $this->view_file($document->files()->latest()->first());
     }
 
     public function view_file(File $file)
     {
-        if( $file->parent_type == Document::class ) {
+        if ($file->parent_type == Document::class) {
             $this->authorize('view', $file->parent);
         } else {
             return abort('403');
         }
 
         // Check for sha256
-        if( ! $file->verifyHash() ) {
-            Log::error('File hash mismatch', ['file' => $file, 'fromDatabase' => $file->sha256, 'fromFile' => $file->computeSha256()] );
+        if (!$file->verifyHash()) {
+            Log::error('File hash mismatch', ['file' => $file, 'fromDatabase' => $file->sha256, 'fromFile' => $file->computeSha256()]);
             return redirect()->back()->with('errorsDialogs', ["Il file richiesto è corrotto. Contatta gli amministratori."]);
         }
 
         $pdf = new Fpdi();
         $pageCount = $pdf->setSourceFile($file->path());
 
-        
+
         $all_versions = $file->parent->files()->oldest()->pluck('id')->toArray();
-        $this_version = array_search( $file->id, $all_versions ) + 1;
-        $latest = ( $this_version == count( $all_versions ) );
-        
+        $this_version = array_search($file->id, $all_versions) + 1;
+        $latest = ($this_version == count($all_versions));
+
         $pdf->setPrintHeader(false);
         $pdf->setPrintFooter(false);
 
@@ -313,7 +316,7 @@ class DocumentsController extends Controller
         $pdf->SetTextColor(255, 0, 0);
 
         $header = '=== VERSIONE OBSOLETA! Una nuova versione del documento è presente sul portale ===';
-        $footer = '=== Scaricato dal portale soci il ' . date('d/m/Y') . ' - Protocollo web ' . $file->parent->protocol . ' - Versione ' . $this_version . ' di ' . count( $all_versions ) . ' ===';
+        $footer = '=== Scaricato dal portale soci il ' . date('d/m/Y') . ' - Protocollo web ' . $file->parent->protocol . ' - Versione ' . $this_version . ' di ' . count($all_versions) . ' ===';
 
         for ($i = 1; $i <= $pageCount; $i++) {
             $id = $pdf->importPage($i);
@@ -327,7 +330,7 @@ class DocumentsController extends Controller
             $pdf->Cell(0, 7, $footer, 0, 0, 'C');
 
             // Add watermark on the top for obsolete
-            if( !$latest ) {
+            if (!$latest) {
                 $pdf->SetXY(0, 10);
                 $pdf->Cell(0, 7, $header, 0, 0, 'C');
             }

@@ -19,7 +19,7 @@ class AuthController extends Controller
         if (Auth::check())
             return redirect()->route('home');
 
-        return Socialite::driver('google')->setScopes(['openid','email'])->redirect();
+        return Socialite::driver('google')->setScopes(['openid', 'email'])->redirect();
     }
 
     // Callback
@@ -30,10 +30,10 @@ class AuthController extends Controller
 
         $email = Socialite::driver('google')->user()->email;
 
-        $loginMethod = LoginMethod::where('driver','google')->where('credential',$email)->first();
+        $loginMethod = LoginMethod::where('driver', 'google')->where('credential', $email)->first();
 
-        if ($loginMethod ) {
-            if ( $loginMethod->can('login', LoginMethod::class) ) {
+        if ($loginMethod) {
+            if ($loginMethod->can('login', LoginMethod::class)) {
                 Auth::login($loginMethod);
 
                 Log::debug('Login', $loginMethod);
@@ -46,7 +46,7 @@ class AuthController extends Controller
             return redirect()->route('home')->with('notistack', ['error', 'Non hai ancora il permesso di accedere.']);
         }
 
-        return redirect()->route('auth.askaccess')->with('email', $email );
+        return redirect()->route('auth.askaccess')->with('email', $email);
     }
 
     // Logout

@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class ExternalController extends Controller
 {
-    
+
     public function add_and_associate_post(Request $request, LoginMethod $lmth)
     {
         $this->authorize('edit', Alumnus::class);
@@ -26,12 +26,12 @@ class ExternalController extends Controller
         Log::debug('External created', $validated);
 
         // Association
-        $lmth->identity()->associate( $external )->save();
-        Log::debug('Login method associated',['login method' => $lmth, 'identity' => $external]);
+        $lmth->identity()->associate($external)->save();
+        Log::debug('Login method associated', ['login method' => $lmth, 'identity' => $external]);
 
         Log::debug('Identity enabled', $external);
-        $external->givePermissionTo( 'login' );
+        $external->givePermissionTo('login');
 
-        return redirect()->route('accesses')->with(['notistack'=>['success','Utente creato ed abilitato']]);
+        return redirect()->route('accesses')->with(['notistack' => ['success', 'Utente creato ed abilitato']]);
     }
 }

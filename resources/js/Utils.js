@@ -64,12 +64,12 @@ export function postRequest(route_name, data, setProcessing, routeParams = {}, p
     )
 }
 
-export function randomHex( length ) {
+export function randomHex(length) {
     let output = ""
     const chars = "0123456789ABCDEF"
-    while( length > 0 ) {
-        output += chars[ Math.floor( Math.random() * 16 ) ]
-        length --;
+    while (length > 0) {
+        output += chars[Math.floor(Math.random() * 16)]
+        length--;
     }
     return output
 }

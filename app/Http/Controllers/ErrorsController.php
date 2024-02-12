@@ -10,9 +10,9 @@ class ErrorsController extends Controller
     // Forbidden
     public static function e403(Request $request)
     {
-        if ( $request->inertia() )
+        if ($request->inertia())
             return redirect(null, 403)->back()->with('errorsDialogs', ["Non hai il permesso di accedere a questa risorsa."]);
-        
+
         return redirect()->route('home')->with('errorsDialogs', ["Non hai il permesso di accedere a questa risorsa."]);
     }
 }

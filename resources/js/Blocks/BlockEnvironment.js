@@ -17,10 +17,10 @@ export default function BlockEnvironment({ children, index, addBlockAt, updateOr
     }
 
     useEffect(() => {
-        if( isTrash ) {
+        if (isTrash) {
             const handleClickOutside = (event) => {
                 if (trashRef.current && !trashRef.current.contains(event.target)) {
-                    setIsTrash( false )
+                    setIsTrash(false)
                 }
             };
             document.addEventListener('click', handleClickOutside, true);
@@ -28,7 +28,7 @@ export default function BlockEnvironment({ children, index, addBlockAt, updateOr
                 document.removeEventListener('click', handleClickOutside, true);
             };
         }
-    }, [ isTrash ]);
+    }, [isTrash]);
 
     return <div className="w-full flex flex-row gap-2 group">
         <div className="self-start w-6">
@@ -44,7 +44,7 @@ export default function BlockEnvironment({ children, index, addBlockAt, updateOr
         </div>
         <div className="grow">{children}</div>
         <div className="self-end w-6">
-            <AddBlock addBlock={(props) => addBlockAt(props,index+1)} />
+            <AddBlock addBlock={(props) => addBlockAt(props, index + 1)} />
         </div>
     </div>
 }

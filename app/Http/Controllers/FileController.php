@@ -9,10 +9,10 @@ class FileController extends Controller
 {
     public function fromHandle(string $handle)
     {
-        $file = File::where('handle',$handle)->firstOrFail();
+        $file = File::where('handle', $handle)->firstOrFail();
 
-        $this->authorize( 'view', $file );
+        $this->authorize('view', $file);
 
-        return response()->file( $file->path() );
+        return response()->file($file->path());
     }
 }

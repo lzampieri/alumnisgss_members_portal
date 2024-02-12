@@ -8,10 +8,10 @@ function DocumentItem(document, canEdit, isAttachment = false) {
 
     return (
         <div key={document.id}
-            className={ isAttachment ? "mylist-subitem" : "mylist-item" }
-            >
+            className={isAttachment ? "mylist-subitem" : "mylist-item"}
+        >
             <div className="flex flex-col md:flex-row items-center gap-2">
-                { !isAttachment && 
+                {!isAttachment &&
                     <div className="flex flex-col items-center mr-4">
                         <span className="text-3xl font-bold">
                             {date.toLocaleDateString('it-IT', { 'day': '2-digit' })}.
@@ -38,7 +38,7 @@ function DocumentItem(document, canEdit, isAttachment = false) {
                     <FontAwesomeIcon icon={solid('file-pdf')} className="text-4xl !p-4 icon-button" />
                 </a>}
             </div>
-            { document.attachments && document.attachments.map(document => DocumentItem(document, canEdit,true) ) }
+            {document.attachments && document.attachments.map(document => DocumentItem(document, canEdit, true))}
         </div>
     )
 }

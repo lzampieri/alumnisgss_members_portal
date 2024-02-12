@@ -33,7 +33,7 @@ class PermissionsController extends Controller
 
         foreach ($roles as &$role) {
             $role->permissions_names = $role->permissions->pluck('name');
-            $role->identities = Alumnus::role( $role )->get()->concat( External::role( $role )->get() );
+            $role->identities = Alumnus::role($role)->get()->concat(External::role($role)->get());
         }
 
         return Inertia::render('Permissions/List', ['roles' => $roles, 'perms' => $perms]);
@@ -66,9 +66,9 @@ class PermissionsController extends Controller
         // Find or create!
         foreach ($roles_to_assert as $index => $role) {
             try {
-                Role::findByName( $role );
+                Role::findByName($role);
             } catch (RoleDoesNotExist $th) {
-                Role::create([ 'name' => $role, 'common_name' => $roles_to_assert_names[ $index ] ] );
+                Role::create(['name' => $role, 'common_name' => $roles_to_assert_names[$index]]);
             }
         }
 
@@ -118,7 +118,7 @@ class PermissionsController extends Controller
         // Roles edit
         foreach (Role::all()->pluck('name') as $role) {
             // never for members and student members and anyone
-            if ($role == 'member' || $role == 'student_member' || $role == 'everyone' ) continue;
+            if ($role == 'member' || $role == 'student_member' || $role == 'everyone') continue;
             $permissions_to_assert[] = 'user-edit-' . $role;
         }
 
@@ -150,7 +150,7 @@ class PermissionsController extends Controller
         if ($validated['permission'] == 'login')
             return redirect()->back()->with(['notistack' => ['error', 'Il permesso di login non è assegnabile direttamente ad un ruolo']]);
 
-        if (($validated['role'] == 'webmaster') && !( Auth::user()->identity->hasRole('webmaster') ) ) {
+        if (($validated['role'] == 'webmaster') && !(Auth::user()->identity->hasRole('webmaster'))) {
             Role::findByName('webmaster')->syncPermissions(Permission::all());
             Log::debug('All permissions assigned to webmaster', Permission::all());
             return redirect()->back()->with(['notistack' => ['success', 'Tutti i permessi assegnati al webmaster']]);
@@ -179,7 +179,7 @@ class PermissionsController extends Controller
         $this->authorize('permissions-edit');
 
         Log::debug('New permission created', $validated);
-        Permission::findOrCreate($validated,'web');
+        Permission::findOrCreate($validated, 'web');
 
         return redirect()->back();
     }
