@@ -100,8 +100,10 @@ class DocumentsController extends Controller
         $file = File::create();
         $file->handle =  'file_' . $file->id . '.pdf';
         $file->parent()->associate($document)->save();
-        $file->save();
         $validated['file']->storeAs('files', $file->handle);
+
+        $file->sha256 = $file->computeSha256();
+        $file->save();
         Log::debug('File uploaded', $file);
 
         // Save the visibility
