@@ -23,6 +23,7 @@ export class AlumnusStatus {
     static status = {
         member: { label: 'Socio', acronym: 'S', color: '#00CC00' },
         student_member: { label: 'Socio studente', acronym: 'SS', color: '#00FF99' },
+        pre_enrolled: { label: 'Preiscritto', acronym: 'PI', color: '#00FFFF'},
         not_reached: { label: 'Non raggiunto', acronym: '?', color: '#FFFF00' },
         student_not_reached: { label: 'Studente non raggiunto', acronym: 'S?', color: '#FF9900' },
         student_not_agreed: { label: 'Studente rifiutante', acronym: 'SR', color: '#FF0000' },

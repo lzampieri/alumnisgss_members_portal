@@ -8,7 +8,7 @@ use Spatie\Permission\Models\Role;
 class Alumnus extends Identity
 {
     // Available status
-    const status = ['member', 'student_member', 'not_reached', 'student_not_reached', 'student_not_agreed', 'hasnt_right', 'dead', 'not_agreed'];
+    const status = ['member', 'student_member', 'pre_enrolled', 'not_reached', 'student_not_reached', 'student_not_agreed', 'hasnt_right', 'dead', 'not_agreed'];
     // Public visible status
     const public_status = ['member', 'student_member'];
     // Status which can be assigned only using ratification
@@ -35,6 +35,7 @@ class Alumnus extends Identity
     const AlumnusStatusLabels = [
         'member' => 'Socio',
         'student_member' => 'Socio studente',
+        'pre_enrolled' => 'Preiscritto',
         'not_reached' => 'Non raggiunto',
         'student_not_reached' => 'Studente non raggiunto',
         'student_not_agreed' => 'Studente rifiutante',
@@ -46,6 +47,7 @@ class Alumnus extends Identity
     const AlumnusStatusColors = [
         'member' => '00CC00',
         'student_member' => '00FF99',
+        'pre_enrolled' => '00FFFF',
         'not_reached' => 'FFFF00',
         'student_not_reached' => 'FF9900',
         'student_not_agreed' => 'FF0000',
