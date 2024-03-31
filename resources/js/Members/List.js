@@ -72,7 +72,6 @@ export default function List() {
     const data = usePage().props.data;
     const [quickFilter, setQuickFilter] = useState('')
     const counts = usePage().props.counts;
-    console.log(counts)
 
     return (
         <div className="main-container-large gap-1">

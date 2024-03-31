@@ -57,7 +57,7 @@ function CoorteItem({ coorte, data, tagsDict, visibles }) {
 }
 
 function filterable(alumnus) {
-    return (alumnus.name + " " + alumnus.surname + " " + alumnus.name + alumnus.tags.join() + alumnus.status + AlumnusStatus.status[alumnus.status].label).toLowerCase()
+    return (alumnus.name + " " + alumnus.surname + " " + alumnus.name + (alumnus.tags || []).join() + alumnus.status + AlumnusStatus.status[alumnus.status].label).toLowerCase()
 }
 
 function CoorteColumns({ coorte, data, tagsDict, quickFilter }) {
@@ -81,7 +81,6 @@ export default function Schema() {
             while (Object.values(tagsDict).includes(i.substring(0, letters).toUpperCase())) letters += 1;
             tagsDict[i] = i.substring(0, letters).toUpperCase();
         });
-        console.log(tagsDict)
         return tagsDict
     }, [data])
 

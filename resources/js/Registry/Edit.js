@@ -49,7 +49,6 @@ export default function Edit() {
         e.preventDefault();
         post(route('registry.edit', { alumnus: prev?.id }), { preserveState: "errors", onError: () => enqueueSnackbar('C\'è stato un errore, verifica tutti i campi', { variant: 'error' }) });
     }
-    console.log("test");
 
     const checkIfDirty = (e) => {
         e.preventDefault();
