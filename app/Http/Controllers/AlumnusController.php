@@ -8,6 +8,7 @@ use App\Models\IdentityDetail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
@@ -18,9 +19,18 @@ class AlumnusController extends Controller
     public function membersList()
     {
         $this->authorize('viewMembers', Alumnus::class);
-        $members = Alumnus::whereIn('status', Alumnus::public_status)->orderBy('surname')->orderBy('name')->get();
 
-        return Inertia::render('Members/List', ['members' => $members]);
+        $data = Alumnus::whereIn('status', Alumnus::public_status)
+            ->orderBy('coorte')
+            ->orderBy('surname')->orderBy('name')
+            ->get()
+            ->groupBy('coorte');
+        $counts = Alumnus::select('status', DB::raw('COUNT(*) as count'))
+            ->whereIn('status', Alumnus::public_status)
+            ->groupBy('status')
+            ->pluck('count', 'status');
+
+        return Inertia::render('Members/List', ['data' => $data, 'counts' => $counts]);
     }
 
     public function membersCounters()
@@ -35,14 +45,30 @@ class AlumnusController extends Controller
         ]);
     }
 
-    public function list()
+    private function commonRegistryParams()
+    {
+        return [
+            'canImport' => Auth::user()->can('import', Alumnus::class),
+        ];
+    }
+
+    public function schema()
     {
         $this->authorize('viewAny', Alumnus::class);
-        $alumni = Alumnus::withCount(['ratifications' => function (Builder $query) {
-            $query->whereNull('document_id');
-        }])->orderBy('surname')->orderBy('name')->get();
 
-        return Inertia::render('Registry/List', ['alumni' => $alumni, 'canImport' => Auth::user()->can('import', Alumnus::class)]);
+
+        $data = Alumnus::orderBy('coorte')
+            ->orderBy('surname')->orderBy('name')
+            ->get()
+            ->append('pending_ratifications')
+            ->groupBy('coorte');
+
+        return Inertia::render(
+            'Registry/Schema',
+            [
+                'data' => $data,
+            ] + $this->commonRegistryParams()
+        );
     }
 
     public function table()
@@ -57,7 +83,10 @@ class AlumnusController extends Controller
 
         return Inertia::render(
             'Registry/Table',
-            ['data' => $data, 'detailsTitles' => array_keys(IdentityDetail::allDetails())]
+            [
+                'data' => $data,
+                'detailsTitles' => array_keys(IdentityDetail::allDetails())
+            ] + $this->commonRegistryParams()
         );
     }
 
@@ -171,41 +200,4 @@ class AlumnusController extends Controller
 
         return redirect()->route('registry.edit', ['alumnus' => $alumnus])->with('notistack', ['success', $update ? 'Alumno aggiornato' : 'Alumno creato']);
     }
-
-    // public function bulk_edit()
-    // {
-    //     $this->authorize('bulkEdit', Alumnus::class);
-
-    //     return Inertia::render('Registry/BulkEdit', [
-    //         'alumni' => Alumnus::all(),
-    //         'availableStatus' => Alumnus::availableStatus(),
-    //     ]);
-    // }
-
-    // public function bulk_edit_post(Request $request)
-    // {
-    //     $this->authorize('bulkEdit', Alumnus::class);
-
-    //     $validated = $request->validate([
-    //         'alumni_id' => 'required|array',
-    //         'alumni_id.*' => 'exists:alumni,id',
-    //         'new_state' => 'required|in:' . implode(',', Alumnus::availableStatus())
-    //     ]);
-
-    //     $edited = 0;
-    //     $toUpdate = Alumnus::whereIn('id', $validated['alumni_id'])->get();
-
-    //     foreach ($toUpdate as $alumnus) {
-    //         if ($alumnus->status != $validated['new_state']) {
-    //             $edited++;
-    //             Log::debug('Alumnus status edited (bulk)', ['alumnus' => $alumnus, 'new_state' => $validated['new_state']]);
-    //             $alumnus->status = $validated['new_state'];
-    //             $alumnus->save();
-    //         }
-    //     }
-
-    //     $output = "" . $edited . " su " . count($toUpdate) . " stati modificati";
-
-    //     return redirect()->route('registry.bulk.edit')->with('notistack', ['success', $output]);
-    // }
 }

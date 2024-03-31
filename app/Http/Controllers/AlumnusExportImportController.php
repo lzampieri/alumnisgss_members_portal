@@ -13,58 +13,8 @@ use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-use function Psy\debug;
-
 class AlumnusExportImportController extends Controller
 {
-    // public function bulk_im()
-    // {
-    //     $this->authorize('bulkEdit', Alumnus::class);
-
-    //     return Inertia::render('Registry/Bulk');
-    // }
-
-    // public function bulk_im_post(Request $request)
-    // {
-    //     $this->authorize('bulkEdit', Alumnus::class);
-
-    //     $content = preg_split("/\r\n|\n|\r/", $request->input('content'));
-
-    //     $count = 0;
-    //     foreach ($content as $line) {
-    //         if (strlen($line) < 3) continue;
-    //         $fields = explode(',', $line);
-    //         if (count($fields) != 4) continue;
-    //         if (!is_numeric($fields[2])) continue;
-    //         if (!in_array($fields[3], Alumnus::availableStatus())) continue;
-
-    //         $data = [
-    //             'surname' => $fields[0],
-    //             'name' => $fields[1],
-    //             'coorte' => $fields[2],
-    //             'status' => $fields[3]
-    //         ];
-
-    //         Alumnus::create($data);
-    //         Log::debug('Alumnus created from bulk', $data);
-    //         $count++;
-    //     }
-
-    //     return redirect()->route('registry')->with('notistack', ['success', 'Anagrafiche inserite: ' . $count]);
-    // }
-
-    // public function bulk_ex_csv()
-    // {
-    //     $this->authorize('bulkEdit', Alumnus::class);
-
-    //     return response()->streamDownload(function () {
-    //         echo "\xEF\xBB\xBF"; // UTF-8 BOM
-    //         $alumni = Alumnus::all();
-    //         foreach ($alumni as $a)
-    //             echo implode(',', [$a->name, $a->surname, $a->coorte, $a->status]) . "\n";
-    //     }, 'export_' . date('Ymd') . '_' . env('APP_ENV', 'debug') .  '.csv');
-    // }
-
     public function exportExcelSchema()
     {
         $this->authorize('viewAny', Alumnus::class);
