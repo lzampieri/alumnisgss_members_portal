@@ -8,21 +8,38 @@ use Spatie\Permission\Models\Role;
 class Alumnus extends Identity
 {
     // Available status
-    const status = ['member', 'student_member', 'pre_enrolled', 'not_reached', 'student_not_reached', 'student_not_agreed', 'hasnt_right', 'dead', 'not_agreed'];
+    const status = [
+        'member',
+        'student_member',
+        'pre_enrolled',
+        'not_reached', 'student_not_reached', 'student_not_agreed', 'hasnt_right',
+        'dead',
+        'not_agreed'
+    ];
     // Public visible status
     const public_status = ['member', 'student_member'];
-    // Status which can be assigned only using ratification
+
+    // Status for which entering or exiting required ratification
     const require_ratification = ['member', 'student_member'];
+
     // Assignable status
     public static function availableStatus(Alumnus $alumnus = null)
     {
-        if (Auth::user()->can('bypassRatification', Alumnus::class))
-            $availableStatus = Alumnus::status;
-        else
-            $availableStatus = array_diff(Alumnus::status, Alumnus::require_ratification);
-        if ($alumnus && $alumnus->id && !in_array($alumnus->status, $availableStatus))
-            $availableStatus[] = $alumnus->status;
-        return array_values($availableStatus);
+        // THE PERMISSION bypassRatification HAS BEEN REMOVED
+        // if (Auth::user()->can('bypassRatification', Alumnus::class))
+        //     $availableStatus = Alumnus::status;
+        // else
+        //     $availableStatus = array_diff(Alumnus::status, Alumnus::require_ratification);
+        // if ($alumnus && $alumnus->id && !in_array($alumnus->status, $availableStatus))
+        //     $availableStatus[] = $alumnus->status;
+        // return array_values($availableStatus);
+
+        // If the alumnus already exists, and it is stucked in a state that requires ratification, it remains there:
+        if ($alumnus && $alumnus->id && in_array($alumnus->status, Alumnus::require_ratification) )
+            return [ $alumnus->status ]; // If the alumnus is stucked in a state that requires ratification, it remains there
+
+        // Else, return all applicable status
+        return array_diff(Alumnus::status, Alumnus::require_ratification);
     }
     // All used tags
     public static function allTags()

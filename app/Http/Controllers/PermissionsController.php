@@ -102,7 +102,7 @@ class PermissionsController extends Controller
             // Ratifications
             'ratifications-view',
             'ratifications-edit',
-            'ratifications-bypass',
+            // 'ratifications-bypass', THIS PERMISSION HAS BEEN REMOVED
             // Documents
             'documents-upload',
             'documents-edit',

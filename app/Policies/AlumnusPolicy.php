@@ -72,8 +72,9 @@ class AlumnusPolicy
      * @param  \Illuminate\Support\Facades\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function bypassRatification(User $user)
-    {
-        return $user->hasPermissionTo('ratifications-bypass');
-    }
+    // public function bypassRatification(User $user)
+    // {
+    //     return $user->hasPermissionTo('ratifications-bypass');
+    // }
+    // THE PERMISSION bypassRatification HAS BEEN REMOVED
 }
