@@ -21,7 +21,6 @@ class PermissionsController extends Controller
         try {
             Permission::findByName('permissions-view');
         } catch (PermissionDoesNotExist $e) {
-            Log::debug('Automatically created permissions-view and permissions-edit', []);
             Permission::findOrCreate('permissions-view');
             Permission::findOrCreate('permissions-edit');
             Role::findByName('webmaster')->givePermissionTo(Permission::all());
@@ -111,7 +110,8 @@ class PermissionsController extends Controller
             // Aws session
             'aws-session-view',
             // Webmaster stuff
-            'log-manage',
+            'logfile-view',
+            'logdb-view',
             'db-reset'
         ];
 
@@ -152,17 +152,17 @@ class PermissionsController extends Controller
 
         if (($validated['role'] == 'webmaster') && !(Auth::user()->identity->hasRole('webmaster'))) {
             Role::findByName('webmaster')->syncPermissions(Permission::all());
-            Log::debug('All permissions assigned to webmaster', Permission::all());
+            // TODO LOG THIS THING!
             return redirect()->back()->with(['notistack' => ['success', 'Tutti i permessi assegnati al webmaster']]);
         }
 
         $role = Role::findByName($validated['role']);
         if ($role->hasPermissionTo($validated['permission']) && $validated['action'] == 'remove') {
-            Log::debug('Permission changed', $validated);
+            // TODO LOG THIS THING!
             $role->revokePermissionTo($validated['permission']);
         }
         if (!$role->hasPermissionTo($validated['permission']) && $validated['action'] == 'add') {
-            Log::debug('Permission changed', $validated);
+            // TODO LOG THIS THING!
             $role->givePermissionTo($validated['permission']);
         }
 
@@ -178,8 +178,8 @@ class PermissionsController extends Controller
 
         $this->authorize('permissions-edit');
 
-        Log::debug('New permission created', $validated);
-        Permission::findOrCreate($validated, 'web');
+        // TODO LOG THIS THING!
+        Permission::findOrCreate($validated['name'], 'web');
 
         return redirect()->back();
     }

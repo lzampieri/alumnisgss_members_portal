@@ -18,7 +18,8 @@ class AlumnusExportImportController extends Controller
     public function exportExcelSchema()
     {
         $this->authorize('viewAny', Alumnus::class);
-        Log::debug('Alumnus schema downloaded', []);
+
+        LogController::log(LogEvents::DOWNLOADED_SCHEMA);
 
         $alumni = Alumnus::orderBy('surname')->orderBy('name')->get()->groupBy('coorte');
         $coorts = $alumni->keys()->sort()->values();
@@ -145,7 +146,7 @@ class AlumnusExportImportController extends Controller
     public function exportExcelDetails()
     {
         $this->authorize('viewAny', Alumnus::class);
-        Log::debug('Alumnus detailed list downloaded', []);
+        LogController::log(LogEvents::DOWNLOADED_DETAILS);
 
         $alumni = Alumnus::orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
@@ -318,7 +319,6 @@ class AlumnusExportImportController extends Controller
                 foreach (['surname', 'name', 'coorte', 'status'] as $field) {
                     if ($alumnus[$field] != $newPars[$field]) {
                         $toSave = true;
-                        Log::debug('Updating', ['field' => $field, 'alumnus' => $alumnus, 'new value' => $newPars[$field]]);
                         $output .= "Updated " . $field . " for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newPars[$field] . "\n";
 
                         $alumnus[$field] = $newPars[$field];
@@ -330,7 +330,6 @@ class AlumnusExportImportController extends Controller
                 if ($oldTags != $newPars['tags']) {
 
                     $toSave = true;
-                    Log::debug('Updating', ['field' => 'tags', 'alumnus' => $alumnus, 'new value' => $newPars['tags_array']]);
                     $output .= "Updated tags for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newPars['tags'] . "\n";
 
                     $alumnus['tags'] = $newPars['tags_array'];
@@ -347,7 +346,6 @@ class AlumnusExportImportController extends Controller
                     'tags' => $newPars['tags_array'],
                 ]);
 
-                Log::debug('New alumnus created!', [$alumnus]);
                 $output .= "Created new alumnus " . $alumnus['surname'] . " " . $alumnus['name'] . "\n";
             }
 
@@ -365,13 +363,11 @@ class AlumnusExportImportController extends Controller
 
                         if ($newValue != $detail['value'] || $key != $detail['key']) {
                             $detail->update(['key ' => $key, 'value' => $newValue]);
-                            Log::debug('Updating detail', $detail);
                             $output .= "Updated " . $key . " for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newValue . "\n";
                         }
                     } else {
 
                         // New value is empty; must be deleted
-                        Log::debug('Deleting detail', $detail);
                         $output .= "Deleted " . $key . " for " . $alumnus['surname'] . " " . $alumnus['name'] . "\n";
                         $detail->delete();
                     }
@@ -380,7 +376,6 @@ class AlumnusExportImportController extends Controller
                     if ($newValue && strlen($key) > 0) {
                         // New detail must be created
                         $alumnus->details()->create(['key' => $key, 'value' => $newValue]);
-                        Log::debug("New detail created", $detail);
                         $output .= "Added " . $key . " for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newValue . "\n";
                     }
                 }

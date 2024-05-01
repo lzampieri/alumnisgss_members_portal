@@ -139,12 +139,15 @@ class AlumnusController extends Controller
         }
 
         if ($alumnus) {
-            $alumnus->update($validated);
-            Log::debug('Alumnus updated', $validated);
-            $update = true;
+            foreach( ['surname','name','coorte','status','tags'] as $key ) {
+                if ($validated[$key] !== $alumnus[$key]) {
+                    $alumnus[$key] = $validated[$key];
+                    $update = true;
+                }
+            }
+            if( $update ) $alumnus->save();
         } else {
             $alumnus = Alumnus::create($validated);
-            Log::debug('Alumnus created', $validated);
         }
 
         // Go with order: firstly, trash the one which should be trashed
@@ -152,7 +155,6 @@ class AlumnusController extends Controller
             if (($detail['id'] ?? -1) >= 0 && ($detail['delete'] ?? false)) {
                 $det = IdentityDetail::find($detail['id']);
                 if ($det) {
-                    Log::debug("Deleted detail", $det);
                     $det->delete();
                 }
             }
@@ -172,15 +174,12 @@ class AlumnusController extends Controller
                 // Check if there is a trashed detail with the same name
                 $trashed = $alumnus->details()->onlyTrashed()->where('key', $detail['key'])->first();
                 if ($trashed) {
-                    Log::debug("Detail deleted to be replaced", $det);
                     $det->delete();
                     $trashed->restore();
                     $trashed->value = $detail['value'];
                     $trashed->save();
-                    Log::debug("Detail restored and updated as a replacement", $trashed);
                 } else {
                     $det->update(['key' => $detail['key'], 'value' => $detail['value']]);
-                    Log::debug("Updated detail", $detail);
                 }
             } else {
                 // New details must be created
@@ -190,10 +189,8 @@ class AlumnusController extends Controller
                     $trashed->restore();
                     $trashed->value = $detail['value'];
                     $trashed->save();
-                    Log::debug("Detail restored and updated", $trashed);
                 } else {
                     $alumnus->details()->create(['key' => $detail['key'], 'value' => $detail['value']]);
-                    Log::debug("New detail created", $detail);
                 }
             }
         }

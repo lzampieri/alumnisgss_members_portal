@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\LogControllerFile;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\LogEvents;
+use App\Traits\EditsAreLogged;
 use Spatie\Permission\Models\Role;
 
 class Alumnus extends Identity
 {
+    use EditsAreLogged;
+    
     // Available status
     const status = [
         'member',
@@ -134,4 +139,5 @@ class Alumnus extends Identity
     {
         return $this->ratifications()->whereNull('document_id')->count();
     }
+
 }

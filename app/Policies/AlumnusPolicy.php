@@ -2,7 +2,6 @@
 
 namespace App\Policies;
 
-use App\Http\Controllers\Log;
 use App\Models\Alumnus;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User;
@@ -14,7 +13,7 @@ class AlumnusPolicy
     /**
      * Determine whether the user can view the REGISTERED MEMBERS with only BASIC DETAILS
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $user optional
+     * @param  \Illuminate\Foundation\Auth\User  $user optional
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function viewMembers(?User $user)
@@ -25,7 +24,7 @@ class AlumnusPolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \Illuminate\Foundation\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function viewAny(User $user)
@@ -36,7 +35,7 @@ class AlumnusPolicy
     /**
      * Determine whether the user can edit models.
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \Illuminate\Foundation\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function edit(User $user)
@@ -47,7 +46,7 @@ class AlumnusPolicy
     /**
      * Determine whether the user can edit models in bulk.
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \Illuminate\Foundation\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function import(User $user)
@@ -58,7 +57,7 @@ class AlumnusPolicy
     /**
      * Determine whether the user can enable models.
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \Illuminate\Foundation\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function enable(User $user)
@@ -69,7 +68,7 @@ class AlumnusPolicy
     /**
      * Determine whether the user can assign status which usually requires ratification.
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \Illuminate\Foundation\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     // public function bypassRatification(User $user)

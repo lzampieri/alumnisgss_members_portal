@@ -43,7 +43,6 @@ class LoginMethodController extends Controller
         $this->authorize('delete', $lmth);
         $same = ($lmth->id == Auth::user()->id);
 
-        Log::debug('Login method deleted', $lmth);
         $lmth->delete();
 
         if ($same) {
@@ -76,7 +75,6 @@ class LoginMethodController extends Controller
         ]);
 
         $lm = LoginMethod::create(['driver' => 'google', 'credential' => $validated['email'], 'comment' => $validated['message']]);
-        Log::debug('New login created', ['lm' => $lm, 'comment' => $validated['message']]);
 
         $emails = [];
         foreach (LoginMethod::where('driver', 'google')->hasMorph('identity', [Alumnus::class, External::class])->get() as $lm) {
@@ -93,7 +91,7 @@ class LoginMethodController extends Controller
             $message->replyTo($validated['email']);
             $message->subject('Nuova richiesta di accesso a soci.alumnuscuolagalileiana.it');
         });
-        Log::debug('Access request sent', [$emails, $message]);
+        LogController::log( LogEvents::MAIL_SENT, $lm, 'Access request', [$emails, $message]);
 
         return redirect()->route('home')->with(['notistack' => ['success', 'La richiesta è stata inoltrata alla segreteria.']]);
     }
@@ -115,7 +113,6 @@ class LoginMethodController extends Controller
         ]);
 
         $lm = LoginMethod::create($validated);
-        Log::debug('New login created manually', $lm);
 
         return redirect()->route('accesses')->with(['notistack' => ['success', 'Aggiunto.']]);
     }
@@ -144,10 +141,8 @@ class LoginMethodController extends Controller
 
         $lmth->identity()->associate($identity)->save();
 
-        Log::debug('Login method associated', ['login method' => $lmth, 'identity' => $identity]);
-
         if (!$identity->enabled) {
-            Log::debug('Identity enabled', $identity);
+            // TODO LOG THIS THING!
             $identity->givePermissionTo('login');
         }
 

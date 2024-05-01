@@ -59,18 +59,15 @@ class ResourceController extends Controller
 
         // Create the resource
         $res = Resource::create(['title' => $validated['title']]);
-        Log::debug('Resource created', $res);
 
         // Save the canView
         foreach ($validated['canView'] as $role) {
             $dynamicPermission = DynamicPermission::createFromRelations('view', $res, Role::findById($role));
-            Log::debug('Dynamic permission set', $dynamicPermission);
         }
 
         // Save the canEdit
         foreach ($validated['canEdit'] as $role) {
             $dynamicPermission = DynamicPermission::createFromRelations('edit', $res, Role::findById($role));
-            Log::debug('Dynamic permission set', $dynamicPermission);
         }
 
         return redirect()->route('resources', ['resource' => $res]);
@@ -99,14 +96,12 @@ class ResourceController extends Controller
             // Roles to remove
             $dynamicPermission = $res->dynamicPermissions()->where('role_id', $role)->where('type', $type)->get();
             foreach ($dynamicPermission as $dp) {
-                Log::debug('Dynamic permission removed', $dp);
                 $dp->delete();
             }
         }
         foreach (array_diff($new_roles, $current_roles) as $role) {
             // Roles to add
             $dynamicPermission = DynamicPermission::createFromRelations($type, $res, Role::findById($role));
-            Log::debug('Dynamic permission set', $dynamicPermission);
         }
 
         return redirect()->back()->with(['notistack' => ['success', 'Permessi aggiornati']]);
@@ -125,7 +120,6 @@ class ResourceController extends Controller
 
         $res->content = $validated['content'];
         $res->save();
-        Log::debug('Resource content updated', $res);
 
         return redirect()->back()->with(['notistack' => ['success', 'Salvato']]);
     }
@@ -153,7 +147,6 @@ class ResourceController extends Controller
         $file->parent()->associate($res)->save();
         $file->save();
         $validated['file']->storeAs('files', $file->handle);
-        Log::debug('File uploaded', $file);
 
         return redirect()->back()->with(['notistack' => ['success', 'File caricato'], 'inertiaFlash' => ['selectedFileHandle' => $file->handle, 'selectedFileExt' => $extension]]);
     }
@@ -168,7 +161,6 @@ class ResourceController extends Controller
 
         $this->authorize('delete', $res);
 
-        Log::debug('Resource deleted', $res);
         $res->delete();
 
         return redirect()->route('resources')->with(['notistack' => ['success', 'Eliminata']]);
@@ -186,8 +178,6 @@ class ResourceController extends Controller
         $permalink = new Permalink(['id' => $validated['link']]);
         $permalink->linkable()->associate($res);
         $permalink->save();
-
-        Log::debug('New permalink created', $permalink);
 
         return redirect()->route('permalink', ['permalink' => $permalink])->with(['notistack' => ['success', 'Salvato']]);
     }

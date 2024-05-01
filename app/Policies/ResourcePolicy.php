@@ -2,7 +2,6 @@
 
 namespace App\Policies;
 
-use App\Http\Controllers\Log;
 use App\Models\Resource;
 use App\Models\DynamicPermission;
 use Illuminate\Foundation\Auth\User;

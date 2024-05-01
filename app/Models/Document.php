@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\LogEvents;
+use App\Traits\EditsAreLogged;
 use Illuminate\Database\Eloquent\Model;
 
 class Document extends Model
 {
+    use EditsAreLogged;
+    
     protected $fillable = [
         'protocol',
         'identifier',

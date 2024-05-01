@@ -23,13 +23,11 @@ class ExternalController extends Controller
         ]);
 
         $external = External::create($validated);
-        Log::debug('External created', $validated);
 
         // Association
         $lmth->identity()->associate($external)->save();
-        Log::debug('Login method associated', ['login method' => $lmth, 'identity' => $external]);
 
-        Log::debug('Identity enabled', $external);
+        // TODO LOG THIS THING!
         $external->givePermissionTo('login');
 
         return redirect()->route('accesses')->with(['notistack' => ['success', 'Utente creato ed abilitato']]);

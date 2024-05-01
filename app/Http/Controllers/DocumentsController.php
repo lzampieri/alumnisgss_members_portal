@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use setasign\Fpdi\Tcpdf\Fpdi;
 use Inertia\Inertia;
-use PhpOption\None;
 use Spatie\Permission\Models\Role;
 
 class DocumentsController extends Controller
@@ -88,13 +87,11 @@ class DocumentsController extends Controller
 
         // Create the document
         $document = Document::create($validated);
-        Log::debug('Document created', $validated);
 
         // Create the protocol
         $protocol = $validated['prehandle'] . str_pad($document->id, 6, '0', STR_PAD_LEFT);
         $document->protocol = $protocol;
         $document->save();
-        Log::debug('Protocol assigned', $validated);
 
         // Save the file
         $file = File::create();
@@ -104,12 +101,10 @@ class DocumentsController extends Controller
 
         $file->sha256 = $file->computeSha256();
         $file->save();
-        Log::debug('File uploaded', $file);
 
         // Save the visibility
         foreach ($validated['roles'] as $role) {
             $dynamicPermission = DynamicPermission::createFromRelations('view', $document, Role::findById($role));
-            Log::debug('Dynamic permission set', $dynamicPermission);
         }
 
         // Validate ratifications
@@ -120,7 +115,6 @@ class DocumentsController extends Controller
                 $alumnus = $ratification->alumnus;
                 $alumnus->status = $ratification->required_state;
                 $alumnus->save();
-                Log::debug('Ratification approved', ['ratification' => $ratification, 'document' => $document]);
             }
 
         return redirect()->route('board')->with(['notistack' => ['success', 'Documento caricato con protocollo ' . $protocol]]);
@@ -168,21 +162,18 @@ class DocumentsController extends Controller
         ]);
 
         $document->update($validated);
-        Log::debug('Document updated', ['document_id' => $document->id, 'new_params' => $validated]);
 
         $current_roles = $document->dynamicPermissions->pluck('role_id')->toArray();
         foreach (array_diff($current_roles, $validated['roles']) as $role) {
             // Roles to remove
             $dynamicPermission = $document->dynamicPermissions()->where('role_id', $role)->get();
             foreach ($dynamicPermission as $dp) {
-                Log::debug('Dynamic permission removed', $dp);
                 $dp->delete();
             }
         }
         foreach (array_diff($validated['roles'], $current_roles) as $role) {
             // Roles to add
             $dynamicPermission = DynamicPermission::createFromRelations('view', $document, Role::findById($role));
-            Log::debug('Dynamic permission set', $dynamicPermission);
         }
 
         return redirect()->route('board')->with(['notistack' => ['success', 'Dati aggiornati']]);
@@ -212,8 +203,6 @@ class DocumentsController extends Controller
         $file->sha256 = $file->computeSha256();
         $file->save();
 
-        Log::debug('New version for document uploaded', ['file' => $file, 'document' => $document]);
-
         return redirect()->route('board.edit', ['document' => $document->id])->with(['notistack' => ['success', 'Nuova versione caricata']]);
     }
 
@@ -222,11 +211,8 @@ class DocumentsController extends Controller
         $this->authorize('edit', Document::class);
 
         foreach ($document->ratifications as $rat) {
-            Log::debug('Ratification nulled', $rat);
             $rat->document()->associate(null)->save();
         }
-
-        Log::debug('Document deleted', $document);
 
         $document->delete();
 
@@ -252,7 +238,6 @@ class DocumentsController extends Controller
         $alumnus = $rat->alumnus;
         $alumnus->status = $rat->required_state;
         $alumnus->save();
-        Log::debug('Ratification approved', ['ratification' => $rat, 'document' => $doc]);
 
         return redirect()->back()->with(['notistack' => ['success', 'Associata']]);
     }
@@ -272,7 +257,6 @@ class DocumentsController extends Controller
         $alumnus = $rat->alumnus;
         $alumnus->status = $validated['new_state'];
         $alumnus->save();
-        Log::debug('Ratification nulled', ['ratification' => $rat, 'new alumnus status' => $alumnus->status]);
 
         return redirect()->back()->with(['notistack' => ['success', 'Annullata']]);
     }
@@ -297,7 +281,7 @@ class DocumentsController extends Controller
 
         // Check for sha256
         if (!$file->verifyHash()) {
-            Log::error('File hash mismatch', ['file' => $file, 'fromDatabase' => $file->sha256, 'fromFile' => $file->computeSha256()]);
+            LogController::error('File hash mismatch', ['file' => $file, 'fromDatabase' => $file->sha256, 'fromFile' => $file->computeSha256()]);
             return redirect()->back()->with('errorsDialogs', ["Il file richiesto è corrotto. Contatta gli amministratori."]);
         }
 
@@ -339,7 +323,7 @@ class DocumentsController extends Controller
         }
         $pdf->SetTitle($file->parent->identifier);
 
-        Log::debug('File generated', ['file' => $file->handle, 'document' => $file->parent->protocol]);
+        LogController::log( LogEvents::DOWNLOADED_FILE, $file );
 
         $pdf->Output($file->parent->protocol . '.pdf', 'I');
         exit;

@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
-use App\Http\Controllers\Log;
+use App\Http\Controllers\LogEvents;
+use App\Traits\EditsAreLogged;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 
 class DynamicPermission extends Model
 {
+    use EditsAreLogged;
+    
     protected $fillable = [
         'type',
         'role_id',

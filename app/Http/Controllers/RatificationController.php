@@ -65,7 +65,6 @@ class RatificationController extends Controller
             }
             $inserted++;
             $rat = Ratification::create(['alumnus_id' => $al_id, 'required_state' => $validated['required_state']]);
-            Log::debug('Ratification created', $rat);
         }
 
         $output = "";
@@ -82,7 +81,6 @@ class RatificationController extends Controller
     {
         $this->authorize('view', Ratification::class);
 
-        Log::debug('Ratification deleted', $rat);
         $rat->delete();
 
         return redirect()->back();
@@ -133,7 +131,7 @@ class RatificationController extends Controller
         $pdf->HTMLflush();
         $pdf->spacing();
 
-        Log::debug('Ratifications summary generated');
+        LogController::log(LogEvents::DOWNLOADED_RATIFICATIONSLIST);
 
         $pdf->Output('Ratifications.pdf', 'I');
         exit;

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Http\Controllers\Log;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;

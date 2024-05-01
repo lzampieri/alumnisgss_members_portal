@@ -25,7 +25,7 @@ class RolesController extends Controller
 
         $this->authorize('roles-edit');
 
-        Log::debug('New role created', $validated);
+        // TODO LOG THIS THING!
         Role::create($validated);
         Permission::findOrCreate('user-edit-' . $validated['name'], 'web');
 

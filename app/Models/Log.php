@@ -5,19 +5,22 @@ namespace App\Models;
 use App\Traits\EditsAreLogged;
 use Illuminate\Database\Eloquent\Model;
 
-class Permalink extends Model
+class Log extends Model
 {
     use EditsAreLogged;
-    
+
     protected $fillable = [
-        'id'
+        'type',
+        'field',
+        'old_value',
+        'new_value',
     ];
-    public $timestamps = false;
-
-    public $incrementing = false;
-    protected $keyType = 'string';
-
-    public function linkable()
+    
+    public function agent()
+    {
+        return $this->morphTo();
+    }
+    public function item()
     {
         return $this->morphTo();
     }

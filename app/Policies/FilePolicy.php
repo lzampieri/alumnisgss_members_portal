@@ -2,7 +2,6 @@
 
 namespace App\Policies;
 
-use App\Http\Controllers\Log;
 use App\Models\Document;
 use App\Models\File;
 use App\Models\Resource;

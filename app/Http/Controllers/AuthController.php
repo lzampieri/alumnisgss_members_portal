@@ -36,7 +36,7 @@ class AuthController extends Controller
             if ($loginMethod->can('login', LoginMethod::class)) {
                 Auth::login($loginMethod);
 
-                Log::debug('Login', $loginMethod);
+                LogController::log(LogEvents::LOGIN, $loginMethod);
 
                 $loginMethod->last_login = Carbon::now();
                 $loginMethod->save();

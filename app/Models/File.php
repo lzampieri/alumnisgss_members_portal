@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\EditsAreLogged;
 use Illuminate\Database\Eloquent\Model;
 
 class File extends Model
 {
+    use EditsAreLogged;
+
     const ALLOWED_FORMATS = [
         'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', 'txt', 'rtf'
     ];

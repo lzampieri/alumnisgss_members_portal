@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\LogEvents;
+use App\Traits\EditsAreLogged;
 use Illuminate\Database\Eloquent\Model;
 
 class AwsSession extends Model
 {
+    use EditsAreLogged;
+
     protected $fillable = [
         'aws_ref',
         'ip',

@@ -35,12 +35,12 @@ class IdentityController extends Controller
         }
 
         if ($identity->enabled && !$validated['enabled']) {
-            Log::debug('Identity disabled', $identity);
+            // TODO LOG THIS THING!
             $identity->revokePermissionTo('login');
         }
 
         if (!$identity->enabled && $validated['enabled']) {
-            Log::debug('Identity enabled', $identity);
+            // TODO LOG THIS THING!
             $identity->givePermissionTo('login');
         }
 
@@ -62,12 +62,12 @@ class IdentityController extends Controller
         $identity = $validated['type'] == 'alumnus' ? Alumnus::find($validated['id']) : External::find($validated['id']);
 
         if ($identity->hasRole($validated['role']) && $validated['action'] == 'remove') {
-            Log::debug('Identity roles changed', [$identity, $validated]);
+            // TODO LOG THIS THING!
             $identity->removeRole($validated['role']);
         }
 
         if (!$identity->hasRole($validated['role']) && $validated['action'] == 'add') {
-            Log::debug('Identity roles changed', [$identity, $validated]);
+            // TODO LOG THIS THING!
             $identity->assignRole($validated['role']);
         }
 
