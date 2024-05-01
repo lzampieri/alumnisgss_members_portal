@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Http\Controllers\LogControllerFile;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\LogEvents;
 use App\Traits\EditsAreLogged;

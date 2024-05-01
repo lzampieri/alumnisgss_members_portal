@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\LogController;
+use App\Http\Controllers\LogEvents;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
@@ -16,6 +18,42 @@ abstract class Identity extends Model
 
     use HasRoles {
         hasPermissionTo as protected traitHasPermissionTo;
+        givePermissionTo as protected traitGivePermissionTo;
+        revokePermissionTo as protected traitRevokePermissionTo;
+        assignRole as protected traitAssignRole;
+        removeRole as protected traitRemoveRole;
+    }
+
+    // hasPermissionTo is overrided to include the 'everyone' case
+    public function hasPermissionTo($permission, $guardName = null): bool
+    {
+        return $this->traitHasPermissionTo($permission) || Role::findByName('everyone')->hasPermissionTo($permission);
+    }
+
+    // Some of the trait method are overrided for logging purpose
+    public function givePermissionTo(...$permissions) {
+        foreach ($permissions as $permission) {
+            LogController::log( LogEvents::PERMISSION_GIVEN, $this, 'permission', null, $permission );
+            $this->traitGivePermissionTo($permission);
+        }
+    }
+    public function revokePermissionTo(...$permissions) {
+        foreach ($permissions as $permission) {
+            LogController::log( LogEvents::PERMISSION_REVOKEN, $this, 'permission', $permission );
+            $this->traitRevokePermissionTo($permission);
+        }
+    }
+    public function assignRole(...$roles) {
+        foreach ($roles as $role) {
+            LogController::log( LogEvents::ROLE_GIVEN, $this, 'role', null, $role );
+            $this->traitAssignRole($role);
+        }
+    }
+    public function removeRole(...$roles) {
+        foreach ($roles as $role) {
+            LogController::log( LogEvents::ROLE_REVOKEN, $this, 'role', $role );
+            $this->traitRemoveRole($role);
+        }
     }
 
     protected $guard_name = 'web';
@@ -61,11 +99,6 @@ abstract class Identity extends Model
     public function getEnabledAttribute()
     {
         return $this->hasPermissionTo('login');
-    }
-
-    public function hasPermissionTo($permission, $guardName = null): bool
-    {
-        return $this->traitHasPermissionTo($permission) || Role::findByName('everyone')->hasPermissionTo($permission);
     }
 
     public function getAllRoles()

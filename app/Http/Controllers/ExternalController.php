@@ -27,7 +27,7 @@ class ExternalController extends Controller
         // Association
         $lmth->identity()->associate($external)->save();
 
-        // TODO LOG THIS THING!
+        // Enable user
         $external->givePermissionTo('login');
 
         return redirect()->route('accesses')->with(['notistack' => ['success', 'Utente creato ed abilitato']]);

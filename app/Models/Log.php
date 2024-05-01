@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Log extends Model
 {
-    use EditsAreLogged;
 
     protected $fillable = [
         'type',

@@ -12,10 +12,11 @@ use App\Models\External;
 use App\Models\IdentityDetail;
 use App\Models\LoginMethod;
 use App\Models\Permalink;
+use App\Models\Permission;
 use App\Models\Ratification;
 use App\Models\Resource;
+use App\Models\Role;
 use App\Models\User;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Database\Eloquent\Model;
 
 class LogType {
@@ -23,29 +24,32 @@ class LogType {
         LogEvents::CREATE => [
             Alumnus::class, AwsSession::class, Document::class, DynamicPermission::class,
             External::class, IdentityDetail::class, LoginMethod::class, Ratification::class,
-            Resource::class],
+            Resource::class, Permission::class, Role::class ],
         LogEvents::RESTORED => [
             Alumnus::class, AwsSession::class, Document::class, DynamicPermission::class,
             External::class, IdentityDetail::class, LoginMethod::class, Ratification::class,
-            Resource::class],
+            Resource::class, Permission::class, Role::class ],
         LogEvents::UPDATE => [
             Alumnus::class, AwsSession::class, Document::class, DynamicPermission::class,
             External::class, IdentityDetail::class, LoginMethod::class, Ratification::class,
-            Resource::class],
+            Resource::class, Permission::class, Role::class ],
         LogEvents::DELETE => [
             Alumnus::class, AwsSession::class, Document::class, DynamicPermission::class,
             External::class, IdentityDetail::class, LoginMethod::class, Ratification::class,
-            Resource::class],
+            Resource::class, Permission::class, Role::class ],
         LogEvents::DOWNLOADED_DETAILS => True,
         LogEvents::DOWNLOADED_SCHEMA => True,
-        LogEvents::LOGIN => True
+        LogEvents::LOGIN => True,
+        LogEvents::PERMISSION_GIVEN => True,
+        LogEvents::PERMISSION_REVOKEN => True,
+        LogEvents::ROLE_GIVEN => True,
+        LogEvents::ROLE_REVOKEN => True
     ];
 }
 
 class LogController extends Controller
 {
     private static function shouldILogToDB( string $event, Model $item = NULL ) {
-        
         if( !array_key_exists( $event, LogType::DB ) ) return false;
         if( !is_array( LogType::DB[ $event ] ) ) return boolval( LogType::DB[ $event ] );
 
@@ -54,7 +58,7 @@ class LogController extends Controller
     }
 
     public static function log( string $event, Model $item = NULL, string $field = '', $oldValue = NULL, $newValue = NULL ) {
-        if( self::shouldILogToDB( $event ) ) {
+        if( self::shouldILogToDB( $event, $item ) ) {
             LogControllerDB::echo( $event, $item, $field, $oldValue, $newValue );
         } else {
             LogControllerFile::debug( $event, [ 'item' => $item, 'field' => $field, 'oldValue' => $oldValue, 'newValue' => $newValue ] );

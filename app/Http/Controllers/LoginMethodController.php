@@ -142,7 +142,6 @@ class LoginMethodController extends Controller
         $lmth->identity()->associate($identity)->save();
 
         if (!$identity->enabled) {
-            // TODO LOG THIS THING!
             $identity->givePermissionTo('login');
         }
 

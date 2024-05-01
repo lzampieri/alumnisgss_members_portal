@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 use Spatie\Permission\Exceptions\RoleDoesNotExist;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
+use App\Models\Permission;
+use App\Models\Role;
 
 class PermissionsController extends Controller
 {
@@ -152,17 +152,15 @@ class PermissionsController extends Controller
 
         if (($validated['role'] == 'webmaster') && !(Auth::user()->identity->hasRole('webmaster'))) {
             Role::findByName('webmaster')->syncPermissions(Permission::all());
-            // TODO LOG THIS THING!
+            LogController::log(LogEvents::PERMISSION_GIVEN, Role::findByName('webmaster'), 'permission', Null, Permission::all());
             return redirect()->back()->with(['notistack' => ['success', 'Tutti i permessi assegnati al webmaster']]);
         }
 
         $role = Role::findByName($validated['role']);
         if ($role->hasPermissionTo($validated['permission']) && $validated['action'] == 'remove') {
-            // TODO LOG THIS THING!
             $role->revokePermissionTo($validated['permission']);
         }
         if (!$role->hasPermissionTo($validated['permission']) && $validated['action'] == 'add') {
-            // TODO LOG THIS THING!
             $role->givePermissionTo($validated['permission']);
         }
 
@@ -178,7 +176,6 @@ class PermissionsController extends Controller
 
         $this->authorize('permissions-edit');
 
-        // TODO LOG THIS THING!
         Permission::findOrCreate($validated['name'], 'web');
 
         return redirect()->back();

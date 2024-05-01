@@ -20,8 +20,8 @@ class CreateLogsTable extends Migration
             $table->nullableMorphs('item');
             $table->string('type', 500);
             $table->string('field', 500)->nullable();
-            $table->string('old_value', 500)->nullable();
-            $table->string('new_value', 500)->nullable();
+            $table->text('old_value')->nullable();
+            $table->text('new_value')->nullable();
         });
     }
 
