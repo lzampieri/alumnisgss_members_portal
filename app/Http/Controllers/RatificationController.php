@@ -38,7 +38,7 @@ class RatificationController extends Controller
 
         return Inertia::render('Ratifications/Add', [
             'alumni' => Alumnus::with('ratifications')->get(),
-            'possibleStatus' => Alumnus::require_ratification,
+            'possibleStatus' => Alumnus::status,
             'alumnus' => array_key_exists('alumnus', $_GET) ? Alumnus::find($_GET['alumnus']) : null
         ]);
     }
@@ -50,7 +50,7 @@ class RatificationController extends Controller
         $validated = $request->validate([
             'alumni_id' => 'required|array',
             'alumni_id.*' => 'exists:alumni,id',
-            'required_state' => 'required|in:' . implode(',', Alumnus::require_ratification)
+            'required_state' => 'required|in:' . implode(',', Alumnus::status)
         ]);
 
         $inserted = 0;
