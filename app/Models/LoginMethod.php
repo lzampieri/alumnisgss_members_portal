@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
-use App\Http\Controllers\Log;
+use App\Http\Controllers\LogEvents;
+use App\Traits\EditsAreLogged;
 use Illuminate\Contracts\Auth\Access\Authorizable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class LoginMethod extends Authenticatable
 {
+    use EditsAreLogged;
+    
     public static $drivers = ['google'];
     
     protected $fillable = [

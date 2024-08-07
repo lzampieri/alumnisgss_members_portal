@@ -21,7 +21,7 @@ class DocumentPolicy
      */
     public function view(?User $user, Document $document)
     {
-        return DynamicPermission::UserCanViewPermissable($document, $user->identity);
+        return DynamicPermission::UserCanViewPermissable($document, $user ? $user->identity : null);
     }
 
     /**

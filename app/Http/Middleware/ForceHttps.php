@@ -1,6 +1,9 @@
 <?php
+
 namespace App\Http\Middleware;
+
 use Closure;
+
 class ForceHttps
 {
     public static function isHTTPS()

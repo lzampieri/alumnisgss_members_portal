@@ -4,6 +4,8 @@ import { useState } from "react";
 import { AlumnusStatus, bgAndContrast, disappearing, romanize } from "../Utils";
 import ReactSwitch from "react-switch";
 
+// TODO DELETE THIS SHIT
+
 function AlumnusItem(alumnus, textFilter, statusFilter, itemFunction, showTags, tagsDict) {
     let fullname = alumnus.surname + " " + alumnus.name
     let visible = textFilter ? (fullname + " " + alumnus.coorte).toLowerCase().includes(textFilter.toLowerCase()) : true
@@ -49,16 +51,6 @@ export default function ListTemplate({ data, itemFunction, tagsDict = {} }) {
             <div className="w-full relative mb-4">
                 <input type="text" className="w-full text-center" placeholder="Filtra..." value={textFilter} onChange={(e) => setTextFilter(e.target.value)} />
                 <FontAwesomeIcon icon={solid('magnifying-glass')} className="input-icon" />
-            </div>
-            <div className="w-full flex flex-row justify-center">
-                <button
-                    onClick={() => setOrder(orders.alphabetical)}
-                    className={order == orders.alphabetical ? "button button-active" : "button"}
-                >Ordine alfabetico</button>
-                <button
-                    onClick={() => setOrder(orders.coorte)}
-                    className={order == orders.coorte ? "button button-active" : "button"}
-                >Per coorte</button>
             </div>
             <div className="w-full mt-4 flex flex-row justify-center flex-wrap"> { /* Status */ }
                 { status.map( s =>

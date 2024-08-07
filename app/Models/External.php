@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\EditsAreLogged;
 
 class External extends Identity
 {
+    use EditsAreLogged;
+
     protected $fillable = [
         'name',
         'surname',

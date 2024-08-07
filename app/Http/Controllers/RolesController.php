@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 use Spatie\Permission\Exceptions\RoleDoesNotExist;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
+use App\Models\Permission;
+use App\Models\Role;
 
 class RolesController extends Controller
 {
@@ -25,7 +25,6 @@ class RolesController extends Controller
 
         $this->authorize('roles-edit');
 
-        Log::debug('New role created', $validated);
         Role::create($validated);
         Permission::findOrCreate('user-edit-' . $validated['name'], 'web');
 

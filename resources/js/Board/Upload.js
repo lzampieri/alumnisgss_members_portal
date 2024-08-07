@@ -11,7 +11,7 @@ import Select from 'react-select';
 export default function Upload() {
     const roles = usePage().props.roles;
     const rats = usePage().props.open_rats;
-    const parentable = usePage().props.parentable.map( p => ({ value: p.id, label: p.identifier }) );
+    const parentable = usePage().props.parentable.map(p => ({ value: p.id, label: p.identifier }));
 
     const [datePickerOpen, setDatePickerOpen] = useState(false);
 
@@ -75,13 +75,13 @@ export default function Upload() {
             {!usePage().props.canEdit && <label className="error">Attenzione: possiedi i permessi di caricare documenti, ma non di modificare documenti già caricati. Rivedi con attenzione tutti i campi prima di salvare.</label>}
             <label>È un allegato</label>
             <ReactSwitch height={21} width={42} checked={data.isAttachment} onChange={(newState) => setData('isAttachment', newState)} />
-            { data.isAttachment && 
+            {data.isAttachment &&
                 <div className="w-full flex flex-row flex-wrap gap-2 items-center">
                     <label>Allegato a:</label>
-                    <Select className="grow" value={data.attachedTo} options={ parentable } onChange={(newDocument)=>setData('attachedTo',newDocument)} />
+                    <Select className="grow" value={data.attachedTo} options={parentable} onChange={(newDocument) => setData('attachedTo', newDocument)} />
                 </div>
             }
-            
+
             <label>Identificativo</label>
             {!data.isAttachment && <>
                 <IdSelector onChange={(idf) => setData('identifier', idf)} />

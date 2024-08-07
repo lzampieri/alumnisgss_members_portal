@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\EditsAreLogged;
 use Illuminate\Database\Eloquent\Model;
 
 class Permalink extends Model
 {
+    use EditsAreLogged;
+    
     protected $fillable = [
         'id'
     ];

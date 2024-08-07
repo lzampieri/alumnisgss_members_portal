@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\LogEvents;
+use App\Traits\EditsAreLogged;
 use Illuminate\Database\Eloquent\Model;
 
 class Document extends Model
-{    
+{
+    use EditsAreLogged;
+    
     protected $fillable = [
         'protocol',
         'identifier',
@@ -20,32 +24,39 @@ class Document extends Model
         'date' => 'datetime',
     ];
 
-    public function author() {
+    public function author()
+    {
         return $this->morphTo();
     }
 
-    public function ratifications() {
-        return $this->hasMany( Ratification::class );
-    }    
-    
-    public function files() {
-        return $this->morphMany( File::class, 'parent' );
-    }
-    
-    public function dynamicPermissions() {
-        return $this->morphMany( DynamicPermission::class, 'permissable' );
-    }
-    
-    public function attached_to() {
-        return $this->belongsTo( Document::class, 'attached_to_id' );
+    public function ratifications()
+    {
+        return $this->hasMany(Ratification::class);
     }
 
-    public function attachments() {
-        return $this->hasMany( Document::class, 'attached_to_id' );
+    public function files()
+    {
+        return $this->morphMany(File::class, 'parent');
     }
-    
+
+    public function dynamicPermissions()
+    {
+        return $this->morphMany(DynamicPermission::class, 'permissable');
+    }
+
+    public function attached_to()
+    {
+        return $this->belongsTo(Document::class, 'attached_to_id');
+    }
+
+    public function attachments()
+    {
+        return $this->hasMany(Document::class, 'attached_to_id');
+    }
+
     protected $appends = ['canView'];
-    public function getCanViewAttribute() {
+    public function getCanViewAttribute()
+    {
         return DynamicPermission::UserCanViewPermissable($this);
     }
 }

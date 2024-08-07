@@ -4,16 +4,16 @@ import RegisteredTools from "./RegisteredTools";
 export default class BlockParser {
 
     static render(item, setItemValue, isEditable) {
-    
+
         if (RegisteredTools[item.type] !== undefined) {
-    
+
             if (isEditable)
                 return createElement(RegisteredTools[item.type].mainElementEditable, { item: item, setItemValue: setItemValue });
-    
+
             return createElement(RegisteredTools[item.type].mainElementReadOnly, { item: item, setItemValue: setItemValue });
         }
-    
-        return <label className="error">{ item.type } not defined</label>
+
+        return <label className="error">{item.type} not defined</label>
     }
 
     static preProcess(item) {
@@ -25,7 +25,7 @@ export default class BlockParser {
         return item
 
     }
-    
+
     static postProcess(item) {
 
         if (RegisteredTools[item.type] !== undefined)

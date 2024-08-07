@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 use Spatie\Permission\Exceptions\RoleDoesNotExist;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
+use App\Models\Permission;
+use App\Models\Role;
 
 class PermissionsController extends Controller
 {
@@ -21,7 +21,6 @@ class PermissionsController extends Controller
         try {
             Permission::findByName('permissions-view');
         } catch (PermissionDoesNotExist $e) {
-            Log::debug('Automatically created permissions-view and permissions-edit', []);
             Permission::findOrCreate('permissions-view');
             Permission::findOrCreate('permissions-edit');
             Role::findByName('webmaster')->givePermissionTo(Permission::all());
@@ -33,7 +32,7 @@ class PermissionsController extends Controller
 
         foreach ($roles as &$role) {
             $role->permissions_names = $role->permissions->pluck('name');
-            $role->identities = Alumnus::role( $role )->get()->concat( External::role( $role )->get() );
+            $role->identities = Alumnus::role($role)->get()->concat(External::role($role)->get());
         }
 
         return Inertia::render('Permissions/List', ['roles' => $roles, 'perms' => $perms]);
@@ -66,9 +65,9 @@ class PermissionsController extends Controller
         // Find or create!
         foreach ($roles_to_assert as $index => $role) {
             try {
-                Role::findByName( $role );
+                Role::findByName($role);
             } catch (RoleDoesNotExist $th) {
-                Role::create([ 'name' => $role, 'common_name' => $roles_to_assert_names[ $index ] ] );
+                Role::create(['name' => $role, 'common_name' => $roles_to_assert_names[$index]]);
             }
         }
 
@@ -102,7 +101,7 @@ class PermissionsController extends Controller
             // Ratifications
             'ratifications-view',
             'ratifications-edit',
-            'ratifications-bypass',
+            // 'ratifications-bypass', THIS PERMISSION HAS BEEN REMOVED
             // Documents
             'documents-upload',
             'documents-edit',
@@ -111,14 +110,15 @@ class PermissionsController extends Controller
             // Aws session
             'aws-session-view',
             // Webmaster stuff
-            'log-manage',
+            'logfile-view',
+            'logdb-view',
             'db-reset'
         ];
 
         // Roles edit
         foreach (Role::all()->pluck('name') as $role) {
             // never for members and student members and anyone
-            if ($role == 'member' || $role == 'student_member' || $role == 'everyone' ) continue;
+            if ($role == 'member' || $role == 'student_member' || $role == 'everyone') continue;
             $permissions_to_assert[] = 'user-edit-' . $role;
         }
 
@@ -150,19 +150,17 @@ class PermissionsController extends Controller
         if ($validated['permission'] == 'login')
             return redirect()->back()->with(['notistack' => ['error', 'Il permesso di login non è assegnabile direttamente ad un ruolo']]);
 
-        if (($validated['role'] == 'webmaster') && !( Auth::user()->identity->hasRole('webmaster') ) ) {
+        if (($validated['role'] == 'webmaster') && !(Auth::user()->identity->hasRole('webmaster'))) {
             Role::findByName('webmaster')->syncPermissions(Permission::all());
-            Log::debug('All permissions assigned to webmaster', Permission::all());
+            LogController::log(LogEvents::PERMISSION_GIVEN, Role::findByName('webmaster'), 'permission', Null, Permission::all());
             return redirect()->back()->with(['notistack' => ['success', 'Tutti i permessi assegnati al webmaster']]);
         }
 
         $role = Role::findByName($validated['role']);
         if ($role->hasPermissionTo($validated['permission']) && $validated['action'] == 'remove') {
-            Log::debug('Permission changed', $validated);
             $role->revokePermissionTo($validated['permission']);
         }
         if (!$role->hasPermissionTo($validated['permission']) && $validated['action'] == 'add') {
-            Log::debug('Permission changed', $validated);
             $role->givePermissionTo($validated['permission']);
         }
 
@@ -178,8 +176,7 @@ class PermissionsController extends Controller
 
         $this->authorize('permissions-edit');
 
-        Log::debug('New permission created', $validated);
-        Permission::findOrCreate($validated,'web');
+        Permission::findOrCreate($validated['name'], 'web');
 
         return redirect()->back();
     }

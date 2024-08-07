@@ -11,8 +11,9 @@ use Inertia\Inertia;
 
 class IdentityController extends Controller
 {
-    public function enabling(Request $request) {
-        
+    public function enabling(Request $request)
+    {
+
         $validated = $request->validate([
             'id' => 'required|numeric',
             'type' => 'required|in:alumnus,external',
@@ -21,54 +22,51 @@ class IdentityController extends Controller
 
         $classType = $validated['type'] == 'alumnus' ? Alumnus::class : External::class;
 
-        $this->authorize('enable', $classType);        
+        $this->authorize('enable', $classType);
 
-        $identity = $validated['type'] == 'alumnus' ? Alumnus::find( $validated['id'] ) : External::find( $validated['id'] );
+        $identity = $validated['type'] == 'alumnus' ? Alumnus::find($validated['id']) : External::find($validated['id']);
 
-        if( !$identity ) {
-            return redirect()->back()->with( 'notistack', ['error','Identità non trovata']);
+        if (!$identity) {
+            return redirect()->back()->with('notistack', ['error', 'Identità non trovata']);
         }
 
-        if( $identity->hasRole('webmaster') ) {
-            return redirect()->back()->with( 'notistack', ['error','Impossibile disabilitare il webmaster']);
+        if ($identity->hasRole('webmaster')) {
+            return redirect()->back()->with('notistack', ['error', 'Impossibile disabilitare il webmaster']);
         }
 
-        if( $identity->enabled && !$validated['enabled'] ) {
-            Log::debug('Identity disabled', $identity);
-            $identity->revokePermissionTo( 'login' );
+        if ($identity->enabled && !$validated['enabled']) {
+            $identity->revokePermissionTo('login');
         }
-        
-        if( !$identity->enabled && $validated['enabled'] ) {
-            Log::debug('Identity enabled', $identity);
-            $identity->givePermissionTo( 'login' );
+
+        if (!$identity->enabled && $validated['enabled']) {
+            $identity->givePermissionTo('login');
         }
-        
+
         return redirect()->back();
     }
 
-    public function edit_roles(Request $request) {
-        
+    public function edit_roles(Request $request)
+    {
+
         $validated = $request->validate([
             'id' => 'required|numeric',
             'type' => 'required|in:alumnus,external',
             'action' => 'required|in:add,remove',
             'role' => 'required|exists:roles,name'
         ]);
-        
-        $this->authorize( 'user-edit-' . $validated['role'] );
 
-        $identity = $validated['type'] == 'alumnus' ? Alumnus::find( $validated['id'] ) : External::find( $validated['id'] );
+        $this->authorize('user-edit-' . $validated['role']);
 
-        if( $identity->hasRole( $validated['role'] ) && $validated['action'] == 'remove' ) {
-            Log::debug('Identity roles changed', [$identity, $validated]);
-            $identity->removeRole( $validated['role'] );
+        $identity = $validated['type'] == 'alumnus' ? Alumnus::find($validated['id']) : External::find($validated['id']);
+
+        if ($identity->hasRole($validated['role']) && $validated['action'] == 'remove') {
+            $identity->removeRole($validated['role']);
         }
 
-        if( !$identity->hasRole( $validated['role'] ) && $validated['action'] == 'add' ) {
-            Log::debug('Identity roles changed', [$identity, $validated]);
-            $identity->assignRole( $validated['role'] );
+        if (!$identity->hasRole($validated['role']) && $validated['action'] == 'add') {
+            $identity->assignRole($validated['role']);
         }
-        
+
         return redirect()->back();
     }
 }
