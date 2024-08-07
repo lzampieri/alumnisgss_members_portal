@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Log;
 use Illuminate\Support\Facades\Artisan;
 use Inertia\Inertia;
 use Ifsnop\Mysqldump\Mysqldump;
@@ -128,5 +129,21 @@ class WebmasterController extends Controller
         }
 
         return Artisan::output();
+    }
+
+    public function log_internal()
+    {
+        $this->authorizeRole('webmaster'); // Todo add specific authorization
+
+        return Inertia::render('Webmaster/InternalLog');
+    }
+
+    public function log_internal_getrows(int $perPage, int $page)
+    {
+        $this->authorizeRole('webmaster'); // Todo add specific authorization
+
+        $rows = Log::with(['agent','item'])->orderBy('id', 'desc')->paginate( $perPage, ['*'], 'page', $page );
+
+        return json_encode($rows);
     }
 }

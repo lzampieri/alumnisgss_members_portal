@@ -23,6 +23,7 @@ export default function List() {
         <div className="main-container">
             <ul>
                 <li><a href={route('log')}>Log</a></li>
+                <li><a href={route('webmaster.log.internal')}>Internal log</a></li>
                 <li><RequireConfirmLink href={route('webmaster.backup')}>Backup</RequireConfirmLink></li>
                 <li><Link href={route('webmaster.decryptUtility')}>Utilità per decriptazione</Link></li>
                 <li><RequireConfirmLink href={route('webmaster.migrate')}>Migra</RequireConfirmLink></li>

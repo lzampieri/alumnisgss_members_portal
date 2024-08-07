@@ -57,7 +57,7 @@ export default function Edit() {
     }
 
     const goToRatification = () => {
-        Inertia.visit(route('ratifications.add', { alumnus: prev.id }));
+        router.visit(route('ratifications.add', { alumnus: prev.id }));
     }
 
     const opt_arrs = (tags) => tags.map(i => { return { value: i, label: i } })

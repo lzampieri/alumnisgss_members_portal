@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Http\Controllers
 use App\Traits\EditsAreLogged;
 use App\Traits\SoftEditsAreLogged;
 use Illuminate\Database\Eloquent\Model;
