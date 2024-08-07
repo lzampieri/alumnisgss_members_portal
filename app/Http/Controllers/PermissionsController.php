@@ -122,9 +122,13 @@ class PermissionsController extends Controller
             $permissions_to_assert[] = 'user-edit-' . $role;
         }
 
-        // Find or create!
-        foreach ($permissions_to_assert as $permission)
-            Permission::findOrCreate($permission, 'web');
+        try {
+            // Find or create!
+            foreach ($permissions_to_assert as $permission)
+                Permission::findOrCreate($permission);
+        } catch(\Illuminate\Database\QueryException $ex){ 
+            return redirect()->back()->with(['notistack' => ['error', "C'è stato un errore."]]);
+        }
 
         $count_p = Permission::count() - $count_p;
 
