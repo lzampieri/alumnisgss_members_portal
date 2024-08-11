@@ -23,12 +23,16 @@ class AppsController extends Controller
             $apps[] = 'registry';
         }
 
+        if (Auth::user()) {  // Todo should I add a permission here?
+            $apps[] = 'reports';
+        }
+        
+        // Anyone can access board
+        $apps[] = 'board';
+
         if (Auth::user() && Auth::user()->can('view', Ratification::class)) {
             $apps[] = 'ratifications';
         }
-
-        // Anyone can access board
-        $apps[] = 'board';
 
         // Anyone can access resources
         $apps[] = 'resources';

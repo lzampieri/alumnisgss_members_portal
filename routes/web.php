@@ -29,6 +29,8 @@ include( 'resources.php' );
 
 include( 'ratifications.php' );
 
+include( 'reports.php' );
+
 include( 'roles.php' );
 
 include( 'webmaster.php' );
