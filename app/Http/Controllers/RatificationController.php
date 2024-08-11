@@ -93,8 +93,27 @@ class RatificationController extends Controller
         $rats = Ratification::whereNull('document_id')->with('alumnus')->get()
             ->sortBy(function ($rat, $key) {
                 return str_pad($rat->coorte, 4, STR_PAD_LEFT) . " " . $rat->alumnus->surname . " " . $rat->alumnus->name;
-            })
-            ->groupBy('required_state');
+            });
+
+        $rats_entering = array_fill_keys( Alumnus::require_ratification, [] );
+        $rats_exiting = array_fill_keys( Alumnus::require_ratification, [] );
+        $rats_changing = array_fill_keys( Alumnus::require_ratification, array_fill_keys( Alumnus::require_ratification, [] ) );
+        $rats_extra = [];
+
+        foreach ($rats as $rat) {
+            if( in_array( $rat->required_state, Alumnus::require_ratification ) ) {
+                if( in_array( $rat->alumnus->status, Alumnus::require_ratification ) ) {
+                    $rats_changing[ $rat->alumnus->status ][ $rat->required_state ][] = $rat;
+                }
+                else {
+                    $rats_entering[ $rat->required_state ][] = $rat;
+                }
+            } elseif( in_array( $rat->alumnus->status, Alumnus::require_ratification ) ) {
+                $rats_exiting[ $rat->alumnus->status ][] = $rat;
+            } else {
+                $rats_extra[] = $rat;
+            }
+        }
 
         $pdf = new TemplatedPdfGenerator();
 
@@ -113,8 +132,11 @@ class RatificationController extends Controller
         $pdf->HTMLhere('In data ' . date('d/m/Y') . " sono presenti nel Portale Soci dell'Associazione Alumni della Scuola Galileiana le seguenti richieste di ratifica per il cambio di stato associativo:\n");
         $pdf->spacing();
 
-        foreach ($rats as $k => $v) {
-            $pdf->HTMLenqueue('Richiedono il passaggio allo stato di <i>' . Alumnus::AlumnusStatusLabels[$k] . '</i> (' . count($v) . '):');
+        // Iscrizioni al libro dei soci
+        foreach ($rats_entering as $k => $v) {
+            if( count($v) == 0 ) continue;
+
+            $pdf->HTMLenqueue('Richiedono l\'iscrizione allo stato di <i>' . Alumnus::AlumnusStatusLabels[$k] . '</i> (' . count($v) . '):');
 
             $pdf->HTMLenqueue('<ul>');
             foreach ($v as $a) {
@@ -123,6 +145,49 @@ class RatificationController extends Controller
             $pdf->HTMLenqueue("</ul>");
             $pdf->HTMLenqueue("<br />");
         }
+
+        // Spostamenti nel libro dei soci
+        foreach ($rats_changing as $k_from => $vs) {
+            foreach( $vs as $k_to => $v ) {
+                if( count($v) == 0 ) continue;
+
+                $pdf->HTMLenqueue('Richiedono il passaggio dallo stato di <i>' . Alumnus::AlumnusStatusLabels[$k_from] . '</i> allo stato di <i>' . Alumnus::AlumnusStatusLabels[$k_to] . '</i> (' . count($v) . '):');
+    
+                $pdf->HTMLenqueue('<ul>');
+                foreach ($v as $a) {
+                    $pdf->HTMLenqueue("<li>" . $a->alumnus->surname . " " . $a->alumnus->name . " (" . Alumnus::romanize($a->alumnus->coorte) . ")</li>");
+                }
+                $pdf->HTMLenqueue("</ul>");
+                $pdf->HTMLenqueue("<br />");
+            }
+        }
+
+        // Rimorzioni dal libro dei soci
+        foreach ($rats_exiting as $k => $v) {
+            if( count($v) == 0 ) continue;
+
+            $pdf->HTMLenqueue('Richiedono la rimozione dallo stato di <i>' . Alumnus::AlumnusStatusLabels[$k] . '</i> (' . count($v) . '):');
+
+            $pdf->HTMLenqueue('<ul>');
+            foreach ($v as $a) {
+                $pdf->HTMLenqueue("<li>" . $a->alumnus->surname . " " . $a->alumnus->name . " (" . Alumnus::romanize($a->alumnus->coorte) . ")</li>");
+            }
+            $pdf->HTMLenqueue("</ul>");
+            $pdf->HTMLenqueue("<br />");
+        }
+
+        // Altro
+        if( count( $rats_extra ) > 0 ) {
+            $pdf->HTMLenqueue('Inoltre, vengono riportati all\'attenzione del Consiglio i seguenti casi (' . count($rats_extra) . '):');
+
+            $pdf->HTMLenqueue('<ul>');
+            foreach ($rats_extra as $a) {
+                $pdf->HTMLenqueue("<li>" . $a->alumnus->surname . " " . $a->alumnus->name . " (" . Alumnus::romanize($a->alumnus->coorte) . "), dallo stato di <i>" . Alumnus::AlumnusStatusLabels[$a->alumnus->status] . "</i> allo stato di <i>" . Alumnus::AlumnusStatusLabels[$a->required_state]  . "</i></li>");
+            }
+            $pdf->HTMLenqueue("</ul>");
+            $pdf->HTMLenqueue("<br />");
+        }
+
 
         $pdf->HTMLenqueue("Padova, " . date('d/m/Y'));
         $pdf->HTMLenqueue("<br />");
