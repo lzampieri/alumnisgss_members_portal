@@ -160,6 +160,19 @@
     .tab-title.active {
         @apply text-primary-main border-b-4 font-bold border-b-primary-main
     }
+    .sheets-container {
+        @apply flex flex-col items-start w-full;
+    }
+    .sheet-title {
+        @apply border rounded-tl-xl rounded-tr-xl border-b-0;
+        @apply p-2 text-center;
+        @apply text-primary-main font-bold;
+    }
+    .sheet {
+        @apply border;
+        @apply rounded-bl-xl rounded-br-xl rounded-tr-xl  mb-4;
+        @apply p-2 w-full;
+    }
 
     /* DRAWER */
     .main-container-drawer {
