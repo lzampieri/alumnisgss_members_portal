@@ -17,6 +17,7 @@ class LogEvents {
     const DOWNLOADED_DETAILS = 'downloaded_alumni_details';
     const DOWNLOADED_FILE = 'downloaded_file';
     const DOWNLOADED_RATIFICATIONSLIST = 'downloaded_ratifications_list';
+    const DOWNLOADED_REPORT = 'downloaded_variations_report';
 
     const LOGIN = 'login';
     const MAIL_SENT = 'mail_sent';
