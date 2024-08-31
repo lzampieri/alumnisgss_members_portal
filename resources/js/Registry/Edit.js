@@ -63,7 +63,24 @@ export default function Edit() {
     const opt_arrs = (tags) => tags.map(i => { return { value: i, label: i } })
 
     // Stato
-    const status_options = usePage().props.availableStatus.map(i => { return { value: i, label: AlumnusStatus.status[i].label } })
+    const status_notRat = usePage().props.noRatStatus;
+    console.log( status_notRat )
+    const status_options = usePage().props.allStatus.map(i => {
+        return {
+            value: i,
+            label: AlumnusStatus.status[i].label,
+            noRat: status_notRat.includes(i)
+        }
+    }).sort((a, b) => ((a.noRat ? 'A' : 'B') + a.label).localeCompare((b.noRat ? 'A' : 'B') + b.label))
+    const formatOptionLabel = (data) => (
+        <div className="flex flex-row items-center gap-2">
+            {!data.noRat && <FontAwesomeIcon icon={solid('lock')} />}
+            <div>{data.label}</div>
+        </div>
+    );
+
+    // Pending rats
+    const pending_rats = usePage().props.pendingRats;
 
     // Tags
     const tags_options = opt_arrs(Object.values(usePage().props.allTags) || [])
@@ -118,8 +135,23 @@ export default function Edit() {
             <label className="error">{errors.coorte}</label>
 
             <label>Stato</label>
-            <Select value={status_options.find(i => i.value == data.status)} onChange={(sel) => setData('status', sel.value)} options={status_options} />
+            {pending_rats.map(pr => <div className="w-full info">
+                <FontAwesomeIcon icon={solid('hourglass-half')} className="mr-2" />
+                È presente una richiesta in attesa di ratifica per il passaggio allo stato di {AlumnusStatus.status[pr.required_state].label}
+            </div>)}
+            <Select
+                value={status_options.find(i => i.value == data.status)}
+                onChange={(sel) => setData('status', sel.value)}
+                options={status_options}
+                formatOptionLabel={formatOptionLabel} />
+            {
+                !status_options.find(i => i.value == data.status)?.noRat && <div className="w-full alert">
+                    <FontAwesomeIcon icon={solid('lock')} className="mr-2" />
+                    Per il passaggio allo stato di {AlumnusStatus.status[data.status].label} è richiesta la ratifica al consiglio di amministrazione. Il passaggio non sarà immediato, ma al salvataggio verrà creata una richiesta di ratifica.
+                </div>
+            }
             <label className="error">{errors.status}</label>
+
 
             <label>Tags</label>
             <CreatableSelect isMulti value={opt_arrs(data.tags)} onChange={(newValue) => setData('tags', newValue.map(i => i.value))} options={tags_options} />

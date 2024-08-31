@@ -29,10 +29,10 @@ export default function List() {
                     <FontAwesomeIcon icon={solid('circle-plus')} />
                     Aggiungi
                 </Link>}
-                <a className="button" href={route('ratifications.export')}>
+                <Link className="button" href={route('reports')}>
                     <FontAwesomeIcon icon={solid('download')} />
                     Esporta
-                </a>
+                </Link>
             </div>
             <div className="w-full flex flex-col justify-start">
                 <h3>Ratifiche in attesa</h3>

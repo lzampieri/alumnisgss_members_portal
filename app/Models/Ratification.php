@@ -12,7 +12,8 @@ class Ratification extends Model
     protected $fillable = [
         'required_state',
         'alumnus_id',
-        'document_id'
+        'document_id',
+        'state_at_document_emission' // SHOULD BE FILLED WHEN DOCUMENT_ID IS FILLED
     ];
 
     public function alumnus()

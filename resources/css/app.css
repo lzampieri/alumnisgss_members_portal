@@ -66,7 +66,7 @@
         @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0
     }
     input[type="checkbox"] {
-        @apply rounded-md bg-gray-100 border-gray-500 focus:border-gray-500 focus:bg-white focus:ring-0 mr-2
+        @apply rounded-md bg-gray-100 border-gray-500 focus:border-gray-500 focus:bg-white focus:ring-0 mr-2 text-primary-main
     }
     .input-icon {
         @apply text-gray-500 absolute right-4 text-2xl inset-y-0 my-auto
@@ -122,7 +122,7 @@
     .mylist-subitem {
         @apply bg-gray-50 border-gray-400 border ml-8 mt-2 p-2
     }
-
+    
     /* GRAPHICAL CONTAINERS */
     .main-container {
         @apply flex flex-col items-center w-full md:w-3/5
@@ -159,6 +159,25 @@
     }
     .tab-title.active {
         @apply text-primary-main border-b-4 font-bold border-b-primary-main
+    }
+    .sheets-container {
+        @apply flex flex-col items-start w-full;
+    }
+    .sheet-title {
+        @apply border rounded-tl-xl rounded-tr-xl border-b-0;
+        @apply p-2 text-center;
+        @apply text-primary-main font-bold;
+    }
+    .sheet {
+        @apply border;
+        @apply rounded-bl-xl rounded-br-xl rounded-tr-xl  mb-4;
+        @apply p-2 w-full;
+    }
+    .info {
+        @apply rounded-md bg-gray-300 bg-opacity-10 my-2 p-2
+    }
+    .alert {
+        @apply rounded-md bg-primary-main bg-opacity-10 my-2 p-2
     }
 
     /* DRAWER */

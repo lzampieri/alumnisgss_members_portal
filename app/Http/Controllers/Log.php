@@ -11,7 +11,6 @@ use App\Models\LoginMethod;
 use App\Models\Permalink;
 use App\Models\Ratification;
 use App\Models\Resource;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log as OriginalLog;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;

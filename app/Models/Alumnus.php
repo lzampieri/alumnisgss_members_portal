@@ -26,7 +26,7 @@ class Alumnus extends Identity
     // Status for which entering or exiting required ratification
     const require_ratification = ['member', 'student_member'];
 
-    // Assignable status
+    // Assignable status without ratification
     public static function availableStatus(Alumnus $alumnus = null)
     {
         // THE PERMISSION bypassRatification HAS BEEN REMOVED
@@ -43,7 +43,7 @@ class Alumnus extends Identity
             return [ $alumnus->status ]; // If the alumnus is stucked in a state that requires ratification, it remains there
 
         // Else, return all applicable status
-        return array_diff(Alumnus::status, Alumnus::require_ratification);
+        return array_values( array_diff(Alumnus::status, Alumnus::require_ratification) );
     }
     // All used tags
     public static function allTags()
@@ -137,6 +137,11 @@ class Alumnus extends Identity
     public function getPendingRatificationsAttribute()
     {
         return $this->ratifications()->whereNull('document_id')->count();
+    }
+
+    public function getPendingRatificationsListAttribute()
+    {
+        return $this->ratifications()->whereNull('document_id')->get();
     }
 
 }
