@@ -5,17 +5,17 @@ import { useState } from "react";
 import Backdrop from "../Layout/Backdrop";
 import EmptyDialog from "../Layout/EmptyDialog";
 import { AlumnusStatus, postRequest, romanize } from "../Utils";
+import Dialog from "../Layout/Dialog";
 
 export default function DeleteRatification({ ratifications }) {
     const [selected, setSelected] = useState(null);
     const [processing, setProcessing] = useState(false);
 
-    const available_status = usePage().props.available_status;
 
-    const submit = (new_state) => {
+    const submit = () => {
         postRequest(
             'board.remove_ratification',
-            { new_state: new_state, ratification: selected.id },
+            { ratification: selected.id },
             setProcessing
         )
         setSelected(null);
@@ -31,17 +31,12 @@ export default function DeleteRatification({ ratifications }) {
                 </span>
             )}
         </div>)}
-        <EmptyDialog open={selected}
+        <Dialog open={selected}
+            onConfirm={submit}
             onClose={() => setSelected(null)}>
-            <span>Quale stato si vuole assegnare a <b>{selected && selected.alumnus.name} {selected && selected.alumnus.surname}</b> dopo l'annullamento della ratifica?</span>
-            <div className="w-full flex flex-row justify-center flex-wrap">
-                {available_status.map(s =>
-                    <div className="button" onClick={() => submit(s)} key={s}>
-                        {AlumnusStatus.status[s].label}
-                    </div>
-                )}
-            </div>
-        </EmptyDialog>
+            <p>Confermare l'eliminazione della ratifica relativa a {selected && selected.alumnus.name} {selected && selected.alumnus.surname}?</p>
+            <p className="text-sm">All'eliminazione, in assenza di ulteriori ratifiche successive riguardanti lo stesso alumno, verrà assegnato lo stato precedente alla ratifica in oggetto ({selected && selected.state_at_document_emission && AlumnusStatus.status[selected.state_at_document_emission].label})</p>
+        </Dialog>
         <Backdrop open={processing} />
     </>);
 }

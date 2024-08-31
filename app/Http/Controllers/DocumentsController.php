@@ -112,7 +112,11 @@ class DocumentsController extends Controller
             foreach ($validated['ratifications'] as $rat) {
                 $ratification = Ratification::find($rat);
                 $ratification->document()->associate($document)->save();
+
                 $alumnus = $ratification->alumnus;
+                $ratification->state_at_document_emission = $alumnus->status;
+                $ratification->save();
+
                 $alumnus->status = $ratification->required_state;
                 $alumnus->save();
             }
@@ -131,7 +135,6 @@ class DocumentsController extends Controller
             'document' => $document,
             'roles' => Role::where('name', '!=', 'webmaster')->orderBy('id')->get(),
             'available_ratifications' => Ratification::whereNull('document_id')->with('alumnus')->get()->groupBy('required_state'),
-            'available_status' => Alumnus::availableStatus(),
             'parentable' => Document::whereNull('attached_to_id')->where('id', '!=', $document->id)->latest()->get()
         ]);
     }
@@ -211,6 +214,18 @@ class DocumentsController extends Controller
         $this->authorize('edit', Document::class);
 
         foreach ($document->ratifications as $rat) {
+
+            
+            // Update alumnus only if its actual state is the same of the ratification
+            $alumnus = $rat->alumnus;
+            if( $alumnus->status == $rat->required_state ) {
+                $alumnus->status = $rat->state_at_document_emission;
+                $alumnus->save();
+            }
+
+            $rat->state_at_document_emission = null;
+            $rat->save();
+
             $rat->document()->associate(null)->save();
         }
 
@@ -235,7 +250,11 @@ class DocumentsController extends Controller
             return redirect()->back()->with('notistack', ['error', 'Ratifica già assegnata']);
 
         $rat->document()->associate($doc)->save();
+
         $alumnus = $rat->alumnus;
+        $rat->state_at_document_emission = $alumnus->status;
+        $rat->save();
+
         $alumnus->status = $rat->required_state;
         $alumnus->save();
 
@@ -247,16 +266,22 @@ class DocumentsController extends Controller
         $this->authorize('edit', Document::class);
 
         $validated = $request->validate([
-            'ratification' => 'required|exists:ratifications,id',
-            'new_state' => 'required|in:' . implode(',', Alumnus::availableStatus())
+            'ratification' => 'required|exists:ratifications,id'
         ]);
 
         $rat = Ratification::find($validated['ratification']);
 
         $rat->document()->associate(null)->save();
+
+        // Update alumnus only if its actual state is the same of the ratification
         $alumnus = $rat->alumnus;
-        $alumnus->status = $validated['new_state'];
-        $alumnus->save();
+        if( $alumnus->status == $rat->required_state ) {
+            $alumnus->status = $rat->state_at_document_emission;
+            $alumnus->save();
+        }
+
+        $rat->state_at_document_emission = null;
+        $rat->save();
 
         return redirect()->back()->with(['notistack' => ['success', 'Annullata']]);
     }
