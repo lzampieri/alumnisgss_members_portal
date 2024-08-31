@@ -4,6 +4,7 @@ import "ag-grid-community/styles/ag-theme-quartz.css"; // Theme
 import { useMemo, useState } from 'react';
 import Tooltip from '../Layout/Tooltip';
 import BigTooltip from '../Layout/BigTooltip';
+import { Stringifier, Tooltipier } from './Stringifier';
 
 function AgentTooltip({ data, value }) {
     return <Tooltip content={
@@ -13,6 +14,16 @@ function AgentTooltip({ data, value }) {
         </div>
     }>
         {value?.name} {value?.surname}
+    </Tooltip>
+}
+
+function ItemTooltip({ data, value }) {
+    return <Tooltip content={
+        <div>
+            {Tooltipier( data?.item_type, data?.item )}
+        </div>
+    }>
+        {Stringifier( data?.item_type, data?.item )}
     </Tooltip>
 }
 
@@ -35,6 +46,7 @@ export default function InternalLog() {
         { field: 'id', headerName : 'ID', width: 70 },
         { field: 'date', headerName: 'Data', valueGetter: ({ data }) => new Date(data?.created_at).toLocaleString('it-IT', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }) },
         { field: 'agent', headerName: 'Agent', valueGetter: ({ data }) => data?.agent, cellRenderer: ({ data, value }) => <AgentTooltip data={data} value={value} /> },
+        { field: 'item', headerName: 'Item', valueGetter: ({ data }) => data?.item, cellRenderer: ({ data, value }) => <ItemTooltip data={data} value={value} /> },
         { field: 'type', headerName: 'Type' },
         { field: 'field', headerName: 'Field' },
         { field: 'old_value', headerName: 'Old Value' },
