@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Alumnus;
 use App\Models\Identity;
 use App\Models\IdentityDetail;
+use App\Models\Ratification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -99,9 +100,11 @@ class AlumnusController extends Controller
 
         return Inertia::render('Registry/Edit', [
             'alumnus' => $alumnus,
-            'availableStatus' => Alumnus::availableStatus($alumnus),
+            'noRatStatus' => Alumnus::availableStatus($alumnus),
+            'allStatus' => Alumnus::status,
             'allTags' => Alumnus::allTags(),
-            'allDetails' => IdentityDetail::allDetails()
+            'allDetails' => IdentityDetail::allDetails(),
+            'pendingRats' => $alumnus->pending_ratifications_list,
         ]);
     }
 
@@ -109,12 +112,13 @@ class AlumnusController extends Controller
     {
         $this->authorize('edit', Alumnus::class);
         $update = false;
+        $was_update = !!$alumnus;
 
         $validated = $request->validate([
             'surname' => 'required|regex:/^[A-zÀ-ú\s\'_]+$/',
             'name' => 'required|regex:/^[A-zÀ-ú\s\'_]+$/',
             'coorte' => 'required|numeric',
-            'status' => 'required|in:' . implode(',', Alumnus::availableStatus($alumnus)),
+            'status' => 'required|in:' . implode(',', Alumnus::status),
             'tags' => 'nullable|array',
             'details' => 'nullable|array',
             'details.*' => 'nullable|array',
@@ -138,16 +142,40 @@ class AlumnusController extends Controller
             }
         }
 
+        // Check for new status, if ratification needed
+        $rat_needed = false;
+        $rat_newstatus = '';
+        if (!in_array($validated['status'], Alumnus::availableStatus($alumnus))) {
+            $rat_needed = true;
+            $rat_newstatus = $validated['status'];
+            $validated['status'] = $alumnus ? $alumnus->status : 'not_reached';
+        }
+
+        // Create or update alumnus
         if ($alumnus) {
-            foreach( ['surname','name','coorte','status','tags'] as $key ) {
+            foreach (['surname', 'name', 'coorte', 'status', 'tags'] as $key) {
                 if ($validated[$key] !== $alumnus[$key]) {
                     $alumnus[$key] = $validated[$key];
                     $update = true;
                 }
             }
-            if( $update ) $alumnus->save();
+            if ($update) $alumnus->save();
         } else {
             $alumnus = Alumnus::create($validated);
+        }
+
+        // Eventually create ratification
+        if ($rat_needed) {
+            // Check for existing ratifications
+            foreach ($alumnus->pending_ratifications_list as $pr) {
+                if ($pr->required_state == $rat_newstatus) {
+                    $rat_needed = false;
+                    break;
+                }
+            }
+            if ($rat_needed) {
+                Ratification::create(['alumnus_id' => $alumnus->id, 'required_state' => $rat_newstatus]);
+            }
         }
 
         // Go with order: firstly, trash the one which should be trashed
@@ -195,6 +223,6 @@ class AlumnusController extends Controller
             }
         }
 
-        return redirect()->route('registry.edit', ['alumnus' => $alumnus])->with('notistack', ['success', $update ? 'Alumno aggiornato' : 'Alumno creato']);
+        return redirect()->route('registry.edit', ['alumnus' => $alumnus])->with('notistack', ['success', $was_update ? 'Alumno aggiornato' : 'Alumno creato']);
     }
 }

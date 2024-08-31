@@ -173,6 +173,12 @@
         @apply rounded-bl-xl rounded-br-xl rounded-tr-xl  mb-4;
         @apply p-2 w-full;
     }
+    .info {
+        @apply rounded-md bg-gray-300 bg-opacity-10 my-2 p-2
+    }
+    .alert {
+        @apply rounded-md bg-primary-main bg-opacity-10 my-2 p-2
+    }
 
     /* DRAWER */
     .main-container-drawer {
