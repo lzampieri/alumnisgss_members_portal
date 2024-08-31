@@ -23,7 +23,7 @@ class AppsController extends Controller
             $apps[] = 'registry';
         }
 
-        if (Auth::user()) {  // Todo should I add a permission here?
+        if (Auth::user()) {
             $apps[] = 'reports';
         }
         

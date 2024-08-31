@@ -17,8 +17,6 @@ class ReportsController extends Controller
 {
     public function home()
     {
-        // Todo add proper authorization
-
         $options = [
             ['name' => 'Ratifiche in attesa', 'url' => route('ratifications.export'), 'inertia' => FALSE, 'enabled' => Auth::user()->can('view', Ratification::class)],
             ['name' => 'Variazioni libri societari', 'url' => route('reports.members_variations'), 'inertia' => TRUE, 'enabled' => Auth::user()->can('view', Ratification::class)],
@@ -47,7 +45,7 @@ class ReportsController extends Controller
 
     public function members_variations_generate(Request $request)
     {
-        $this->authorizeRole('webmaster'); // Todo add proper authorization
+        $this->authorize('view', Ratification::class);
 
         $statuses = array_values(array_intersect(Alumnus::require_ratification, explode('.', $request->statuses)));
 
