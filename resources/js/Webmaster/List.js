@@ -29,6 +29,7 @@ export default function List() {
                 <li><RequireConfirmLink href={route('webmaster.migrate')}>Migra</RequireConfirmLink></li>
                 <li><RequireConfirmLink href={route('webmaster.remigrate')}>Reset di tutte le migrazioni PERICOLOSO</RequireConfirmLink></li>
                 <li><a href={route('webmaster.partremigrate', { count: 1 })}>Reset di tutte le migrazioni a step</a></li>
+                <li><a href={route('webmaster.sendTestMail')}>Invia mail di test</a></li>
             </ul>
         </div>
     );

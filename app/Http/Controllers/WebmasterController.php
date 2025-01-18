@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Alumnus;
+use App\Models\External;
 use App\Models\Log;
+use App\Models\LoginMethod;
 use Illuminate\Support\Facades\Artisan;
 use Inertia\Inertia;
 use Ifsnop\Mysqldump\Mysqldump;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
 use RuntimeException;
 
 class WebmasterController extends Controller
@@ -145,5 +150,30 @@ class WebmasterController extends Controller
         $rows = Log::with(['agent','item'])->orderBy('id', 'desc')->paginate( $perPage, ['*'], 'page', $page );
 
         return json_encode($rows);
+    }
+
+    public function sendTestMail()
+    {
+        $this->authorizeRole('webmaster'); // Todo add specific authorization
+
+        $message = "Questo è un messaggio di prova inviato su richiesta del webmaster dal portale soci.";
+
+        $message .= "Le mail di richiesta accesso sono tipicamente inviate a:\n";
+        foreach (LoginMethod::where('driver', 'google')->hasMorph('identity', [Alumnus::class, External::class])->get() as $lm) {
+            if ($lm->hasPermissionTo('accesses-receive-request-emails'))
+                $message .= $lm->credential . '\n';
+        }
+
+        $email = Auth::user()->credential;
+        
+        Mail::raw(
+            $message,
+            function (\Illuminate\Mail\Message $message) use ($email) {
+                $message->to($email);
+                $message->subject('Messaggio di test da soci.alumnuscuolagalileiana.it');
+        });
+
+        return redirect()->back()
+            ->with('notistack', ['success', "Mail inviata."]);
     }
 }
