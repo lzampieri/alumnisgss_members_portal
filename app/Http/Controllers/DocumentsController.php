@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use setasign\Fpdi\Tcpdf\Fpdi;
 use Inertia\Inertia;
+use setasign\Fpdi\PdfParser\CrossReference\CrossReference;
+use setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException;
 use Spatie\Permission\Models\Role;
 
 class DocumentsController extends Controller
@@ -215,10 +217,10 @@ class DocumentsController extends Controller
 
         foreach ($document->ratifications as $rat) {
 
-            
+
             // Update alumnus only if its actual state is the same of the ratification
             $alumnus = $rat->alumnus;
-            if( $alumnus->status == $rat->required_state ) {
+            if ($alumnus->status == $rat->required_state) {
                 $alumnus->status = $rat->state_at_document_emission;
                 $alumnus->save();
             }
@@ -275,7 +277,7 @@ class DocumentsController extends Controller
 
         // Update alumnus only if its actual state is the same of the ratification
         $alumnus = $rat->alumnus;
-        if( $alumnus->status == $rat->required_state ) {
+        if ($alumnus->status == $rat->required_state) {
             $alumnus->status = $rat->state_at_document_emission;
             $alumnus->save();
         }
@@ -311,46 +313,52 @@ class DocumentsController extends Controller
         }
 
         $pdf = new Fpdi();
-        $pageCount = $pdf->setSourceFile($file->path());
+
+        try {
+            $pageCount = $pdf->setSourceFile($file->path());
 
 
-        $all_versions = $file->parent->files()->oldest()->pluck('id')->toArray();
-        $this_version = array_search($file->id, $all_versions) + 1;
-        $latest = ($this_version == count($all_versions));
+            $all_versions = $file->parent->files()->oldest()->pluck('id')->toArray();
+            $this_version = array_search($file->id, $all_versions) + 1;
+            $latest = ($this_version == count($all_versions));
 
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
+            $pdf->setPrintHeader(false);
+            $pdf->setPrintFooter(false);
 
-        $pdf->SetAutoPageBreak(false);
-        $pdf->SetFont('Helvetica');
-        $pdf->SetFontSize('10');
-        $pdf->SetTextColor(255, 0, 0);
+            $pdf->SetAutoPageBreak(false);
+            $pdf->SetFont('Helvetica');
+            $pdf->SetFontSize('10');
+            $pdf->SetTextColor(255, 0, 0);
 
-        $header = '=== VERSIONE OBSOLETA! Una nuova versione del documento è presente sul portale ===';
-        $footer = '=== Scaricato dal portale soci il ' . date('d/m/Y') . ' - Protocollo web ' . $file->parent->protocol . ' - Versione ' . $this_version . ' di ' . count($all_versions) . ' ===';
+            $header = '=== VERSIONE OBSOLETA! Una nuova versione del documento è presente sul portale ===';
+            $footer = '=== Scaricato dal portale soci il ' . date('d/m/Y') . ' - Protocollo web ' . $file->parent->protocol . ' - Versione ' . $this_version . ' di ' . count($all_versions) . ' ===';
 
-        for ($i = 1; $i <= $pageCount; $i++) {
-            $id = $pdf->importPage($i);
+            for ($i = 1; $i <= $pageCount; $i++) {
+                $id = $pdf->importPage($i);
 
-            // Add a page
-            $pdf->AddPage();
-            $pdf->useTemplate($id, 0, 0, null, null, true);
+                // Add a page
+                $pdf->AddPage();
+                $pdf->useTemplate($id, 0, 0, null, null, true);
 
-            // Add watermark on the bottom
-            $pdf->SetXY(0, -10);
-            $pdf->Cell(0, 7, $footer, 0, 0, 'C');
+                // Add watermark on the bottom
+                $pdf->SetXY(0, -10);
+                $pdf->Cell(0, 7, $footer, 0, 0, 'C');
 
-            // Add watermark on the top for obsolete
-            if (!$latest) {
-                $pdf->SetXY(0, 10);
-                $pdf->Cell(0, 7, $header, 0, 0, 'C');
+                // Add watermark on the top for obsolete
+                if (!$latest) {
+                    $pdf->SetXY(0, 10);
+                    $pdf->Cell(0, 7, $header, 0, 0, 'C');
+                }
             }
+            $pdf->SetTitle($file->parent->identifier);
+
+            LogController::log(LogEvents::DOWNLOADED_FILE, $file);
+
+            $pdf->Output($file->parent->protocol . '.pdf', 'I');
+            exit;
+
+        } catch (CrossReferenceException $e) {
+            return redirect(null, 415)->back()->with('errorsDialogs', ["Questo file non è supportato dal visualizzatore."]);
         }
-        $pdf->SetTitle($file->parent->identifier);
-
-        LogController::log( LogEvents::DOWNLOADED_FILE, $file );
-
-        $pdf->Output($file->parent->protocol . '.pdf', 'I');
-        exit;
     }
 }
