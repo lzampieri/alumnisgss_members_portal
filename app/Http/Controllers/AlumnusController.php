@@ -120,6 +120,8 @@ class AlumnusController extends Controller
             'coorte' => 'required|numeric',
             'status' => 'required|in:' . implode(',', Alumnus::status),
             'tags' => 'nullable|array',
+            'academic' => 'nullable|array',
+            'realjobs' => 'nullable|array',
             'details' => 'nullable|array',
             'details.*' => 'nullable|array',
             'details.*.delete' => 'nullable|boolean',
@@ -153,7 +155,7 @@ class AlumnusController extends Controller
 
         // Create or update alumnus
         if ($alumnus) {
-            foreach (['surname', 'name', 'coorte', 'status', 'tags'] as $key) {
+            foreach (['surname', 'name', 'coorte', 'status', 'tags', 'academic', 'realjobs'] as $key) {
                 if ($validated[$key] !== $alumnus[$key]) {
                     $alumnus[$key] = $validated[$key];
                     $update = true;

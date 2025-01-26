@@ -58,6 +58,9 @@
     input[type="text"] {
         @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0
     }
+    .pretendToBeInput {
+        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0
+    }
     input[type="file"] {
         @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0;
         @apply file:rounded-none file:border-0 file:bg-gray-300 file:py-2 file:px-4

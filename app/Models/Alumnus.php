@@ -83,10 +83,14 @@ class Alumnus extends Identity
         'surname',
         'coorte',
         'status',
-        'tags'
+        'tags',
+        'academic',
+        'realjobs',
     ];
     protected $casts = [
         'tags' => 'array',
+        'academic' => 'array',
+        'realjobs' => 'array',
     ];
 
     public function hasPermissionTo($permission, $guardName = null): bool

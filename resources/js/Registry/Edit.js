@@ -8,6 +8,7 @@ import { router } from "@inertiajs/react";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { enqueueSnackbar } from "notistack";
+import TokenizableInput from "../Libs/react-tokenizable-inputs/TokenizableInput";
 
 function DetailRow({ data, setData, options, val_options, errors, errors_prename }) {
     return <><div className={"w-full flex flex-row my-1 gap-1 items-center " + (data.delete ? "text-error line-through	" : "")}>
@@ -42,6 +43,8 @@ export default function Edit() {
         coorte: prev?.coorte || 1,
         status: prev?.status || 'not_reached',
         tags: prev?.tags || [],
+        academic: prev?.academic || [],
+        realjobs: prev?.realjobs || [],
         details: prev?.details || []
     })
 
@@ -64,7 +67,7 @@ export default function Edit() {
 
     // Stato
     const status_notRat = usePage().props.noRatStatus;
-    console.log( status_notRat )
+    // console.log( status_notRat )
     const status_options = usePage().props.allStatus.map(i => {
         return {
             value: i,
@@ -156,6 +159,14 @@ export default function Edit() {
             <label>Tags</label>
             <CreatableSelect isMulti value={opt_arrs(data.tags)} onChange={(newValue) => setData('tags', newValue.map(i => i.value))} options={tags_options} />
             <label className="error">{errors.tags}</label>
+
+            <label>Post lauream: in accademia</label>
+            <TokenizableInput tokensList={data.academic} updateTokensList={(newValue) => setData('academic', newValue)} />   
+            <label className="error">{errors.academic}</label>
+
+            <label>Post lauream: nel mondo del lavoro</label>
+            <TokenizableInput tokensList={data.realjobs} updateTokensList={(newValue) => setData('realjobs', newValue)} />
+            <label className="error">{errors.realjobs}</label>
 
             <label>Altri dettagli</label>
             <label className="error">{errors.details}</label>

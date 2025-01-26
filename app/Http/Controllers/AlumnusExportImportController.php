@@ -171,7 +171,7 @@ class AlumnusExportImportController extends Controller
         $sheet->setCellValue('A4', "Per motivi di sicurezza, il download di questo file è registrato assieme alle credenziali di accesso.");
         $sheet->getStyle('A4')->applyFromArray(['font' => ['bold' => true, 'color' => ['argb' => 'FF0000']]]);
 
-        $titles = ['ID', 'Cognome', 'Nome', 'Coorte', 'Stato', 'Tags'];
+        $titles = ['ID', 'Cognome', 'Nome', 'Coorte', 'Stato', 'Tags']; // TODO add Academic and RealJobs
         $keys   = ['id', 'surname', 'name', 'coorte', 'status', 'tags'];
 
         foreach ($titles as $col => $title) {
@@ -282,7 +282,7 @@ class AlumnusExportImportController extends Controller
             $detailsKeys[$i] = $sheet->getCellByColumnAndRow($i + 1, 6)->getValue();
         }
 
-        $keys   = ['id', 'surname', 'name', 'coorte', 'status', 'tags'];
+        $keys   = ['id', 'surname', 'name', 'coorte', 'status', 'tags']; // TODO add Academic and RealJobs
 
         // Go alumnus by alumnus
         for ($i = 0; $i < $alumnusNumber; $i++) {
@@ -335,6 +335,8 @@ class AlumnusExportImportController extends Controller
                     $alumnus['tags'] = $newPars['tags_array'];
                 }
 
+                // TODO add Academic and RealJobs
+
                 if ($toSave)
                     $alumnus->save();
             } else {
@@ -343,7 +345,7 @@ class AlumnusExportImportController extends Controller
                     'name' => $newPars['name'],
                     'coorte' => $newPars['coorte'],
                     'status' => $newPars['status'],
-                    'tags' => $newPars['tags_array'],
+                    'tags' => $newPars['tags_array'], // TODO add Academic and RealJobs
                 ]);
 
                 $output .= "Created new alumnus " . $alumnus['surname'] . " " . $alumnus['name'] . "\n";
