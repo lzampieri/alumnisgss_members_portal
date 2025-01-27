@@ -20,6 +20,7 @@ class CreateArrayableDetailsTypesTable extends Migration
             $table->text('name');
             $table->text('separators');
             $table->integer('order');
+            $table->boolean('visible')->default(true);
         });
     }
 

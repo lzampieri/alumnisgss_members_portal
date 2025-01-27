@@ -96,6 +96,8 @@ class PermissionsController extends Controller
             'roles-edit',
             // Network
             'network-view',
+            'network-edit-view',
+            'network-edit-alumnus',
             // Registry
             'alumnus-view',
             'alumnus-edit',

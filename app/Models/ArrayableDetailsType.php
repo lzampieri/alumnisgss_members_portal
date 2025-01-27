@@ -17,11 +17,17 @@ class ArrayableDetailsType extends Model
     {
         return ArrayableDetailsType::orderBy('order')->get();
     }
+    // Get All visible with default order
+    public static function visibleOrdered()
+    {
+        return ArrayableDetailsType::where('visible', true)->orderBy('order')->get();
+    }
 
     protected $fillable = [
         'name',
         'separators',
-        'order'
+        'order',
+        'visible'
     ];
 
     public function arrayableDetails()

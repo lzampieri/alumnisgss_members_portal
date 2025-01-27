@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
+use App\Models\ArrayableDetailsType;
 use App\Models\Identity;
 use App\Models\IdentityDetail;
 use App\Models\Ratification;
@@ -22,24 +23,87 @@ class NetworkController extends Controller
         $this->authorize('viewNetwork', Alumnus::class);
 
         $alumni = Alumnus::whereIn('status', Alumnus::public_status)
+            ->where('coorte','>',0)
             ->orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
             ->get();
 
-        return Inertia::render('Network/List', ['alumni' => $alumni]);
+        return Inertia::render('Network/List', [
+            'alumni' => $alumni,
+            'canEditView' => Auth::user()->can('editNetworkView', Alumnus::class)
+        ]);
     }
 
-    // public function membersCounters()
-    // {
-    //     $this->authorize('viewMembers', Alumnus::class);
-    //     $members = Alumnus::where('status', 'member')->count();
-    //     $students = Alumnus::where('status', 'student_member')->count();
+    public function settings()
+    {
+        $this->authorize('editNetworkView', Alumnus::class);
 
-    //     return response()->json([
-    //         'members' => $members,
-    //         'student_members' => $students
-    //     ]);
-    // }
+        return Inertia::render('Network/Settings', [
+            'arrayableDetailsTypes' => ArrayableDetailsType::allOrdered()
+        ]);
+    }
+
+    public function adtedit(Request $request)
+    {
+        $this->authorize('editNetworkView', Alumnus::class);
+        $update = false;
+
+        $validated = $request->validate([
+            'id' => 'numeric',
+            'name' => 'required|regex:/^[A-zÀ-ú\d\s\'_:,]+$/',
+            'separators' => 'required|min:1',
+            'order' => 'required|numeric',
+            'visible' => 'required|boolean',
+        ]);
+
+        if( $validated['id'] && ArrayableDetailsType::find($validated['id']) ) {
+            $update = true;
+
+            $adt = ArrayableDetailsType::find($validated['id']);
+            $adt->name = $validated['name'];
+            $adt->separators = $validated['separators'];
+            $adt->order = $validated['order'];
+            $adt->visible = $validated['visible'];
+            $adt->save();
+        } else {
+            ArrayableDetailsType::create($validated);
+        }
+
+        return redirect()->back()->with(['notistack' => ['success', $update ? 'Modificato' : 'Inserito']]);
+    }
+
+    public function adtdelete(Request $request)
+    {
+        $this->authorize('editNetworkView', Alumnus::class);
+
+        $validated = $request->validate([
+            'id' => 'required|numeric',
+        ]);
+
+        if( $validated['id'] && ArrayableDetailsType::find($validated['id']) ) {
+            $adt = ArrayableDetailsType::find($validated['id']);
+            $adt->delete();
+            return redirect()->back()->with(['notistack' => ['success', 'Eliminato']]);
+        }
+
+        return redirect()->back()->with(['notistack' => ['error', 'Qualcosa è andato storto']]);
+    }
+
+    public function edit(Request $request, Alumnus $alumnus)
+    {
+        $this->authorize('editNetworkAlumnus', Alumnus::class);
+
+        $adtlist = ArrayableDetailsType::visibleOrdered();
+        $adtlist->load(['arrayableDetails' => function ($query) use ($alumnus) {
+            $query->where('identity_type', Alumnus::class)->where('identity_id', $alumnus->id);
+        }]);
+
+        return Inertia::render('Network/Edit', [
+            'alumnus' => $alumnus,
+            'adts' => $adtlist
+        ]);
+    }
+
 
     // private function commonRegistryParams()
     // {

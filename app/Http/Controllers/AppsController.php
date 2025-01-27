@@ -19,7 +19,7 @@ class AppsController extends Controller
             $apps[] = 'members';
         }
 
-        if ((new AlumnusPolicy)->viewNetwork(Auth::user())) {
+        if (Auth::user() && Auth::user()->can('viewNetwork', Alumnus::class)) {
             $apps[] = 'network';
         }
 

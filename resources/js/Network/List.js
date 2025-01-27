@@ -19,7 +19,7 @@ function AlumnusContent({ data }) { // TODO Reimplementare
             {data.name} {data.surname}
         </div>
         <div className="grow text-end mx-1">
-            <Link className="icon-button" href={route('registry.edit', { alumnus: data.id })}><FontAwesomeIcon icon={solid('pen')} /></Link>
+            <Link className="icon-button" href={route('network.edit', { alumnus: data.id })}><FontAwesomeIcon icon={solid('pen')} /></Link>
         </div>
     </div>
 }
@@ -45,10 +45,16 @@ export default function List() {
     const [quickFilter, setQuickFilter] = useState('')
 
     return <div className="main-container-large md:h-[80vh] gap-1">
-        <div className="w-full flex flex-row justify-center">
+        <div className="w-full flex flex-row justify-center gap-2">
             <input className="w-full md:w-1/2" type='text' value={quickFilter} onChange={(e) => setQuickFilter(e.target.value)} placeholder='Cerca...' />
+            {usePage().props.canEditView &&
+                <Link className="button flex flex-row items-baseline" href={route('network.settings')}>
+                    <FontAwesomeIcon icon={solid('gear')} />
+                    Impostazioni
+                </Link>
+            }
         </div>
-        <div className="w-full grow flex flex-col overflow-y-scroll">
+        <div className="w-full md:w-3/5 grow flex flex-col overflow-y-scroll">
             {alumni.map((alumnus, i) => <Alumnus key={i} data={alumnus} quickFilter={quickFilter} />)}
         </div>
     </div>
