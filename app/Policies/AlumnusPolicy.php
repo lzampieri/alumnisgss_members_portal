@@ -22,6 +22,17 @@ class AlumnusPolicy
     }
 
     /**
+     * Determine whether the user can view the REGISTERED MEMBERS with ALL DETAILS
+     *
+     * @param  \Illuminate\Foundation\Auth\User  $user optional
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function viewNetwork(?User $user)
+    {
+        return $user->hasPermissionTo('network-view');
+    }
+
+    /**
      * Determine whether the user can view any models.
      *
      * @param  \Illuminate\Foundation\Auth\User  $user

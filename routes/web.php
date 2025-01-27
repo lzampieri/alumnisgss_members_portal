@@ -22,6 +22,7 @@ include( 'auth.php' );
 
 include( 'alumni.php' );
 include( 'externals.php' );
+include( 'network.php' );
 
 include( 'board.php' );
 
