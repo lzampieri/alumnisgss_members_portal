@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
+use App\Models\ArrayableDetail;
 use App\Models\ArrayableDetailsType;
 use App\Models\Identity;
 use App\Models\IdentityDetail;
@@ -24,6 +25,7 @@ class NetworkController extends Controller
 
         $alumni = Alumnus::whereIn('status', Alumnus::public_status)
             ->where('coorte','>',0)
+            ->with(['arrayableDetails'])
             ->orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
             ->get();
@@ -104,89 +106,24 @@ class NetworkController extends Controller
         ]);
     }
 
+    
+    public function edit_post(Request $request, Alumnus $alumnus)
+    {
+        $this->authorize('editNetworkAlumnus', Alumnus::class);
 
-    // private function commonRegistryParams()
-    // {
-    //     return [
-    //         'canImport' => Auth::user()->can('import', Alumnus::class),
-    //     ];
-    // }
+        $validated = $request->validate([
+            'adts' => 'array',
+            'adts.*' => 'array',
+            'adts.*.id' => 'required|distinct|exists:arrayable_details_types,id',
+            'adts.*.value' => 'nullable|array',
+        ]);
 
-    // public function schema()
-    // {
-    //     $this->authorize('viewAny', Alumnus::class);
-
-
-    //     $data = Alumnus::orderBy('coorte')
-    //         ->orderBy('surname')->orderBy('name')
-    //         ->get()
-    //         ->append('pending_ratifications')
-    //         ->groupBy('coorte');
-
-    //     return Inertia::render(
-    //         'Registry/Schema',
-    //         [
-    //             'data' => $data,
-    //         ] + $this->commonRegistryParams()
-    //     );
-    // }
-
-    // public function table()
-    // {
-    //     $this->authorize('viewAny', Alumnus::class);
-
-    //     $data = Alumnus::orderBy('coorte')
-    //         ->orderBy('surname')->orderBy('name')
-    //         ->with('details')
-    //         ->get()
-    //         ->append('pending_ratifications');
-
-    //     return Inertia::render(
-    //         'Registry/Table',
-    //         [
-    //             'data' => $data,
-    //             'detailsTitles' => array_keys(IdentityDetail::allDetails())
-    //         ] + $this->commonRegistryParams()
-    //     );
-    // }
-
-    // public function edit(Request $request, ?Alumnus $alumnus = null)
-    // {
-    //     $this->authorize('edit', Alumnus::class);
-
-    //     if ($alumnus)
-    //         $alumnus->load(['details', 'ratifications', 'ratifications.document']);
-
-    //     return Inertia::render('Registry/Edit', [
-    //         'alumnus' => $alumnus,
-    //         'noRatStatus' => Alumnus::availableStatus($alumnus),
-    //         'allStatus' => Alumnus::status,
-    //         'allTags' => Alumnus::allTags(),
-    //         'allDetails' => IdentityDetail::allDetails(),
-    //         'pendingRats' => $alumnus->pending_ratifications_list,
-    //     ]);
-    // }
-
-    // public function edit_post(Request $request, ?Alumnus $alumnus = null)
-    // {
-    //     $this->authorize('edit', Alumnus::class);
-    //     $update = false;
-    //     $was_update = !!$alumnus;
-
-    //     $validated = $request->validate([
-    //         'surname' => 'required|regex:/^[A-zÀ-ú\s\'_]+$/',
-    //         'name' => 'required|regex:/^[A-zÀ-ú\s\'_]+$/',
-    //         'coorte' => 'required|numeric',
-    //         'status' => 'required|in:' . implode(',', Alumnus::status),
-    //         'tags' => 'nullable|array',
-    //         'academic' => 'nullable|array',
-    //         'realjobs' => 'nullable|array',
-    //         'details' => 'nullable|array',
-    //         'details.*' => 'nullable|array',
-    //         'details.*.delete' => 'nullable|boolean',
-    //         'details.*.key' => 'exclude_if:details.*.delete,true|required|min:3|max:100|distinct',
-    //         'details.*.value' => 'exclude_if:details.*.delete,true|nullable',
-    //     ]);
+        foreach ($validated['adts'] as $adts) {
+            $alumnus->arrayableDetails()->updateOrCreate(
+                [ 'arrayable_details_type_id' => $adts['id'] ],
+                [ 'value' => $adts['value'] ]
+            );
+        }
 
     //     // Check for errors on the details, e.g. switching the names of two keys
     //     if ($alumnus) {
@@ -284,6 +221,70 @@ class NetworkController extends Controller
     //         }
     //     }
 
-    //     return redirect()->route('registry.edit', ['alumnus' => $alumnus])->with('notistack', ['success', $was_update ? 'Alumno aggiornato' : 'Alumno creato']);
+        return redirect()->route('network')->with(['notistack' => ['success', 'Salvato!']]);
+    }
+
+
+    // private function commonRegistryParams()
+    // {
+    //     return [
+    //         'canImport' => Auth::user()->can('import', Alumnus::class),
+    //     ];
     // }
+
+    // public function schema()
+    // {
+    //     $this->authorize('viewAny', Alumnus::class);
+
+
+    //     $data = Alumnus::orderBy('coorte')
+    //         ->orderBy('surname')->orderBy('name')
+    //         ->get()
+    //         ->append('pending_ratifications')
+    //         ->groupBy('coorte');
+
+    //     return Inertia::render(
+    //         'Registry/Schema',
+    //         [
+    //             'data' => $data,
+    //         ] + $this->commonRegistryParams()
+    //     );
+    // }
+
+    // public function table()
+    // {
+    //     $this->authorize('viewAny', Alumnus::class);
+
+    //     $data = Alumnus::orderBy('coorte')
+    //         ->orderBy('surname')->orderBy('name')
+    //         ->with('details')
+    //         ->get()
+    //         ->append('pending_ratifications');
+
+    //     return Inertia::render(
+    //         'Registry/Table',
+    //         [
+    //             'data' => $data,
+    //             'detailsTitles' => array_keys(IdentityDetail::allDetails())
+    //         ] + $this->commonRegistryParams()
+    //     );
+    // }
+
+    // public function edit(Request $request, ?Alumnus $alumnus = null)
+    // {
+    //     $this->authorize('edit', Alumnus::class);
+
+    //     if ($alumnus)
+    //         $alumnus->load(['details', 'ratifications', 'ratifications.document']);
+
+    //     return Inertia::render('Registry/Edit', [
+    //         'alumnus' => $alumnus,
+    //         'noRatStatus' => Alumnus::availableStatus($alumnus),
+    //         'allStatus' => Alumnus::status,
+    //         'allTags' => Alumnus::allTags(),
+    //         'allDetails' => IdentityDetail::allDetails(),
+    //         'pendingRats' => $alumnus->pending_ratifications_list,
+    //     ]);
+    // }
+
 }

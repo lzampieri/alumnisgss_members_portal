@@ -20,6 +20,7 @@ class CreateArrayableDetailsTable extends Migration
             $table->morphs('identity');
             $table->foreignId('arrayable_details_type_id')->constrained();
             $table->text('value');
+            $table->unique(['identity_id', 'identity_type', 'arrayable_details_type_id'], 'identity_arrayable_details_unique');
         });
     }
 

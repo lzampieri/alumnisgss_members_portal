@@ -94,6 +94,10 @@ abstract class Identity extends Model
     {
         return $this->morphMany(IdentityDetail::class, 'identity');
     }
+    public function arrayableDetails()
+    {
+        return $this->morphMany(ArrayableDetail::class, 'identity');
+    }
 
     protected $appends = ['enabled'];
     public function getEnabledAttribute()

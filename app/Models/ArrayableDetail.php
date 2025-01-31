@@ -13,7 +13,11 @@ class ArrayableDetail extends Model
     use EditsAreLogged, SoftEditsAreLogged;
 
     protected $fillable = [
-        'value'
+        'value',
+        'arrayable_details_type_id'
+    ];
+    protected $casts = [
+        'value' => 'array'
     ];
 
     public function identity()

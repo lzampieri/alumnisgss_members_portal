@@ -1,25 +1,36 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, usePage } from "@inertiajs/react";
-import { AlumnusStatus, bgAndContrast, romanize } from "../Utils";
+import { AlumnusStatus, bgAndContrast, bgAndContrastPastel, romanize } from "../Utils";
 import { useMemo, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
 
 function AlumnusContent({ data }) { // TODO Reimplementare
-    return <div className="w-full h-full border border-primary-main flex flex-row items-center">
-        <div className="chip mx-1 group relative z-auto" style={bgAndContrast(AlumnusStatus.status[data.status].color)}>
-            {AlumnusStatus.status[data.status].acronym}
-            {data.pending_ratifications > 0 && <FontAwesomeIcon icon={solid('hourglass-half')} />}
-            <span className="tooltip-right" style={bgAndContrast(AlumnusStatus.status[data.status].color)}>
+    return <div className="w-full border border-primary-main flex flex-col p-2 min-h-[3rem] justify-center gap-2">
+        <div className="w-full flex flex-row items-center">
+            <div className="ml-2 font-bold">
+                {data.name} {data.surname}
+            </div>
+            <div className="grow text-end mx-1">
+                <Link className="icon-button" href={route('network.edit', { alumnus: data.id })}><FontAwesomeIcon icon={solid('pen')} /></Link>
+            </div>
+        </div>
+        <div className="w-full flex flex-row justify-start flex-wrap">
+            <div className="chip mx-1 group relative z-auto" style={bgAndContrast(AlumnusStatus.status[data.status].color)}>
                 {AlumnusStatus.status[data.status].label}
-                {data.pending_ratifications > 0 && " - in attesa di ratifica"}
-            </span>
+            </div>
+            <div className="chip group relative z-auto" style={bgAndContrastPastel(-1)} key='coorte'>
+                {romanize(data.coorte)} coorte
+            </div>
         </div>
-        <div className="shrink truncate">
-            {data.name} {data.surname}
-        </div>
-        <div className="grow text-end mx-1">
-            <Link className="icon-button" href={route('network.edit', { alumnus: data.id })}><FontAwesomeIcon icon={solid('pen')} /></Link>
+        <div className="w-full flex flex-row justify-start flex-wrap">
+            {data.arrayable_details?.map((adts, i) =>
+                adts?.value?.map((adt,j) =>
+                    <div className="chip group relative z-auto" style={bgAndContrastPastel(i)} key={adts.id + "|" + j}>
+                        {adt}
+                    </div>
+                )
+            )}
         </div>
     </div>
 }
@@ -29,7 +40,9 @@ function Alumnus({ data, quickFilter }) {
     const spring = useSpring({ height: visible ? "3rem" : "0rem" })
 
     return (
-        <animated.div className="w-full grow-0 shrink-0 truncate" style={spring} >
+        <animated.div className="w-full grow-0 shrink-0 truncate"
+        // style={spring} // TODO reintroduce spring
+        >
             {useMemo(() => <AlumnusContent data={data} />, [data])}
         </animated.div>
     )

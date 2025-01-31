@@ -49,6 +49,23 @@ export function bgAndContrast(bgColor) {
     }
 }
 
+export const pastelCorors = [
+    '#b6e3e7',
+    '#f9df9f',
+    '#fab394',
+    '#e4c2f5',
+    '#abd68f',
+    '#feaeca',
+    '#d8e59a',
+    '#aae8bd',
+    '#d2c1f1',
+    '#d1d1d1'
+]
+
+export function bgAndContrastPastel(count) {
+    while( count < 0 ) count += pastelCorors.length
+    return bgAndContrast(pastelCorors[count % pastelCorors.length])
+}
 export function disappearing(visible) {
     return {
         height: visible ? 'auto' : 0,
