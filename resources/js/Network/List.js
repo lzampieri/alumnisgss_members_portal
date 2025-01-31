@@ -4,6 +4,7 @@ import { Link, usePage } from "@inertiajs/react";
 import { AlumnusStatus, bgAndContrast, bgAndContrastPastel, romanize } from "../Utils";
 import { useMemo, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
+import SmartChip from "./SmartChip";
 
 function AlumnusContent({ data }) { // TODO Reimplementare
     return <div className="w-full border border-primary-main flex flex-col p-2 min-h-[3rem] justify-center gap-2">
@@ -16,19 +17,14 @@ function AlumnusContent({ data }) { // TODO Reimplementare
             </div>
         </div>
         <div className="w-full flex flex-row justify-start flex-wrap">
-            <div className="chip mx-1 group relative z-auto" style={bgAndContrast(AlumnusStatus.status[data.status].color)}>
-                {AlumnusStatus.status[data.status].label}
-            </div>
-            <div className="chip group relative z-auto" style={bgAndContrastPastel(-1)} key='coorte'>
-                {romanize(data.coorte)} coorte
-            </div>
+            <SmartChip style={bgAndContrast(AlumnusStatus.status[data.status].color)} key='status' content={AlumnusStatus.status[data.status].label} />
+            <SmartChip style={bgAndContrastPastel(-1)} key='coorte' content={romanize(data.coorte) + " coorte"} />
+            {/* TODO implementare "Onorari */}
         </div>
-        <div className="w-full flex flex-row justify-start flex-wrap">
+        <div className="w-full flex flex-row justify-start flex-wrap gap-y-2">
             {data.arrayable_details?.map((adts, i) =>
                 adts?.value?.map((adt,j) =>
-                    <div className="chip group relative z-auto" style={bgAndContrastPastel(i)} key={adts.id + "|" + j}>
-                        {adt}
-                    </div>
+                    <SmartChip content={adt} key={adts.id + "|" + j} style={bgAndContrastPastel(i)} />
                 )
             )}
         </div>
