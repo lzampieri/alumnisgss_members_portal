@@ -18,6 +18,8 @@ function ADlist() {
         visible: true
     })
 
+    console.log( "\"" + data.separators + "\"" );
+
     const [open, setOpen] = useState(false);
 
     const [deleteDialog, setDeleteDialog] = useState(false);
@@ -42,6 +44,7 @@ function ADlist() {
 
     const submit = (e) => {
         e?.preventDefault();
+        console.log( data );
         post(route('network.settings.adtedit'), { preserveState: "errors", onError: () => enqueueSnackbar('C\'è stato un errore, verifica tutti i campi', { variant: 'error' }) });
     }
 

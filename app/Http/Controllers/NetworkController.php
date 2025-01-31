@@ -49,15 +49,15 @@ class NetworkController extends Controller
     {
         $this->authorize('editNetworkView', Alumnus::class);
         $update = false;
-
+        
         $validated = $request->validate([
             'id' => 'numeric',
             'name' => 'required|regex:/^[A-zÀ-ú\d\s\'_:,]+$/',
-            'separators' => 'required|min:1',
+            'separators' => 'present',
             'order' => 'required|numeric',
             'visible' => 'required|boolean',
         ]);
-
+        
         if( $validated['id'] && ArrayableDetailsType::find($validated['id']) ) {
             $update = true;
 
