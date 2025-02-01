@@ -6,8 +6,13 @@ import { useMemo, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import SmartChip from "./SmartChip";
 
-function AlumnusContent({ data }) { // TODO Reimplementare
-    return <div className="w-full border border-primary-main flex flex-col p-2 min-h-[3rem] justify-center gap-2">
+import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
+import { themeQuartz } from "ag-grid-community";
+import { ModuleRegistry, ClientSideRowModelModule, RowAutoHeightModule, QuickFilterModule } from 'ag-grid-community';
+ModuleRegistry.registerModules([ClientSideRowModelModule, RowAutoHeightModule, QuickFilterModule]);
+
+function AlumnusContent({ data }) {
+    return <div className="w-full border border-primary-main flex flex-col p-2 min-h-[3rem] justify-center gap-2 leading-normal	">
         <div className="w-full flex flex-row items-center">
             <div className="ml-2 font-bold">
                 {data.name} {data.surname}
@@ -23,7 +28,7 @@ function AlumnusContent({ data }) { // TODO Reimplementare
         </div>
         <div className="w-full flex flex-row justify-start flex-wrap gap-y-2">
             {data.arrayable_details?.map((adts, i) =>
-                adts?.value?.map((adt,j) =>
+                adts?.value?.map((adt, j) =>
                     <SmartChip content={adt} key={adts.id + "|" + j} style={bgAndContrastPastel(i)} />
                 )
             )}
@@ -31,22 +36,38 @@ function AlumnusContent({ data }) { // TODO Reimplementare
     </div>
 }
 
-function Alumnus({ data, quickFilter }) {
-    const visible = filterable(data).toLowerCase().includes(quickFilter.toLowerCase())
-    const spring = useSpring({ height: visible ? "3rem" : "0rem" })
 
-    return (
-        <animated.div className="w-full grow-0 shrink-0 truncate"
-        // style={spring} // TODO reintroduce spring
-        >
-            {useMemo(() => <AlumnusContent data={data} />, [data])}
-        </animated.div>
-    )
-}
+function ListAsATable({ alumni, quickFilter }) {
 
-function filterable(alumnus) {
-    // TODO implement better
-    return (alumnus.name + " " + alumnus.surname + " " + alumnus.name + (alumnus.tags || []).join() + alumnus.status + AlumnusStatus.status[alumnus.status].label).toLowerCase()
+    const theme = themeQuartz.withParams({
+        headerHeight: 0,
+        rowBorder: false,
+        rowHoverColor: "#00000000",
+        borderColor: "#00000000",
+    })
+
+    const columns = useMemo(() => [
+        {
+            field: 'main',
+            cellRenderer: ({ value }) =>
+                <AlumnusContent data={value} />,
+            filter: 'agTextColumnFilter',
+            filterValueGetter: ({ data }) => JSON.stringify(data),
+            valueGetter: ({ data }) => data,
+            autoHeight: true,
+            flex: 1
+        },
+    ], [])
+
+    return <div className='ag-theme-quartz w-full md:w-3/5 grow'>
+        <AgGridReact
+            rowData={alumni}
+            columnDefs={columns}
+            quickFilterText={quickFilter}
+            theme={theme}
+            suppressCellFocus={true}
+        />
+    </div>
 }
 
 export default function List() {
@@ -63,8 +84,6 @@ export default function List() {
                 </Link>
             }
         </div>
-        <div className="w-full md:w-3/5 grow flex flex-col overflow-y-scroll">
-            {alumni.map((alumnus, i) => <Alumnus key={i} data={alumnus} quickFilter={quickFilter} />)}
-        </div>
+        <ListAsATable alumni={alumni} quickFilter={quickFilter} />
     </div>
 }

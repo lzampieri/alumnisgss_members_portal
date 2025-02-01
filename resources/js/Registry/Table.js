@@ -1,12 +1,14 @@
-import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
-import "ag-grid-community/styles/ag-grid.css"; // Core CSS
-import "ag-grid-community/styles/ag-theme-quartz.css"; // Theme
 import { Link, usePage } from '@inertiajs/react';
 import { AlumnusStatus } from "../Utils";
 import { useMemo, useState } from 'react';
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import RegistryHeader from './RegistryHeader';
+
+import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
+import { themeQuartz } from "ag-grid-community";
+import { ModuleRegistry, ClientSideRowModelModule, QuickFilterModule } from 'ag-grid-community';
+ModuleRegistry.registerModules([ClientSideRowModelModule, QuickFilterModule]);
 
 function detailsValueGetter({ data, colDef }) {
     return data.details.find(i => (i.key == colDef.field))?.value;
@@ -32,6 +34,7 @@ export default function Table() {
         <RegistryHeader where='table' quickFilter={quickFilter} setQuickFilter={setQuickFilter} />
         <div className='ag-theme-quartz w-full grow'>
             <AgGridReact
+                theme={themeQuartz}
                 rowData={data}
                 columnDefs={columns}
                 quickFilterText={quickFilter} />
