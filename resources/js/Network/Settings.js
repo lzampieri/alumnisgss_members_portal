@@ -8,17 +8,18 @@ import Dialog from "../Layout/Dialog";
 import Backdrop from "../Layout/Backdrop";
 import ReactSwitch from "react-switch";
 import { enqueueSnackbar } from "notistack";
+import ADetailsType from "./ADetailsType";
+import Select from 'react-select';
 
 function ADlist() {
     const { data, setData, post, processing, errors, isDirty } = useForm({
         id: -1,
         name: '',
-        separators: '',
+        type: '',
+        param: '',
         order: 0,
         visible: true
     })
-
-    console.log( "\"" + data.separators + "\"" );
 
     const [open, setOpen] = useState(false);
 
@@ -28,13 +29,14 @@ function ADlist() {
 
     const openForm = (prev) => {
         setOpen(true);
-        setData( {
+        setData({
             id: prev?.id || -1,
             name: prev?.name || '',
-            separators: prev?.separators || '',
+            type: prev?.type || '',
+            param: prev?.param || '',
             order: prev?.order || 0,
-            visible: Boolean( prev?.visible ) || true,
-        } )
+            visible: Boolean(prev?.visible) || true,
+        })
     }
 
     const openDeleteForm = (item) => {
@@ -44,7 +46,6 @@ function ADlist() {
 
     const submit = (e) => {
         e?.preventDefault();
-        console.log( data );
         post(route('network.settings.adtedit'), { preserveState: "errors", onError: () => enqueueSnackbar('C\'è stato un errore, verifica tutti i campi', { variant: 'error' }) });
     }
 
@@ -59,7 +60,19 @@ function ADlist() {
         );
     }
 
-    const adtypes = usePage().props.arrayableDetailsTypes;
+    const adtypes = usePage().props.aDetailsTypes;
+
+    const updateType = (sel) => {
+        if (sel != data.type) {
+            setData({
+                ...data,
+                type: sel,
+                param: ADetailsType.values[sel]?.paramDefault
+            });
+        }
+    }
+
+    const typesOptions = Object.keys(ADetailsType.values).map((val) => { return { value: val, label: ADetailsType.values[val].label } });
 
     return <>
         {adtypes.map((adtype) =>
@@ -71,8 +84,14 @@ function ADlist() {
                     <FontAwesomeIcon icon={solid('trash')} className="!p-0" />
                 </div>
                 <div className="grow flex flex-col">
-                    {adtype.name} <br/>
-                    <span className="text-gray-500">Separatori: "{adtype.separators}" - Ordine: {adtype.order} - Visibile: {adtype.visible ? 'Si' : 'No'} </span>
+                    {adtype.name} <br />
+                    <span className="text-gray-500">
+                        {adtype.type in ADetailsType.values ? (
+                            ADetailsType.values[adtype.type].paramName ?
+                                ADetailsType.values[adtype.type].paramName + ": " + adtype.param + " - " : "" )
+                                : "Tipo sconosciuto - "}
+                        Ordine: {adtype.order} - Visibile: {adtype.visible ? 'Si' : 'No'}
+                    </span>
                 </div>
             </div>
         )}
@@ -92,9 +111,20 @@ function ADlist() {
                 <input type="text" value={data.name} onChange={(e) => setData('name', e.target.value)} />
                 <label className="error">{errors.name}</label>
 
-                <label>Separatori</label>
-                <input type="text" value={data.separators} onChange={(e) => setData('separators', e.target.value)} />
-                <label className="error">{errors.separators}</label>
+                <label>Tipo</label>
+                <Select
+                    value={typesOptions.find(i => i.value == data.type)}
+                    onChange={(sel) => updateType(sel.value)}
+                    options={typesOptions} />
+                <label className="error">{errors.type}</label>
+
+                {
+                    data.type && (data.type in ADetailsType.values) && ('paramName' in ADetailsType.values[data.type]) && <>
+                        <label>{ADetailsType.values[data.type].paramName}</label>
+                        <input type="text" value={data.param} onChange={(e) => setData('param', e.target.value)} />
+                        <label className="error">{errors.param}</label>
+                    </>
+                }
 
                 <label>Ordine</label>
                 <input type="number" value={data.order} onChange={(e) => setData('order', e.target.value)} />

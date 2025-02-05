@@ -7,14 +7,14 @@ use App\Traits\SoftEditsAreLogged;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ArrayableDetail extends Model
+class ADetail extends Model
 {
     use SoftDeletes;
     use EditsAreLogged, SoftEditsAreLogged;
 
     protected $fillable = [
         'value',
-        'arrayable_details_type_id'
+        'a_details_type_id'
     ];
     protected $casts = [
         'value' => 'array'
@@ -25,8 +25,8 @@ class ArrayableDetail extends Model
         return $this->morphTo();
     }
 
-    public function arrayableDetailsType()
+    public function aDetailsType()
     {
-        return $this->belongsTo(ArrayableDetailsType::class);
+        return $this->belongsTo(ADetailsType::class);
     }
 }

@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { enqueueSnackbar } from "notistack";
 import TokenizableInput from "../Libs/react-tokenizable-inputs/TokenizableInput";
 import Backdrop from "../Layout/Backdrop";
+import ADetailsType from "./ADetailsType";
 
 function DetailRow({ data, setData, options, val_options, errors, errors_prename }) {
     return <><div className={"w-full flex flex-row my-1 gap-1 items-center " + (data.delete ? "text-error line-through	" : "")}>
@@ -43,14 +44,14 @@ export default function Edit() {
         adts: adts.map((adt) => {
             return {
                 id: adt.id,
-                value: (adt.arrayable_details && (adt.arrayable_details.length == 1)) ? adt.arrayable_details[0].value : []
+                value: (adt.a_details && (adt.a_details.length == 1)) ? adt.a_details[0].value : []
             }
         })
     })
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('network.edit', { alumnus: alumnus.id }), 
+        post(route('network.edit', { alumnus: alumnus.id }),
             { preserveState: "errors", onError: () => enqueueSnackbar('C\'è stato un errore, verifica tutti i campi', { variant: 'error' }) }
         );
     }
@@ -87,15 +88,17 @@ export default function Edit() {
             {
                 adts.map((adt, i) => <Fragment key={adt.id}>
                     <label key={"label_" + adt.id}>{adt.name}</label>
-                    <TokenizableInput
-                        key={adt.id}
-                        separatingCharacters={adt.separatingCharacters}
-                        tokensList={data.adts[i].value}
-                        updateTokensList={(newValue) => {
-                            let newAdts = data.adts.slice();
-                            newAdts[i].value = newValue;
-                            setData('adts', newAdts);
-                        }} />
+                    {adt.type in ADetailsType.values &&
+                        ADetailsType.values[adt.type].editor(
+                            adt,
+                            data.adts[i].value,
+                            (newValue) => {
+                                let newAdts = data.adts.slice();
+                                newAdts[i].value = newValue;
+                                setData('adts', newAdts);
+                            }
+                        )
+                    }
                     {(("adts." + i + ".value" in errors) || ("adts." + i + ".id" in errors)) &&
                         <label className="error">C'è un problema con questo dato</label>}
                 </Fragment>)

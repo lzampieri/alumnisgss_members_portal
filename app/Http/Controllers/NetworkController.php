@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ADetailsType;
 use App\Models\Alumnus;
-use App\Models\ArrayableDetail;
-use App\Models\ArrayableDetailsType;
+use App\Models\ADetail;
+use App\Models\ADetailType;
 use App\Models\Identity;
 use App\Models\IdentityDetail;
 use App\Models\Ratification;
@@ -25,7 +26,7 @@ class NetworkController extends Controller
 
         $alumni = Alumnus::whereIn('status', Alumnus::public_status)
             ->where('coorte','>',0)
-            ->with(['arrayableDetails'])
+            ->with(['aDetails'])
             ->orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
             ->get();
@@ -41,7 +42,7 @@ class NetworkController extends Controller
         $this->authorize('editNetworkView', Alumnus::class);
 
         return Inertia::render('Network/Settings', [
-            'arrayableDetailsTypes' => ArrayableDetailsType::allOrdered()
+            'aDetailsTypes' => ADetailsType::allOrdered()
         ]);
     }
 
@@ -53,22 +54,24 @@ class NetworkController extends Controller
         $validated = $request->validate([
             'id' => 'numeric',
             'name' => 'required|regex:/^[A-zÀ-ú\d\s\'_:,]+$/',
-            'separators' => 'present',
+            'type' => 'required|alpha_num',
+            'param' => 'nullable',
             'order' => 'required|numeric',
             'visible' => 'required|boolean',
         ]);
         
-        if( $validated['id'] && ArrayableDetailsType::find($validated['id']) ) {
+        if( $validated['id'] && ADetailsType::find($validated['id']) ) {
             $update = true;
 
-            $adt = ArrayableDetailsType::find($validated['id']);
+            $adt = ADetailsType::find($validated['id']);
             $adt->name = $validated['name'];
-            $adt->separators = $validated['separators'];
+            $adt->type = $validated['type'];
+            $adt->param = $validated['param'];
             $adt->order = $validated['order'];
             $adt->visible = $validated['visible'];
             $adt->save();
         } else {
-            ArrayableDetailsType::create($validated);
+            ADetailsType::create($validated);
         }
 
         return redirect()->back()->with(['notistack' => ['success', $update ? 'Modificato' : 'Inserito']]);
@@ -82,8 +85,8 @@ class NetworkController extends Controller
             'id' => 'required|numeric',
         ]);
 
-        if( $validated['id'] && ArrayableDetailsType::find($validated['id']) ) {
-            $adt = ArrayableDetailsType::find($validated['id']);
+        if( $validated['id'] && ADetailsType::find($validated['id']) ) {
+            $adt = ADetailsType::find($validated['id']);
             $adt->delete();
             return redirect()->back()->with(['notistack' => ['success', 'Eliminato']]);
         }
@@ -95,8 +98,8 @@ class NetworkController extends Controller
     {
         $this->authorize('editNetworkAlumnus', Alumnus::class);
 
-        $adtlist = ArrayableDetailsType::visibleOrdered();
-        $adtlist->load(['arrayableDetails' => function ($query) use ($alumnus) {
+        $adtlist = ADetailsType::visibleOrdered();
+        $adtlist->load(['aDetails' => function ($query) use ($alumnus) {
             $query->where('identity_type', Alumnus::class)->where('identity_id', $alumnus->id);
         }]);
 
@@ -114,13 +117,13 @@ class NetworkController extends Controller
         $validated = $request->validate([
             'adts' => 'array',
             'adts.*' => 'array',
-            'adts.*.id' => 'required|distinct|exists:arrayable_details_types,id',
+            'adts.*.id' => 'required|distinct|exists:a_details_types,id',
             'adts.*.value' => 'nullable|array',
         ]);
 
         foreach ($validated['adts'] as $adts) {
-            $alumnus->arrayableDetails()->updateOrCreate(
-                [ 'arrayable_details_type_id' => $adts['id'] ],
+            $alumnus->aDetails()->updateOrCreate(
+                [ 'a_details_type_id' => $adts['id'] ],
                 [ 'value' => $adts['value'] ]
             );
         }

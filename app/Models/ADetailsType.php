@@ -7,7 +7,7 @@ use App\Traits\SoftEditsAreLogged;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ArrayableDetailsType extends Model
+class ADetailsType extends Model
 {
     use SoftDeletes;
     use EditsAreLogged, SoftEditsAreLogged;
@@ -15,23 +15,24 @@ class ArrayableDetailsType extends Model
     // Get All with default order
     public static function allOrdered()
     {
-        return ArrayableDetailsType::orderBy('order')->get();
+        return ADetailsType::orderBy('order')->get();
     }
     // Get All visible with default order
     public static function visibleOrdered()
     {
-        return ArrayableDetailsType::where('visible', true)->orderBy('order')->get();
+        return ADetailsType::where('visible', true)->orderBy('order')->get();
     }
 
     protected $fillable = [
         'name',
-        'separators',
+        'type',
+        'param',
         'order',
         'visible'
     ];
 
-    public function arrayableDetails()
+    public function aDetails()
     {
-        return $this->hasMany(ArrayableDetail::class);
+        return $this->hasMany(ADetail::class);
     }
 }

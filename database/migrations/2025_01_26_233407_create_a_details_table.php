@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateArrayableDetailsTable extends Migration
+class CreateADetailsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,14 @@ class CreateArrayableDetailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('arrayable_details', function (Blueprint $table) {
+        Schema::create('a_details', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->softDeletes();
             $table->morphs('identity');
-            $table->foreignId('arrayable_details_type_id')->constrained();
+            $table->foreignId('a_details_type_id')->constrained();
             $table->text('value');
-            $table->unique(['identity_id', 'identity_type', 'arrayable_details_type_id'], 'identity_arrayable_details_unique');
+            $table->unique(['identity_id', 'identity_type', 'a_details_type_id'], 'identity_adetails_unique');
         });
     }
 
@@ -31,6 +31,6 @@ class CreateArrayableDetailsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('arrayable_details');
+        Schema::dropIfExists('a_details');
     }
 }
