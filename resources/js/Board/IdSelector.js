@@ -23,7 +23,7 @@ export default function IdSelector({ onChange, prevIdf }) {
 
     return (
         <div className="w-full flex flex-row flex-wrap gap-2 items-center">
-            <Select className="w-full md:w-1/3" value={selected} options={options} onChange={setSelected} />
+            <Select className="w-full md:w-1/3" classNames={{ control: () => 'selectDropdown' }} value={selected} options={options} onChange={setSelected} />
             {selected.yearAndProgr && <>
                 <input className='grow' type='text' placeholder='Progressivo' value={progr} onChange={(e) => setProgr(e.target.value)} />
                 <span>/</span>

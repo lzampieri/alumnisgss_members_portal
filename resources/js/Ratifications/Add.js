@@ -32,6 +32,7 @@ export default function Add() {
             <label>Alumno interessato</label>
             <Select
                 isMulti={true}
+                classNames={{ control: () => 'selectDropdown' }}
                 isSearchable={true}
                 getOptionValue={(option) => option.id}
                 getOptionLabel={(option) => <span>{option.surname} {option.name} <span className="text-gray-400">({romanize(option.coorte)})</span></span>}
@@ -49,6 +50,7 @@ export default function Add() {
                 </ul>
                 <label>Stato richiesto:</label>
                 <Select
+                    classNames={{ control: () => 'selectDropdown' }}
                     options={possibleStatus}
                     value={data.required_state}
                     onChange={(sel) => setData('required_state', sel)} />

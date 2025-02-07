@@ -60,7 +60,7 @@ export default function Edit() {
                 {data.isAttachment &&
                     <div className="w-full flex flex-row flex-wrap gap-2 items-center">
                         <label>Allegato a:</label>
-                        <Select className="grow" value={data.attachedTo} options={parentable} onChange={(newDocument) => setData('attachedTo', newDocument)} />
+                        <Select classNames={{ control: () => 'selectDropdown' }} className="grow" value={data.attachedTo} options={parentable} onChange={(newDocument) => setData('attachedTo', newDocument)} />
                     </div>
                 }
                 <label>Visibilità</label>

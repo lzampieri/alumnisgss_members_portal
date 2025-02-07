@@ -143,6 +143,7 @@ export default function Edit() {
                 È presente una richiesta in attesa di ratifica per il passaggio allo stato di {AlumnusStatus.status[pr.required_state].label}
             </div>)}
             <Select
+                classNames={{ control: () => 'selectDropdown' }}
                 value={status_options.find(i => i.value == data.status)}
                 onChange={(sel) => setData('status', sel.value)}
                 options={status_options}
@@ -161,7 +162,7 @@ export default function Edit() {
             <label className="error">{errors.tags}</label>
 
             <label>Post lauream: in accademia</label>
-            <TokenizableInput tokensList={data.academic} updateTokensList={(newValue) => setData('academic', newValue)} />   
+            <TokenizableInput tokensList={data.academic} updateTokensList={(newValue) => setData('academic', newValue)} />
             <label className="error">{errors.academic}</label>
 
             <label>Post lauream: nel mondo del lavoro</label>

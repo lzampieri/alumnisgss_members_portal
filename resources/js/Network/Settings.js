@@ -88,8 +88,8 @@ function ADlist() {
                     <span className="text-gray-500">
                         {adtype.type in ADetailsType.values ? (
                             ADetailsType.values[adtype.type].paramName ?
-                                ADetailsType.values[adtype.type].paramName + ": " + adtype.param + " - " : "" )
-                                : "Tipo sconosciuto - "}
+                                ADetailsType.values[adtype.type].paramName + ": " + adtype.param + " - " : "")
+                            : "Tipo sconosciuto - "}
                         Ordine: {adtype.order} - Visibile: {adtype.visible ? 'Si' : 'No'}
                     </span>
                 </div>
@@ -113,6 +113,7 @@ function ADlist() {
 
                 <label>Tipo</label>
                 <Select
+                    classNames={{ control: () => 'selectDropdown' }}
                     value={typesOptions.find(i => i.value == data.type)}
                     onChange={(sel) => updateType(sel.value)}
                     options={typesOptions} />

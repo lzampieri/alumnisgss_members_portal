@@ -136,12 +136,14 @@ export default function List() {
                 <div className="w-full flex flex-row justify-center items-center gap-2">
                     <div className="button" onClick={() => changeMonth(-1)}>&lt;</div>
                     <Select
+                        classNames={{ control: () => 'selectDropdown' }}
                         value={monthsArray.find(m => m.value === selectedMonth)}
                         onChange={m => setSelectedMonth(m.value)}
                         options={monthsArray}
                         className="min-w-[10rem]"
                     />
                     <Select
+                        classNames={{ control: () => 'selectDropdown' }}
                         value={yearsArray.find(m => m.value === selectedYear)}
                         onChange={m => setSelectedYear(m.value)}
                         options={yearsArray}

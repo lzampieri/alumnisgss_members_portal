@@ -21,7 +21,8 @@ export default function ManuallyAdd() {
         <form className="flex flex-col w-full md:w-3/5" onSubmit={submit}>
             <h3>Crea nuovo metodo di accesso</h3>
             <label>Driver</label>
-            <Select value={drivers.find(i => i.value == data.driver)} onChange={(sel) => setData('driver', sel.value)} options={drivers} />
+            <Select 
+                    classNames={{ control: () => 'selectDropdown' }} value={drivers.find(i => i.value == data.driver)} onChange={(sel) => setData('driver', sel.value)} options={drivers} />
             <label className="error">{errors.driver}</label>
             <label>Credenziali</label>
             <input type="text" value={data.credential} onChange={(e) => setData('credential', e.target.value)} />

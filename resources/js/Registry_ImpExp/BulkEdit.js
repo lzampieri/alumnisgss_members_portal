@@ -31,6 +31,7 @@ export default function BulkState() {
             <h3>Cambiamento rapido di stato</h3>
             <label>Alumni interessati</label>
             <Select
+                classNames={{ control: () => 'selectDropdown' }}
                 isMulti={true}
                 isSearchable={true}
                 getOptionValue={(option) => option.id}
@@ -50,6 +51,7 @@ export default function BulkState() {
             </>}
             <label>Stato richiesto:</label>
             <Select
+                classNames={{ control: () => 'selectDropdown' }}
                 options={options}
                 value={data.new_state}
                 onChange={(sel) => setData('new_state', sel)} />
