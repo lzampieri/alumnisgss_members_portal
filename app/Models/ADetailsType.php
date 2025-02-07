@@ -35,4 +35,12 @@ class ADetailsType extends Model
     {
         return $this->hasMany(ADetail::class);
     }
+
+    public function getUsedValuesAttribute()
+    {
+        if( $this->type == 'creatableSelect' ) {
+            return $this->aDetails()->pluck('value')->unique()->values()->toArray();
+        }
+        return [];
+    }
 }

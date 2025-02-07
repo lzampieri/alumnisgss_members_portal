@@ -26,7 +26,7 @@ class NetworkController extends Controller
 
         $alumni = Alumnus::whereIn('status', Alumnus::public_status)
             ->where('coorte','>',0)
-            ->with(['aDetails'])
+            ->with(['aDetails','aDetails.aDetailsType'])
             ->orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
             ->get();
@@ -66,7 +66,7 @@ class NetworkController extends Controller
             $adt = ADetailsType::find($validated['id']);
             $adt->name = $validated['name'];
             $adt->type = $validated['type'];
-            $adt->param = $validated['param'];
+            $adt->param = array_key_exists('param', $validated) ? $validated['param'] : '';
             $adt->order = $validated['order'];
             $adt->visible = $validated['visible'];
             $adt->save();
@@ -102,6 +102,7 @@ class NetworkController extends Controller
         $adtlist->load(['aDetails' => function ($query) use ($alumnus) {
             $query->where('identity_type', Alumnus::class)->where('identity_id', $alumnus->id);
         }]);
+        $adtlist->append('usedValues');
 
         return Inertia::render('Network/Edit', [
             'alumnus' => $alumnus,
@@ -127,102 +128,6 @@ class NetworkController extends Controller
                 [ 'value' => $adts['value'] ]
             );
         }
-
-    //     // Check for errors on the details, e.g. switching the names of two keys
-    //     if ($alumnus) {
-    //         $details_errors = [];
-    //         foreach ($validated['details'] as $idx => $detail) {
-    //             if ($detail['delete'] ?? false) continue;
-
-    //             $others = $alumnus->details->where('key', $detail['key'])->where('id', '!=', $detail['id'] ?? -1)->count();
-    //             if ($others > 0)
-    //                 $details_errors['details.' . $idx . '.key'] = "Esiste già un dettaglio con questo nome";
-    //         }
-    //         if (count($details_errors) > 0) {
-    //             return back()->withErrors($details_errors);
-    //         }
-    //     }
-
-    //     // Check for new status, if ratification needed
-    //     $rat_needed = false;
-    //     $rat_newstatus = '';
-    //     if (!in_array($validated['status'], Alumnus::availableStatus($alumnus))) {
-    //         $rat_needed = true;
-    //         $rat_newstatus = $validated['status'];
-    //         $validated['status'] = $alumnus ? $alumnus->status : 'not_reached';
-    //     }
-
-    //     // Create or update alumnus
-    //     if ($alumnus) {
-    //         foreach (['surname', 'name', 'coorte', 'status', 'tags', 'academic', 'realjobs'] as $key) {
-    //             if ($validated[$key] !== $alumnus[$key]) {
-    //                 $alumnus[$key] = $validated[$key];
-    //                 $update = true;
-    //             }
-    //         }
-    //         if ($update) $alumnus->save();
-    //     } else {
-    //         $alumnus = Alumnus::create($validated);
-    //     }
-
-    //     // Eventually create ratification
-    //     if ($rat_needed) {
-    //         // Check for existing ratifications
-    //         foreach ($alumnus->pending_ratifications_list as $pr) {
-    //             if ($pr->required_state == $rat_newstatus) {
-    //                 $rat_needed = false;
-    //                 break;
-    //             }
-    //         }
-    //         if ($rat_needed) {
-    //             Ratification::create(['alumnus_id' => $alumnus->id, 'required_state' => $rat_newstatus]);
-    //         }
-    //     }
-
-    //     // Go with order: firstly, trash the one which should be trashed
-    //     foreach ($validated['details'] as $detail) {
-    //         if (($detail['id'] ?? -1) >= 0 && ($detail['delete'] ?? false)) {
-    //             $det = IdentityDetail::find($detail['id']);
-    //             if ($det) {
-    //                 $det->delete();
-    //             }
-    //         }
-    //     }
-
-    //     // Now, update existing details and create new ones
-    //     foreach ($validated['details'] as $detail) {
-    //         if ($detail['delete'] ?? false) continue; // skip deletes
-
-    //         // If already existing, update
-    //         if (($detail['id'] ?? -1) >= 0) {
-    //             $det = IdentityDetail::find($detail['id']);
-
-    //             // If update is needed...
-    //             if ($det->key == $detail['key'] && $det->value == $detail['value']) continue;
-
-    //             // Check if there is a trashed detail with the same name
-    //             $trashed = $alumnus->details()->onlyTrashed()->where('key', $detail['key'])->first();
-    //             if ($trashed) {
-    //                 $det->delete();
-    //                 $trashed->restore();
-    //                 $trashed->value = $detail['value'];
-    //                 $trashed->save();
-    //             } else {
-    //                 $det->update(['key' => $detail['key'], 'value' => $detail['value']]);
-    //             }
-    //         } else {
-    //             // New details must be created
-    //             // Check if there is already a trashed detail with the same name
-    //             $trashed = $alumnus->details()->onlyTrashed()->where('key', $detail['key'])->first();
-    //             if ($trashed) {
-    //                 $trashed->restore();
-    //                 $trashed->value = $detail['value'];
-    //                 $trashed->save();
-    //             } else {
-    //                 $alumnus->details()->create(['key' => $detail['key'], 'value' => $detail['value']]);
-    //             }
-    //         }
-    //     }
 
         return redirect()->route('network')->with(['notistack' => ['success', 'Salvato!']]);
     }

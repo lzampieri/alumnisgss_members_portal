@@ -123,7 +123,7 @@ export default function Edit() {
             </button>
             */}
 
-            <div className="flex flex-row justify-between w-full">
+            <div className="flex flex-row w-full justify-end">
                 <div className="button flex flex-row items-center self-start mb-4" onClick={submit}>
                     <FontAwesomeIcon icon={solid('save')} />
                     Salva

@@ -9,7 +9,7 @@ function isUrl(val) {
 }
 
 function getIcon(val) {
-    if( val.includes("linkedin.com") )
+    if (val.includes("linkedin.com"))
         return <FontAwesomeIcon icon={brands('linkedin')} /> //<FontAwesomeIcon icon={brands('linkedin')} />
     return <FontAwesomeIcon icon={solid('link')} />
 }
@@ -18,10 +18,10 @@ export default function SmartChip({ content, style }) {
     if (isUrl(content)) {
         return <a className="rounded-3xl flex flex-row !no-underline ml-2" style={style} href={content}>
             <div className="rounded-3xl px-1 border" style={
-                (( 'backgroundColor' in style) && ( 'color' in style )) ? 
-                { backgroundColor: style.color, color: style.backgroundColor } :
-                bgAndContrastPastel(-1)
-                }>
+                (('backgroundColor' in style) && ('color' in style)) ?
+                    { backgroundColor: style.color, color: style.backgroundColor } :
+                    bgAndContrastPastel(-1)
+            }>
                 {getIcon(content)}
             </div>
             <span className="px-2">
@@ -30,8 +30,33 @@ export default function SmartChip({ content, style }) {
         </a>
     }
 
-    return <div className="chip group relative z-auto" style={style}>
-        {isUrl(content) && "URL:"} {content}
+    return <div className="rounded-3xl flex flex-row !no-underline ml-2 px-2" style={style}>
+        {content}
     </div>
 
+}
+
+export function SmartChipWithTitle({ content, title, style }) {
+    if (isUrl(content)) {
+        return <a className="rounded-3xl flex flex-row !no-underline ml-2" style={style} href={content}>
+            <div className="rounded-3xl px-1 border" style={
+                (('backgroundColor' in style) && ('color' in style)) ?
+                    { backgroundColor: style.color, color: style.backgroundColor } :
+                    bgAndContrastPastel(-1)
+            }>
+                {getIcon(content)}
+            </div>
+            <span className="pl-2 pr-1">{title}:</span>
+            <div className="rounded-3xl px-2 outline outline-white outline-1">
+                {content}
+            </div>
+        </a>
+    }
+
+    return <div className="rounded-3xl flex flex-row !no-underline ml-2" style={style}>
+        <span className="pl-2 pr-1">{title}:</span>
+        <div className="rounded-3xl px-2 outline outline-white outline-1">
+            {content}
+        </div>
+    </div>
 }
