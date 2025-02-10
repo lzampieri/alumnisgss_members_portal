@@ -3,6 +3,7 @@ import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import SmartChip, { SmartChipWithTitle } from "./SmartChip";
 import { bgAndContrastPastel } from "../Utils";
+import TextareaAutosize from 'react-textarea-autosize';
 
 export default class ADetailsType {
     static values = {
@@ -27,6 +28,20 @@ export default class ADetailsType {
                 <input
                     type="text"
                     className="w-full"
+                    value={value[0]}
+                    onChange={e => updateValue([e.target.value])} />,
+            'chip': (adt) => <SmartChipWithTitle
+                content={adt.value[0]}
+                title={adt.a_details_type.name}
+                key={adt.id}
+                style={bgAndContrastPastel(adt.a_details_type_id)} />
+        },
+        'longText': {
+            'label': 'Nota lunga',
+            'editor': (adt, value, updateValue) =>
+                <TextareaAutosize
+                    className="w-full pretendToBeInput"
+                    minRows={3}
                     value={value[0]}
                     onChange={e => updateValue([e.target.value])} />,
             'chip': (adt) => <SmartChipWithTitle

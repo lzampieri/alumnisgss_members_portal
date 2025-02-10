@@ -142,6 +142,10 @@
     .chip.disabled {
         @apply opacity-40
     }
+    .smart-chip {
+        @apply rounded-lg flex flex-row !no-underline mx-1 max-w-full flex-wrap whitespace-pre-wrap;
+        overflow-wrap: anywhere
+    }
     .div-highlighted {
         @apply rounded-md bg-gray-200 border-transparent
     }
