@@ -27,6 +27,7 @@ function ADlist() {
     const [toDelete, setToDelete] = useState(null);
     const [delProcessing, setDelProcessing] = useState(false);
 
+    
     const openForm = (prev) => {
         setOpen(true);
         setData({
@@ -35,7 +36,7 @@ function ADlist() {
             type: prev?.type || '',
             param: prev?.param || '',
             order: prev?.order || 0,
-            visible: Boolean(prev?.visible) || true,
+            visible: Boolean( prev ? prev.visible : true ),
         })
     }
 
