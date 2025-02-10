@@ -87,7 +87,7 @@ export default function Edit() {
 
             {
                 adts.map((adt, i) => <Fragment key={adt.id}>
-                    <label key={"label_" + adt.id}>{adt.name}</label>
+                    <label key={"label_" + adt.id}>{adt.name} {!adt.visible && <i> - Campo nascosto</i>}</label>
                     {adt.type in ADetailsType.values &&
                         ADetailsType.values[adt.type].editor(
                             adt,

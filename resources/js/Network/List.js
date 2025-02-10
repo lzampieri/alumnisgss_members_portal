@@ -13,17 +13,17 @@ import ADetailsType from "./ADetailsType";
 ModuleRegistry.registerModules([ClientSideRowModelModule, RowAutoHeightModule, QuickFilterModule]);
 
 function AlumnusContent({ data }) {
-    if( data.a_details && data.a_details.length > 0 )
-        console.log( data.a_details ) // todo remove
 
     return <div className="w-full border border-primary-main flex flex-col p-2 min-h-[3rem] justify-center gap-2 leading-normal	">
         <div className="w-full flex flex-row items-center">
             <div className="ml-2 font-bold">
                 {data.name} {data.surname}
             </div>
-            <div className="grow text-end mx-1">
-                <Link className="icon-button" href={route('network.edit', { alumnus: data.id })}><FontAwesomeIcon icon={solid('pen')} /></Link>
-            </div>
+            {usePage().props.canEditAlumnus &&
+                <div className="grow text-end mx-1">
+                    <Link className="icon-button" href={route('network.edit', { alumnus: data.id })}><FontAwesomeIcon icon={solid('pen')} /></Link>
+                </div>
+            }
         </div>
         <div className="w-full flex flex-row justify-start flex-wrap">
             <SmartChip style={bgAndContrast(AlumnusStatus.status[data.status].color)} key='status' content={AlumnusStatus.status[data.status].label} />
@@ -32,17 +32,17 @@ function AlumnusContent({ data }) {
         </div>
         <div className="w-full flex flex-row justify-start flex-wrap gap-y-2">
             {data.a_details?.map((adt, i) => {
-                    if( adt.value.length > 0 ) {
-                        if( adt.a_details_type && adt.a_details_type?.type in ADetailsType.values )
-                            return ADetailsType.values[ adt.a_details_type?.type ].chip( adt, i )
-                        else
-                            return adt.value.map(( entry, j) => <SmartChip
-                                content={ entry }
-                                key={ adt.id + "|" + j}
-                                style={bgAndContrastPastel(adt.a_details_type_id)} />
-                            )
-                    }
+                if (adt.value.length > 0) {
+                    if (adt.a_details_type && adt.a_details_type?.type in ADetailsType.values)
+                        return ADetailsType.values[adt.a_details_type?.type].chip(adt, i)
+                    else
+                        return adt.value.map((entry, j) => <SmartChip
+                            content={entry}
+                            key={adt.id + "|" + j}
+                            style={bgAndContrastPastel(adt.a_details_type_id)} />
+                        )
                 }
+            }
             )}
         </div>
     </div>

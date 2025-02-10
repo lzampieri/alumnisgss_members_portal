@@ -26,14 +26,17 @@ class NetworkController extends Controller
 
         $alumni = Alumnus::whereIn('status', Alumnus::public_status)
             ->where('coorte','>',0)
-            ->with(['aDetails','aDetails.aDetailsType'])
+            ->with(['aDetails' => function ($query) {
+                $query->whereHas('aDetailsType', function ($query) { $query->where('visible', true); });
+            },'aDetails.aDetailsType'])
             ->orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
             ->get();
 
         return Inertia::render('Network/List', [
             'alumni' => $alumni,
-            'canEditView' => Auth::user()->can('editNetworkView', Alumnus::class)
+            'canEditView' => Auth::user()->can('editNetworkView', Alumnus::class),
+            'canEditAlumnus' => Auth::user()->can('editNetworkAlumnus', Alumnus::class),
         ]);
     }
 
@@ -98,7 +101,7 @@ class NetworkController extends Controller
     {
         $this->authorize('editNetworkAlumnus', Alumnus::class);
 
-        $adtlist = ADetailsType::visibleOrdered();
+        $adtlist = ADetailsType::allOrdered();
         $adtlist->load(['aDetails' => function ($query) use ($alumnus) {
             $query->where('identity_type', Alumnus::class)->where('identity_id', $alumnus->id);
         }]);
