@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ADetailsType;
 use App\Models\Alumnus;
 use App\Models\Identity;
 use App\Models\IdentityDetail;
@@ -57,7 +58,6 @@ class AlumnusController extends Controller
     {
         $this->authorize('viewAny', Alumnus::class);
 
-
         $data = Alumnus::orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
             ->get()
@@ -75,18 +75,24 @@ class AlumnusController extends Controller
     public function table()
     {
         $this->authorize('viewAny', Alumnus::class);
-
-        $data = Alumnus::orderBy('coorte')
+        $alumni = Alumnus::whereIn('status', Alumnus::public_status)
+            ->where('coorte', '>', 0)
+            ->with(['aDetails' => function ($query) {
+                $query->whereHas('aDetailsType', function ($query) {
+                    $query->where('visible', true);
+                })->orderBy(ADetailsType::select('order')->whereColumn('a_details_types.id', 'a_details.a_details_type_id'));
+            }, 'aDetails.aDetailsType'])
+            ->orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
-            ->with('details')
             ->get()
-            ->append('pending_ratifications');
+            ->append('a_details_keyd');
+        $adtlist = ADetailsType::allOrdered();
 
         return Inertia::render(
             'Registry/Table',
             [
-                'data' => $data,
-                'detailsTitles' => array_keys(IdentityDetail::allDetails())
+                'data' => $alumni,
+                'adtlist' => $adtlist,
             ] + $this->commonRegistryParams()
         );
     }
@@ -95,15 +101,23 @@ class AlumnusController extends Controller
     {
         $this->authorize('edit', Alumnus::class);
 
-        if ($alumnus)
+        $adtlist = ADetailsType::allOrdered();
+
+        if ($alumnus) {
             $alumnus->load(['details', 'ratifications', 'ratifications.document']);
+            $adtlist->load(['aDetails' => function ($query) use ($alumnus) {
+                $query->where('identity_type', Alumnus::class)->where('identity_id', $alumnus->id);
+            }]);
+        }
+
+        $adtlist->append('usedValues');
 
         return Inertia::render('Registry/Edit', [
             'alumnus' => $alumnus,
+            'adts' => $adtlist,
             'noRatStatus' => Alumnus::availableStatus($alumnus),
             'allStatus' => Alumnus::status,
             'allTags' => Alumnus::allTags(),
-            'allDetails' => IdentityDetail::allDetails(),
             'pendingRats' => $alumnus->pending_ratifications_list,
         ]);
     }
@@ -120,29 +134,11 @@ class AlumnusController extends Controller
             'coorte' => 'required|numeric',
             'status' => 'required|in:' . implode(',', Alumnus::status),
             'tags' => 'nullable|array',
-            'academic' => 'nullable|array',
-            'realjobs' => 'nullable|array',
-            'details' => 'nullable|array',
-            'details.*' => 'nullable|array',
-            'details.*.delete' => 'nullable|boolean',
-            'details.*.key' => 'exclude_if:details.*.delete,true|required|min:3|max:100|distinct',
-            'details.*.value' => 'exclude_if:details.*.delete,true|nullable',
+            'adts' => 'array',
+            'adts.*' => 'array',
+            'adts.*.id' => 'required|distinct|exists:a_details_types,id',
+            'adts.*.value' => 'nullable|array',
         ]);
-
-        // Check for errors on the details, e.g. switching the names of two keys
-        if ($alumnus) {
-            $details_errors = [];
-            foreach ($validated['details'] as $idx => $detail) {
-                if ($detail['delete'] ?? false) continue;
-
-                $others = $alumnus->details->where('key', $detail['key'])->where('id', '!=', $detail['id'] ?? -1)->count();
-                if ($others > 0)
-                    $details_errors['details.' . $idx . '.key'] = "Esiste già un dettaglio con questo nome";
-            }
-            if (count($details_errors) > 0) {
-                return back()->withErrors($details_errors);
-            }
-        }
 
         // Check for new status, if ratification needed
         $rat_needed = false;
@@ -155,7 +151,7 @@ class AlumnusController extends Controller
 
         // Create or update alumnus
         if ($alumnus) {
-            foreach (['surname', 'name', 'coorte', 'status', 'tags', 'academic', 'realjobs'] as $key) {
+            foreach (['surname', 'name', 'coorte', 'status', 'tags'] as $key) {
                 if ($validated[$key] !== $alumnus[$key]) {
                     $alumnus[$key] = $validated[$key];
                     $update = true;
@@ -180,49 +176,12 @@ class AlumnusController extends Controller
             }
         }
 
-        // Go with order: firstly, trash the one which should be trashed
-        foreach ($validated['details'] as $detail) {
-            if (($detail['id'] ?? -1) >= 0 && ($detail['delete'] ?? false)) {
-                $det = IdentityDetail::find($detail['id']);
-                if ($det) {
-                    $det->delete();
-                }
-            }
-        }
-
-        // Now, update existing details and create new ones
-        foreach ($validated['details'] as $detail) {
-            if ($detail['delete'] ?? false) continue; // skip deletes
-
-            // If already existing, update
-            if (($detail['id'] ?? -1) >= 0) {
-                $det = IdentityDetail::find($detail['id']);
-
-                // If update is needed...
-                if ($det->key == $detail['key'] && $det->value == $detail['value']) continue;
-
-                // Check if there is a trashed detail with the same name
-                $trashed = $alumnus->details()->onlyTrashed()->where('key', $detail['key'])->first();
-                if ($trashed) {
-                    $det->delete();
-                    $trashed->restore();
-                    $trashed->value = $detail['value'];
-                    $trashed->save();
-                } else {
-                    $det->update(['key' => $detail['key'], 'value' => $detail['value']]);
-                }
-            } else {
-                // New details must be created
-                // Check if there is already a trashed detail with the same name
-                $trashed = $alumnus->details()->onlyTrashed()->where('key', $detail['key'])->first();
-                if ($trashed) {
-                    $trashed->restore();
-                    $trashed->value = $detail['value'];
-                    $trashed->save();
-                } else {
-                    $alumnus->details()->create(['key' => $detail['key'], 'value' => $detail['value']]);
-                }
-            }
+        // Update ADetails
+        foreach ($validated['adts'] as $adts) {
+            $alumnus->aDetails()->updateOrCreate(
+                ['a_details_type_id' => $adts['id']],
+                ['value' => $adts['value']]
+            );
         }
 
         return redirect()->route('registry.edit', ['alumnus' => $alumnus])->with('notistack', ['success', $was_update ? 'Alumno aggiornato' : 'Alumno creato']);

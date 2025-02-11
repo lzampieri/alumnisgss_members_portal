@@ -105,6 +105,7 @@ class LogController extends Controller
             else
                 return "Session of machine " . $object->aws_id . " from " . $object->ip . " (started " . $object->starttime . " min)";
         }
+        // TODO add ADetail and ADetailsType
         return $object;
     }
 }

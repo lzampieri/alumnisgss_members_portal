@@ -74,7 +74,7 @@ export default function Schema() {
     const data = usePage().props.data;
 
     const tagsDict = useMemo(() => {
-        const tagsList = [...new Set(flatten(data, (cl) => flatten(cl, (al) => al.tags)))];
+        const tagsList = [...new Set(flatten( Object.entries(data), ([_, cl]) => flatten(cl, (al) => al.tags)))];
         const tagsDict = {}
         tagsList.forEach(i => {
             let letters = 1;
@@ -90,7 +90,7 @@ export default function Schema() {
         <div className="main-container-large md:h-[80vh] gap-1">
             <RegistryHeader where='schema' quickFilter={quickFilter} setQuickFilter={setQuickFilter} />
             <div className="w-full grow overflow-scroll flex flex-row">
-                {data.map((data, i) => <CoorteColumns key={i} coorte={i} data={data} tagsDict={tagsDict} quickFilter={quickFilter} />)}
+                {Object.entries(data).map(([coorte,content]) => <CoorteColumns key={coorte} coorte={coorte} data={content} tagsDict={tagsDict} quickFilter={quickFilter} />)}
             </div>
         </div>
     );

@@ -25,10 +25,12 @@ class NetworkController extends Controller
         $this->authorize('viewNetwork', Alumnus::class);
 
         $alumni = Alumnus::whereIn('status', Alumnus::public_status)
-            ->where('coorte','>',0)
+            ->where('coorte', '>', 0)
             ->with(['aDetails' => function ($query) {
-                $query->whereHas('aDetailsType', function ($query) { $query->where('visible', true); });
-            },'aDetails.aDetailsType'])
+                $query->whereHas('aDetailsType', function ($query) {
+                    $query->where('visible', true);
+                })->orderBy( ADetailsType::select('order')->whereColumn('a_details_types.id', 'a_details.a_details_type_id') );
+            }, 'aDetails.aDetailsType'])
             ->orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
             ->get();
@@ -53,7 +55,7 @@ class NetworkController extends Controller
     {
         $this->authorize('editNetworkView', Alumnus::class);
         $update = false;
-        
+
         $validated = $request->validate([
             'id' => 'numeric',
             'name' => 'required|regex:/^[A-zÀ-ú\d\s\'_:,]+$/',
@@ -62,8 +64,8 @@ class NetworkController extends Controller
             'order' => 'required|numeric',
             'visible' => 'required|boolean',
         ]);
-        
-        if( $validated['id'] && ADetailsType::find($validated['id']) ) {
+
+        if ($validated['id'] && ADetailsType::find($validated['id'])) {
             $update = true;
 
             $adt = ADetailsType::find($validated['id']);
@@ -88,7 +90,7 @@ class NetworkController extends Controller
             'id' => 'required|numeric',
         ]);
 
-        if( $validated['id'] && ADetailsType::find($validated['id']) ) {
+        if ($validated['id'] && ADetailsType::find($validated['id'])) {
             $adt = ADetailsType::find($validated['id']);
             $adt->delete();
             return redirect()->back()->with(['notistack' => ['success', 'Eliminato']]);
@@ -113,7 +115,7 @@ class NetworkController extends Controller
         ]);
     }
 
-    
+
     public function edit_post(Request $request, Alumnus $alumnus)
     {
         $this->authorize('editNetworkAlumnus', Alumnus::class);
@@ -127,8 +129,8 @@ class NetworkController extends Controller
 
         foreach ($validated['adts'] as $adts) {
             $alumnus->aDetails()->updateOrCreate(
-                [ 'a_details_type_id' => $adts['id'] ],
-                [ 'value' => $adts['value'] ]
+                ['a_details_type_id' => $adts['id']],
+                ['value' => $adts['value']]
             );
         }
 

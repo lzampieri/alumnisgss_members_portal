@@ -98,6 +98,10 @@ abstract class Identity extends Model
     {
         return $this->morphMany(ADetail::class, 'identity');
     }
+    public function getADetailsKeydAttribute()
+    {
+        return $this->getRelationValue('aDetails')->keyBy('a_details_type_id');
+    }
 
     protected $appends = ['enabled'];
     public function getEnabledAttribute()

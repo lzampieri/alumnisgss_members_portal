@@ -1,10 +1,13 @@
-import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
-import "ag-grid-community/styles/ag-grid.css"; // Core CSS
-import "ag-grid-community/styles/ag-theme-quartz.css"; // Theme
 import { useMemo, useState } from 'react';
 import Tooltip from '../Layout/Tooltip';
 import BigTooltip from '../Layout/BigTooltip';
 import { Stringifier, Tooltipier } from './Stringifier';
+
+import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
+import { themeQuartz } from "ag-grid-community";
+import { ModuleRegistry, InfiniteRowModelModule } from 'ag-grid-community';
+ModuleRegistry.registerModules([InfiniteRowModelModule]);
+
 
 function AgentTooltip({ data, value }) {
     return <Tooltip content={
@@ -81,7 +84,8 @@ export default function InternalLog() {
                 quickFilterText={quickFilter}
                 rowModelType='infinite'
                 cacheBlockSize={perPage}
-                datasource={dataSource} />
+                datasource={dataSource}
+                theme={themeQuartz} />
         </div>
     </div>
 }
