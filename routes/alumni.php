@@ -20,13 +20,17 @@ Route::prefix('/registry')->group(function () {
     Route::get('/table', [AlumnusController::class, 'table'])->name('registry.table');
 
     Route::get('/add', [AlumnusController::class, 'edit'])->name('registry.add');
-
+    
     Route::get('/edit/{alumnus?}', [AlumnusController::class, 'edit'])->name('registry.edit');
     Route::post('/edit/{alumnus?}', [AlumnusController::class, 'edit_post']);
 });
 
 // Registry impexp
 Route::prefix('/registry/impexp')->group(function () {
+    // Bulk adding
+    Route::get('/add', [AlumnusExportImportController::class, 'addBulk'])->name('registry.addBulk');
+    Route::post('/add', [AlumnusExportImportController::class, 'addBulk_post']);
+
     // Members schema
     Route::get('/bulk/export/xls_schema', [AlumnusExportImportController::class, 'exportExcelSchema'])->name('registry.impexp.export.xls_schema');
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
 use App\Models\IdentityDetail;
+use App\Models\Ratification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -387,5 +388,55 @@ class AlumnusExportImportController extends Controller
         return redirect()->back()
             ->with('notistack', ['success', "Importazione eseguita con successo. " . $alumnusNumber . " alumni analizzati."])
             ->with('inertiaFlash', $output);
+    }
+
+    public function addBulk()
+    {
+        $this->authorize('import', Alumnus::class);
+
+        return Inertia::render('Registry_ImpExp/AddBulk', [
+            'noRatStatus' => Alumnus::availableStatus(),
+            'allStatus' => Alumnus::status,
+        ]);
+    }
+
+    
+    public function addBulk_post(Request $request)
+    {
+        $this->authorize('import', Alumnus::class);
+
+        
+        $validated = $request->validate([
+            'status' => 'required|in:' . implode(',', Alumnus::status),
+            'rows' => 'nullable|array',
+            'rows.*' => 'array',
+            'rows.*.surname' => 'required|regex:/^[A-zÀ-ú\s\'_]+$/',
+            'rows.*.name' => 'required|regex:/^[A-zÀ-ú\s\'_]+$/',
+            'rows.*.coorte' => 'required|numeric'
+        ]);
+        
+        // Check for new status, if ratification needed
+        $rat_needed = false;
+        $rat_newstatus = '';
+        if (!in_array($validated['status'], Alumnus::availableStatus())) {
+            $rat_needed = true;
+            $rat_newstatus = $validated['status'];
+            $validated['status'] = 'not_reached';
+        }
+
+        foreach( $validated['rows'] as $row ) {
+            $alumnus = Alumnus::create([
+                'surname' => $row['surname'],
+                'name' => $row['name'],
+                'coorte' => $row['coorte'],
+                'status' => $validated['status'],
+                'tags' => []
+            ]);
+            if ($rat_needed) {
+                Ratification::create(['alumnus_id' => $alumnus->id, 'required_state' => $rat_newstatus]);
+            }
+        }
+
+        return redirect()->route('registry.addBulk')->with('notistack', ['success', count( $validated['rows']) . ' alumni aggiunti']);
     }
 }

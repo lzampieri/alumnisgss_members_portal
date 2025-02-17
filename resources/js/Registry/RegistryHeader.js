@@ -19,10 +19,22 @@ export default function RegistryHeader({ where, quickFilter, setQuickFilter }) {
             <input type='text' value={quickFilter} onChange={(e) => setQuickFilter(e.target.value)} placeholder='Cerca...' className='w-full' />
         </div>
         <div className="flex flex-row content-stretch gap-2">
-            <Link className="button grow" href={route('registry.add')}>
-                <FontAwesomeIcon icon={solid('circle-plus')} />
-                Aggiungi
-            </Link>
+            <div className="dropdown-parent group grow" >
+                <div className="button grow">
+                    <FontAwesomeIcon icon={solid('circle-plus')} />
+                    Aggiungi
+                </div>
+                <div className="dropdown-content-flex flex-col gap-2">
+                    <Link className="button" href={route('registry.add')}>
+                        <FontAwesomeIcon icon={solid('circle-plus')} />
+                        Uno
+                    </Link>
+                    <Link className="button" href={route('registry.addBulk')}>
+                        <FontAwesomeIcon icon={solid('folder-plus')} />
+                        Tanti
+                    </Link>
+                </div>
+            </div>
             <div className="dropdown-parent group grow" >
                 <div className="button">
                     <FontAwesomeIcon icon={solid('download')} />
