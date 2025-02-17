@@ -105,7 +105,7 @@ export default function Edit() {
             <label className="error">{errors.coorte}</label>
 
             <label>Stato</label>
-            {pending_rats.map(pr => <div className="w-full info" key={pr.id}>
+            {pending_rats && pending_rats?.map(pr => <div className="w-full info" key={pr.id}>
                 <FontAwesomeIcon icon={solid('hourglass-half')} className="mr-2" />
                 È presente una richiesta in attesa di ratifica per il passaggio allo stato di {AlumnusStatus.status[pr.required_state].label}
             </div>)}

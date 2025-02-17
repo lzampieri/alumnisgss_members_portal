@@ -118,7 +118,7 @@ class AlumnusController extends Controller
             'noRatStatus' => Alumnus::availableStatus($alumnus),
             'allStatus' => Alumnus::status,
             'allTags' => Alumnus::allTags(),
-            'pendingRats' => $alumnus->pending_ratifications_list,
+            'pendingRats' => $alumnus ? $alumnus->pending_ratifications_list : null,
         ]);
     }
 
