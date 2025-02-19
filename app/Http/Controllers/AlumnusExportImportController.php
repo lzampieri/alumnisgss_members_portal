@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ADetailsType;
 use App\Models\Alumnus;
 use App\Models\IdentityDetail;
 use App\Models\Ratification;
@@ -151,10 +152,16 @@ class AlumnusExportImportController extends Controller
 
         $alumni = Alumnus::orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
-            ->with('details')
-            ->get();
-
-        $detailsTitles = array_keys(IdentityDetail::allDetails());
+            ->with(['aDetails' => function ($query) {
+                $query->whereHas('aDetailsType', function ($query) {
+                    $query->where('visible', true);
+                })->orderBy(ADetailsType::select('order')->whereColumn('a_details_types.id', 'a_details.a_details_type_id'));
+            }, 'aDetails.aDetailsType'])
+            ->orderBy('coorte')
+            ->orderBy('surname')->orderBy('name')
+            ->get()
+            ->append('a_details_keyd');
+        $adtlist = ADetailsType::allOrdered();
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -172,7 +179,7 @@ class AlumnusExportImportController extends Controller
         $sheet->setCellValue('A4', "Per motivi di sicurezza, il download di questo file è registrato assieme alle credenziali di accesso.");
         $sheet->getStyle('A4')->applyFromArray(['font' => ['bold' => true, 'color' => ['argb' => 'FF0000']]]);
 
-        $titles = ['ID', 'Cognome', 'Nome', 'Coorte', 'Stato', 'Tags']; // TODO add Academic and RealJobs
+        $titles = ['ID', 'Cognome', 'Nome', 'Coorte', 'Stato', 'Tags'];
         $keys   = ['id', 'surname', 'name', 'coorte', 'status', 'tags'];
 
         foreach ($titles as $col => $title) {
@@ -182,13 +189,14 @@ class AlumnusExportImportController extends Controller
             else
                 $sheet->getColumnDimension(Coordinate::stringFromColumnIndex($col + 1))->setWidth(4);
         }
+
         $cumcolindex = [];
-        foreach ($detailsTitles as $col => $detailsTitle) {
+        foreach ($adtlist as $col => $adt) {
             $cumcol = count($titles) + 2 * $col + 1;
-            $cumcolindex[$detailsTitle] = $cumcol;
-            $this->writeXY($sheet, $cumcol, 6, "detID", ['font' => ['bold' => true]]);
+            $cumcolindex[$adt->id] = $cumcol;
+            $this->writeXY($sheet, $cumcol, 6, $adt->id);
             $sheet->getColumnDimension(Coordinate::stringFromColumnIndex($cumcol))->setWidth(4);
-            $this->writeXY($sheet, $cumcol + 1, 6, $detailsTitle, ['font' => ['bold' => true]]);
+            $this->writeXY($sheet, $cumcol + 1, 6, $adt->name, ['font' => ['bold' => true]]);
             $sheet->getColumnDimension(Coordinate::stringFromColumnIndex($cumcol + 1))->setWidth(30);
         }
 
@@ -202,16 +210,20 @@ class AlumnusExportImportController extends Controller
 
                 $this->writeXY($sheet, $col + 1, $i + 7, $content);
             }
-            foreach ($alumnus['details'] as $detail) {
-                $cumcol = $cumcolindex[$detail->key];
-                $this->writeXY($sheet, $cumcol, $i + 7, $detail['id']);
-                $this->writeXY($sheet, $cumcol + 1, $i + 7, $detail['value']);
+            foreach ($alumnus->aDetails as $adt) {
+                $cumcol = $cumcolindex[$adt->a_details_type_id];
+                $this->writeXY($sheet, $cumcol, $i + 7, $adt->id);
+                if( count( $adt->value ) == 1 )
+                    $this->writeXY($sheet, $cumcol + 1, $i + 7, $adt->value[0] );
+                elseif( count( $adt->value ) > 1 )
+                    $this->writeXY($sheet, $cumcol + 1, $i + 7, json_encode( $adt->value ));
             }
         }
 
         // Locking some cells
         $spreadsheet->getActiveSheet()->getProtection()->setSheet(true);
-        $spreadsheet->getActiveSheet()->getProtection()->setSort(true);
+        $spreadsheet->getActiveSheet()->getProtection()->setSort(false);
+        $spreadsheet->getActiveSheet()->getProtection()->setAutoFilter(false);
         $spreadsheet->getDefaultStyle()->getProtection()->setLocked(false);
         $sheet->getStyle('1:6')->getProtection()->setLocked(\PhpOffice\PhpSpreadsheet\Style\Protection::PROTECTION_PROTECTED);
         $sheet->getStyle('A:A')->getProtection()->setLocked(\PhpOffice\PhpSpreadsheet\Style\Protection::PROTECTION_PROTECTED);
@@ -220,20 +232,11 @@ class AlumnusExportImportController extends Controller
             $sheet->getStyle($col_str . ':' . $col_str)->getProtection()->setLocked(\PhpOffice\PhpSpreadsheet\Style\Protection::PROTECTION_PROTECTED);
         }
 
-        // Prepare space for extra details
-        for ($col = 0; $col < 3; $col++) {
-            $cumcol = count($titles) + 2 * count($detailsTitles) + 2 * $col + 1;
-            $cumcolstr = Coordinate::stringFromColumnIndex($cumcol);
-            $sheet->getColumnDimension($cumcolstr)->setWidth(4);
-            $sheet->getColumnDimension(Coordinate::stringFromColumnIndex($cumcol + 1))->setWidth(30);
-            $sheet->getStyle($cumcolstr . ':' . $cumcolstr)->getProtection()->setLocked(\PhpOffice\PhpSpreadsheet\Style\Protection::PROTECTION_PROTECTED);
-        }
-
         // Layout stuff:
         // - locking first 6 rows
         $sheet->freezePane('A7');
         // - enabling filters
-        $spreadsheet->getActiveSheet()->setAutoFilter('A6:' . Coordinate::stringFromColumnIndex(count($titles) + count($detailsTitles) * 2) . '7');
+        $spreadsheet->getActiveSheet()->setAutoFilter('A6:' . Coordinate::stringFromColumnIndex(count($titles) + count($adtlist) * 2) . '7');
         $spreadsheet->getActiveSheet()->getAutoFilter()->setRangeToMaxRow();
 
         // Output
@@ -253,6 +256,7 @@ class AlumnusExportImportController extends Controller
 
     public function importExcelDetails_post(Request $request)
     {
+        // TODO this should be refactored
         $this->authorize('import', Alumnus::class);
         $output = "";
 
