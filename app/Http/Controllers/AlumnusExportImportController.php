@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ADetail;
 use App\Models\ADetailsType;
 use App\Models\Alumnus;
 use App\Models\IdentityDetail;
@@ -213,10 +214,10 @@ class AlumnusExportImportController extends Controller
             foreach ($alumnus->aDetails as $adt) {
                 $cumcol = $cumcolindex[$adt->a_details_type_id];
                 $this->writeXY($sheet, $cumcol, $i + 7, $adt->id);
-                if( count( $adt->value ) == 1 )
-                    $this->writeXY($sheet, $cumcol + 1, $i + 7, $adt->value[0] );
-                elseif( count( $adt->value ) > 1 )
-                    $this->writeXY($sheet, $cumcol + 1, $i + 7, json_encode( $adt->value ));
+                if (count($adt->value) == 1)
+                    $this->writeXY($sheet, $cumcol + 1, $i + 7, $adt->value[0]);
+                elseif (count($adt->value) > 1)
+                    $this->writeXY($sheet, $cumcol + 1, $i + 7, json_encode($adt->value));
             }
         }
 
@@ -231,6 +232,9 @@ class AlumnusExportImportController extends Controller
             $col_str = Coordinate::stringFromColumnIndex($col);
             $sheet->getStyle($col_str . ':' . $col_str)->getProtection()->setLocked(\PhpOffice\PhpSpreadsheet\Style\Protection::PROTECTION_PROTECTED);
         }
+        $last_col = Coordinate::stringFromColumnIndex(count($titles) + 2 * count($cumcolindex) + 1);
+        $sheet->getStyle($last_col . ':XFD')->getProtection()->setLocked(\PhpOffice\PhpSpreadsheet\Style\Protection::PROTECTION_PROTECTED);
+        $sheet->getStyle((count($alumni) + 7) . ':' . (count($alumni) + 700))->getProtection()->setLocked(\PhpOffice\PhpSpreadsheet\Style\Protection::PROTECTION_PROTECTED);
 
         // Layout stuff:
         // - locking first 6 rows
@@ -256,7 +260,6 @@ class AlumnusExportImportController extends Controller
 
     public function importExcelDetails_post(Request $request)
     {
-        // TODO this should be refactored
         $this->authorize('import', Alumnus::class);
         $output = "";
 
@@ -281,110 +284,116 @@ class AlumnusExportImportController extends Controller
         if ($columnsNumber < 6)
             return redirect()->back()->with('notistack', ['error', "File non compatibile."]);
 
-        // Compute the details dictionary
-        $detailsKeys = [];
-        for ($i = 7; $i < $columnsNumber; $i += 2) {
-            $detailsKeys[$i] = $sheet->getCellByColumnAndRow($i + 1, 6)->getValue();
-        }
+        // Standard fields
+        $stdkeys   = ['id', 'surname', 'name', 'coorte', 'status', 'tags'];
 
-        $keys   = ['id', 'surname', 'name', 'coorte', 'status', 'tags']; // TODO add Academic and RealJobs
+        // Compute the adetails dictionary
+        $adtlist = ADetailsType::allOrdered()->keyBy('id')->toArray();
+
+        // Associate adetails to columns
+        $titles = $sheet->rangeToArray("G6:" . $sheet->getHighestColumn() . "6")[0];
+        $adtcols = [];
+        for ($i = 0; $i < count($titles); $i += 2) {
+            if ($titles[$i] != null && array_key_exists("" . $titles[$i], $adtlist))
+                $adtcols[$i + 7] = "" . $titles[$i];
+        }
 
         // Go alumnus by alumnus
         for ($i = 0; $i < $alumnusNumber; $i++) {
             $row = $i + 7;
+            $toSave = false;
 
-            // Load data
-            $newPars = array_combine($keys, $sheet->rangeToArray("A$row:F$row")[0]);
+            // Load data from standard_cols
+            $newPars = array_combine($stdkeys, $sheet->rangeToArray("A$row:F$row")[0]);
+            if (!$newPars['id']) continue;
             $alumnus = Alumnus::find($newPars['id']);
 
-            // Check surname and name
+            if (!$alumnus) {
+                $output .= "Alumnus at row {$row} not found; skipped\n";
+                continue;
+            }
+
+            // Check and update surname and name
             if (!$newPars['surname'] || !$newPars['name']) {
                 $output .= "Skipped alumnus $i due to invalid name or surname\n";
                 continue;
             }
+            foreach (['surname', 'name'] as $field) {
+                if ($alumnus[$field] != $newPars[$field]) {
+                    $toSave = true;
+                    $output .= "Updated " . $field . " for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newPars[$field] . "\n";
+
+                    $alumnus[$field] = $newPars[$field];
+                }
+            }
 
             // Check status
             $newPars['status'] = array_search($newPars['status'], Alumnus::AlumnusStatusLabels);
-            if (!in_array($newPars['status'], Alumnus::status))
-                $newPars['status'] = 'not_reached';
-            if (!in_array($newPars['status'], Alumnus::availableStatus($alumnus)))
-                $newPars['status'] = $alumnus ? $alumnus['status'] : 'not_reached';
+            if ($newPars['status'] != $alumnus['status']) {
+                if (!in_array($newPars['status'], Alumnus::availableStatus($alumnus))) {
+                    $output .= "Status {$newPars['status']} cannot be assigned to alumnus {$i} ({$newPars['surname']} {$newPars['name']}): skipped\n";
+                } else {
+                    $toSave = true;
+                    $output .= "Updated status for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newPars['status'] . "\n";
+                    $alumnus['status'] = $newPars['status'];
+                }
+            }
 
             // Check coorte
             $newPars['coorte'] = intval($newPars['coorte']);
+            if ($newPars['coorte'] != $alumnus['coorte']) {
+                $toSave = true;
+                $output .= "Updated coorte for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newPars['coorte'] . "\n";
+                $alumnus['coorte'] = $newPars['coorte'];
+            }
 
             // Check tags
             $newPars['tags_array'] = array_filter(array_map('trim', explode(';', $newPars['tags'])), 'strlen');
+            $oldTags = is_array($alumnus['tags']) ? implode('; ', $alumnus['tags']) : "";
+            if ($oldTags != $newPars['tags']) {
 
-            if ($alumnus) {
+                $toSave = true;
+                $output .= "Updated tags for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newPars['tags'] . "\n";
 
-                $toSave = false;
-
-                // Check par by par
-                foreach (['surname', 'name', 'coorte', 'status'] as $field) {
-                    if ($alumnus[$field] != $newPars[$field]) {
-                        $toSave = true;
-                        $output .= "Updated " . $field . " for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newPars[$field] . "\n";
-
-                        $alumnus[$field] = $newPars[$field];
-                    }
-                }
-
-                // Check tags
-                $oldTags = is_array($alumnus['tags']) ? implode('; ', $alumnus['tags']) : "";
-                if ($oldTags != $newPars['tags']) {
-
-                    $toSave = true;
-                    $output .= "Updated tags for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newPars['tags'] . "\n";
-
-                    $alumnus['tags'] = $newPars['tags_array'];
-                }
-
-                // TODO add Academic and RealJobs
-
-                if ($toSave)
-                    $alumnus->save();
-            } else {
-                $alumnus = Alumnus::create([
-                    'surname' => $newPars['surname'],
-                    'name' => $newPars['name'],
-                    'coorte' => $newPars['coorte'],
-                    'status' => $newPars['status'],
-                    'tags' => $newPars['tags_array'], // TODO add Academic and RealJobs
-                ]);
-
-                $output .= "Created new alumnus " . $alumnus['surname'] . " " . $alumnus['name'] . "\n";
+                $alumnus['tags'] = $newPars['tags_array'];
             }
 
+            if ($toSave)
+                $alumnus->save();
+
             // Check details
-            foreach ($detailsKeys as $col => $key) {
-                $oldId = $sheet->getCellByColumnAndRow($col, $row)->getValue();
+            foreach ($adtcols as $col => $adtKey) {
                 $newValue = $sheet->getCellByColumnAndRow($col + 1, $row)->getValue();
 
-                $detail = IdentityDetail::find($oldId);
-
-                if ($detail) {
-
-                    // Detail already exists: check if updated needed
-                    if ($newValue && strlen($key) > 0) {
-
-                        if ($newValue != $detail['value'] || $key != $detail['key']) {
-                            $detail->update(['key ' => $key, 'value' => $newValue]);
-                            $output .= "Updated " . $key . " for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newValue . "\n";
-                        }
-                    } else {
-
-                        // New value is empty; must be deleted
-                        $output .= "Deleted " . $key . " for " . $alumnus['surname'] . " " . $alumnus['name'] . "\n";
-                        $detail->delete();
-                    }
+                $newValueDecoded = json_decode($newValue);
+                if ($newValueDecoded && is_array($newValueDecoded)) {
+                    $newValue = $newValueDecoded;
                 } else {
+                    if ($newValue == null) $newValue = [];
+                    else $newValue = [$newValue];
+                }
 
-                    if ($newValue && strlen($key) > 0) {
-                        // New detail must be created
-                        $alumnus->details()->create(['key' => $key, 'value' => $newValue]);
-                        $output .= "Added " . $key . " for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newValue . "\n";
+                // Special behaviour for arrayable
+                if ($adtlist[$adtKey]["type"] == 'arrayable') {
+                    $newValueSeparated = [];
+                    foreach ($newValue as $v) {
+                        foreach (preg_split("/[" . preg_quote($adtlist[$adtKey]["param"], '/') . "]/", $v, -1, PREG_SPLIT_NO_EMPTY) as $vv)
+                            $newValueSeparated[] = $vv;
                     }
+                    $newValue = $newValueSeparated;
+                }
+
+                // I can virtually use UpdateOrCreate here, but I want to check if the value has changed
+                $prevVal = $alumnus->aDetails()->where('a_details_type_id', $adtKey)->first();
+                if (
+                    (!$prevVal && count($newValue) > 0) ||
+                    ($prevVal && (json_encode($prevVal->value) != json_encode($newValue)))
+                ) {
+                    $alumnus->aDetails()->updateOrCreate(
+                        ['a_details_type_id' => $adtKey],
+                        ['value' => $newValue]
+                    );
+                    $output .= "Updated " . $adtlist[$adtKey]["name"] . " for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . json_encode($newValue) . "\n";
                 }
             }
         }
@@ -404,12 +413,12 @@ class AlumnusExportImportController extends Controller
         ]);
     }
 
-    
+
     public function addBulk_post(Request $request)
     {
         $this->authorize('import', Alumnus::class);
 
-        
+
         $validated = $request->validate([
             'status' => 'required|in:' . implode(',', Alumnus::status),
             'rows' => 'nullable|array',
@@ -418,7 +427,7 @@ class AlumnusExportImportController extends Controller
             'rows.*.name' => 'required|regex:/^[A-zÀ-ú\s\'_]+$/',
             'rows.*.coorte' => 'required|numeric'
         ]);
-        
+
         // Check for new status, if ratification needed
         $rat_needed = false;
         $rat_newstatus = '';
@@ -428,7 +437,7 @@ class AlumnusExportImportController extends Controller
             $validated['status'] = 'not_reached';
         }
 
-        foreach( $validated['rows'] as $row ) {
+        foreach ($validated['rows'] as $row) {
             $alumnus = Alumnus::create([
                 'surname' => $row['surname'],
                 'name' => $row['name'],
@@ -441,6 +450,6 @@ class AlumnusExportImportController extends Controller
             }
         }
 
-        return redirect()->route('registry.addBulk')->with('notistack', ['success', count( $validated['rows']) . ' alumni aggiunti']);
+        return redirect()->route('registry.addBulk')->with('notistack', ['success', count($validated['rows']) . ' alumni aggiunti']);
     }
 }

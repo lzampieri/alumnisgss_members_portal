@@ -6,7 +6,7 @@ import { countBy, keys } from "lodash";
 export default function BulkState() {
     const alumni = usePage().props.alumni
     const options = usePage().props.availableStatus.map(i => { return { value: i, label: AlumnusStatus.status[i].label } })
-
+    // TODO questa cosa è morta ma non era così inutile, reimplementare
     const { data, setData, post, transform, processing, errors } = useForm({
         alumni: [],
         new_state: null
