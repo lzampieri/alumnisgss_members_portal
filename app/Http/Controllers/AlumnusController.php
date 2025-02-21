@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\ADetailsType;
 use App\Models\Alumnus;
 use App\Models\Identity;
-use App\Models\IdentityDetail;
 use App\Models\Ratification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;

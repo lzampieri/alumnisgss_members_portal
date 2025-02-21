@@ -7,7 +7,6 @@ use App\Models\Alumnus;
 use App\Models\ADetail;
 use App\Models\ADetailType;
 use App\Models\Identity;
-use App\Models\IdentityDetail;
 use App\Models\Ratification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -136,68 +135,5 @@ class NetworkController extends Controller
 
         return redirect()->route('network')->with(['notistack' => ['success', 'Salvato!']]);
     }
-
-
-    // private function commonRegistryParams()
-    // {
-    //     return [
-    //         'canImport' => Auth::user()->can('import', Alumnus::class),
-    //     ];
-    // }
-
-    // public function schema()
-    // {
-    //     $this->authorize('viewAny', Alumnus::class);
-
-
-    //     $data = Alumnus::orderBy('coorte')
-    //         ->orderBy('surname')->orderBy('name')
-    //         ->get()
-    //         ->append('pending_ratifications')
-    //         ->groupBy('coorte');
-
-    //     return Inertia::render(
-    //         'Registry/Schema',
-    //         [
-    //             'data' => $data,
-    //         ] + $this->commonRegistryParams()
-    //     );
-    // }
-
-    // public function table()
-    // {
-    //     $this->authorize('viewAny', Alumnus::class);
-
-    //     $data = Alumnus::orderBy('coorte')
-    //         ->orderBy('surname')->orderBy('name')
-    //         ->with('details')
-    //         ->get()
-    //         ->append('pending_ratifications');
-
-    //     return Inertia::render(
-    //         'Registry/Table',
-    //         [
-    //             'data' => $data,
-    //             'detailsTitles' => array_keys(IdentityDetail::allDetails())
-    //         ] + $this->commonRegistryParams()
-    //     );
-    // }
-
-    // public function edit(Request $request, ?Alumnus $alumnus = null)
-    // {
-    //     $this->authorize('edit', Alumnus::class);
-
-    //     if ($alumnus)
-    //         $alumnus->load(['details', 'ratifications', 'ratifications.document']);
-
-    //     return Inertia::render('Registry/Edit', [
-    //         'alumnus' => $alumnus,
-    //         'noRatStatus' => Alumnus::availableStatus($alumnus),
-    //         'allStatus' => Alumnus::status,
-    //         'allTags' => Alumnus::allTags(),
-    //         'allDetails' => IdentityDetail::allDetails(),
-    //         'pendingRats' => $alumnus->pending_ratifications_list,
-    //     ]);
-    // }
 
 }

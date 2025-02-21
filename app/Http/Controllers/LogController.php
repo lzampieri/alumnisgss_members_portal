@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\LogEvents;
-
+use App\Models\ADetail;
+use App\Models\ADetailsType;
 use App\Models\Alumnus;
 use App\Models\AwsSession;
 use App\Models\Document;
 use App\Models\DynamicPermission;
 use App\Models\External;
+use App\Models\File;
 use App\Models\IdentityDetail;
 use App\Models\LoginMethod;
 use App\Models\Permalink;
@@ -24,19 +26,23 @@ class LogType {
         LogEvents::CREATE => [
             Alumnus::class, AwsSession::class, Document::class, DynamicPermission::class,
             External::class, IdentityDetail::class, LoginMethod::class, Ratification::class,
-            Resource::class, Permission::class, Role::class ],
+            Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
+            Permalink::class, File::class ],
         LogEvents::RESTORED => [
             Alumnus::class, AwsSession::class, Document::class, DynamicPermission::class,
             External::class, IdentityDetail::class, LoginMethod::class, Ratification::class,
-            Resource::class, Permission::class, Role::class ],
+            Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
+            Permalink::class, File::class ],
         LogEvents::UPDATE => [
             Alumnus::class, AwsSession::class, Document::class, DynamicPermission::class,
             External::class, IdentityDetail::class, LoginMethod::class, Ratification::class,
-            Resource::class, Permission::class, Role::class ],
+            Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
+            Permalink::class, File::class ],
         LogEvents::DELETE => [
             Alumnus::class, AwsSession::class, Document::class, DynamicPermission::class,
             External::class, IdentityDetail::class, LoginMethod::class, Ratification::class,
-            Resource::class, Permission::class, Role::class ],
+            Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
+            Permalink::class, File::class ],
         LogEvents::DOWNLOADED_DETAILS => True,
         LogEvents::DOWNLOADED_SCHEMA => True,
         LogEvents::LOGIN => True,
@@ -89,8 +95,18 @@ class LogController extends Controller
             return $object->credential . " (" . $object->driver . ")";
         if ($object instanceof Permission)
             return $object->name;
+        if ($object instanceof Role)
+            return $object->name;
         if ($object instanceof Ratification)
             return "Ratification of " . $object->alumnus->surnameAndName() . " to " . $object->required_state;
+        if ($object instanceof IdentityDetail)
+            return "Old-style identity detail of " . $object->identity->surnameAndName() . ": " . $object->key . " => " . $object->value;
+        if ($object instanceof ADetailsType)
+            return "ADetail type " . $object->name . " (" . $object->type . ")";
+        if ($object instanceof ADetail)
+            return "ADetail for " . $object->identity->surnameAndName() . ": " . $object->aDetailsType->name . " => " . json_encode($object->value);
+        if ($object instanceof IdentityDetail)
+            return "Old-style identity detail of " . $object->identity->surnameAndName() . ": " . $object->key . " => " . $object->value;
         if ($object instanceof Document)
             return $object->identifier . " (" . $object->protocol . ", " . $object->date . ")";
         if ($object instanceof DynamicPermission)
@@ -99,13 +115,14 @@ class LogController extends Controller
             return "Resource " . $object->title . ": " . json_encode($object->content);
         if ($object instanceof Permalink)
             return "Permalink " . $object->id . " to " . $object->linkable_type . " #" . $object->linkable_id;
+        if ($object instanceof File)
+            return "File " . $object->handle . " [sha256:" . $object->sha256 . "] belonging to " . Log::stringify($object->parent);
         if ($object instanceof AwsSession) {
             if ($object->endtime)
                 return "Session of machine " . $object->aws_id . " from " . $object->ip . " (duration " . $object->duration . " min)";
             else
                 return "Session of machine " . $object->aws_id . " from " . $object->ip . " (started " . $object->starttime . " min)";
         }
-        // TODO add ADetail and ADetailsType
         return $object;
     }
 }

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\ADetail;
 use App\Models\ADetailsType;
 use App\Models\Alumnus;
-use App\Models\IdentityDetail;
 use App\Models\Ratification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -361,7 +360,7 @@ class AlumnusExportImportController extends Controller
             if ($toSave)
                 $alumnus->save();
 
-            // Check details
+            // Check adetails
             foreach ($adtcols as $col => $adtKey) {
                 $newValue = $sheet->getCellByColumnAndRow($col + 1, $row)->getValue();
 
