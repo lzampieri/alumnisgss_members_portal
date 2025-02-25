@@ -14,8 +14,6 @@ export default function Add() {
         rat_force: false
     })
 
-    console.log(errors);
-
     transform((data) => {
         return {
             alumni_id: data.alumni.map(a => a.id),
@@ -50,7 +48,7 @@ export default function Add() {
                 <label>Stati correnti:</label>
                 <ul className="font-bold">
                     {keys(counts).map(k =>
-                        <li>{AlumnusStatus.status[k].label} ({counts[k]})</li>
+                        <li key={k}>{AlumnusStatus.status[k].label} ({counts[k]})</li>
                     )}
                 </ul>
                 <label>Stato richiesto:</label>
