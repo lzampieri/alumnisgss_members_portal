@@ -1,51 +1,53 @@
 <?php
 
-namespace App\Models;
+// SISTEMA DISMESSO, SI MANTIENE COMMENTATO PER RETROCOMPATIBILITÀ
 
-use App\Http\Controllers\LogEvents;
-use App\Traits\EditsAreLogged;
-use Illuminate\Database\Eloquent\Model;
+// namespace App\Models;
 
-class AwsSession extends Model
-{
-    use EditsAreLogged;
+// use App\Http\Controllers\LogEvents;
+// use App\Traits\EditsAreLogged;
+// use Illuminate\Database\Eloquent\Model;
 
-    protected $fillable = [
-        'aws_ref',
-        'ip',
-        'starttime',
-        'endtime',
-        'note'
-    ];
+// class AwsSession extends Model
+// {
+//     use EditsAreLogged;
 
-    protected $casts = [
-        'starttime' => 'datetime',
-        'endtime' => 'datetime',
-    ];
+//     protected $fillable = [
+//         'aws_ref',
+//         'ip',
+//         'starttime',
+//         'endtime',
+//         'note'
+//     ];
+
+//     protected $casts = [
+//         'starttime' => 'datetime',
+//         'endtime' => 'datetime',
+//     ];
 
 
-    protected $appends = ['duration', 'month', 'day'];
-    public function getDurationAttribute()
-    {
-        if ($this->starttime && $this->endtime) {
-            return $this->endtime->diffInMinutes($this->starttime);
-        }
-        return 0;
-    }
-    public function getMonthAttribute()
-    {
-        if ($this->starttime)
-            return $this->starttime->year * 100 + $this->starttime->month;
-        if ($this->endtime)
-            return $this->endtime->year * 100 + $this->endtime->month;
-        return 0;
-    }
-    public function getDayAttribute()
-    {
-        if ($this->starttime)
-            return $this->month * 100 + $this->starttime->day;
-        if ($this->endtime)
-            return $this->month * 100 + $this->endtime->day;
-        return '0';
-    }
-}
+//     protected $appends = ['duration', 'month', 'day'];
+//     public function getDurationAttribute()
+//     {
+//         if ($this->starttime && $this->endtime) {
+//             return $this->endtime->diffInMinutes($this->starttime);
+//         }
+//         return 0;
+//     }
+//     public function getMonthAttribute()
+//     {
+//         if ($this->starttime)
+//             return $this->starttime->year * 100 + $this->starttime->month;
+//         if ($this->endtime)
+//             return $this->endtime->year * 100 + $this->endtime->month;
+//         return 0;
+//     }
+//     public function getDayAttribute()
+//     {
+//         if ($this->starttime)
+//             return $this->month * 100 + $this->starttime->day;
+//         if ($this->endtime)
+//             return $this->month * 100 + $this->endtime->day;
+//         return '0';
+//     }
+// }
