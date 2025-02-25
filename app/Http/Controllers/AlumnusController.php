@@ -60,7 +60,7 @@ class AlumnusController extends Controller
         $data = Alumnus::orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
             ->get()
-            ->append('pending_ratifications')
+            ->append('pending_ratifications_count')
             ->groupBy('coorte');
 
         return Inertia::render(
@@ -74,9 +74,8 @@ class AlumnusController extends Controller
     public function table()
     {
         $this->authorize('viewAny', Alumnus::class);
-        $alumni = Alumnus::whereIn('status', Alumnus::public_status)
-            ->where('coorte', '>', 0)
-            ->with(['aDetails' => function ($query) {
+        $alumni = Alumnus::
+            with(['aDetails' => function ($query) {
                 $query->whereHas('aDetailsType', function ($query) {
                     $query->where('visible', true);
                 })->orderBy(ADetailsType::select('order')->whereColumn('a_details_types.id', 'a_details.a_details_type_id'));
@@ -84,7 +83,8 @@ class AlumnusController extends Controller
             ->orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
             ->get()
-            ->append('a_details_keyd');
+            ->append('a_details_keyd')
+            ->append('pending_ratifications_count');
         $adtlist = ADetailsType::allOrdered();
 
         return Inertia::render(

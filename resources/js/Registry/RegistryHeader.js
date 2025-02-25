@@ -35,6 +35,10 @@ export default function RegistryHeader({ where, quickFilter, setQuickFilter }) {
                     </Link>
                 </div>
             </div>
+            <Link className="button grow" href={route('ratifications.add')}>
+                <FontAwesomeIcon icon={solid('right-left')} />
+                Cambia stati
+            </Link>
             <div className="dropdown-parent group grow" >
                 <div className="button">
                     <FontAwesomeIcon icon={solid('download')} />

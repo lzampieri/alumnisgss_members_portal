@@ -10,10 +10,10 @@ function AlumnusContent({ data, tagsDict }) {
     return <div className="w-full h-full border border-primary-main flex flex-row items-center">
         <div className="chip mx-1 group relative z-auto" style={bgAndContrast(AlumnusStatus.status[data.status].color)}>
             {AlumnusStatus.status[data.status].acronym}
-            {data.pending_ratifications > 0 && <FontAwesomeIcon icon={solid('hourglass-half')} />}
+            {data.pending_ratifications_count > 0 && <FontAwesomeIcon icon={solid('hourglass-half')} />}
             <span className="tooltip-right" style={bgAndContrast(AlumnusStatus.status[data.status].color)}>
                 {AlumnusStatus.status[data.status].label}
-                {data.pending_ratifications > 0 && " - in attesa di ratifica"}
+                {data.pending_ratifications_count > 0 && " - in attesa di ratifica"}
             </span>
         </div>
         <div className="shrink truncate">

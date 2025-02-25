@@ -2,6 +2,7 @@ import { useForm, usePage } from "@inertiajs/react";
 import { AlumnusStatus, romanize } from "../Utils";
 import Select, { createFilter } from 'react-select';
 import { countBy, keys } from "lodash";
+import ReactSwitch from "react-switch";
 
 export default function Add() {
     const alumni = usePage().props.alumni
@@ -9,13 +10,17 @@ export default function Add() {
 
     const { data, setData, post, transform, processing, errors } = useForm({
         alumni: (usePage().props.alumnus ? [usePage().props.alumnus] : []),
-        required_state: null
+        required_state: null,
+        rat_force: false
     })
+
+    console.log(errors);
 
     transform((data) => {
         return {
             alumni_id: data.alumni.map(a => a.id),
-            required_state: data.required_state.value
+            required_state: data.required_state.value,
+            rat_force: data.rat_force
         }
     })
 
@@ -28,8 +33,8 @@ export default function Add() {
 
     return (
         <form className="flex flex-col w-full md:w-3/5" onSubmit={submit}>
-            <h3>Richiedi retifica</h3>
-            <label>Alumno interessato</label>
+            <h3>Variazioni di stato</h3>
+            <label>Alumni interessato</label>
             <Select
                 isMulti={true}
                 classNames={{ control: () => 'selectDropdown' }}
@@ -55,6 +60,10 @@ export default function Add() {
                     value={data.required_state}
                     onChange={(sel) => setData('required_state', sel)} />
                 <label className="error">{errors.required_state}</label>
+                <div className="pt-4 flex flex-row w-full gap-2">
+                    <ReactSwitch checked={data.rat_force} onChange={(checked) => setData('rat_force', checked)} /> Forza ratifiche
+                </div>
+                <label className="unspaced">{data.rat_force ? "Verranno inserite richieste di ratifica per tutti i cambiamenti di stato" : "Verranno inserite richieste di ratifica solo laddove necessario"}</label>
             </>}
             {data.alumni && data.required_state &&
                 <input type="button" className="button mt-4" onClick={submit} value="Inserisci richiesta" />

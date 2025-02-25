@@ -50,31 +50,54 @@ class RatificationController extends Controller
         $validated = $request->validate([
             'alumni_id' => 'required|array',
             'alumni_id.*' => 'exists:alumni,id',
-            'required_state' => 'required|in:' . implode(',', Alumnus::status)
+            'required_state' => 'required|in:' . implode(',', Alumnus::status),
+            'rat_force' => 'required|boolean'
         ]);
 
-        $inserted = 0;
+        $newrats = 0;
+        $updated = 0;
+        $already = 0;
         $rejected = 0;
 
+        $reqState = $validated['required_state'];
+
         foreach ($validated['alumni_id']  as $al_id) {
-            // Check that no ratification exists
-            $arethere = Ratification::where('alumnus_id', $al_id)->whereNull('document_id')->count();
-            if ($arethere > 0) {
+            $alumnus = Alumnus::find($al_id);
+
+            // Check that the alumnus does not already have the required state
+            if( $alumnus->status == $reqState ) {
+                $already++;
+                continue;
+            }
+
+            // Check that no ratification exists sending the same alumnus to the same status
+            if( $alumnus->pendingRatifications()->where('required_state', $reqState)->count() > 0 ) {
                 $rejected++;
                 continue;
             }
-            $inserted++;
-            $rat = Ratification::create(['alumnus_id' => $al_id, 'required_state' => $validated['required_state']]);
+
+            // Check if status is freerly assignable
+            if( !$validated['rat_force'] && in_array($reqState, Alumnus::availableStatus($alumnus)) ) {
+                $alumnus->status = $reqState;
+                $alumnus->save();
+                $updated++;
+                continue;
+            }
+
+            // Save the ratification
+            Ratification::create(['alumnus_id' => $al_id, 'required_state' => $reqState]);
+            $newrats++;
         }
 
-        $output = "";
-        if ($inserted > 0) $output .= $inserted . " ratifiche inserite";
-        if ($inserted * $rejected > 0) $output .= ", ";
-        if ($rejected > 0) $output .= $rejected . " ratifiche già presenti";
+        $output = ["Helloo"];
+        if ($newrats > 0) $output[] = $newrats . " ratifiche inserite";
+        if ($updated > 0) $output[] = $updated . " alumni aggiornati";
+        if ($rejected > 0) $output[] = $rejected . " ratifiche già presenti";
+        if ($already > 0) $output[] = $already . " stati già assegnati";
 
-        $type = $rejected > 0 ? 'warning' : 'success';
+        $type = ( $rejected + $already ) > 0 ? 'warning' : 'success';
 
-        return redirect()->route('ratifications')->with('notistack', [$type, $output]);
+        return redirect()->back()->with('notistack', [$type, implode(', ', $output)]);
     }
 
     public function delete_post(Request $request, Ratification $rat)

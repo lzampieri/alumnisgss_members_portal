@@ -46,7 +46,7 @@ export default function Table() {
         { field: 'name', headerName: 'Nome' },
         { field: 'surname', headerName: 'Cognome' },
         { field: 'coorte', headerName: 'Coorte', filter: 'agTextColumnFilter', width: 100 },
-        { field: 'status', headerName: 'Stato', filter: 'agTextColumnFilter', filterValueGetter: ({ data }) => AlumnusStatus.status[data.status].label, cellRenderer: ({ data, value }) => <span><span style={{ color: AlumnusStatus.status[value].color }}>⬤</span> {AlumnusStatus.status[value].label}{data.pending_ratifications > 0 && <FontAwesomeIcon icon={solid('hourglass-half')} className='ml-2' />}</span> },
+        { field: 'status', headerName: 'Stato', filter: 'agTextColumnFilter', filterValueGetter: ({ data }) => AlumnusStatus.status[data.status].label, cellRenderer: ({ data, value }) => <span><span style={{ color: AlumnusStatus.status[value].color }}>⬤</span> {AlumnusStatus.status[value].label}{data.pending_ratifications_count > 0 && <FontAwesomeIcon icon={solid('hourglass-half')} className='ml-2' />}</span> },
         { field: 'tags', headerName: 'Tags', valueGetter: ({ data }) => (data.tags || []).join(', '), cellRenderer: ({ data }) => (data.tags || []).map((i, idx) => <span key={idx} className='bg-gray-100 border border-gray-300 rounded px-2 py-1'>{i}</span>) },
         ...adtlist.map(i => ({
             field: i.name, headerName: i.name, valueGetter: ({ data }) => adtValueGetter(data, i.id),

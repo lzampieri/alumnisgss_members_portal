@@ -27,8 +27,7 @@ function AlumnusContent({ data }) {
         </div>
         <div className="w-full flex flex-row justify-start flex-wrap">
             <SmartChip style={bgAndContrast(AlumnusStatus.status[data.status].color)} key='status' content={AlumnusStatus.status[data.status].label} />
-            <SmartChip style={bgAndContrastPastel(-1)} key='coorte' content={romanize(data.coorte) + " coorte"} />
-            {/* TODO implementare Onorari */}
+            <SmartChip style={bgAndContrastPastel(-1)} key='coorte' content={(data.coorte > 0) ? (romanize(data.coorte) + " coorte") : "Onorario"} />
         </div>
         <div className="w-full flex flex-row justify-start flex-wrap gap-y-2">
             {data.a_details?.map((adt, i) => {

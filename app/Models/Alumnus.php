@@ -114,6 +114,12 @@ class Alumnus extends Identity
         return $this->hasMany(Ratification::class);
     }
 
+    public function pendingRatifications()
+    {
+        return $this->hasMany(Ratification::class)->whereNull('document_id');
+    }
+
+
     // For the ratification export
     public static function romanize($num)
     {
@@ -134,14 +140,14 @@ class Alumnus extends Identity
         return $roman . " coorte";
     }
 
-    public function getPendingRatificationsAttribute()
+    public function getPendingRatificationsCountAttribute()
     {
-        return $this->ratifications()->whereNull('document_id')->count();
+        return $this->pendingRatifications()->count();
     }
 
     public function getPendingRatificationsListAttribute()
     {
-        return $this->ratifications()->whereNull('document_id')->get();
+        return $this->pendingRatifications()->get();
     }
 
 }
