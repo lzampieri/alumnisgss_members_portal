@@ -142,6 +142,20 @@
     .chip.disabled {
         @apply opacity-40
     }
+    .chip-v2 {
+        @apply bg-gray-600 text-white;
+        @apply rounded-lg flex flex-row !no-underline mx-1 max-w-full flex-wrap whitespace-pre-wrap items-center;
+        overflow-wrap: anywhere
+    }
+    .chip-v2-clear {
+        @apply bg-gray-200 text-black;
+        @apply rounded-lg flex flex-row !no-underline mx-1 max-w-full flex-wrap whitespace-pre-wrap items-center;
+        overflow-wrap: anywhere
+    }
+    .chip-v2-icon {
+        @apply bg-gray-600 text-white hover:bg-gray-100 hover:text-black cursor-pointer p-1;
+        @apply rounded-lg;
+    }
     .smart-chip {
         @apply rounded-lg flex flex-row !no-underline mx-1 max-w-full flex-wrap whitespace-pre-wrap;
         overflow-wrap: anywhere

@@ -46,13 +46,15 @@ function Identity(idt, type, filter, setProcessing) {
     let visible = filter ? key.toLowerCase().includes(filter.toLowerCase()) : true
 
     return (
-        <div key={idt.id} style={disappearing(visible)} >
-            <div className="mylist-item flex flex-row p-2 items-center gap-2">
-                <ReactSwitch checked={idt.enabled} onChange={(checked) => identityEnabling(idt.id, type, checked, setProcessing)} />
-                <div className="flex flex-col items-stretch justify-start">
-                    <h3>{idt.surname} {idt.name}</h3>
-                    <span className="text-gray-500">{type == 'alumnus' ? romanize(idt.coorte) : idt.notes}</span>
-                    {idt.login_methods.map(lmth => LoginMethodSpan(lmth, setProcessing))}
+        <div key={idt.id} style={disappearing(visible)}>
+            <div className="mylist-item p-2">
+                <div className="flex flex-row items-center gap-2">
+                    <ReactSwitch checked={idt.enabled} onChange={(checked) => identityEnabling(idt.id, type, checked, setProcessing)} />
+                    <div className="flex flex-col items-stretch justify-start">
+                        <h3>{idt.surname} {idt.name}</h3>
+                        <span className="text-gray-500">{type == 'alumnus' ? romanize(idt.coorte) : idt.notes}</span>
+                        {idt.login_methods.map(lmth => LoginMethodSpan(lmth, setProcessing))}
+                    </div>
                 </div>
                 <IdentityRoles identity={idt} type={type} setProcessing={setProcessing} />
             </div>

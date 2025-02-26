@@ -1,5 +1,3 @@
-// TODO questi sono inguardabili, da sistemare
-
 export default function RolesChips({ roles, list, updateList }) {    
     const changeRole = (id) => {
         if (list.includes(id)) {
