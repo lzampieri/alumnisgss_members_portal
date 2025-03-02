@@ -80,9 +80,8 @@ export default function List() {
                 <input type="text" className="w-full text-center" placeholder="Cerca..." value={quickFilter} onChange={(e) => setQuickFilter(e.target.value)} />
                 <FontAwesomeIcon icon={solid('magnifying-glass')} className="input-icon" />
             </div>
-            {/* <RegistryHeader where='schema' quickFilter={quickFilter} setQuickFilter={setQuickFilter} /> */}
             <div className="w-full grow overflow-x-scroll flex flex-row">
-                {data.map((data, i) => <CoorteColumns key={i} coorte={i} data={data} quickFilter={quickFilter} />)}
+                {Object.keys(data).map( coorte => <CoorteColumns key={coorte} coorte={coorte} data={data[coorte]} quickFilter={quickFilter} />)}
             </div>
         </div>
     );
