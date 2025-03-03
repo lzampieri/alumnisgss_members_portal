@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AlumnusController;
+use App\Http\Controllers\AlumnusControllerChecks;
 use App\Http\Controllers\AlumnusExportImportController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,7 +19,10 @@ Route::prefix('/registry')->group(function () {
     })->name('registry');
     Route::get('/schema', [AlumnusController::class, 'schema'])->name('registry.schema');
     Route::get('/table', [AlumnusController::class, 'table'])->name('registry.table');
-    Route::get('/checks', [AlumnusController::class, 'checks'])->name('registry.checks');
+
+    Route::get('/checks', [AlumnusControllerChecks::class, 'checks'])->name('registry.checks');
+    Route::post('/checks/assdet', [AlumnusControllerChecks::class, 'assdet'])->name('registry.checks.assdet');
+    Route::post('/checks/dupcor', [AlumnusControllerChecks::class, 'dupcor'])->name('registry.checks.dupcor');
 
     Route::get('/add', [AlumnusController::class, 'edit'])->name('registry.add');
     

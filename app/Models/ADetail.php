@@ -14,7 +14,9 @@ class ADetail extends Model
 
     protected $fillable = [
         'value',
-        'a_details_type_id'
+        'a_details_type_id',
+        'identity_type',
+        'identity_id'
     ];
     protected $casts = [
         'value' => 'array'
