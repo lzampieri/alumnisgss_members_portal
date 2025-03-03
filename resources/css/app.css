@@ -53,6 +53,12 @@
     h3 {
         @apply text-2xl
     }
+    h4 {
+        @apply font-bold underline
+    }
+    h5 {
+        @apply font-bold
+    }
 
     /* INPUT AND FORMS */
     input[type="text"] {

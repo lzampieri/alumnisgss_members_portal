@@ -11,6 +11,7 @@ export default class ADetailsType {
             'label': 'Multivalore',
             'paramName': 'Separatori',
             'paramDefault': '-;',
+            'expval': '0:',
             'editor': (adt, value, updateValue) =>
                 <TokenizableInput
                     separatingCharacters={adt.param}
@@ -24,6 +25,7 @@ export default class ADetailsType {
         },
         'string': {
             'label': 'Testo',
+            'expval': '0:1',
             'editor': (adt, value, updateValue) =>
                 <input
                     type="text"
@@ -38,6 +40,7 @@ export default class ADetailsType {
         },
         'longText': {
             'label': 'Nota lunga',
+            'expval': '0:1',
             'editor': (adt, value, updateValue) =>
                 <TextareaAutosize
                     className="w-full pretendToBeInput"
@@ -54,6 +57,7 @@ export default class ADetailsType {
             'label': 'Scelta multipla a valori fissi',
             'paramName': 'Valori (separati da ;)',
             'paramDefault': 'Valore 1;Valore 2',
+            'expval': '1',
             'editor': (adt, value, updateValue) => {
                 const options = adt.param?.split(';').map(i => ({ value: i, label: i })) || [];
                 return <Select
@@ -71,6 +75,7 @@ export default class ADetailsType {
         },
         'creatableSelect': {
             'label': 'Scelta multipla o nuovo valore',
+            'expval': '1',
             'editor': (adt, value, updateValue) => {
                 const options = adt.usedValues?.map(i => ({ value: i, label: i })) || [];
                 return <CreatableSelect

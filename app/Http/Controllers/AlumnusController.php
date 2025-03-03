@@ -74,12 +74,11 @@ class AlumnusController extends Controller
     public function table()
     {
         $this->authorize('viewAny', Alumnus::class);
-        $alumni = Alumnus::
-            with(['aDetails' => function ($query) {
-                $query->whereHas('aDetailsType', function ($query) {
-                    $query->where('visible', true);
-                })->orderBy(ADetailsType::select('order')->whereColumn('a_details_types.id', 'a_details.a_details_type_id'));
-            }, 'aDetails.aDetailsType'])
+        $alumni = Alumnus::with(['aDetails' => function ($query) {
+            $query->whereHas('aDetailsType', function ($query) {
+                $query->where('visible', true);
+            })->orderBy(ADetailsType::select('order')->whereColumn('a_details_types.id', 'a_details.a_details_type_id'));
+        }, 'aDetails.aDetailsType'])
             ->orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
             ->get()
@@ -93,6 +92,46 @@ class AlumnusController extends Controller
                 'data' => $alumni,
                 'adtlist' => $adtlist,
             ] + $this->commonRegistryParams()
+        );
+    }
+
+    public function checks()
+    {
+        $this->authorize('viewAny', Alumnus::class);
+        
+        $alumnusData = Alumnus::with(['aDetails' => function ($query) {
+                $query->whereHas('aDetailsType', function ($query) {
+                    $query->where('visible', true);
+                })->orderBy(ADetailsType::select('order')->whereColumn('a_details_types.id', 'a_details.a_details_type_id'));
+            }, 'aDetails.aDetailsType'])
+            ->orderBy('coorte')
+            ->orderBy('surname')->orderBy('name')
+            ->get()
+            ->append('a_details_keyd')
+            ->toArray();
+
+        array_walk($alumnusData, function (&$alumnus,$key) {
+
+            // Remove irrelevant data
+            unset( $alumnus['enabled'] );
+            unset( $alumnus['a_details'] );
+            unset( $alumnus['permissions'] );
+            unset( $alumnus['roles'] );
+
+            // Remove details but keep the count
+            array_walk($alumnus['a_details_keyd'], function (&$det,$key) {
+                $det = count($det["value"]);
+            });
+        });
+
+        $adtlist = ADetailsType::allOrdered()->keyBy('id');
+            
+        return Inertia::render(
+            'Registry/Checks',
+            [
+                'alumnusData' => $alumnusData,
+                'adtlist' => $adtlist
+            ]
         );
     }
 
