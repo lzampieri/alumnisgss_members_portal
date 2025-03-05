@@ -80,9 +80,6 @@ export default function MembersVariations() {
             setStatuses(statuses.concat([id]))
     }
 
-    console.log( statuses )
-
-
     const sendPostRequest = (from, to) => {
         window.location = route('reports.members_variations.generate',
             {

@@ -84,7 +84,6 @@ function ListAsATable({ alumni, quickFilter }) {
 export default function List() {
     const alumni = usePage().props.alumni;
     const [quickFilter, setQuickFilter] = useState('')
-    console.log(alumni)
 
     return <div className="main-container-large h-[80vh] gap-1">
         <div className="w-full flex flex-row justify-center gap-2">
