@@ -87,7 +87,7 @@ export default function Schema() {
     const [quickFilter, setQuickFilter] = useState('')
 
     return (
-        <div className="main-container-large md:h-[80vh] gap-1">
+        <div className="main-container-large h-[80vh] gap-1">
             <RegistryHeader where='schema' quickFilter={quickFilter} setQuickFilter={setQuickFilter} />
             <div className="w-full grow overflow-scroll flex flex-row">
                 {Object.entries(data).map(([coorte,content]) => <CoorteColumns key={coorte} coorte={coorte} data={content} tagsDict={tagsDict} quickFilter={quickFilter} />)}

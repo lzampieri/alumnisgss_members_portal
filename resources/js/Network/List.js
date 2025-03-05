@@ -86,7 +86,7 @@ export default function List() {
     const [quickFilter, setQuickFilter] = useState('')
     console.log(alumni)
 
-    return <div className="main-container-large md:h-[80vh] gap-1">
+    return <div className="main-container-large h-[80vh] gap-1">
         <div className="w-full flex flex-row justify-center gap-2">
             <input className="w-full md:w-1/2" type='text' value={quickFilter} onChange={(e) => setQuickFilter(e.target.value)} placeholder='Cerca...' />
             {usePage().props.canEditView &&
