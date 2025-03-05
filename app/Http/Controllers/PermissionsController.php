@@ -111,8 +111,6 @@ class PermissionsController extends Controller
             'documents-edit',
             // Resources
             'resources-create',
-            // Aws session
-            'aws-session-view',
             // Webmaster stuff
             'logfile-view',
             'logdb-view',

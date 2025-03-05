@@ -6,7 +6,6 @@ use App\Http\Controllers\LogEvents;
 use App\Models\ADetail;
 use App\Models\ADetailsType;
 use App\Models\Alumnus;
-use App\Models\AwsSession;
 use App\Models\Document;
 use App\Models\DynamicPermission;
 use App\Models\External;
@@ -24,22 +23,22 @@ use Illuminate\Database\Eloquent\Model;
 class LogType {
     const DB = [
         LogEvents::CREATE => [
-            Alumnus::class, AwsSession::class, Document::class, DynamicPermission::class,
+            Alumnus::class, Document::class, DynamicPermission::class,
             External::class, IdentityDetail::class, LoginMethod::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
             Permalink::class, File::class ],
         LogEvents::RESTORED => [
-            Alumnus::class, AwsSession::class, Document::class, DynamicPermission::class,
+            Alumnus::class, Document::class, DynamicPermission::class,
             External::class, IdentityDetail::class, LoginMethod::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
             Permalink::class, File::class ],
         LogEvents::UPDATE => [
-            Alumnus::class, AwsSession::class, Document::class, DynamicPermission::class,
+            Alumnus::class, Document::class, DynamicPermission::class,
             External::class, IdentityDetail::class, LoginMethod::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
             Permalink::class, File::class ],
         LogEvents::DELETE => [
-            Alumnus::class, AwsSession::class, Document::class, DynamicPermission::class,
+            Alumnus::class, Document::class, DynamicPermission::class,
             External::class, IdentityDetail::class, LoginMethod::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
             Permalink::class, File::class ],
@@ -117,12 +116,6 @@ class LogController extends Controller
             return "Permalink " . $object->id . " to " . $object->linkable_type . " #" . $object->linkable_id;
         if ($object instanceof File)
             return "File " . $object->handle . " [sha256:" . $object->sha256 . "] belonging to " . Log::stringify($object->parent);
-        if ($object instanceof AwsSession) {
-            if ($object->endtime)
-                return "Session of machine " . $object->aws_id . " from " . $object->ip . " (duration " . $object->duration . " min)";
-            else
-                return "Session of machine " . $object->aws_id . " from " . $object->ip . " (started " . $object->starttime . " min)";
-        }
         return $object;
     }
 }

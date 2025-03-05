@@ -38,7 +38,5 @@ include( 'webmaster.php' );
 
 include( 'permalinks.php' );
 
-// include( 'aws_sessions.php' );
-
 Route::redirect('/main','https://www.alumniscuolagalileiana.it')->name('main');
 
