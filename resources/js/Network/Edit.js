@@ -12,29 +12,6 @@ import TokenizableInput from "../Libs/react-tokenizable-inputs/TokenizableInput"
 import Backdrop from "../Layout/Backdrop";
 import ADetailsType from "./ADetailsType";
 
-function DetailRow({ data, setData, options, val_options, errors, errors_prename }) {
-    return <><div className={"w-full flex flex-row my-1 gap-1 items-center " + (data.delete ? "text-error line-through	" : "")}>
-        <CreatableSelect
-            className="basis-0 grow"
-            value={{ value: data.key, label: data.key }}
-            onChange={(e) => setData('key', e.value)}
-            options={options} />
-        :
-        <CreatableSelect
-            className="basis-0 grow"
-            value={{ value: data.value, label: data.value }}
-            onChange={(e) => setData('value', e.value)}
-            options={val_options} />
-        <button className={"icon-button h-8 w-8 grow-0 " + (data.delete ? "button-active" : "")} onClick={(e) => { e.preventDefault(); setData('delete', !data.delete) }}>
-            <FontAwesomeIcon icon={solid('trash')} />
-        </button>
-    </div>
-        <label className="error">{errors[errors_prename + "key"]}</label>
-        <label className="error">{errors[errors_prename + "value"]}</label>
-        <label className="error">{errors[errors_prename + "delete"]}</label>
-    </>
-}
-
 export default function Edit() {
     const alumnus = usePage().props.alumnus;
 
@@ -103,25 +80,6 @@ export default function Edit() {
                         <label className="error">C'è un problema con questo dato</label>}
                 </Fragment>)
             }
-
-            {/*
-            <label>Altri dettagli</label>
-            <label className="error">{errors.details}</label>
-            {data.details.map((det, idx) =>
-                <DetailRow
-                    key={idx}
-                    data={det}
-                    setData={(k, v) => updateDetails(idx, k, v)}
-                    options={details_keys_options}
-                    val_options={details_values_options[det.key]}
-                    errors={errors}
-                    errors_prename={"details." + idx + "."}
-                />
-            )}
-            <button className="icon-button h-8 w-8 grow-0" onClick={(e) => { e.preventDefault(); addDetails() }}>
-                <FontAwesomeIcon icon={solid('circle-plus')} />
-            </button>
-            */}
 
             <div className="flex flex-row w-full justify-end">
                 <div className="button flex flex-row items-center self-start mb-4" onClick={submit}>

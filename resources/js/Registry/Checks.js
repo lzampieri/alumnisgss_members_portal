@@ -67,40 +67,6 @@ function verifyCounts() {
     </>
 }
 
-function OldDetailsRow({ k, values }) {
-    const { data, setData, post, processing } = useForm({
-        from: k,
-        to: null
-    })
-    const adtlist = usePage().props.adtlist;
-
-    const options = Object.keys(adtlist).map(k => ({ value: k, label: adtlist[k].name }));
-
-    return <li className="pb-4">
-        {k}<br />
-        <label className="unspaced">Con valori: {values.join(', ')}</label><br />
-        <Select
-            classNames={{ control: () => 'selectDropdown' }}
-            value={options.find(i => options.value == data.to)}
-            options={options}
-            onChange={(sel) => setData('to', sel.value)} />
-        <div className="discrete-button" onClick={() => post(route('registry.checks.assdet'))}>Associa</div>
-        <Backdrop open={processing} />
-    </li>
-
-}
-
-function oldDetails() {
-    const list = usePage().props.oldDetails
-    return <>
-        <h4>Verifica vecchi dettagli</h4>
-        <ul>
-            {Object.keys(list).length == 0 && <>Nessun dettaglio nel vecchio formato rilevato! Evviva!</>}
-            {Object.keys(list).map(k => <OldDetailsRow key={k} k={k} values={list[k]} />)}
-        </ul>
-    </>
-}
-
 function doubledDetails() {
     const list = usePage().props.doubledDetails;
     const { data, setData, post, processing } = useForm({
@@ -149,8 +115,6 @@ export default function Checks() {
     return <>
         <h3>Controlli integrità anagrafica</h3>
         <div className="w-full flex-col">
-            {oldDetails()}
-            <hr className="my-2" />
             {wrongSelect()}
             <hr className="my-2" />
             {doubledDetails()}

@@ -10,7 +10,6 @@ use App\Models\Document;
 use App\Models\DynamicPermission;
 use App\Models\External;
 use App\Models\File;
-use App\Models\IdentityDetail;
 use App\Models\LoginMethod;
 use App\Models\Permalink;
 use App\Models\Permission;
@@ -24,22 +23,22 @@ class LogType {
     const DB = [
         LogEvents::CREATE => [
             Alumnus::class, Document::class, DynamicPermission::class,
-            External::class, IdentityDetail::class, LoginMethod::class, Ratification::class,
+            External::class, LoginMethod::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
             Permalink::class, File::class ],
         LogEvents::RESTORED => [
             Alumnus::class, Document::class, DynamicPermission::class,
-            External::class, IdentityDetail::class, LoginMethod::class, Ratification::class,
+            External::class, LoginMethod::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
             Permalink::class, File::class ],
         LogEvents::UPDATE => [
             Alumnus::class, Document::class, DynamicPermission::class,
-            External::class, IdentityDetail::class, LoginMethod::class, Ratification::class,
+            External::class, LoginMethod::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
             Permalink::class, File::class ],
         LogEvents::DELETE => [
             Alumnus::class, Document::class, DynamicPermission::class,
-            External::class, IdentityDetail::class, LoginMethod::class, Ratification::class,
+            External::class, LoginMethod::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
             Permalink::class, File::class ],
         LogEvents::DOWNLOADED_DETAILS => True,
@@ -98,14 +97,10 @@ class LogController extends Controller
             return $object->name;
         if ($object instanceof Ratification)
             return "Ratification of " . $object->alumnus->surnameAndName() . " to " . $object->required_state;
-        if ($object instanceof IdentityDetail)
-            return "Old-style identity detail of " . $object->identity->surnameAndName() . ": " . $object->key . " => " . $object->value;
         if ($object instanceof ADetailsType)
             return "ADetail type " . $object->name . " (" . $object->type . ")";
         if ($object instanceof ADetail)
             return "ADetail for " . $object->identity->surnameAndName() . ": " . $object->aDetailsType->name . " => " . json_encode($object->value);
-        if ($object instanceof IdentityDetail)
-            return "Old-style identity detail of " . $object->identity->surnameAndName() . ": " . $object->key . " => " . $object->value;
         if ($object instanceof Document)
             return $object->identifier . " (" . $object->protocol . ", " . $object->date . ")";
         if ($object instanceof DynamicPermission)

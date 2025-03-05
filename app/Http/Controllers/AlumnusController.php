@@ -6,7 +6,6 @@ use App\Models\ADetail;
 use App\Models\ADetailsType;
 use App\Models\Alumnus;
 use App\Models\Identity;
-use App\Models\IdentityDetail;
 use App\Models\Ratification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -104,7 +103,7 @@ class AlumnusController extends Controller
         $adtlist = ADetailsType::allOrdered();
 
         if ($alumnus) {
-            $alumnus->load(['details', 'ratifications', 'ratifications.document']);
+            $alumnus->load(['ratifications', 'ratifications.document']);
             $adtlist->load(['aDetails' => function ($query) use ($alumnus) {
                 $query->where('identity_type', Alumnus::class)->where('identity_id', $alumnus->id);
             }]);

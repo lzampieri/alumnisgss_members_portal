@@ -14,6 +14,7 @@ class DropOldVersionTables extends Migration
     public function up()
     {
         Schema::dropIfExists('aws_sessions');
+        Schema::dropIfExists('identity_details');
     }
 
     /**

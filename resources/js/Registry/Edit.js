@@ -152,14 +152,6 @@ export default function Edit() {
                 </Fragment>)
             }
 
-            {data.details?.length > 0 && <>
-                <label>Altri dettagli dal vecchio sistema (obsoleto)</label>
-                {data.details.map((det, idx) =>
-                    <span key={idx}>{det.key}: {det.value}</span>
-                )}
-            </>
-            }
-
             <div className="button flex flex-row items-center self-end my-4" onClick={submit}>
                 <FontAwesomeIcon icon={solid('save')} />
                 Salva

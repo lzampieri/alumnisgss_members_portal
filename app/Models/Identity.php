@@ -90,10 +90,6 @@ abstract class Identity extends Model
         return $this->morphMany(Document::class, 'author');
     }
 
-    public function details()
-    {
-        return $this->morphMany(IdentityDetail::class, 'identity');
-    }
     public function aDetails()
     {
         return $this->morphMany(ADetail::class, 'identity');
