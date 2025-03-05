@@ -43,7 +43,7 @@ class PermissionsController extends Controller
 
         // ROLES
 
-        $count_r = Role::count();
+        $count_r_prev = Role::count();
 
         $roles_to_assert = [
             'webmaster',
@@ -71,12 +71,12 @@ class PermissionsController extends Controller
             }
         }
 
-        $count_r = Role::count() - $count_r;
+        $count_r_added = Role::count() - $count_r_prev;
 
 
         // PERMISSIONS
 
-        $count_p = Permission::count();
+        $count_p_prev = Permission::count();
 
         $permissions_to_assert = [
             // Identities
@@ -105,7 +105,6 @@ class PermissionsController extends Controller
             // Ratifications
             'ratifications-view',
             'ratifications-edit',
-            // 'ratifications-bypass', THIS PERMISSION HAS BEEN REMOVED
             // Documents
             'documents-upload',
             'documents-edit',
@@ -114,6 +113,7 @@ class PermissionsController extends Controller
             // Webmaster stuff
             'logfile-view',
             'logdb-view',
+            'log-manage',
             'db-reset'
         ];
 
@@ -124,6 +124,7 @@ class PermissionsController extends Controller
             $permissions_to_assert[] = 'user-edit-' . $role;
         }
 
+        // Add permissions
         try {
             // Find or create!
             foreach ($permissions_to_assert as $permission)
@@ -132,14 +133,23 @@ class PermissionsController extends Controller
             return redirect()->back()->with(['notistack' => ['error', "C'è stato un errore."]]);
         }
 
-        $count_p = Permission::count() - $count_p;
+        $count_p_added = Permission::count() - $count_p_prev;
+        $count_p_deleted = 0;
+
+        // Remove permissions
+        foreach(Permission::where('guard_name','web')->get() as $permission) {
+            if( !in_array( $permission->name, $permissions_to_assert ) ) {
+                $permission->delete();
+                $count_p_deleted++;
+            }
+        }
 
         // Assign permissions to roles
         Role::findByName('webmaster')->givePermissionTo(Permission::all());
 
-        if ($count_p == 0)
+        if ($count_p_added + $count_r_added + $count_p_deleted == 0)
             return redirect()->back()->with(['notistack' => ['success', 'Permessi e ruoli corretti']]);
-        return redirect()->back()->with(['notistack' => ['warning', $count_p . ' permessi aggiunti, ' . $count_r . ' ruoli aggiunti']]);
+        return redirect()->back()->with(['notistack' => ['warning', $count_p_added . ' permessi aggiunti, ' . $count_p_deleted . ' permessi rimossi, ' . $count_r_added . ' ruoli aggiunti']]);
     }
 
     public function update(Request $request)
