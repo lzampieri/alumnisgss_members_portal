@@ -21,6 +21,11 @@
         @apply no-underline;
         @apply cursor-pointer;
     }
+    .button:disabled {
+        @apply px-4 py-2 rounded border-2 border-gray-300 text-gray-300 bg-primary-contrast;
+        @apply no-underline;
+        @apply cursor-auto;
+    }
     .button-active {
         @apply text-primary-contrast bg-primary-main;
     }

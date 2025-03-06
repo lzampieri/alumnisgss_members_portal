@@ -16,6 +16,7 @@ use App\Models\Permission;
 use App\Models\Ratification;
 use App\Models\Resource;
 use App\Models\Role;
+use App\Models\Stamp;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,22 +26,22 @@ class LogType {
             Alumnus::class, Document::class, DynamicPermission::class,
             External::class, LoginMethod::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
-            Permalink::class, File::class ],
+            Permalink::class, File::class, Stamp::class ],
         LogEvents::RESTORED => [
             Alumnus::class, Document::class, DynamicPermission::class,
             External::class, LoginMethod::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
-            Permalink::class, File::class ],
+            Permalink::class, File::class, Stamp::class ],
         LogEvents::UPDATE => [
             Alumnus::class, Document::class, DynamicPermission::class,
             External::class, LoginMethod::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
-            Permalink::class, File::class ],
+            Permalink::class, File::class, Stamp::class ],
         LogEvents::DELETE => [
             Alumnus::class, Document::class, DynamicPermission::class,
             External::class, LoginMethod::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
-            Permalink::class, File::class ],
+            Permalink::class, File::class, Stamp::class ],
         LogEvents::DOWNLOADED_DETAILS => True,
         LogEvents::DOWNLOADED_SCHEMA => True,
         LogEvents::LOGIN => True,
@@ -49,7 +50,7 @@ class LogType {
         LogEvents::ROLE_GIVEN => True,
         LogEvents::ROLE_REVOKEN => True
     ];
-}
+} // TODO Add stamps
 
 class LogController extends Controller
 {
@@ -111,6 +112,8 @@ class LogController extends Controller
             return "Permalink " . $object->id . " to " . $object->linkable_type . " #" . $object->linkable_id;
         if ($object instanceof File)
             return "File " . $object->handle . " [sha256:" . $object->sha256 . "] belonging to " . Log::stringify($object->parent);
+        if ($object instanceof Stamp)
+            return "Stamp of " . $object->date . " from " . $object->clockin . " to " . $object->clockout . " ( " . $object->ip . " ) for " . Log::stringify($object->employee);
         return $object;
     }
 }

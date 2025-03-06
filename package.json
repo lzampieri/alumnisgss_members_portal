@@ -41,6 +41,7 @@
         "react-select": "^5.7.2",
         "react-switch": "^7.0.0",
         "react-textarea-autosize": "^8.5.7",
+        "react-timer-hook": "^4.0.1",
         "react-use-measure": "^2.1.1",
         "react-useportal": "^1.0.19",
         "tailwind-datepicker-react": "^1.2.3",

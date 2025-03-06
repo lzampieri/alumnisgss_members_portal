@@ -34,6 +34,8 @@ include( 'reports.php' );
 
 include( 'roles.php' );
 
+include( 'clockings.php' );
+
 include( 'webmaster.php' );
 
 include( 'permalinks.php' );

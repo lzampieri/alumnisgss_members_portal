@@ -2,6 +2,7 @@ import { romanize } from "../Utils"
 
 
 function Stringifier( item_type, item ) {
+    if( item == null ) return 'NULL'
     if( item_type == 'App\\Models\\Alumnus' ) return `${item.surname} ${item.name} (${romanize(item.coorte)}) [${item.status}]`
     if( item_type == 'App\\Models\\External' ) return `${item.surname} ${item.name} (${item.notes})`
     if( item_type == 'App\\Models\\LoginMethod' ) return `LoginMethod ${item.credential}`
@@ -12,6 +13,7 @@ function Stringifier( item_type, item ) {
 }
 
 function Tooltipier( item_type, item ) {
+    if( item == null ) return 'NULL'
     if( item_type == 'App\\Models\\Alumnus' ) return `Alumnus #${item.id}`
     if( item_type == 'App\\Models\\External' ) return `External #${item.id}`
     if( item_type == 'App\\Models\\LoginMethod' ) return `LoginMethod #${item.id} (${item.credential})`

@@ -89,6 +89,11 @@ abstract class Identity extends Model
     {
         return $this->morphMany(Document::class, 'author');
     }
+    
+    public function stamps()
+    {
+        return $this->morphMany(Stamp::class, 'employee');
+    }
 
     public function aDetails()
     {

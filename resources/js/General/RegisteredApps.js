@@ -8,7 +8,8 @@ export default [
     { id: 'board', name: 'Albo', url: route('board'), icon: solid('book-open') },
     { id: 'reports', name: 'Report', url: route('reports'), icon: solid('file-pen') },
     { id: 'resources', name: 'Risorse', url: route('resources'), icon: solid('box-archive') },
-    { id: 'webmaster', name: 'Webmaster', url: route('webmaster'), icon: solid('bug') },
+    { id: 'clockings', name: 'Timbrature', url: route('clockings'), icon: solid('business-time') },
     { id: 'accesses', name: 'Accessi', url: route('accesses'), icon: solid('id-badge') },
     { id: 'permissions', name: 'Ruoli e permessi', url: route('permissions'), icon: solid('id-card') },
+    { id: 'webmaster', name: 'Webmaster', url: route('webmaster'), icon: solid('bug') },
 ]

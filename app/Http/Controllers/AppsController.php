@@ -53,6 +53,10 @@ class AppsController extends Controller
             $apps[] = 'permissions';
         }
 
+        if (Auth::user() ) { // Should check if is employee or manager
+            $apps[] = 'clockings';
+        }
+
         return Inertia::render('Home', ['apps' => $apps]);
     }
 }
