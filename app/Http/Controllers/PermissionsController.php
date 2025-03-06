@@ -125,12 +125,15 @@ class PermissionsController extends Controller
         }
 
         // Add permissions
-        try {
-            // Find or create!
-            foreach ($permissions_to_assert as $permission)
+        foreach ($permissions_to_assert as $permission) {
+            try {
                 Permission::findOrCreate($permission);
-        } catch(\Illuminate\Database\QueryException $ex){ 
-            return redirect()->back()->with(['notistack' => ['error', "C'è stato un errore."]]);
+            } catch(\Illuminate\Database\QueryException $ex){
+                if( $ex->getCode() == 23000 ) {
+                    Log::debug("Error 2300 in adding permission " . $permission . ", ignored", $ex->getCode() );
+                }
+                else return redirect()->back()->with(['notistack' => ['error', "C'è stato un errore."]]);
+            }
         }
 
         $count_p_added = Permission::count() - $count_p_prev;
