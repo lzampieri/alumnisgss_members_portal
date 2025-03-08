@@ -110,6 +110,9 @@ class PermissionsController extends Controller
             'documents-edit',
             // Resources
             'resources-create',
+            // Clockings
+            'clockin',
+            'clockin-view-all',
             // Webmaster stuff
             'logfile-view',
             'logdb-view',
