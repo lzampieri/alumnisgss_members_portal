@@ -16,9 +16,11 @@ class CreateStampsTable extends Migration
         Schema::create('stamps', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->softDeletes();
             $table->morphs('employee');
             $table->ipAddress('ip');
             $table->date('date');
+            $table->string('type',255)->default('work');
             $table->time('clockin')->nullable();
             $table->time('clockout')->nullable();
             $table->text('note')->nullable();
