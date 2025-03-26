@@ -211,6 +211,9 @@
     .alert {
         @apply rounded-md bg-primary-main bg-opacity-10 my-2 p-2
     }
+    .card {
+        @apply w-full border-2 border-primary-main rounded px-2 py-1
+    }
 
     /* DRAWER */
     .main-container-drawer {

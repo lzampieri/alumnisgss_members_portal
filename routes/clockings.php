@@ -7,9 +7,8 @@ use Illuminate\Support\Facades\Route;
 
 // Documents
 Route::prefix('/clockings')->group(function () {
-    Route::get('/', [StampController::class, 'index'])->name('clockings');
+    Route::get('/', [StampController::class, 'clocker'])->name('clockings');
 
-    Route::get('/employee', [StampController::class, 'employee'])->name('clockings.employee');
     Route::post('/clockin', [StampController::class, 'clockin'])->name('clockings.clockin');
     Route::post('/clockout', [StampController::class, 'clockout'])->name('clockings.clockout');
 

@@ -2,93 +2,79 @@
 
 namespace App\Policies;
 
-use App\Models\LoginMethod;
 use App\Models\Stamp;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Foundation\Auth\User;
 
-class StampPolicy // TODO this should be managed
+class StampPolicy
 {
     use HandlesAuthorization;
 
     /**
      * Determine whether the user can view any models.
      *
-     * @param  \App\Models\LoginMethod  $loginMethod
+     * @param  \Illuminate\Foundation\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(LoginMethod $loginMethod)
+    public function viewAny(User $user)
     {
-        //
+        return $user->hasPermissionTo('clockin-view-all');
     }
 
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\Models\LoginMethod  $loginMethod
+     * @param  \Illuminate\Foundation\Auth\User  $user
      * @param  \App\Models\Stamp  $stamp
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(LoginMethod $loginMethod, Stamp $stamp)
+    public function view(User $user, Stamp $stamp)
     {
-        //
+        return $stamp->employee->is($user) || $user->hasPermissionTo('clockin-view-all');
     }
 
     /**
-     * Determine whether the user can create models.
+     * Determine whether the user can view the people which are currently in service.
      *
-     * @param  \App\Models\LoginMethod  $loginMethod
+     * @param  \Illuminate\Foundation\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(LoginMethod $loginMethod)
+    public function viewOnline(User $user)
     {
-        //
+        return  $user->hasPermissionTo('clockin-view-online') || $user->hasPermissionTo('clockin-view-all');
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determine whether the user can clock-in.
      *
-     * @param  \App\Models\LoginMethod  $loginMethod
+     * @param  \Illuminate\Foundation\Auth\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function clockin(User $user)
+    {
+        return $user->hasPermissionTo('clockin');
+    }
+
+    /**
+     * Determine whether the user can edit his stamps.
+     *
+     * @param  \Illuminate\Foundation\Auth\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function editMine(User $user)
+    {
+        return $user->hasPermissionTo('clockin');
+    }
+
+    /**
+     * Determine whether the user can edit his stamps.
+     *
+     * @param  \Illuminate\Foundation\Auth\User  $user
      * @param  \App\Models\Stamp  $stamp
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(LoginMethod $loginMethod, Stamp $stamp)
+    public function edit(User $user, Stamp $stamp)
     {
-        //
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     *
-     * @param  \App\Models\LoginMethod  $loginMethod
-     * @param  \App\Models\Stamp  $stamp
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function delete(LoginMethod $loginMethod, Stamp $stamp)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\LoginMethod  $loginMethod
-     * @param  \App\Models\Stamp  $stamp
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function restore(LoginMethod $loginMethod, Stamp $stamp)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\LoginMethod  $loginMethod
-     * @param  \App\Models\Stamp  $stamp
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function forceDelete(LoginMethod $loginMethod, Stamp $stamp)
-    {
-        //
+        return $stamp->employee->is($user->identity) || $user->hasPermissionTo('clockin-edit-all');
     }
 }

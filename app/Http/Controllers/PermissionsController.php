@@ -113,6 +113,8 @@ class PermissionsController extends Controller
             // Clockings
             'clockin',
             'clockin-view-all',
+            'clockin-view-online',
+            'clockin-edit-all',
             // Webmaster stuff
             'logfile-view',
             'logdb-view',

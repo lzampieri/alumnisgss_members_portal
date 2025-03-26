@@ -15,40 +15,34 @@ use mcaskill\array_group_by;
 
 class StampController extends Controller
 {
-    public function index(Request $request)
+
+    public function clocker()
     {
-        if (Auth::user()->hasPermissionTo('clockin')) {
-            return redirect()->route('clockings.employee');
+        $data = ['user' => Auth::user()];
+
+        if( Auth::user()->can('clockin', Stamp::class) ) {
+            $data['canClockIn'] = true;
+            
+            $data['lastClockIn'] = Auth::user()->identity->stamps()
+                ->whereDate('date', Carbon::now())
+                ->whereNull('clockout')->select(['clockin', 'type'])->latest()->first();
+            
+            $data['canClockToday'] = !$data['lastClockIn'] || $data['lastClockIn']->type->clockable;
         }
-        if (Auth::user()->hasPermissionTo('clockin-view-all')) {
-            return redirect()->route('clockings.monthly');
+
+        if( Auth::user()->can('viewOnline', Stamp::class) ) {
+            $data['currentlyOnline'] = Stamp::whereDate('date', Carbon::now())
+            ->whereNull('clockout')->with('employee')->get();
+                // ->only(['employee','type']);
         }
-        return ErrorsController::e403($request);
-    }
 
-    public function employee()
-    {
-        // TODO add authorization
-
-        $clockedIn = Auth::user()->identity->stamps()
-            ->whereDate('date', Carbon::now())
-            ->whereNull('clockout')->select(['clockin', 'type'])->latest()->first();
-        $canClockToday = true;
-
-        if ($clockedIn && !$clockedIn->type->clockable) $canClockToday = false;
-
-        $data = [
-            'clockedIn' => $clockedIn,
-            'canClockToday' => $canClockToday,
-            'user' => Auth::user()
-        ];
-
-        return Inertia::render('Clockings/Employee', $data);
+        return Inertia::render('Clockings/Clocker', $data);
     }
 
     public function clockin()
     {
-        // TODO add authorization
+        $this->authorize('clockin', Stamp::class);
+
         // Check if the user is not already clocked in
         $clockedIn = Auth::user()->identity->stamps()
             ->whereDate('date', Carbon::now())
@@ -72,7 +66,7 @@ class StampController extends Controller
 
     public function clockout()
     {
-        // TODO add authorization
+        $this->authorize('clockin', Stamp::class);
 
         $clockedIn = Auth::user()->identity->stamps()
             ->whereDate('date', Carbon::now())
@@ -93,7 +87,7 @@ class StampController extends Controller
 
     public function manageSpecials()
     {
-        // TODO add authorization
+        $this->authorize('editMine', Stamp::class);
 
         $from = Carbon::now()->subMonth()->startOfMonth();
         $to = Carbon::now()->addMonth()->endOfMonth();
@@ -120,7 +114,8 @@ class StampController extends Controller
     }
 
     public function addSpecials (Request $request) {
-        // TODO add authorization
+        $this->authorize('editMine', Stamp::class);
+
         $types = implode(',', array_filter( array_keys( StampTypes::getAllTypes() ), function ($item) { return ($item !== 'default') && ($item !== 'work'); } ) );
 
         $validated = $request->validate([
@@ -153,13 +148,14 @@ class StampController extends Controller
     }
 
     public function delSpecial (Request $request) {
-        // TODO add authorization
         
         $validated = $request->validate([
             'id' => 'required|numeric|exists:stamps,id'
         ]);
-
+        
         $stamp = Stamp::find($validated['id']);
+
+        $this->authorize('edit', $stamp);
 
         $types = array_filter( array_keys( StampTypes::getAllTypes() ), function ($item) { return ($item !== 'default') && ($item !== 'work'); } );
 
@@ -179,6 +175,7 @@ class StampController extends Controller
 
     public function monthly(int $year = -1, int $month = -1)
     {
+
         if ($year == -1 || $month == -1) {
             $today = Carbon::now();
             $year = $today->year;
@@ -189,13 +186,9 @@ class StampController extends Controller
             $query->whereYear('date', $year)->whereMonth('date', $month);
         };
 
-        if (Auth::user()->hasPermissionTo('clockin-view-all')) {
+        if ( Auth::user()->can('viewAny', Stamp::class) ) {
             $data = array_merge(
                 Alumnus::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter])->get()->all(),
-                External::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter])->get()->all(),
-                External::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter])->get()->all(),
-                External::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter])->get()->all(),
-                External::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter])->get()->all(),
                 External::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter])->get()->all(),
             );
         } else {

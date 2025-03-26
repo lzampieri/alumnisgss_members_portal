@@ -50,7 +50,7 @@ class LogType {
         LogEvents::ROLE_GIVEN => True,
         LogEvents::ROLE_REVOKEN => True
     ];
-} // TODO Add stamps
+}
 
 class LogController extends Controller
 {

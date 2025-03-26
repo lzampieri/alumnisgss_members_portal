@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
 use App\Models\LoginMethod;
+use App\Models\Stamp;
 use App\Policies\AlumnusPolicy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -53,7 +54,7 @@ class AppsController extends Controller
             $apps[] = 'permissions';
         }
 
-        if (Auth::user() ) { // Should check if is employee or manager
+        if (Auth::user()->can('clockin', Stamp::class) || Auth::user()->can('viewAny', Stamp::class)) { // Should check if is employee or manager
             $apps[] = 'clockings';
         }
 
