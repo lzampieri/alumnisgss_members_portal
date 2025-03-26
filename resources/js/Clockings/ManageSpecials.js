@@ -3,8 +3,10 @@ import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import Backdrop from "../Layout/Backdrop";
 import { bgAndContrast, postRequest } from "../Utils";
 import { useState } from "react";
-import { Link, usePage } from "@inertiajs/react";
-import { useStopwatch, useTime } from "react-timer-hook";
+import { Link, useForm, usePage } from "@inertiajs/react";
+import { Collapse } from 'react-collapse';
+import Select from 'react-select';
+import { faL } from "@fortawesome/free-solid-svg-icons";
 
 function twoDigits(num) {
     return ("" + num).padStart(2, '0');
@@ -35,31 +37,7 @@ function twoDigits(num) {
 // }
 
 function daysInMonth(month, year) {
-    return new Date(year, month, 0).getDate();
-}
-
-function totalCount(d) {
-    console.log(d)
-    if (d == undefined) return '';
-    return d.reduce((acc, val) => acc + val['hours'], 0);
-}
-
-function Table({ daysCount, dateString }) {
-    const data = usePage().props.data
-
-    console.log(data)
-
-    return <div className="grid w-full" style={{ 'gridTemplateColumns': 'minmax(auto, 10fr) repeat(31, minmax(0, 1fr))' }}>
-        {[...Array(32).keys()].map(i =>
-            <div key={i} className="font-bold">{(i > 0 && i <= daysCount) ? i : ''}</div>)}
-        {data.map(d => <>
-            <div key={d.id + "-0"}>{d.name} {d.surname}</div>
-            {[...Array(31).keys()].map(i => <div key={d.id + "-" + i}>
-                {totalCount(d.stamps_grouped[i + 1])}
-            </div>)}
-        </>)}
-    </div>
-
+    return new Date(year, month + 1, 0).getDate();
 }
 
 function capFirst(val) {
@@ -67,13 +45,14 @@ function capFirst(val) {
 }
 
 function getKey(month, day) {
-    return month.getFullYear() + "-" + twoDigits(month.getMonth() + 1) + "-" + twoDigits(day);
+    return month.getFullYear() + "-" + twoDigits(month.getMonth() + 1) + "-" + twoDigits(day + 1);
 }
 
-function Month({ m }) {
+function Month({ m, selectable, selected, toggle }) {
     const specials = usePage().props.specials;
-    const busyDays = usePage().props.busyDays;
-    const zeroDay = m.getDay();
+    const workedDays = usePage().props.workedDays;
+    const zeroDay = (m.getDay() - 1 + 7) % 7;
+
     return <div className="grid grid-cols-7 items-start text-center gap-1">
         <div className="col-span-7 font-bold text-primary-main">{capFirst(m.toLocaleDateString('it-IT', { 'month': 'long', 'year': 'numeric' }))}</div>
         {["L", "M", "M", "G", "V"].map((d, i) => <div className="font-bold" key={i}>{d}</div>)}
@@ -81,38 +60,69 @@ function Month({ m }) {
         {[...Array(zeroDay).keys()].map(d => <div key={"00" + d}></div>)}
         {[...Array(daysInMonth(m.getMonth(), m.getFullYear())).keys()].map(d => {
             let style = {}
+            let thisSelectable = selectable;
             if (specials[getKey(m, d)] && specials[getKey(m, d)].length > 0) {
                 style = bgAndContrast(specials[getKey(m, d)][0].type.color)
+                thisSelectable = false
+            }
+            if (workedDays.includes(getKey(m, d))) {
+                style = bgAndContrast('#b6e3e7')
+                thisSelectable = false
             }
             return <div className={
                 "px-1 rounded " +
                 ((zeroDay + d) % 7 > 4 ? "font-bold " : "") +
-                (busyDays.includes(getKey(m, d)) ? "text-gray-200 " : "")
-            } key={d} style={style}>
+                (thisSelectable ? "cursor-pointer hover:outline hover:outline-black " : "") + 
+                (thisSelectable && selected.includes(getKey(m, d)) ? "outline outline-primary-main " : "")
+            } key={d} style={style} onClick={() => thisSelectable && toggle(getKey(m, d))}>
                 {d + 1}
             </div>
         })}
     </div>
 }
 
-function SpecialsList() {
+function SpecialsList({ isOpened }) {
     const specials = usePage().props.specials;
+    const [deleting,setDeleting] = useState(false);
 
-    return <div className="w-full md:w-3/5 gap-1">
+    return <Collapse theme={{ collapse: "w-full md:w-3/5 gap-1 cpm" }} isOpened={isOpened}>
         <div className="w-full border-2 border-primary-main rounded px-2 py-1 text-center mb-1">
-            <h4>Richieste già inserite</h4>
+            <h4>Eventi già inseriti</h4>
         </div>
         {Object.keys(specials).map(ss => specials[ss].map(s =>
-            <div className="w-full border-2 border-primary-main rounded px-2 py-1 mb-1 flex flex-row gap-2">
+            <div className="w-full border-2 border-primary-main rounded px-2 py-1 mb-1 flex flex-row gap-2" key={s.id}>
                 <span className="font-bold">{new Date(s.date).toLocaleDateString()}</span>
                 <span className="grow">{s.type.label}</span>
-                <button className="icon-button">
+                <button className="icon-button" onClick={() => postRequest(
+                    `clockings.manageSpecials.del`,
+                    { id: s.id },
+                    setDeleting
+                )}>
                     <FontAwesomeIcon icon={solid('trash')} />
                 </button>
             </div>
         ))}
-    </div>
+        <Backdrop open={deleting} />
+    </Collapse>
+}
 
+function AddPanel({ isOpened, typesOptions, data, setData, post }) {
+    return <Collapse theme={{ collapse: "w-full md:w-3/5 gap-1 cpm" }} isOpened={isOpened}>
+        <div className="w-full border-2 border-primary-main rounded px-2 py-1 text-center mb-1">
+            <h4>Aggiungi evento</h4>
+            Seleziona i giorni dal calendario qui sopra
+            <Select
+                classNames={{ control: () => 'selectDropdown' }}
+                className="w-full my-1"
+                value={typesOptions.find(i => i.value == data.type)}
+                onChange={(sel) => setData('type', sel.value)}
+                options={typesOptions} />
+            <button className="button" disabled={!data.type || !typesOptions.map(i => i.value).includes(data.type) || data.days.length == 0} onClick={post}>
+                <FontAwesomeIcon icon={solid('save')} className="mr-2" />
+                Salva
+            </button>
+        </div>
+    </Collapse>
 }
 
 export default function ManageSpecials() {
@@ -121,7 +131,7 @@ export default function ManageSpecials() {
     const to = new Date(usePage().props.to);
 
     const allTypes = usePage().props.allTypes;
-    console.log(allTypes)
+
 
     const monthsList = [from];
     while (monthsList[monthsList.length - 1] < to) {
@@ -129,34 +139,39 @@ export default function ManageSpecials() {
     }
     monthsList.pop();
 
-    // const today = new Date();
-    // const nextAvailable = ( year < today.getFullYear() ) || ( year == today.getFullYear() && month < today.getMonth() + 1 );
-    // const date = new Date(year,month-1, 3);
-
-    // const [processing, setProcessing] = useState(false);
-
-    // const lastClockIn = usePage().props.clockedIn;
-    // const user = usePage().props.user;
-
-    // const submit = (to) => {
-    //     postRequest(
-    //         'clockings.' + to, {},
-    //         setProcessing
-    //     )
-    // }
+    const [adding, setAdding] = useState(false);
+    const { data, setData, post, processing } = useForm({
+        days: [],
+        type: allTypes[0]?.tag
+    })
 
     return <div className="main-container-large gap-4">
         <h3>Gestione ferie e permessi</h3>
         Oggi puoi gestire le ferie e i permessi per il periodo dal {from.toLocaleDateString()} al {to.toLocaleDateString()}
 
         <div className="flex flex-row gap-2">
+            <div key='worked' style={bgAndContrast('#b6e3e7')} className="px-2 py-1 rounded">Lavorati</div>
             {allTypes.map(t => !(['work', 'default'].includes(t.tag)) && <div key={t.tag} style={bgAndContrast(t.color)} className="px-2 py-1 rounded">{t.label}</div>)}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 md:gap-12">
-            {monthsList.map(m => <Month m={m} key={m.getMonth()} />)}
+            {monthsList.map(m => <Month m={m} key={m.getMonth()} selectable={adding} selected={data.days} toggle={day => setData('days', data.days.includes(day) ? data.days.filter(d => d != day) : data.days.concat([day]))} />)}
         </div>
-        
-        <SpecialsList />
+
+        <SpecialsList isOpened={!adding} />
+
+        <div className="button" onClick={() => setAdding(!adding)}>
+            <FontAwesomeIcon icon={adding ? solid('xmark') : solid('plus')} className="mr-2" />
+            {adding ? "Annulla" : "Aggiungi"}
+        </div>
+
+        <AddPanel
+            isOpened={adding}
+            typesOptions={allTypes.filter(t => !['work', 'default'].includes(t.tag)).map(t => ({ label: t.label, value: t.tag }))}
+            data={data}
+            setData={setData}
+            post={() => post(route('clockings.manageSpecials.add'), { preserveState: false })} />
+
+        <Backdrop open={processing} />
 
         {/* <div className="flex flex-row gap-2 items-center">
             <Link as="button" className="button" href={route('clockings.monthly', month == 1 ? { year: year - 1, month: 12 } : { year: year, month: month - 1 } )}>

@@ -16,4 +16,6 @@ Route::prefix('/clockings')->group(function () {
     Route::get('/monthly/{year?}/{month?}', [StampController::class, 'monthly'])->whereNumber(['month','year'])->name('clockings.monthly');
 
     Route::get('/specials', [StampController::class, 'manageSpecials'])->name('clockings.manageSpecials');
+    Route::post('/specials/add', [StampController::class, 'addSpecials'])->name('clockings.manageSpecials.add');
+    Route::post('/specials/del', [StampController::class, 'delSpecial'])->name('clockings.manageSpecials.del');
 });

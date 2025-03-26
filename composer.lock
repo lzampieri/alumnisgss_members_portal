@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f1515b341e2792e35c5847b13f804332",
+    "content-hash": "a034d8b320c54c5d83f01aaea57fe7a9",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2679,6 +2679,45 @@
                 "source": "https://github.com/MarkBaker/PHPMatrix/tree/3.0.1"
             },
             "time": "2022-12-02T22:17:43+00:00"
+        },
+        {
+            "name": "mcaskill/php-array-group-by",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://gist.github.com/mcaskill/baaee44487653e1afc0d",
+                "reference": "20aa76bbc63c0a83448db7d7b93af8006a5bb56f"
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "Function.Array-Group-By.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Chauncey McAskill",
+                    "email": "chauncey@mcaskill.ca",
+                    "homepage": "https://github.com/mcaskill"
+                }
+            ],
+            "description": "Groups an array by a given key.",
+            "keywords": [
+                "function"
+            ],
+            "time": "2017-11-24T13:45:55+00:00"
         },
         {
             "name": "monolog/monolog",

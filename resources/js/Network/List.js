@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, usePage } from "@inertiajs/react";
 import { AlumnusStatus, bgAndContrast, bgAndContrastPastel, romanize } from "../Utils";
 import { useMemo, useState } from "react";
-import { useSpring, animated } from "@react-spring/web";
 import SmartChip from "./SmartChip";
 
 import { AgGridReact } from 'ag-grid-react'; // React Grid Logic

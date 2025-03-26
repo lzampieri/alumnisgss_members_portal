@@ -232,4 +232,9 @@
         @apply rounded-first-last p-2 cursor-pointer;
         @apply bg-white text-black hover:text-primary-contrast hover:bg-primary-main;
     }
+
+    /* COLLAPSE */
+    .cpm {
+        transition: height 200ms;
+    }
 }

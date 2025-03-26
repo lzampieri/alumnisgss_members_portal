@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useForm, usePage } from "@inertiajs/react";
 import { AlumnusStatus, bgAndContrast, postRequest, romanize } from "../Utils";
 import { useMemo, useState } from "react";
-import { useSpring, animated } from "@react-spring/web";
 import Dialog from "../Layout/Dialog";
 import Backdrop from "../Layout/Backdrop";
 import ReactSwitch from "react-switch";
