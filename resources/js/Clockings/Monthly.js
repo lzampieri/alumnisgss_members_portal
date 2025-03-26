@@ -37,8 +37,9 @@ function Cell({ children, bold, left, color }) {
 
 function Table({ daysCount }) {
     const data = usePage().props.data
+    console.log(data.length == 0)
 
-    return <div className="grid w-full max-w-full overflow-x-scroll" style={{ 'gridTemplateColumns': 'minmax(auto, 10fr) repeat(31, minmax(2rem, 1fr))' }}>
+    return <div className="grid w-full max-w-full overflow-x-auto" style={{ 'gridTemplateColumns': 'minmax(auto, 10fr) repeat(31, minmax(2rem, 1fr))' }}>
         {[...Array(32).keys()].map(i =>
             <Cell key={i} bold>{(i > 0 && i <= daysCount) ? i : ''}</Cell>)}
         {data.map((d, id) => <Fragment key={id}>
@@ -47,6 +48,7 @@ function Table({ daysCount }) {
                 {totalCount(d.stamps_grouped[i + 1])}
             </Cell>)}
         </Fragment>)}
+        {data.length == 0 && <div className="justify-self-stretch bg-gray-100 text-center col-span-full">Nessun dipendente in servizio questo mese.</div>}
     </div>
 
 }
