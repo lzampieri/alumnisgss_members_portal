@@ -32,6 +32,41 @@ class AlumnusPolicy
         return $user->hasPermissionTo('alumnus-view');
     }
 
+    
+    /**
+     * Determine whether the user can view the REGISTERED MEMBERS with ALL DETAILS
+     *
+     * @param  \Illuminate\Foundation\Auth\User  $user optional
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function viewNetwork(User $user)
+    {
+        return $user->hasPermissionTo('network-view');
+    }
+    
+    /**
+     * Determine whether the user can edit the settings for the network visualization
+     *
+     * @param  \Illuminate\Foundation\Auth\User  $user optional
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function editNetworkView(User $user)
+    {
+            return $user->hasPermissionTo('network-edit-view');
+    }
+
+    /**
+     * Determine whether the user can edit an alumnus profile, limiting to the details of the network visualization
+     *
+     * @param  \Illuminate\Foundation\Auth\User  $user optional
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function editNetworkAlumnus(User $user)
+    {
+            return $user->hasPermissionTo('network-edit-alumnus');
+    }
+
+
     /**
      * Determine whether the user can edit models.
      *

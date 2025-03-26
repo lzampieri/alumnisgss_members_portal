@@ -1,5 +1,5 @@
 import { useForm, usePage } from "@inertiajs/react";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import { AlumnusStatus } from "../Utils";
@@ -8,32 +8,13 @@ import { router } from "@inertiajs/react";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { enqueueSnackbar } from "notistack";
-
-function DetailRow({ data, setData, options, val_options, errors, errors_prename }) {
-    return <><div className={"w-full flex flex-row my-1 gap-1 items-center " + (data.delete ? "text-error line-through	" : "")}>
-        <CreatableSelect
-            className="basis-0 grow"
-            value={{ value: data.key, label: data.key }}
-            onChange={(e) => setData('key', e.value)}
-            options={options} />
-        :
-        <CreatableSelect
-            className="basis-0 grow"
-            value={{ value: data.value, label: data.value }}
-            onChange={(e) => setData('value', e.value)}
-            options={val_options} />
-        <button className={"icon-button h-8 w-8 grow-0 " + (data.delete ? "button-active" : "")} onClick={(e) => { e.preventDefault(); setData('delete', !data.delete) }}>
-            <FontAwesomeIcon icon={solid('trash')} />
-        </button>
-    </div>
-        <label className="error">{errors[errors_prename + "key"]}</label>
-        <label className="error">{errors[errors_prename + "value"]}</label>
-        <label className="error">{errors[errors_prename + "delete"]}</label>
-    </>
-}
+import TokenizableInput from "../Libs/react-tokenizable-inputs/TokenizableInput";
+import ADetailsType from "../Network/ADetailsType";
 
 export default function Edit() {
     const prev = usePage().props.alumnus;
+    const adts = usePage().props.adts;
+
     const [dirtyDialog, setDirtyDialog] = useState(false);
 
     const { data, setData, post, processing, errors, isDirty } = useForm({
@@ -42,7 +23,12 @@ export default function Edit() {
         coorte: prev?.coorte || 1,
         status: prev?.status || 'not_reached',
         tags: prev?.tags || [],
-        details: prev?.details || []
+        adts: adts.map((adt) => {
+            return {
+                id: adt.id,
+                value: (adt.a_details && (adt.a_details.length == 1)) ? adt.a_details[0].value : []
+            }
+        })
     })
 
     const submit = (e) => {
@@ -56,15 +42,10 @@ export default function Edit() {
         else goToRatification();
     }
 
-    const goToRatification = () => {
-        router.visit(route('ratifications.add', { alumnus: prev.id }));
-    }
-
     const opt_arrs = (tags) => tags.map(i => { return { value: i, label: i } })
 
     // Stato
     const status_notRat = usePage().props.noRatStatus;
-    console.log( status_notRat )
     const status_options = usePage().props.allStatus.map(i => {
         return {
             value: i,
@@ -85,26 +66,15 @@ export default function Edit() {
     // Tags
     const tags_options = opt_arrs(Object.values(usePage().props.allTags) || [])
 
-    // Details: keys
-    const details_keys_options = opt_arrs(Object.keys(usePage().props.allDetails || {}))
-    const details_values_options_list = Object.values(usePage().props.allDetails || {}).map(i => opt_arrs(i))
-    const details_values_options = {}
-    details_keys_options.forEach((k, i) => details_values_options[k.value] = details_values_options_list[i])
-
-    const updateDetails = (idx, key, value) => {
-        let newDetails = data.details.slice();
-        newDetails[idx][key] = value;
-        setData('details', newDetails);
-    }
-    const addDetails = () => {
-        let newDetails = data.details.slice();
-        newDetails.push({ key: '', value: '' });
-        setData('details', newDetails);
-    }
-
     return (
         <form className="flex flex-col w-full md:w-3/5" onSubmit={submit}>
-            <h3>{prev ? "Aggiorna" : "Crea nuovo"} alumno</h3>
+            <div className="w-full justify-between flex flex-row">
+                <h3>{prev ? "Aggiorna" : "Crea nuovo"} alumno</h3>
+                <div className="button flex flex-row items-center" onClick={submit}>
+                    <FontAwesomeIcon icon={solid('save')} />
+                    Salva
+                </div>
+            </div>
 
             {prev &&
                 <div className="flex flex-col my-4 border-l-4 pl-2 border-l-primary-main">
@@ -135,11 +105,12 @@ export default function Edit() {
             <label className="error">{errors.coorte}</label>
 
             <label>Stato</label>
-            {pending_rats.map(pr => <div className="w-full info">
+            {pending_rats && pending_rats?.map(pr => <div className="w-full info" key={pr.id}>
                 <FontAwesomeIcon icon={solid('hourglass-half')} className="mr-2" />
                 È presente una richiesta in attesa di ratifica per il passaggio allo stato di {AlumnusStatus.status[pr.required_state].label}
             </div>)}
             <Select
+                classNames={{ control: () => 'selectDropdown' }}
                 value={status_options.find(i => i.value == data.status)}
                 onChange={(sel) => setData('status', sel.value)}
                 options={status_options}
@@ -157,26 +128,37 @@ export default function Edit() {
             <CreatableSelect isMulti value={opt_arrs(data.tags)} onChange={(newValue) => setData('tags', newValue.map(i => i.value))} options={tags_options} />
             <label className="error">{errors.tags}</label>
 
-            <label>Altri dettagli</label>
-            <label className="error">{errors.details}</label>
-            {data.details.map((det, idx) =>
-                <DetailRow
-                    key={idx}
-                    data={det}
-                    setData={(k, v) => updateDetails(idx, k, v)}
-                    options={details_keys_options}
-                    val_options={details_values_options[det.key]}
-                    errors={errors}
-                    errors_prename={"details." + idx + "."}
-                />
-            )}
-            <button className="icon-button h-8 w-8 grow-0" onClick={(e) => { e.preventDefault(); addDetails() }}>
-                <FontAwesomeIcon icon={solid('circle-plus')} />
-            </button>
+            <div className="button flex flex-row items-center self-end my-4" onClick={submit}>
+                <FontAwesomeIcon icon={solid('save')} />
+                Salva
+            </div>
 
-            <input type="button" className="button mt-4" onClick={submit} value="Aggiorna" />
+            {
+                adts.map((adt, i) => <Fragment key={adt.id}>
+                    <label key={"label_" + adt.id}>{adt.name} {!adt.visible && <i> - Campo nascosto</i>}</label>
+                    {adt.type in ADetailsType.values &&
+                        ADetailsType.values[adt.type].editor(
+                            adt,
+                            data.adts[i].value,
+                            (newValue) => {
+                                let newAdts = data.adts.slice();
+                                newAdts[i].value = newValue;
+                                setData('adts', newAdts);
+                            }
+                        )
+                    }
+                    {(("adts." + i + ".value" in errors) || ("adts." + i + ".id" in errors)) &&
+                        <label className="error">C'è un problema con questo dato</label>}
+                </Fragment>)
+            }
 
-            <div className="flex flex-row-reverse my-4">
+            <div className="button flex flex-row items-center self-end my-4" onClick={submit}>
+                <FontAwesomeIcon icon={solid('save')} />
+                Salva
+            </div>
+
+            {/* Questo è obsoleto, la ratifica ora è inserita in automatico cambiando lo stato */}
+            {/* <div className="flex flex-row-reverse my-4">
                 <button className="button" onClick={checkIfDirty}>Richiedi ratifica</button>
                 <label className="grow">Ricorda che alcuni stati non possono essere assegnati direttamente, ma è necessario richiedere una ratifica al consiglio di amministrazione.</label>
                 <Dialog open={dirtyDialog}
@@ -187,7 +169,7 @@ export default function Edit() {
                 >
                     Ci sono alcune modifiche all'alumno che non hai salvato. Vuoi abbandonarle?
                 </Dialog>
-            </div>
+            </div> */}
 
         </form>
     );

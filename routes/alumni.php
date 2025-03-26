@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AlumnusController;
+use App\Http\Controllers\AlumnusControllerChecks;
 use App\Http\Controllers\AlumnusExportImportController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,14 +20,22 @@ Route::prefix('/registry')->group(function () {
     Route::get('/schema', [AlumnusController::class, 'schema'])->name('registry.schema');
     Route::get('/table', [AlumnusController::class, 'table'])->name('registry.table');
 
-    Route::get('/add', [AlumnusController::class, 'edit'])->name('registry.add');
+    Route::get('/checks', [AlumnusControllerChecks::class, 'checks'])->name('registry.checks');
+    Route::post('/checks/assdet', [AlumnusControllerChecks::class, 'assdet'])->name('registry.checks.assdet');
+    Route::post('/checks/dupcor', [AlumnusControllerChecks::class, 'dupcor'])->name('registry.checks.dupcor');
 
+    Route::get('/add', [AlumnusController::class, 'edit'])->name('registry.add');
+    
     Route::get('/edit/{alumnus?}', [AlumnusController::class, 'edit'])->name('registry.edit');
     Route::post('/edit/{alumnus?}', [AlumnusController::class, 'edit_post']);
 });
 
 // Registry impexp
 Route::prefix('/registry/impexp')->group(function () {
+    // Bulk adding
+    Route::get('/add', [AlumnusExportImportController::class, 'addBulk'])->name('registry.addBulk');
+    Route::post('/add', [AlumnusExportImportController::class, 'addBulk_post']);
+
     // Members schema
     Route::get('/bulk/export/xls_schema', [AlumnusExportImportController::class, 'exportExcelSchema'])->name('registry.impexp.export.xls_schema');
 

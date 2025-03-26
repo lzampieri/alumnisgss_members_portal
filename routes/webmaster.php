@@ -31,4 +31,7 @@ Route::prefix('/webmaster')->group( function () {
     Route::get('/migrate', [ WebmasterController::class, 'migrate' ])->name('webmaster.migrate');
     Route::get('/remigrate', [ WebmasterController::class, 'remigrate' ])->name('webmaster.remigrate');
     Route::get('/partremigrate/{count}', [ WebmasterController::class, 'partremigrate' ])->name('webmaster.partremigrate');
+    
+    // test
+    Route::get('/sendTestMail', [ WebmasterController::class, 'sendTestMail' ])->name('webmaster.sendTestMail');
 });

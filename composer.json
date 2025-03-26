@@ -5,7 +5,7 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^7.3|^8.0",
+        "php": "^7.4|^8.0",
         "doctrine/dbal": "^3.3",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
@@ -14,6 +14,7 @@
         "laravel/framework": "^8.75",
         "laravel/socialite": "^5.5",
         "laravel/tinker": "^2.5",
+        "mcaskill/php-array-group-by": "^1.0",
         "phpoffice/phpspreadsheet": "^1.25",
         "rap2hpoutre/laravel-log-viewer": "^2.2",
         "setasign/fpdi": "^2.3",

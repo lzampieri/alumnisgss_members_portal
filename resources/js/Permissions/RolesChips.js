@@ -1,5 +1,3 @@
-
-
 export default function RolesChips({ roles, list, updateList }) {    
     const changeRole = (id) => {
         if (list.includes(id)) {

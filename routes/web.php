@@ -22,6 +22,7 @@ include( 'auth.php' );
 
 include( 'alumni.php' );
 include( 'externals.php' );
+include( 'network.php' );
 
 include( 'board.php' );
 
@@ -33,11 +34,11 @@ include( 'reports.php' );
 
 include( 'roles.php' );
 
+include( 'clockings.php' );
+
 include( 'webmaster.php' );
 
 include( 'permalinks.php' );
-
-include( 'aws_sessions.php' );
 
 Route::redirect('/main','https://www.alumniscuolagalileiana.it')->name('main');
 

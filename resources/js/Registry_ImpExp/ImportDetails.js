@@ -25,7 +25,7 @@ export default function ImportDetails() {
                 Attraverso questa pagina è possibile importare il database degli alumni da un file excel. <br/>
                 Il file deve essere precedentemente scaricato da questo stesso portale; operate le modifiche, lo si può quindi ricaricare e le differenze verranno individuate e salvate.<br/>
                 Si preferisca sempre la modifica direttamente sul portale, uno per uno, dei dati; si utilizzi questa funzionalità solo quando il numero di modifiche da apportare sia tale da rendere disagevole la procedura.<br/>
-                <span className="text-error">Tramite questa funzionalità non è possibile eliminare alumni. Eventuali righe mancanti nel file caricato saranno ignorate.</span>
+                <span className="text-error">Tramite questa funzionalità non è possibile creare o eliminare alumni. Eventuali righe nuove o mancanti nel file caricato saranno ignorate.</span>
                 <a className="button" href={route('registry.impexp.export.xls_details')}>
                     <FontAwesomeIcon icon={solid('download')} />
                     Scarica file da modificare

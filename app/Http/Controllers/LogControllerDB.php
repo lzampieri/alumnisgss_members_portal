@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class LogControllerDB extends Controller
 {    
-    public static function echo(string $event, Model $item, string $field, $oldValue, $newValue)
+    public static function echo(string $event, ?Model $item, string $field, $oldValue, $newValue)
     {
         $newLog = Log::create([
             'type' => $event,

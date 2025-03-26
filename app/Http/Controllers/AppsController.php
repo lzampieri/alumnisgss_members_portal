@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
 use App\Models\LoginMethod;
+use App\Models\Stamp;
 use App\Policies\AlumnusPolicy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +18,10 @@ class AppsController extends Controller
 
         if ((new AlumnusPolicy)->viewMembers(Auth::user())) {
             $apps[] = 'members';
+        }
+
+        if (Auth::user() && Auth::user()->can('viewNetwork', Alumnus::class)) {
+            $apps[] = 'network';
         }
 
         if (Auth::user() && Auth::user()->can('viewAny', Alumnus::class)) {
@@ -49,8 +54,8 @@ class AppsController extends Controller
             $apps[] = 'permissions';
         }
 
-        if (Auth::user() && Auth::user()->hasPermissionTo('aws-session-view')) {
-            $apps[] = 'aws_sessions';
+        if (Auth::user()->can('clockin', Stamp::class) || Auth::user()->can('viewAny', Stamp::class)) { // Should check if is employee or manager
+            $apps[] = 'clockings';
         }
 
         return Inertia::render('Home', ['apps' => $apps]);

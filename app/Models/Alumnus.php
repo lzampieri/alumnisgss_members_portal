@@ -21,10 +21,10 @@ class Alumnus extends Identity
         'not_agreed'
     ];
     // Public visible status
-    const public_status = ['member', 'student_member'];
+    const public_status = ['member', 'student_member', 'pre_enrolled'];
 
     // Status for which entering or exiting required ratification
-    const require_ratification = ['member', 'student_member'];
+    const require_ratification = ['member'];
 
     // Assignable status without ratification
     public static function availableStatus(Alumnus $alumnus = null)
@@ -86,7 +86,7 @@ class Alumnus extends Identity
         'tags'
     ];
     protected $casts = [
-        'tags' => 'array',
+        'tags' => 'array'
     ];
 
     public function hasPermissionTo($permission, $guardName = null): bool
@@ -114,6 +114,12 @@ class Alumnus extends Identity
         return $this->hasMany(Ratification::class);
     }
 
+    public function pendingRatifications()
+    {
+        return $this->hasMany(Ratification::class)->whereNull('document_id');
+    }
+
+
     // For the ratification export
     public static function romanize($num)
     {
@@ -134,14 +140,14 @@ class Alumnus extends Identity
         return $roman . " coorte";
     }
 
-    public function getPendingRatificationsAttribute()
+    public function getPendingRatificationsCountAttribute()
     {
-        return $this->ratifications()->whereNull('document_id')->count();
+        return $this->pendingRatifications()->count();
     }
 
     public function getPendingRatificationsListAttribute()
     {
-        return $this->ratifications()->whereNull('document_id')->get();
+        return $this->pendingRatifications()->get();
     }
 
 }

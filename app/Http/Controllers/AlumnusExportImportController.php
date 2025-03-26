@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ADetail;
+use App\Models\ADetailsType;
 use App\Models\Alumnus;
-use App\Models\IdentityDetail;
+use App\Models\Ratification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -150,10 +152,16 @@ class AlumnusExportImportController extends Controller
 
         $alumni = Alumnus::orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
-            ->with('details')
-            ->get();
-
-        $detailsTitles = array_keys(IdentityDetail::allDetails());
+            ->with(['aDetails' => function ($query) {
+                $query->whereHas('aDetailsType', function ($query) {
+                    $query->where('visible', true);
+                })->orderBy(ADetailsType::select('order')->whereColumn('a_details_types.id', 'a_details.a_details_type_id'));
+            }, 'aDetails.aDetailsType'])
+            ->orderBy('coorte')
+            ->orderBy('surname')->orderBy('name')
+            ->get()
+            ->append('a_details_keyd');
+        $adtlist = ADetailsType::allOrdered();
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -181,13 +189,14 @@ class AlumnusExportImportController extends Controller
             else
                 $sheet->getColumnDimension(Coordinate::stringFromColumnIndex($col + 1))->setWidth(4);
         }
+
         $cumcolindex = [];
-        foreach ($detailsTitles as $col => $detailsTitle) {
+        foreach ($adtlist as $col => $adt) {
             $cumcol = count($titles) + 2 * $col + 1;
-            $cumcolindex[$detailsTitle] = $cumcol;
-            $this->writeXY($sheet, $cumcol, 6, "detID", ['font' => ['bold' => true]]);
+            $cumcolindex[$adt->id] = $cumcol;
+            $this->writeXY($sheet, $cumcol, 6, $adt->id);
             $sheet->getColumnDimension(Coordinate::stringFromColumnIndex($cumcol))->setWidth(4);
-            $this->writeXY($sheet, $cumcol + 1, 6, $detailsTitle, ['font' => ['bold' => true]]);
+            $this->writeXY($sheet, $cumcol + 1, 6, $adt->name, ['font' => ['bold' => true]]);
             $sheet->getColumnDimension(Coordinate::stringFromColumnIndex($cumcol + 1))->setWidth(30);
         }
 
@@ -201,16 +210,20 @@ class AlumnusExportImportController extends Controller
 
                 $this->writeXY($sheet, $col + 1, $i + 7, $content);
             }
-            foreach ($alumnus['details'] as $detail) {
-                $cumcol = $cumcolindex[$detail->key];
-                $this->writeXY($sheet, $cumcol, $i + 7, $detail['id']);
-                $this->writeXY($sheet, $cumcol + 1, $i + 7, $detail['value']);
+            foreach ($alumnus->aDetails as $adt) {
+                $cumcol = $cumcolindex[$adt->a_details_type_id];
+                $this->writeXY($sheet, $cumcol, $i + 7, $adt->id);
+                if (count($adt->value) == 1)
+                    $this->writeXY($sheet, $cumcol + 1, $i + 7, $adt->value[0]);
+                elseif (count($adt->value) > 1)
+                    $this->writeXY($sheet, $cumcol + 1, $i + 7, json_encode($adt->value));
             }
         }
 
         // Locking some cells
         $spreadsheet->getActiveSheet()->getProtection()->setSheet(true);
-        $spreadsheet->getActiveSheet()->getProtection()->setSort(true);
+        $spreadsheet->getActiveSheet()->getProtection()->setSort(false);
+        $spreadsheet->getActiveSheet()->getProtection()->setAutoFilter(false);
         $spreadsheet->getDefaultStyle()->getProtection()->setLocked(false);
         $sheet->getStyle('1:6')->getProtection()->setLocked(\PhpOffice\PhpSpreadsheet\Style\Protection::PROTECTION_PROTECTED);
         $sheet->getStyle('A:A')->getProtection()->setLocked(\PhpOffice\PhpSpreadsheet\Style\Protection::PROTECTION_PROTECTED);
@@ -218,21 +231,15 @@ class AlumnusExportImportController extends Controller
             $col_str = Coordinate::stringFromColumnIndex($col);
             $sheet->getStyle($col_str . ':' . $col_str)->getProtection()->setLocked(\PhpOffice\PhpSpreadsheet\Style\Protection::PROTECTION_PROTECTED);
         }
-
-        // Prepare space for extra details
-        for ($col = 0; $col < 3; $col++) {
-            $cumcol = count($titles) + 2 * count($detailsTitles) + 2 * $col + 1;
-            $cumcolstr = Coordinate::stringFromColumnIndex($cumcol);
-            $sheet->getColumnDimension($cumcolstr)->setWidth(4);
-            $sheet->getColumnDimension(Coordinate::stringFromColumnIndex($cumcol + 1))->setWidth(30);
-            $sheet->getStyle($cumcolstr . ':' . $cumcolstr)->getProtection()->setLocked(\PhpOffice\PhpSpreadsheet\Style\Protection::PROTECTION_PROTECTED);
-        }
+        $last_col = Coordinate::stringFromColumnIndex(count($titles) + 2 * count($cumcolindex) + 1);
+        $sheet->getStyle($last_col . ':XFD')->getProtection()->setLocked(\PhpOffice\PhpSpreadsheet\Style\Protection::PROTECTION_PROTECTED);
+        $sheet->getStyle((count($alumni) + 7) . ':' . (count($alumni) + 700))->getProtection()->setLocked(\PhpOffice\PhpSpreadsheet\Style\Protection::PROTECTION_PROTECTED);
 
         // Layout stuff:
         // - locking first 6 rows
         $sheet->freezePane('A7');
         // - enabling filters
-        $spreadsheet->getActiveSheet()->setAutoFilter('A6:' . Coordinate::stringFromColumnIndex(count($titles) + count($detailsTitles) * 2) . '7');
+        $spreadsheet->getActiveSheet()->setAutoFilter('A6:' . Coordinate::stringFromColumnIndex(count($titles) + count($adtlist) * 2) . '7');
         $spreadsheet->getActiveSheet()->getAutoFilter()->setRangeToMaxRow();
 
         // Output
@@ -276,108 +283,116 @@ class AlumnusExportImportController extends Controller
         if ($columnsNumber < 6)
             return redirect()->back()->with('notistack', ['error', "File non compatibile."]);
 
-        // Compute the details dictionary
-        $detailsKeys = [];
-        for ($i = 7; $i < $columnsNumber; $i += 2) {
-            $detailsKeys[$i] = $sheet->getCellByColumnAndRow($i + 1, 6)->getValue();
-        }
+        // Standard fields
+        $stdkeys   = ['id', 'surname', 'name', 'coorte', 'status', 'tags'];
 
-        $keys   = ['id', 'surname', 'name', 'coorte', 'status', 'tags'];
+        // Compute the adetails dictionary
+        $adtlist = ADetailsType::allOrdered()->keyBy('id')->toArray();
+
+        // Associate adetails to columns
+        $titles = $sheet->rangeToArray("G6:" . $sheet->getHighestColumn() . "6")[0];
+        $adtcols = [];
+        for ($i = 0; $i < count($titles); $i += 2) {
+            if ($titles[$i] != null && array_key_exists("" . $titles[$i], $adtlist))
+                $adtcols[$i + 7] = "" . $titles[$i];
+        }
 
         // Go alumnus by alumnus
         for ($i = 0; $i < $alumnusNumber; $i++) {
             $row = $i + 7;
+            $toSave = false;
 
-            // Load data
-            $newPars = array_combine($keys, $sheet->rangeToArray("A$row:F$row")[0]);
+            // Load data from standard_cols
+            $newPars = array_combine($stdkeys, $sheet->rangeToArray("A$row:F$row")[0]);
+            if (!$newPars['id']) continue;
             $alumnus = Alumnus::find($newPars['id']);
 
-            // Check surname and name
+            if (!$alumnus) {
+                $output .= "Alumnus at row {$row} not found; skipped\n";
+                continue;
+            }
+
+            // Check and update surname and name
             if (!$newPars['surname'] || !$newPars['name']) {
                 $output .= "Skipped alumnus $i due to invalid name or surname\n";
                 continue;
             }
+            foreach (['surname', 'name'] as $field) {
+                if ($alumnus[$field] != $newPars[$field]) {
+                    $toSave = true;
+                    $output .= "Updated " . $field . " for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newPars[$field] . "\n";
+
+                    $alumnus[$field] = $newPars[$field];
+                }
+            }
 
             // Check status
             $newPars['status'] = array_search($newPars['status'], Alumnus::AlumnusStatusLabels);
-            if (!in_array($newPars['status'], Alumnus::status))
-                $newPars['status'] = 'not_reached';
-            if (!in_array($newPars['status'], Alumnus::availableStatus($alumnus)))
-                $newPars['status'] = $alumnus ? $alumnus['status'] : 'not_reached';
+            if ($newPars['status'] != $alumnus['status']) {
+                if (!in_array($newPars['status'], Alumnus::availableStatus($alumnus))) {
+                    $output .= "Status {$newPars['status']} cannot be assigned to alumnus {$i} ({$newPars['surname']} {$newPars['name']}): skipped\n";
+                } else {
+                    $toSave = true;
+                    $output .= "Updated status for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newPars['status'] . "\n";
+                    $alumnus['status'] = $newPars['status'];
+                }
+            }
 
             // Check coorte
             $newPars['coorte'] = intval($newPars['coorte']);
+            if ($newPars['coorte'] != $alumnus['coorte']) {
+                $toSave = true;
+                $output .= "Updated coorte for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newPars['coorte'] . "\n";
+                $alumnus['coorte'] = $newPars['coorte'];
+            }
 
             // Check tags
             $newPars['tags_array'] = array_filter(array_map('trim', explode(';', $newPars['tags'])), 'strlen');
+            $oldTags = is_array($alumnus['tags']) ? implode('; ', $alumnus['tags']) : "";
+            if ($oldTags != $newPars['tags']) {
 
-            if ($alumnus) {
+                $toSave = true;
+                $output .= "Updated tags for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newPars['tags'] . "\n";
 
-                $toSave = false;
-
-                // Check par by par
-                foreach (['surname', 'name', 'coorte', 'status'] as $field) {
-                    if ($alumnus[$field] != $newPars[$field]) {
-                        $toSave = true;
-                        $output .= "Updated " . $field . " for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newPars[$field] . "\n";
-
-                        $alumnus[$field] = $newPars[$field];
-                    }
-                }
-
-                // Check tags
-                $oldTags = is_array($alumnus['tags']) ? implode('; ', $alumnus['tags']) : "";
-                if ($oldTags != $newPars['tags']) {
-
-                    $toSave = true;
-                    $output .= "Updated tags for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newPars['tags'] . "\n";
-
-                    $alumnus['tags'] = $newPars['tags_array'];
-                }
-
-                if ($toSave)
-                    $alumnus->save();
-            } else {
-                $alumnus = Alumnus::create([
-                    'surname' => $newPars['surname'],
-                    'name' => $newPars['name'],
-                    'coorte' => $newPars['coorte'],
-                    'status' => $newPars['status'],
-                    'tags' => $newPars['tags_array'],
-                ]);
-
-                $output .= "Created new alumnus " . $alumnus['surname'] . " " . $alumnus['name'] . "\n";
+                $alumnus['tags'] = $newPars['tags_array'];
             }
 
-            // Check details
-            foreach ($detailsKeys as $col => $key) {
-                $oldId = $sheet->getCellByColumnAndRow($col, $row)->getValue();
+            if ($toSave)
+                $alumnus->save();
+
+            // Check adetails
+            foreach ($adtcols as $col => $adtKey) {
                 $newValue = $sheet->getCellByColumnAndRow($col + 1, $row)->getValue();
 
-                $detail = IdentityDetail::find($oldId);
-
-                if ($detail) {
-
-                    // Detail already exists: check if updated needed
-                    if ($newValue && strlen($key) > 0) {
-
-                        if ($newValue != $detail['value'] || $key != $detail['key']) {
-                            $detail->update(['key ' => $key, 'value' => $newValue]);
-                            $output .= "Updated " . $key . " for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newValue . "\n";
-                        }
-                    } else {
-
-                        // New value is empty; must be deleted
-                        $output .= "Deleted " . $key . " for " . $alumnus['surname'] . " " . $alumnus['name'] . "\n";
-                        $detail->delete();
-                    }
+                $newValueDecoded = json_decode($newValue);
+                if ($newValueDecoded && is_array($newValueDecoded)) {
+                    $newValue = $newValueDecoded;
                 } else {
+                    if ($newValue == null) $newValue = [];
+                    else $newValue = [$newValue];
+                }
 
-                    if ($newValue && strlen($key) > 0) {
-                        // New detail must be created
-                        $alumnus->details()->create(['key' => $key, 'value' => $newValue]);
-                        $output .= "Added " . $key . " for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newValue . "\n";
+                // Special behaviour for arrayable
+                if ($adtlist[$adtKey]["type"] == 'arrayable') {
+                    $newValueSeparated = [];
+                    foreach ($newValue as $v) {
+                        foreach (preg_split("/[" . preg_quote($adtlist[$adtKey]["param"], '/') . "]/", $v, -1, PREG_SPLIT_NO_EMPTY) as $vv)
+                            $newValueSeparated[] = $vv;
                     }
+                    $newValue = $newValueSeparated;
+                }
+
+                // I can virtually use UpdateOrCreate here, but I want to check if the value has changed
+                $prevVal = $alumnus->aDetails()->where('a_details_type_id', $adtKey)->first();
+                if (
+                    (!$prevVal && count($newValue) > 0) ||
+                    ($prevVal && (json_encode($prevVal->value) != json_encode($newValue)))
+                ) {
+                    $alumnus->aDetails()->updateOrCreate(
+                        ['a_details_type_id' => $adtKey],
+                        ['value' => $newValue]
+                    );
+                    $output .= "Updated " . $adtlist[$adtKey]["name"] . " for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . json_encode($newValue) . "\n";
                 }
             }
         }
@@ -385,5 +400,55 @@ class AlumnusExportImportController extends Controller
         return redirect()->back()
             ->with('notistack', ['success', "Importazione eseguita con successo. " . $alumnusNumber . " alumni analizzati."])
             ->with('inertiaFlash', $output);
+    }
+
+    public function addBulk()
+    {
+        $this->authorize('import', Alumnus::class);
+
+        return Inertia::render('Registry_ImpExp/AddBulk', [
+            'noRatStatus' => Alumnus::availableStatus(),
+            'allStatus' => Alumnus::status,
+        ]);
+    }
+
+
+    public function addBulk_post(Request $request)
+    {
+        $this->authorize('import', Alumnus::class);
+
+
+        $validated = $request->validate([
+            'status' => 'required|in:' . implode(',', Alumnus::status),
+            'rows' => 'nullable|array',
+            'rows.*' => 'array',
+            'rows.*.surname' => 'required|regex:/^[A-zÀ-ú\s\'_]+$/',
+            'rows.*.name' => 'required|regex:/^[A-zÀ-ú\s\'_]+$/',
+            'rows.*.coorte' => 'required|numeric'
+        ]);
+
+        // Check for new status, if ratification needed
+        $rat_needed = false;
+        $rat_newstatus = '';
+        if (!in_array($validated['status'], Alumnus::availableStatus())) {
+            $rat_needed = true;
+            $rat_newstatus = $validated['status'];
+            $validated['status'] = 'not_reached';
+        }
+
+        foreach ($validated['rows'] as $row) {
+            $alumnus = Alumnus::create([
+                'surname' => $row['surname'],
+                'name' => $row['name'],
+                'coorte' => $row['coorte'],
+                'status' => $validated['status'],
+                'tags' => []
+            ]);
+            if ($rat_needed) {
+                Ratification::create(['alumnus_id' => $alumnus->id, 'required_state' => $rat_newstatus]);
+            }
+        }
+
+        return redirect()->route('registry.addBulk')->with('notistack', ['success', count($validated['rows']) . ' alumni aggiunti']);
     }
 }

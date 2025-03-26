@@ -21,6 +21,11 @@
         @apply no-underline;
         @apply cursor-pointer;
     }
+    .button:disabled {
+        @apply px-4 py-2 rounded border-2 border-gray-300 text-gray-300 bg-primary-contrast;
+        @apply no-underline;
+        @apply cursor-auto;
+    }
     .button-active {
         @apply text-primary-contrast bg-primary-main;
     }
@@ -34,7 +39,7 @@
         @apply rounded-full text-primary-main aspect-square px-1;
     }
     .icon-button {
-        @apply icon;
+        @apply rounded text-primary-main aspect-square px-1;
         @apply hover:text-primary-contrast hover:bg-primary-main;
         @apply no-underline;
         @apply cursor-pointer;
@@ -45,40 +50,49 @@
         @apply no-underline;
         @apply cursor-pointer;
     }
-    .button svg {
-        @apply pr-2
-    }
 
     /* TEXT SIZES */
     h3 {
         @apply text-2xl
     }
+    h4 {
+        @apply font-bold underline
+    }
+    h5 {
+        @apply font-bold
+    }
 
     /* INPUT AND FORMS */
     input[type="text"] {
-        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0
+        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0
+    }
+    .pretendToBeInput {
+        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0
     }
     input[type="file"] {
-        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0;
+        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0;
         @apply file:rounded-none file:border-0 file:bg-gray-300 file:py-2 file:px-4
     }
     input[type="number"] {
-        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0
+        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0
     }
     input[type="checkbox"] {
-        @apply rounded-md bg-gray-100 border-gray-500 focus:border-gray-500 focus:bg-white focus:ring-0 mr-2 text-primary-main
+        @apply rounded-md bg-gray-100 border-gray-500 focus:border-gray-500 focus:ring-0 mr-2 text-primary-main
+    }
+    .selectDropdown {
+        @apply !rounded-md !bg-gray-100 !border-transparent focus-within:!border-gray-500 focus-within:!ring-0
     }
     .input-icon {
         @apply text-gray-500 absolute right-4 text-2xl inset-y-0 my-auto
     }
     .textarea-container {
-        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0
+        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0
     }
     .textarea-reset {
         @apply py-0 px-1 border-0 bg-transparent
     }
     .react-draft-wysiwys-container {
-        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 cursor-default
+        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0 cursor-default
     }
     .react-draft-wysiwys-editor {
         @apply px-4
@@ -136,6 +150,24 @@
     .chip.disabled {
         @apply opacity-40
     }
+    .chip-v2 {
+        @apply bg-gray-600 text-white;
+        @apply rounded-lg flex flex-row !no-underline mx-1 max-w-full flex-wrap whitespace-pre-wrap items-center;
+        overflow-wrap: anywhere
+    }
+    .chip-v2-clear {
+        @apply bg-gray-200 text-black;
+        @apply rounded-lg flex flex-row !no-underline mx-1 max-w-full flex-wrap whitespace-pre-wrap items-center;
+        overflow-wrap: anywhere
+    }
+    .chip-v2-icon {
+        @apply bg-gray-600 text-white hover:bg-gray-100 hover:text-black cursor-pointer p-1;
+        @apply rounded-lg;
+    }
+    .smart-chip {
+        @apply rounded-lg flex flex-row !no-underline mx-1 max-w-full flex-wrap whitespace-pre-wrap;
+        overflow-wrap: anywhere
+    }
     .div-highlighted {
         @apply rounded-md bg-gray-200 border-transparent
     }
@@ -179,6 +211,9 @@
     .alert {
         @apply rounded-md bg-primary-main bg-opacity-10 my-2 p-2
     }
+    .card {
+        @apply w-full border-2 border-primary-main rounded px-2 py-1
+    }
 
     /* DRAWER */
     .main-container-drawer {
@@ -199,5 +234,10 @@
     .drawer-item-noborder {
         @apply rounded-first-last p-2 cursor-pointer;
         @apply bg-white text-black hover:text-primary-contrast hover:bg-primary-main;
+    }
+
+    /* COLLAPSE */
+    .cpm {
+        transition: height 200ms;
     }
 }

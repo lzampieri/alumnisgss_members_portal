@@ -43,7 +43,7 @@ class PermissionsController extends Controller
 
         // ROLES
 
-        $count_r = Role::count();
+        $count_r_prev = Role::count();
 
         $roles_to_assert = [
             'webmaster',
@@ -71,12 +71,12 @@ class PermissionsController extends Controller
             }
         }
 
-        $count_r = Role::count() - $count_r;
+        $count_r_added = Role::count() - $count_r_prev;
 
 
         // PERMISSIONS
 
-        $count_p = Permission::count();
+        $count_p_prev = Permission::count();
 
         $permissions_to_assert = [
             // Identities
@@ -94,6 +94,10 @@ class PermissionsController extends Controller
             'permissions-view',
             'permissions-edit',
             'roles-edit',
+            // Network
+            'network-view',
+            'network-edit-view',
+            'network-edit-alumnus',
             // Registry
             'alumnus-view',
             'alumnus-edit',
@@ -101,17 +105,20 @@ class PermissionsController extends Controller
             // Ratifications
             'ratifications-view',
             'ratifications-edit',
-            // 'ratifications-bypass', THIS PERMISSION HAS BEEN REMOVED
             // Documents
             'documents-upload',
             'documents-edit',
             // Resources
             'resources-create',
-            // Aws session
-            'aws-session-view',
+            // Clockings
+            'clockin',
+            'clockin-view-all',
+            'clockin-view-online',
+            'clockin-edit-all',
             // Webmaster stuff
             'logfile-view',
             'logdb-view',
+            'log-manage',
             'db-reset'
         ];
 
@@ -122,22 +129,35 @@ class PermissionsController extends Controller
             $permissions_to_assert[] = 'user-edit-' . $role;
         }
 
-        try {
-            // Find or create!
-            foreach ($permissions_to_assert as $permission)
+        // Add permissions
+        foreach ($permissions_to_assert as $permission) {
+            try {
                 Permission::findOrCreate($permission);
-        } catch(\Illuminate\Database\QueryException $ex){ 
-            return redirect()->back()->with(['notistack' => ['error', "C'è stato un errore."]]);
+            } catch(\Illuminate\Database\QueryException $ex){
+                if( $ex->getCode() == 23000 ) {
+                    Log::debug("Error 2300 in adding permission " . $permission . ", ignored", $ex->getCode() );
+                }
+                else return redirect()->back()->with(['notistack' => ['error', "C'è stato un errore."]]);
+            }
         }
 
-        $count_p = Permission::count() - $count_p;
+        $count_p_added = Permission::count() - $count_p_prev;
+        $count_p_deleted = 0;
+
+        // Remove permissions
+        foreach(Permission::where('guard_name','web')->get() as $permission) {
+            if( !in_array( $permission->name, $permissions_to_assert ) ) {
+                $permission->delete();
+                $count_p_deleted++;
+            }
+        }
 
         // Assign permissions to roles
         Role::findByName('webmaster')->givePermissionTo(Permission::all());
 
-        if ($count_p == 0)
+        if ($count_p_added + $count_r_added + $count_p_deleted == 0)
             return redirect()->back()->with(['notistack' => ['success', 'Permessi e ruoli corretti']]);
-        return redirect()->back()->with(['notistack' => ['warning', $count_p . ' permessi aggiunti, ' . $count_r . ' ruoli aggiunti']]);
+        return redirect()->back()->with(['notistack' => ['warning', $count_p_added . ' permessi aggiunti, ' . $count_p_deleted . ' permessi rimossi, ' . $count_r_added . ' ruoli aggiunti']]);
     }
 
     public function update(Request $request)

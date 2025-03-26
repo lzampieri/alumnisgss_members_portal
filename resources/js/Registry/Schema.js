@@ -10,10 +10,10 @@ function AlumnusContent({ data, tagsDict }) {
     return <div className="w-full h-full border border-primary-main flex flex-row items-center">
         <div className="chip mx-1 group relative z-auto" style={bgAndContrast(AlumnusStatus.status[data.status].color)}>
             {AlumnusStatus.status[data.status].acronym}
-            {data.pending_ratifications > 0 && <FontAwesomeIcon icon={solid('hourglass-half')} />}
+            {data.pending_ratifications_count > 0 && <FontAwesomeIcon icon={solid('hourglass-half')} />}
             <span className="tooltip-right" style={bgAndContrast(AlumnusStatus.status[data.status].color)}>
                 {AlumnusStatus.status[data.status].label}
-                {data.pending_ratifications > 0 && " - in attesa di ratifica"}
+                {data.pending_ratifications_count > 0 && " - in attesa di ratifica"}
             </span>
         </div>
         <div className="shrink truncate">
@@ -74,7 +74,7 @@ export default function Schema() {
     const data = usePage().props.data;
 
     const tagsDict = useMemo(() => {
-        const tagsList = [...new Set(flatten(data, (cl) => flatten(cl, (al) => al.tags)))];
+        const tagsList = [...new Set(flatten( Object.entries(data), ([_, cl]) => flatten(cl, (al) => al.tags)))];
         const tagsDict = {}
         tagsList.forEach(i => {
             let letters = 1;
@@ -87,10 +87,10 @@ export default function Schema() {
     const [quickFilter, setQuickFilter] = useState('')
 
     return (
-        <div className="main-container-large md:h-[80vh] gap-1">
+        <div className="main-container-large h-[80vh] gap-1">
             <RegistryHeader where='schema' quickFilter={quickFilter} setQuickFilter={setQuickFilter} />
             <div className="w-full grow overflow-scroll flex flex-row">
-                {data.map((data, i) => <CoorteColumns key={i} coorte={i} data={data} tagsDict={tagsDict} quickFilter={quickFilter} />)}
+                {Object.entries(data).map(([coorte,content]) => <CoorteColumns key={coorte} coorte={coorte} data={content} tagsDict={tagsDict} quickFilter={quickFilter} />)}
             </div>
         </div>
     );

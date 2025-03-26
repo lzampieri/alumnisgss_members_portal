@@ -89,10 +89,19 @@ abstract class Identity extends Model
     {
         return $this->morphMany(Document::class, 'author');
     }
-
-    public function details()
+    
+    public function stamps()
     {
-        return $this->morphMany(IdentityDetail::class, 'identity');
+        return $this->morphMany(Stamp::class, 'employee');
+    }
+
+    public function aDetails()
+    {
+        return $this->morphMany(ADetail::class, 'identity');
+    }
+    public function getADetailsKeydAttribute()
+    {
+        return $this->getRelationValue('aDetails')->keyBy('a_details_type_id');
     }
 
     protected $appends = ['enabled'];
