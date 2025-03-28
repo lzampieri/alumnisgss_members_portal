@@ -54,7 +54,7 @@ class AppsController extends Controller
             $apps[] = 'permissions';
         }
 
-        if (Auth::user()->can('clockin', Stamp::class) || Auth::user()->can('viewAny', Stamp::class)) { // Should check if is employee or manager
+        if (Auth::user() && Auth::user()->can('clockin', Stamp::class) || Auth::user()->can('viewAny', Stamp::class)) { // Should check if is employee or manager
             $apps[] = 'clockings';
         }
 
