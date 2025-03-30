@@ -130,6 +130,7 @@ export default function ManageSpecials() {
     const from = new Date(usePage().props.from);
     const to = new Date(usePage().props.to);
 
+
     const allTypes = usePage().props.allTypes;
 
 

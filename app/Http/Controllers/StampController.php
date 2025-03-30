@@ -89,8 +89,8 @@ class StampController extends Controller
     {
         $this->authorize('editMine', Stamp::class);
 
-        $from = Carbon::now()->subMonth()->startOfMonth();
-        $to = Carbon::now()->addMonth()->endOfMonth();
+        $from = Carbon::now()->startOfMonth()->subMonth()->startOfMonth();
+        $to = Carbon::now()->startOfMonth()->addMonth()->endOfMonth();
 
         $data = Auth::user()->identity->stamps()
             ->whereBetween('date', [$from, $to])
@@ -123,8 +123,8 @@ class StampController extends Controller
             'days' => 'array'
         ]);
 
-        $from = Carbon::now()->subMonth()->startOfMonth();
-        $to = Carbon::now()->addMonth()->endOfMonth();
+        $from = Carbon::now()->startOfMonth()->subMonth()->startOfMonth();
+        $to = Carbon::now()->startOfMonth()->addMonth()->endOfMonth();
 
         $cont = 0;
 
@@ -134,6 +134,9 @@ class StampController extends Controller
 
             $occupied = Auth::user()->identity->stamps()->whereDate('date', $date)->first();
             if ( $occupied ) continue;
+
+            if( !StampTypes::getFromKey($validated['type']) ) continue;
+            if( !StampTypes::getFromKey($validated['type'])->checkDates->call($this,$date) ) continue;
 
             Auth::user()->identity->stamps()->create([
                 'date' => $date,
