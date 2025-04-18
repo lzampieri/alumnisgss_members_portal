@@ -115,6 +115,8 @@ class PermissionsController extends Controller
             'clockin-view-all',
             'clockin-view-online',
             'clockin-edit-all',
+            // Helpdesk
+            'helpdesk-master',
             // Webmaster stuff
             'logfile-view',
             'logdb-view',

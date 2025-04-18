@@ -11,5 +11,6 @@ export default [
     { id: 'clockings', name: 'Timbrature', url: route('clockings'), icon: solid('business-time') },
     { id: 'accesses', name: 'Accessi', url: route('accesses'), icon: solid('id-badge') },
     { id: 'permissions', name: 'Ruoli e permessi', url: route('permissions'), icon: solid('id-card') },
+    { id: 'helpdesk', name: 'Helpdesk', url: route('helpdesk'), icon: solid('truck-medical') },
     { id: 'webmaster', name: 'Webmaster', url: route('webmaster'), icon: solid('bug') },
 ]

@@ -44,6 +44,11 @@
         @apply no-underline;
         @apply cursor-pointer;
     }
+    .icon-button-group {
+        @apply rounded text-primary-main aspect-square px-1;
+        @apply group-hover:text-primary-contrast group-hover:bg-primary-main;
+        @apply no-underline;
+    }
     .icon-button-gray {
         @apply rounded-full text-gray-400 aspect-square px-1;
         @apply hover:text-white hover:bg-gray-400;

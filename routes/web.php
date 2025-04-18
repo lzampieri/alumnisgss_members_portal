@@ -40,5 +40,7 @@ include( 'webmaster.php' );
 
 include( 'permalinks.php' );
 
+include( 'tickets.php' );
+
 Route::redirect('/main','https://www.alumniscuolagalileiana.it')->name('main');
 

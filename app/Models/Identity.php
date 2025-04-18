@@ -94,6 +94,11 @@ abstract class Identity extends Model
     {
         return $this->morphMany(Stamp::class, 'employee');
     }
+    
+    public function authoredTickets()
+    {
+        return $this->morphMany(Ticket::class, 'author');
+    }
 
     public function aDetails()
     {
@@ -115,5 +120,12 @@ abstract class Identity extends Model
         $roles = $this->roles;
         $roles->push(Role::findByName('everyone'));
         return $roles;
+    }
+
+    public static function allWithPermission(string $permissionName) : array {
+        return array_merge(
+            Alumnus::permission($permissionName)->get()->all(),
+            External::permission($permissionName)->get()->all()
+        );
     }
 }

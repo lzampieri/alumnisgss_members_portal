@@ -41,6 +41,10 @@ class Handler extends ExceptionHandler
         $this->renderable(function (HttpException $e, Request $request) {
             if ($e->getStatusCode() == 403)
                 return ErrorsController::e403($request);
+            if ($e->getStatusCode() == 422)
+                return ErrorsController::e422($request);
+            if ($e->getStatusCode() == 501)
+                return ErrorsController::e501($request);
         });
     }
 }

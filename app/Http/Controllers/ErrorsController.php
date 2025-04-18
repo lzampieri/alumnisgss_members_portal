@@ -15,4 +15,22 @@ class ErrorsController extends Controller
 
         return redirect()->route('home')->with('errorsDialogs', ["Non hai il permesso di accedere a questa risorsa."]);
     }
+
+    // Wrong pathway
+    public static function e422(Request $request)
+    {
+        if ($request->inertia())
+            return redirect(null, 422)->back()->with('errorsDialogs', ["Non è possibile effettuare questa operazione in questo modo."]);
+
+        return redirect()->route('home')->with('errorsDialogs', ["Non è possibile effettuare questa operazione in questo modo."]);
+    }
+
+    // Unimplemented
+    public static function e501(Request $request)
+    {
+        if ($request->inertia())
+            return redirect(null, 501)->back()->with('errorsDialogs', ["Questa operazione non esiste in questo portale."]);
+
+        return redirect()->route('home')->with('errorsDialogs', ["Questa operazione non esiste in questo portale."]);
+    }
 }

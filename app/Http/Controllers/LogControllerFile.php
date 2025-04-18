@@ -14,7 +14,7 @@ class LogControllerFile extends Controller
     {
         $this->authorize('logfile-view');
 
-        return (new LogViewerController)->index(); // TODO sostituire con qualcosa di homemade
+        return (new LogViewerController)->index();
     }
 
     public static function debug(string $message, $params = [])

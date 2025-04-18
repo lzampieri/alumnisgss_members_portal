@@ -147,7 +147,7 @@ class WebmasterController extends Controller
     {
         $this->authorizeRole('webmaster'); // Todo add specific authorization
 
-        $rows = Log::with(['agent','item'])->orderBy('id', 'desc')->paginate( $perPage, ['*'], 'page', $page );
+        $rows = Log::with(['agent','item'])->orderBy('id', 'desc')->paginate( $perPage, ['*'], 'page', $page ); // todo check if here I should add a +1
 
         return json_encode($rows);
     }

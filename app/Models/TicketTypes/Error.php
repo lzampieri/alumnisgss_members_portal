@@ -1,0 +1,69 @@
+<?php
+
+namespace App\Models\TicketTypes;
+
+use App\Models\Identity;
+use App\Models\Permission;
+use App\Models\Ticket;
+
+class Error implements TicketTypeInterface
+{
+    public string $content;
+    private Ticket $ticket;
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'subject' => 'Errore',
+            'content' => $this->content
+        ];
+    }
+
+    public static function commonName(): string
+    {
+        return 'Errore';
+    }
+
+    public static function selfCreatable(): bool
+    {
+        return false;
+    }
+
+    public static function canBeSeen(Identity $identity): bool
+    {
+        return $identity->hasPermissionTo('helpdesk-master');
+    }
+
+    public static function fieldList(): array
+    {
+        return [];
+    }
+
+    public static function fromParams(Ticket $ticket, array $params): TicketTypeInterface
+    {
+        $it = new Error();
+        $it->content = json_encode($params);
+        $it->ticket = $ticket;
+        return $it;
+    }
+
+    public function actionList(): array
+    {
+        if( $this->ticket->status == 'open')
+            return [
+                'solve' => 'Segna come risolto'
+            ];
+        return [];
+    }
+
+    public function doAction(string $action): void {
+        if( $action == 'solve' ) {
+            $this->ticket->status = 'solved';
+            $this->ticket->save();
+        }
+    }
+
+    public static function notifyOnCreation(): array {
+        return Identity::allWithPermission('helpdesk-master');
+    }
+}

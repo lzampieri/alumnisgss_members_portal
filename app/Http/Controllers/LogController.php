@@ -17,7 +17,8 @@ use App\Models\Ratification;
 use App\Models\Resource;
 use App\Models\Role;
 use App\Models\Stamp;
-use App\Models\User;
+use App\Models\Ticket;
+use App\Models\TicketComment;
 use Illuminate\Database\Eloquent\Model;
 
 class LogType {
@@ -26,22 +27,22 @@ class LogType {
             Alumnus::class, Document::class, DynamicPermission::class,
             External::class, LoginMethod::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
-            Permalink::class, File::class, Stamp::class ],
+            Permalink::class, File::class, Stamp::class, Ticket::class, TicketComment::class ],
         LogEvents::RESTORED => [
             Alumnus::class, Document::class, DynamicPermission::class,
             External::class, LoginMethod::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
-            Permalink::class, File::class, Stamp::class ],
+            Permalink::class, File::class, Stamp::class, Ticket::class, TicketComment::class ],
         LogEvents::UPDATE => [
             Alumnus::class, Document::class, DynamicPermission::class,
             External::class, LoginMethod::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
-            Permalink::class, File::class, Stamp::class ],
+            Permalink::class, File::class, Stamp::class, Ticket::class, TicketComment::class ],
         LogEvents::DELETE => [
             Alumnus::class, Document::class, DynamicPermission::class,
             External::class, LoginMethod::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
-            Permalink::class, File::class, Stamp::class ],
+            Permalink::class, File::class, Stamp::class, Ticket::class, TicketComment::class ],
         LogEvents::DOWNLOADED_DETAILS => True,
         LogEvents::DOWNLOADED_SCHEMA => True,
         LogEvents::LOGIN => True,
@@ -114,6 +115,10 @@ class LogController extends Controller
             return "File " . $object->handle . " [sha256:" . $object->sha256 . "] belonging to " . Log::stringify($object->parent);
         if ($object instanceof Stamp)
             return "Stamp of " . $object->date . " from " . $object->clockin . " to " . $object->clockout . " ( " . $object->ip . " ) for " . Log::stringify($object->employee);
+        if ($object instanceof Ticket)
+            return "Ticket #" . $object->id . " opened by " . Log::stringify($object->author) . " - currently  " . $object->status . " - " . json_encode( $object->instance->jsonStrinfigy() );
+        if ($object instanceof TicketComment)
+            return "Comment on ticket #" . $object->ticket->id . " from " . Log::stringify($object->author) . ":  " . $object->content;
         return $object;
     }
 }
