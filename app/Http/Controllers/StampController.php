@@ -191,8 +191,8 @@ class StampController extends Controller
 
         if ( Auth::user()->can('viewAny', Stamp::class) ) {
             $data = array_merge(
-                Alumnus::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter, 'stamps.tickets'])->get()->all(),
-                External::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter, 'stamps.tickets'])->get()->all(),
+                Alumnus::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter, 'stamps.acpttickets'])->get()->all(),
+                External::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter, 'stamps.acpttickets'])->get()->all(),
             );
         } else {
             $data = [

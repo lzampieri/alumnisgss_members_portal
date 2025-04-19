@@ -70,4 +70,9 @@ class Stamp extends Model
     {
         return $this->morphMany(Ticket::class, 'reference');
     }
+
+    public function acpttickets()
+    {
+        return $this->morphMany(Ticket::class, 'reference')->where('status', 'accepted');
+    }
 }

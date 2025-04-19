@@ -85,6 +85,8 @@ function hhmm( t ) {
 function FullList({ dateString }) {
     const data = usePage().props.data
 
+    console.log(data);
+
     return <div className="w-full md:w-3/5">
         {data.map((d, id) => <Fragment key={id}>
             <h4>{d.name} {d.surname}</h4>
@@ -96,7 +98,7 @@ function FullList({ dateString }) {
                         { stamp.clockin ? " - Ingresso: " + hhmm(stamp.clockin) : ""}
                         { stamp.clockout ? " - Uscita: " + hhmm(stamp.clockout) : ""}
                         { stamp.clockout ? " - Totale: " + withQuartersAndHours(stamp.hours) : ""}
-                        { stamp.tickets.map((t) => 
+                        { stamp.acpttickets.map((t) => 
                             <Link className="icon-button-gray" href={route('ticket.view',{ticket:t.id})}>
                                 <FontAwesomeIcon icon={solid('screwdriver-wrench')} />
                             </Link>

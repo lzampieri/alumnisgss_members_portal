@@ -24,10 +24,10 @@ export default function Add() {
     }
 
     return <div className="main-container">
-        <Link className="button self-start" href={route('ticket.addList')}>
+        {/* <Link className="button self-start" href={route('ticket.addList')}>
             <FontAwesomeIcon icon={solid('circle-left')} className="pr-2" />
             Indietro
-        </Link>
+        </Link> */}
         <h3 className="my-3">Aggiungi richiesta - {usePage().props.name}</h3>
 
         <div className="w-full flex flex-col items-stretch">
