@@ -73,8 +73,20 @@ class StampPolicy
      * @param  \App\Models\Stamp  $stamp
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function edit(User $user, Stamp $stamp)
+    public function delSpecial(User $user, Stamp $stamp)
     {
         return $stamp->employee->is($user->identity) || $user->hasPermissionTo('clockin-edit-all');
+    }
+
+    /**
+     * Determine whether the user can edit stamps.
+     *
+     * @param  \Illuminate\Foundation\Auth\User  $user
+     * @param  \App\Models\Stamp  $stamp
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function edit(User $user)
+    {
+        return $user->hasPermissionTo('clockin-edit-all');
     }
 }

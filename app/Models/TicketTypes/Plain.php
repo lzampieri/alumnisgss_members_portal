@@ -6,6 +6,7 @@ use App\Models\External;
 use App\Models\Identity;
 use App\Models\Permission;
 use App\Models\Ticket;
+use Illuminate\Http\Request;
 
 class Plain implements TicketTypeInterface
 {
@@ -35,14 +36,14 @@ class Plain implements TicketTypeInterface
 
     public static function canBeSeen(Identity $identity): bool
     {
-        return $identity->hasPermissionTo('helpdesk-master');
+        return $identity->hasPermissionTo('helpdesk-master') || $identity->hasPermissionTo('helpdesk-solve-plain');
     }
 
-    public static function fieldList(): array
+    public function fieldList(): array
     {
         return [
-            'subject' => ['label' => 'Oggetto', 'type' => 'shortText', 'validationRule' => 'required|min:3'],
-            'content' => ['label' => 'Richiesta', 'type' => 'longText', 'validationRule' => 'required|min:3'],
+            'subject' => ['label' => 'Oggetto', 'type' => 'shortText', 'currentValue' => $this->subject],
+            'content' => ['label' => 'Richiesta', 'type' => 'longText', 'currentValue' => $this->content],
         ];
     }
 
@@ -55,24 +56,49 @@ class Plain implements TicketTypeInterface
         return $it;
     }
 
+    public static function fromRequest(Request $request): ?TicketTypeInterface
+    {
+        $it = new Plain();
+        $it->subject = "";
+        $it->content = "";
+        return $it;
+    }
+
+    public function validateInput(Request $request): array
+    {
+        return $request->validate([
+            'subject' => 'required|min:3',
+            'content' => 'required|min:3',
+        ]);
+    }
+
+    public function refObject(): ?object
+    {
+        return null;
+    }
+
     public function actionList(): array
     {
-        if ($this->ticket->status == 'open')
-            return [
-                'solve' => 'Segna come risolto'
-            ];
+        if (Auth()->user()->hasPermissionTo('helpdesk-solve-plain')) {
+            if ($this->ticket->status == 'open')
+                return [
+                    'solve' => 'Segna come risolto'
+                ];
+        }
         return [];
     }
 
-    public function doAction(string $action): void
+    public function doAction(string $action): ?string
     {
-        if ($action == 'solve') {
+        if (Auth()->user()->hasPermissionTo('helpdesk-solve-plain') && ($action == 'solve')) {
             $this->ticket->status = 'solved';
             $this->ticket->save();
         }
+        return null;
     }
-    
-    public static function notifyOnCreation(): array {
+
+    public static function notifyOnCreation(): array
+    {
         return Identity::allWithPermission('helpdesk-master');
     }
 }

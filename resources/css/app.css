@@ -50,7 +50,7 @@
         @apply no-underline;
     }
     .icon-button-gray {
-        @apply rounded-full text-gray-400 aspect-square px-1;
+        @apply rounded text-gray-400 aspect-square px-1;
         @apply hover:text-white hover:bg-gray-400;
         @apply no-underline;
         @apply cursor-pointer;
@@ -79,6 +79,9 @@
         @apply file:rounded-none file:border-0 file:bg-gray-300 file:py-2 file:px-4
     }
     input[type="number"] {
+        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0
+    }
+    input[type="time"] {
         @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0
     }
     input[type="checkbox"] {

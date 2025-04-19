@@ -10,6 +10,32 @@ function twoDigits(num) {
     return ("" + num).padStart(2, '0');
 }
 
+function withQuarters(num) {
+    if( num < 0.2 ) return "0";
+
+    let intpart = Math.floor(num);
+    if( intpart < 1 ) intpart = "";
+    let decpart = num - intpart;
+    let decpart_str = "";
+    if( decpart > 0.2 ) decpart_str = "¼";
+    if( decpart > 0.4 ) decpart_str = "½";
+    if( decpart > 0.7 ) decpart_str = "¾";
+    return "" + intpart + decpart_str;
+}
+
+function withQuartersGT0(numOrStr) {
+    if( isNaN(numOrStr-0) ) return numOrStr;
+    if( numOrStr < 0.2 ) return "";
+    return withQuarters(numOrStr);
+}
+
+function withQuartersAndHours(num) {
+    let unit = num < 2 ? "ora" : "ore";
+    return withQuarters(num) + " " + unit;
+}
+
+
+
 function daysInMonth(month, year) {
     return new Date(year, month, 0).getDate();
 }
@@ -37,7 +63,6 @@ function Cell({ children, bold, left, color }) {
 
 function Table({ daysCount }) {
     const data = usePage().props.data
-    console.log(data.length == 0)
 
     return <div className="grid w-full max-w-full overflow-x-auto" style={{ 'gridTemplateColumns': 'minmax(auto, 10fr) repeat(31, minmax(2rem, 1fr))' }}>
         {[...Array(32).keys()].map(i =>
@@ -45,7 +70,7 @@ function Table({ daysCount }) {
         {data.map((d, id) => <Fragment key={id}>
             <Cell key={d.id + "-0"} left color={id % 2}>{d.name} {d.surname}</Cell>
             {[...Array(31).keys()].map(i => <Cell key={d.id + "-" + i} className="justify-self-center" color={id % 2}>
-                {totalCount(d.stamps_grouped[i + 1])}
+                {withQuartersGT0(totalCount(d.stamps_grouped[i + 1]))}
             </Cell>)}
         </Fragment>)}
         {data.length == 0 && <div className="justify-self-stretch bg-gray-100 text-center col-span-full">Nessun dipendente in servizio questo mese.</div>}
@@ -70,7 +95,18 @@ function FullList({ dateString }) {
                         {stamp.type.label}
                         { stamp.clockin ? " - Ingresso: " + hhmm(stamp.clockin) : ""}
                         { stamp.clockout ? " - Uscita: " + hhmm(stamp.clockout) : ""}
-                        { stamp.clockout ? " - Totale: " + stamp.hours + " ore" : ""}
+                        { stamp.clockout ? " - Totale: " + withQuartersAndHours(stamp.hours) : ""}
+                        { stamp.tickets.map((t) => 
+                            <Link className="icon-button-gray" href={route('ticket.view',{ticket:t.id})}>
+                                <FontAwesomeIcon icon={solid('screwdriver-wrench')} />
+                            </Link>
+                        )}
+                        {
+                            ( stamp.clockin || stamp.clockout ) && ( d.mayOpenTicket ) &&
+                            <Link className="icon-button" href={route('ticket.add',{type:'EditStamp',stampId:stamp.id})}>
+                                <FontAwesomeIcon icon={solid('screwdriver-wrench')} />
+                            </Link>
+                        }
                     </div>)}
             </Fragment>)}
         </Fragment>)}

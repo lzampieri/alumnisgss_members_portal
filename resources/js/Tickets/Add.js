@@ -8,17 +8,19 @@ import Backdrop from "../Layout/Backdrop";
 function GenerateInput({type, value, setValue}) {
     if (type == 'shortText') return <input type="text" value={value} onChange={(e) => setValue(e.target.value)} />
     if (type == 'longText') return <TextareaAutosize className="w-full pretendToBeInput" minRows={10} value={value} onChange={e => setValue(e.target.value)}/>
+    if (type == 'fixed') return <div className="w-full p-2">{value}</div>
+    if (type == 'time') return <input type="time" value={value} onChange={(e) => { console.log( e.target.value ); setValue(e.target.value) } } />
 }
 
 export default function Add() {
     const fieldList = usePage().props.fieldList;
     const type = usePage().props.type;
 
-    const { data, setData, processing, errors, post } = useForm( Object.fromEntries( Object.keys(fieldList).map( k => [k, '']) ) )
+    const { data, setData, processing, errors, post } = useForm( Object.fromEntries( Object.keys(fieldList).map( k => [k, fieldList[k].currentValue] ) ) )
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('ticket.add', {type: type}));
+        post('#');
     }
 
     return <div className="main-container">
@@ -30,7 +32,7 @@ export default function Add() {
 
         <div className="w-full flex flex-col items-stretch">
             <label>Autore</label>
-            <input type="text" disabled value={usePage().props.author} />
+            <GenerateInput type="fixed" value={usePage().props.author} />
 
             {Object.keys(fieldList).map((key) => <React.Fragment key={key}>
                 <label key={'lab_' + key}>{fieldList[key].label}</label>

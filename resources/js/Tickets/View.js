@@ -13,10 +13,10 @@ function parseDate(value) {
 }
 
 function GenerateContent({ type, value }) {
-    if ((type == 'shortText') || (type == 'longText'))
-        return <div className="rounded-md bg-gray-100 p-2">{value}</div>;
+    if ((type == 'shortText') || (type == 'longText') || (type == 'fixed') || (type == 'time'))
+        return <div className="p-2">{value}</div>;
     if (type == 'date')
-        return <div className="rounded-md bg-gray-100 p-2">{parseDate(value)}</div>;
+        return <div className="p-2">{parseDate(value)}</div>;
 }
 
 function getNameAndSurname(guy) {
@@ -27,8 +27,8 @@ function getNameAndSurname(guy) {
 }
 
 function Comment({ comment }) {
-    return <div className="rounded-md bg-gray-100 p-2 mb-2">
-        <span className="text-gray-700 text-sm">{getNameAndSurname(comment.author)} - {parseDate(comment.created_at)}</span><br />
+    return <div className="mb-2">
+        <span className="text-gray-700 text-sm"><FontAwesomeIcon icon={solid('comment')} /> {getNameAndSurname(comment.author)} - {parseDate(comment.created_at)}</span><br />
         {comment.content}
     </div>;
 }
@@ -37,7 +37,7 @@ function RequireConfirmAction({ label, callback }) {
     const [open, setOpen] = useState(false);
 
     return <>
-        <button onClick={() => setOpen(true)} className="button">
+        <button onClick={() => setOpen(true)} className="button mb-2">
             {label}
         </button>
         <Dialog
@@ -76,10 +76,10 @@ export default function View() {
     }
 
     return <div className="main-container">
-        <Link className="button self-start" href={route('helpdesk')}>
+        {/* <Link className="button self-start" href={route('helpdesk')}> 
             <FontAwesomeIcon icon={solid('circle-left')} className="pr-2" />
             Indietro
-        </Link>
+        </Link> */}
         <h3 className="my-3">Ticket #{ticket.id}</h3>
         <h4>{usePage().props.commonName}: {ticket.instance.subject}</h4>
 
@@ -89,19 +89,19 @@ export default function View() {
 
             {Object.keys(fieldList).map((key) => <React.Fragment key={key}>
                 <label key={'lab_' + key}>{fieldList[key].label}</label>
-                <GenerateContent key={key} type={fieldList[key].type} value={ticket.instance[key]} />
+                <GenerateContent key={key} type={fieldList[key].type} value={fieldList[key].currentValue} />
             </React.Fragment>)}
 
             <label>Autore</label>
             <GenerateContent type={'shortText'} value={getNameAndSurname(ticket.author)} />
 
-            <label>Assegnatario</label>
-            <GenerateContent type={'shortText'} value={getNameAndSurname(ticket.assigner)} />
+            {/* <label>Assegnatario</label>
+            <GenerateContent type={'shortText'} value={getNameAndSurname(ticket.assigner)} /> */}
+            {/* TODO This is a future feature */}
 
             <label>Creazione</label>
             <GenerateContent type={'date'} value={ticket.created_at} />
 
-            <label>Commenti</label>
             {ticket.comments.map((comment) => <Comment key={comment.id} comment={comment} />)}
             {ticket.comments.length == 0 && <div className="text-gray-400 text-sm">Nessun commento</div>}
 

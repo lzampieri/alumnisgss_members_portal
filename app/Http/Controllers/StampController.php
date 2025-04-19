@@ -158,7 +158,7 @@ class StampController extends Controller
         
         $stamp = Stamp::find($validated['id']);
 
-        $this->authorize('edit', $stamp);
+        $this->authorize('delSpecialr', $stamp);
 
         $types = array_filter( array_keys( StampTypes::getAllTypes() ), function ($item) { return ($item !== 'default') && ($item !== 'work'); } );
 
@@ -191,8 +191,8 @@ class StampController extends Controller
 
         if ( Auth::user()->can('viewAny', Stamp::class) ) {
             $data = array_merge(
-                Alumnus::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter])->get()->all(),
-                External::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter])->get()->all(),
+                Alumnus::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter, 'stamps.tickets'])->get()->all(),
+                External::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter, 'stamps.tickets'])->get()->all(),
             );
         } else {
             $data = [
@@ -204,7 +204,8 @@ class StampController extends Controller
             $ident->stamps_grouped = $ident->stamps->groupBy(function ($item, $key) {
                 return $item->date->day;
             });
-            $ident = $ident->only(['id', 'surname', 'name', 'stamps_grouped']);
+            $ident->mayOpenTicket = $ident->is(Auth()->user()->identity);
+            $ident = $ident->only(['id', 'surname', 'name', 'stamps_grouped','mayOpenTicket']);
         });
 
 

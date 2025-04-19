@@ -5,6 +5,7 @@ namespace App\Models\TicketTypes;
 use App\Models\Identity;
 use App\Models\Permission;
 use App\Models\Ticket;
+use Illuminate\Http\Request;
 
 class Error implements TicketTypeInterface
 {
@@ -34,7 +35,7 @@ class Error implements TicketTypeInterface
         return $identity->hasPermissionTo('helpdesk-master');
     }
 
-    public static function fieldList(): array
+    public function fieldList(): array
     {
         return [];
     }
@@ -47,23 +48,43 @@ class Error implements TicketTypeInterface
         return $it;
     }
 
-    public function actionList(): array
+    public static function fromRequest(Request $request): ?TicketTypeInterface
     {
-        if( $this->ticket->status == 'open')
-            return [
-                'solve' => 'Segna come risolto'
-            ];
+        return null;
+    }
+
+    public function validateInput(Request $request): array
+    {
         return [];
     }
 
-    public function doAction(string $action): void {
-        if( $action == 'solve' ) {
+    public function refObject(): ?object
+    {
+        return null;
+    }
+
+    public function actionList(): array
+    {
+        if (Auth()->user()->hasPermissionTo('helpdesk-master')) {
+            if ($this->ticket->status == 'open')
+                return [
+                    'solve' => 'Segna come risolto'
+                ];
+        }
+        return [];
+    }
+
+    public function doAction(string $action): ?string
+    {
+        if (Auth()->user()->hasPermissionTo('helpdesk-master') && ($action == 'solve')) {
             $this->ticket->status = 'solved';
             $this->ticket->save();
         }
+        return null;
     }
 
-    public static function notifyOnCreation(): array {
+    public static function notifyOnCreation(): array
+    {
         return Identity::allWithPermission('helpdesk-master');
     }
 }
