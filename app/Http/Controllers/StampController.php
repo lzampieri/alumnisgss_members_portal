@@ -85,6 +85,43 @@ class StampController extends Controller
         return redirect()->back()->with(['notistack' => ['success', 'A presto!']]);
     }
 
+    public function clockout_withlunch()
+    {
+        $this->authorize('clockin', Stamp::class);
+
+        $clockedIn = Auth::user()->identity->stamps()
+            ->whereDate('date', Carbon::now())
+            ->whereNull('clockout')->latest()->first();
+
+        if (!$clockedIn) {
+            return redirect()->back()->with(['notistack' => ['error', 'Non risulti entrato']]);
+        }
+        if (!$clockedIn->type->clockable) {
+            return redirect()->back()->with(['notistack' => ['error', 'Non è permesso timbrare in un giorno di ' + $clockedIn->type->label]]);
+        }
+
+        $midday = Carbon::now()->setTimeFromTimeString('12:00:00');
+        $twopm = Carbon::now()->setTimeFromTimeString('14:00:00');
+
+        if( $clockedIn->clockin->isBefore($midday) || Carbon::now()->isAfter($twopm) ) {
+            $midday_half = Carbon::now()->setTimeFromTimeString('12:30:00');
+            $clockedIn->clockout = $midday_half;
+            $clockedIn->save();
+            
+            $one_half = Carbon::now()->setTimeFromTimeString('13:30:00');
+            $clockedIn = Auth::user()->identity->stamps()->create([
+                'date' => Carbon::now(),
+                'clockin' => $one_half,
+                'ip' => request()->ip()
+            ]);
+        }
+
+        $clockedIn->clockout = Carbon::now();
+        $clockedIn->save();
+
+        return redirect()->back()->with(['notistack' => ['success', 'A presto!']]);
+    }
+    
     public function manageSpecials()
     {
         $this->authorize('editMine', Stamp::class);
