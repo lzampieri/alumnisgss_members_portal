@@ -20,6 +20,8 @@ class DocumentsController extends Controller
 {
     public function list()
     {
+        // No authorization: visible by anyone
+
         $params = [];
 
         $params['documents'] = Document::whereNull('attached_to_id')

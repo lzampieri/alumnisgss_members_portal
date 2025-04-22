@@ -103,6 +103,11 @@ function FullList({ dateString }) {
                                 <FontAwesomeIcon icon={solid('screwdriver-wrench')} />
                             </Link>
                         )}
+                        { stamp.opentickets.map((t) => 
+                            <Link className="icon-button-gray" href={route('ticket.view',{ticket:t.id})}>
+                                <FontAwesomeIcon icon={solid('hourglass-half')} />
+                            </Link>
+                        )}
                         {
                             ( stamp.clockin || stamp.clockout ) && ( d.mayOpenTicket ) &&
                             <Link className="icon-button" href={route('ticket.add',{type:'EditStamp',stampId:stamp.id})}>

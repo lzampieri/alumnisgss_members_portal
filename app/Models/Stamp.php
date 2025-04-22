@@ -75,4 +75,8 @@ class Stamp extends Model
     {
         return $this->morphMany(Ticket::class, 'reference')->where('status', 'accepted');
     }
+    public function opentickets()
+    {
+        return $this->morphMany(Ticket::class, 'reference')->where('status', 'open');
+    }
 }

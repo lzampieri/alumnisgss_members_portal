@@ -18,6 +18,8 @@ class StampController extends Controller
 
     public function clocker()
     {
+        // Must be logged in - guaranteed in middleware
+        
         $data = ['user' => Auth::user()];
 
         if( Auth::user()->can('clockin', Stamp::class) ) {
@@ -215,6 +217,7 @@ class StampController extends Controller
 
     public function monthly(int $year = -1, int $month = -1)
     {
+        // Must be logged in - guaranteed in middleware
 
         if ($year == -1 || $month == -1) {
             $today = Carbon::now();
@@ -228,8 +231,8 @@ class StampController extends Controller
 
         if ( Auth::user()->can('viewAny', Stamp::class) ) {
             $data = array_merge(
-                Alumnus::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter, 'stamps.acpttickets'])->get()->all(),
-                External::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter, 'stamps.acpttickets'])->get()->all(),
+                Alumnus::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter, 'stamps.acpttickets', 'stamps.opentickets'])->get()->all(),
+                External::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter, 'stamps.acpttickets', 'stamps.opentickets'])->get()->all(),
             );
         } else {
             $data = [

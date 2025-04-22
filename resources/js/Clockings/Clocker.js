@@ -63,9 +63,9 @@ export default function Clocker() {
     const checkTimes = () => {
         if( (!lastClockIn) || !canClockToday ) return;
 
-        if( ( new Date(lastClockIn.clockin) < new Date( new Date().setHours(13,0,0,0) ) ) // Check that clocking before midday
+        if( ( new Date(lastClockIn.clockin) < new Date( new Date().setHours(12,0,0,0) ) ) // Check that clocking before midday
             && 
-            ( new Date() > new Date( new Date().setHours(12,0,0,0) ) ) // Check that clockout after 14.00
+            ( new Date() > new Date( new Date().setHours(14,0,0,0) ) ) // Check that clockout after 14.00
             ) {
             setOpen(true);
             return;

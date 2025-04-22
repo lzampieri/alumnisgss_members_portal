@@ -28,6 +28,8 @@ class WebmasterController extends Controller
 
     public function do_backup()
     {
+        // No authorization: visible by anyone
+
         $tempFile = storage_path() . '/app/backups/temp.sql';
 
         $dump = new Mysqldump(
@@ -49,6 +51,7 @@ class WebmasterController extends Controller
 
     public function backup()
     {
+        // No authorization: visible by anyone
 
         try {
             $this->do_backup();
@@ -61,6 +64,8 @@ class WebmasterController extends Controller
 
     public function decryptUtility()
     {
+        // Must be logged in - guaranteed in middleware
+
         return Inertia::render('Webmaster/DecryptUtility', [
             '_token' => csrf_token()
         ]);
@@ -68,6 +73,8 @@ class WebmasterController extends Controller
 
     public function decryptUtilityPost(Request $request)
     {
+        // Must be logged in - guaranteed in middleware
+        
         try {
             $validated = $request->validate([
                 'file' => 'required',

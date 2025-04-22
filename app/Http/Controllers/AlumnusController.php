@@ -38,6 +38,7 @@ class AlumnusController extends Controller
     public function membersCounters()
     {
         $this->authorize('viewMembers', Alumnus::class);
+        
         $members = Alumnus::where('status', 'member')->count();
         $students = Alumnus::where('status', 'student_member')->count();
 

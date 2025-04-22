@@ -6,7 +6,7 @@ use App\Models\Ratification;
 use Illuminate\Support\Facades\Route;
 
 // Documents
-Route::prefix('/clockings')->group(function () {
+Route::prefix('/clockings')->middleware('auth')->group(function () {
     Route::get('/', [StampController::class, 'clocker'])->name('clockings');
 
     Route::post('/clockin', [StampController::class, 'clockin'])->name('clockings.clockin');

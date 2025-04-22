@@ -15,6 +15,8 @@ class ResourceController extends Controller
 {
     public function list(Resource $resource = null)
     {
+        // No authorization: visible by anyone
+
         $params = [];
 
         $params['resources'] = Resource::with('permalinks')->get()->filter->canView;
@@ -126,6 +128,8 @@ class ResourceController extends Controller
 
     public function upload_file(Request $request)
     {
+        // No authorization: visible by anyone
+        
         $validated = $request->validate([
             'resourceId' => 'required|integer|exists:resources,id',
             'file' => 'required|mimes:' . implode(",", File::ALLOWED_FORMATS),
@@ -168,6 +172,8 @@ class ResourceController extends Controller
 
     public function add_permalink(Request $request)
     {
+        $this->authorize('create', Permalink::class);
+
         $validated = $request->validate([
             'resourceId' => 'required|integer|exists:resources,id',
             'link' => 'required|string|max:125|alpha_dash|unique:permalinks,id'
