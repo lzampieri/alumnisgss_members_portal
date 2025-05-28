@@ -236,7 +236,7 @@ class StampController extends Controller
             );
         } else {
             $data = [
-                Auth::user()->identity->load(['stamps' => $stampsFilter]),
+                Auth::user()->identity->load(['stamps' => $stampsFilter, 'stamps.acpttickets', 'stamps.opentickets']),
             ];
         }
 

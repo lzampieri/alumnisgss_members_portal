@@ -32,6 +32,16 @@ class AlumnusPolicy
         return $user->hasPermissionTo('alumnus-view');
     }
 
+    /**
+     * Determine whether the user can view any models.
+     *
+     * @param  \Illuminate\Foundation\Auth\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function viewHimself(User $user)
+    {
+        return $user->identity_type == Alumnus::class;
+    }
     
     /**
      * Determine whether the user can view the REGISTERED MEMBERS with ALL DETAILS

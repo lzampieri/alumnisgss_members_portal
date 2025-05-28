@@ -77,9 +77,9 @@ class LoginMethodController extends Controller
         $lm = LoginMethod::create(['driver' => 'google', 'credential' => $validated['email'], 'comment' => $validated['message']]);
 
         $emails = [];
-        foreach (LoginMethod::where('driver', 'google')->hasMorph('identity', [Alumnus::class, External::class])->get() as $lm) {
-            if ($lm->hasPermissionTo('accesses-receive-request-emails'))
-                $emails[] = $lm->credential;
+        foreach (LoginMethod::where('driver', 'google')->hasMorph('identity', [Alumnus::class, External::class])->get() as $lmth) {
+            if ($lmth->hasPermissionTo('accesses-receive-request-emails'))
+                $emails[] = $lmth->credential;
         }
 
         $message = "E' stata inserita una nuova richiesta d'accesso\n";

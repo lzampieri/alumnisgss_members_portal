@@ -80,6 +80,11 @@ abstract class Identity extends Model
         return $this->surname . " " . $this->name;
     }
 
+    public function nameAndSurname()
+    {
+        return $this->name . " " . $this->surname;
+    }
+
     public function loginMethods()
     {
         return $this->morphMany(LoginMethod::class, 'identity');

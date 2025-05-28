@@ -28,6 +28,10 @@ class AppsController extends Controller
             $apps[] = 'registry';
         }
 
+        if (Auth::user() && Auth::user()->can('viewHimself', Alumnus::class)) {
+            $apps[] = 'profile';
+        }
+
         if (Auth::user()) {
             $apps[] = 'reports';
         }

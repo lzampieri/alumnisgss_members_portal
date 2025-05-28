@@ -14,7 +14,7 @@ function parseDate(value) {
 
 function GenerateContent({ type, value }) {
     if ((type == 'shortText') || (type == 'longText') || (type == 'fixed') || (type == 'time'))
-        return <div className="p-2">{value}</div>;
+        return <div className="p-2 whitespace-pre-wrap">{value}</div>;
     if (type == 'date')
         return <div className="p-2">{parseDate(value)}</div>;
 }
@@ -27,7 +27,7 @@ function getNameAndSurname(guy) {
 }
 
 function Comment({ comment }) {
-    return <div className="mb-2">
+    return <div className="mb-2 whitespace-pre-wrap">
         <span className="text-gray-700 text-sm"><FontAwesomeIcon icon={solid('comment')} /> {getNameAndSurname(comment.author)} - {parseDate(comment.created_at)}</span><br />
         {comment.content}
     </div>;
