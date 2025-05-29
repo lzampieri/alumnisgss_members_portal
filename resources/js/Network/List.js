@@ -18,7 +18,7 @@ function AlumnusContent({ data }) {
             <div className="ml-2 font-bold">
                 {data.name} {data.surname}
             </div>
-            {usePage().props.canEditAlumnus &&
+            {data.can_be_network_edited &&
                 <div className="grow text-end mx-1">
                     <Link className="icon-button" href={route('network.edit', { alumnus: data.id })}><FontAwesomeIcon icon={solid('pen')} /></Link>
                 </div>
@@ -27,12 +27,13 @@ function AlumnusContent({ data }) {
         <div className="w-full flex flex-row justify-start flex-wrap">
             <SmartChip style={bgAndContrast(AlumnusStatus.status[data.status].color)} key='status' content={AlumnusStatus.status[data.status].label} />
             <SmartChip style={bgAndContrastPastel(-1)} key='coorte' content={(data.coorte > 0) ? (romanize(data.coorte) + " coorte") : "Onorario"} />
+            { data.a_details?.length > 0 && !data.consent_to_network_share && <SmartChip content="Dettagli visibili solo allo staff, nascosti ai soci" style={bgAndContrastPastel(2)} /> }
         </div>
         <div className="w-full flex flex-row justify-start flex-wrap gap-y-2">
             {data.a_details?.map((adt, i) => {
                 if (adt.value.length > 0) {
                     if (adt.a_details_type && adt.a_details_type?.type in ADetailsType.values)
-                        return ADetailsType.values[adt.a_details_type?.type].chip(adt, i)
+                        return ADetailsType.values[adt.a_details_type?.type].chip(adt, adt.a_details_type, i)
                     else
                         return adt.value.map((entry, j) => <SmartChip
                             content={entry}

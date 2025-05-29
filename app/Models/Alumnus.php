@@ -83,7 +83,8 @@ class Alumnus extends Identity
         'surname',
         'coorte',
         'status',
-        'tags'
+        'tags',
+        'consent_to_network_share'
     ];
     protected $casts = [
         'tags' => 'array'
@@ -150,4 +151,8 @@ class Alumnus extends Identity
         return $this->pendingRatifications()->get();
     }
 
+    public function getCanBeNetworkEditedAttribute()
+    {
+        return Auth::check() && Auth::user()->can('editNetworkAlumnus', $this);
+    }
 }

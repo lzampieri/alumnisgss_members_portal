@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { AlumnusStatus } from "../Utils";
+import { AlumnusStatus, bgAndContrastPastel } from "../Utils";
 import { useMemo, useState } from 'react';
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,6 +9,7 @@ import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
 import { themeQuartz } from "ag-grid-community";
 import { ModuleRegistry, ClientSideRowModelModule, QuickFilterModule, RowAutoHeightModule } from 'ag-grid-community';
 import ADetailsType from '../Network/ADetailsType';
+import SmartChip from '../Network/SmartChip';
 ModuleRegistry.registerModules([ClientSideRowModelModule, QuickFilterModule, RowAutoHeightModule]);
 
 function adtValueGetter(data, adtId) {
@@ -23,14 +24,13 @@ function adtRenderer(adt, i) {
     if (!adt || adt.value.length == 0)
         return
     if (adt.a_details_type && adt.a_details_type?.type in ADetailsType.values)
-        return ADetailsType.values[adt.a_details_type?.type].chip(adt, i)
+        return ADetailsType.values[adt.a_details_type?.type].chip(adt, adt.a_details_type, i)
     else
         return adt.value.map((entry, j) => <SmartChip
             content={entry}
             key={adt.id + "|" + j}
             style={bgAndContrastPastel(adt.a_details_type_id)} />
         )
-
 }
 
 function adtFilterValueGetter(data, adtId) {
@@ -48,6 +48,7 @@ export default function Table() {
         { field: 'coorte', headerName: 'Coorte', filter: 'agTextColumnFilter', width: 100 },
         { field: 'status', headerName: 'Stato', filter: 'agTextColumnFilter', filterValueGetter: ({ data }) => AlumnusStatus.status[data.status].label, cellRenderer: ({ data, value }) => <span><span style={{ color: AlumnusStatus.status[value].color }}>⬤</span> {AlumnusStatus.status[value].label}{data.pending_ratifications_count > 0 && <FontAwesomeIcon icon={solid('hourglass-half')} className='ml-2' />}</span> },
         { field: 'tags', headerName: 'Tags', valueGetter: ({ data }) => (data.tags || []).join(', '), cellRenderer: ({ data }) => (data.tags || []).map((i, idx) => <span key={idx} className='bg-gray-100 border border-gray-300 rounded px-2 py-1'>{i}</span>) },
+        { field: 'consent_to_network_share', headerName: 'Consenso', cellRenderer: ({ value }) => <span><span style={{ color: value ? '#00CC00' : '#FF0000' }}>⬤</span> {value ? "Dettagli condivisi" : "Dettagli riservati"}</span> },
         ...adtlist.map(i => ({
             field: i.name, headerName: i.name, valueGetter: ({ data }) => adtValueGetter(data, i.id),
             cellRenderer: ({ value, instanceId }) => adtRenderer(value, instanceId),

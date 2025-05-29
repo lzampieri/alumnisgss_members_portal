@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { enqueueSnackbar } from "notistack";
 import TokenizableInput from "../Libs/react-tokenizable-inputs/TokenizableInput";
 import ADetailsType from "../Network/ADetailsType";
+import ReactSwitch from "react-switch";
 
 export default function Edit() {
     const prev = usePage().props.alumnus;
@@ -23,6 +24,7 @@ export default function Edit() {
         coorte: prev?.coorte || 1,
         status: prev?.status || 'not_reached',
         tags: prev?.tags || [],
+        consent_to_network_share: Boolean( prev?.consent_to_network_share ) || false,
         adts: adts.map((adt) => {
             return {
                 id: adt.id,
@@ -127,6 +129,10 @@ export default function Edit() {
             <label>Tags</label>
             <CreatableSelect isMulti value={opt_arrs(data.tags)} onChange={(newValue) => setData('tags', newValue.map(i => i.value))} options={tags_options} />
             <label className="error">{errors.tags}</label>
+
+            <label>Consenso alla condivisione dei dati</label>
+            <ReactSwitch checked={data.consent_to_network_share} onChange={(newValue) => setData('consent_to_network_share', newValue)} />
+
 
             <div className="button flex flex-row items-center self-end my-4" onClick={submit}>
                 <FontAwesomeIcon icon={solid('save')} />

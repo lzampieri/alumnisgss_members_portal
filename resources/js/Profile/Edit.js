@@ -1,17 +1,11 @@
 import { Link, useForm, usePage } from "@inertiajs/react";
-import React, { Fragment, useState } from "react";
-import Select from 'react-select';
-import CreatableSelect from 'react-select/creatable';
 import { AlumnusStatus, bgAndContrast, bgAndContrastPastel, romanize } from "../Utils";
-import Dialog from '../Layout/Dialog';
-import { router } from "@inertiajs/react";
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { enqueueSnackbar } from "notistack";
-import TokenizableInput from "../Libs/react-tokenizable-inputs/TokenizableInput";
+import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+import { Fragment } from "react";
+import ADetailsType from "../Network/ADetailsType";
+import SmartChip from "../Network/SmartChip";
 import Backdrop from "../Layout/Backdrop";
-import ADetailsType from "./ADetailsType";
-import SmartChip from "./SmartChip";
 
 export default function Edit() {
     const alumnus = usePage().props.alumnus;
@@ -29,7 +23,7 @@ export default function Edit() {
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('network.edit', { alumnus: alumnus.id }),
+        post(route('profile.edit', { alumnus: alumnus.id }),
             { preserveState: "errors", onError: () => enqueueSnackbar('C\'è stato un errore, verifica tutti i campi', { variant: 'error' }) }
         );
     }
@@ -37,7 +31,7 @@ export default function Edit() {
     return (
         <form className="flex flex-col w-full md:w-3/5 items-start gap-2" onSubmit={submit}>
             <div className="flex flex-row justify-between w-full">
-                <Link className="button flex flex-row items-center self-start mb-4" href={route('network')}>
+                <Link className="button flex flex-row items-center self-start mb-4" href={route('profile')}>
                     <FontAwesomeIcon icon={solid('chevron-left')} />
                     Indietro
                 </Link>
@@ -62,11 +56,6 @@ export default function Edit() {
                     </div>)}
 
             </div>
-            
-            {alumnus.consent_to_network_share ?
-                <SmartChip content="Dettagli visibili a tutti i soci registrati" style={bgAndContrastPastel(4)} /> :
-                <SmartChip content="Dettagli visibili solo allo staff" style={bgAndContrastPastel(2)} />
-            }
 
             {
                 adts.map((adt, i) => <Fragment key={adt.id}>

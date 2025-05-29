@@ -38,7 +38,7 @@ class AlumnusController extends Controller
     public function membersCounters()
     {
         $this->authorize('viewMembers', Alumnus::class);
-        
+
         $members = Alumnus::where('status', 'member')->count();
         $students = Alumnus::where('status', 'student_member')->count();
 
@@ -76,18 +76,14 @@ class AlumnusController extends Controller
     public function table()
     {
         $this->authorize('viewAny', Alumnus::class);
-        $alumni = Alumnus::with(['aDetails' => function ($query) {
-            $query->whereHas('aDetailsType', function ($query) {
-                $query->where('visible', true);
-            })->orderBy(ADetailsType::select('order')->whereColumn('a_details_types.id', 'a_details.a_details_type_id'));
-        }, 'aDetails.aDetailsType'])
-            ->orderBy('coorte')
+
+        $alumni = Alumnus::orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
             ->get()
             ->append('a_details_keyd')
             ->append('pending_ratifications_count');
         $adtlist = ADetailsType::allOrdered();
-
+        
         return Inertia::render(
             'Registry/Table',
             [
@@ -134,6 +130,7 @@ class AlumnusController extends Controller
             'coorte' => 'required|numeric',
             'status' => 'required|in:' . implode(',', Alumnus::status),
             'tags' => 'nullable|array',
+            'consent_to_network_share' => 'required|boolean',
             'adts' => 'array',
             'adts.*' => 'array',
             'adts.*.id' => 'required|distinct|exists:a_details_types,id',
@@ -151,7 +148,7 @@ class AlumnusController extends Controller
 
         // Create or update alumnus
         if ($alumnus) {
-            foreach (['surname', 'name', 'coorte', 'status', 'tags'] as $key) {
+            foreach (['surname', 'name', 'coorte', 'status', 'tags', 'consent_to_network_share'] as $key) {
                 if ($validated[$key] !== $alumnus[$key]) {
                     $alumnus[$key] = $validated[$key];
                     $update = true;

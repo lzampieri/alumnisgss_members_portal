@@ -12,54 +12,54 @@ export default class ADetailsType {
             'paramName': 'Separatori',
             'paramDefault': '-;',
             'expval': '0:',
-            'editor': (adt, value, updateValue) =>
+            'editor': (ad, value, updateValue) =>
                 <TokenizableInput
-                    separatingCharacters={adt.param}
+                    separatingCharacters={ad.param}
                     tokensList={value}
                     updateTokensList={updateValue} />,
-            'chip': (adt) => adt.value.map((entry, j) => <SmartChip
+            'chip': (ad) => ad.value.map((entry, j) => <SmartChip
                 content={entry}
-                key={adt.id + "|" + j}
-                style={bgAndContrastPastel(adt.a_details_type_id)} />
+                key={ad.id + "|" + j}
+                style={bgAndContrastPastel(ad.a_details_type_id)} />
             )
         },
         'string': {
             'label': 'Testo',
             'expval': '0:1',
-            'editor': (adt, value, updateValue) =>
+            'editor': (ad, value, updateValue) =>
                 <input
                     type="text"
                     className="w-full"
                     value={value[0]}
                     onChange={e => updateValue([e.target.value])} />,
-            'chip': (adt) => <SmartChipWithTitle
-                content={adt.value[0]}
-                title={adt.a_details_type.name}
-                key={adt.id}
-                style={bgAndContrastPastel(adt.a_details_type_id)} />
+            'chip': (ad,adt) => <SmartChipWithTitle
+                content={ad.value[0]}
+                title={adt.name}
+                key={ad.id}
+                style={bgAndContrastPastel(adt.id)} />
         },
         'longText': {
             'label': 'Nota lunga',
             'expval': '0:1',
-            'editor': (adt, value, updateValue) =>
+            'editor': (ad, value, updateValue) =>
                 <TextareaAutosize
                     className="w-full pretendToBeInput"
                     minRows={3}
                     value={value[0]}
                     onChange={e => updateValue([e.target.value])} />,
-            'chip': (adt) => <SmartChipWithTitle
-                content={adt.value[0]}
-                title={adt.a_details_type.name}
-                key={adt.id}
-                style={bgAndContrastPastel(adt.a_details_type_id)} />
+            'chip': (ad,adt) => <SmartChipWithTitle
+                content={ad.value[0]}
+                title={adt.name}
+                key={ad.id}
+                style={bgAndContrastPastel(adt.id)} />
         },
         'select': {
             'label': 'Scelta multipla a valori fissi',
             'paramName': 'Valori (separati da ;)',
             'paramDefault': 'Valore 1;Valore 2',
             'expval': '1',
-            'editor': (adt, value, updateValue) => {
-                const options = adt.param?.split(';').map(i => ({ value: i, label: i })) || [];
+            'editor': (ad, value, updateValue) => {
+                const options = ad.param?.split(';').map(i => ({ value: i, label: i })) || [];
                 return <Select
                     className="w-full"
                     classNames={{ control: () => 'selectDropdown' }}
@@ -67,17 +67,17 @@ export default class ADetailsType {
                     onChange={(sel) => updateValue([sel.value])}
                     options={options} />
             },
-            'chip': (adt) => <SmartChipWithTitle
-                content={adt.value[0]}
-                title={adt.a_details_type.name}
-                key={adt.id}
-                style={bgAndContrastPastel(adt.a_details_type_id)} />
+            'chip': (ad,adt) => <SmartChipWithTitle
+                content={ad.value[0]}
+                title={adt.name}
+                key={ad.id}
+                style={bgAndContrastPastel(adt.id)} />
         },
         'creatableSelect': {
             'label': 'Scelta multipla o nuovo valore',
             'expval': '1',
-            'editor': (adt, value, updateValue) => {
-                const options = adt.usedValues?.map(i => ({ value: i, label: i })) || [];
+            'editor': (ad, value, updateValue) => {
+                const options = ad.usedValues?.map(i => ({ value: i, label: i })) || [];
                 return <CreatableSelect
                     className="w-full"
                     classNames={{ control: () => 'selectDropdown' }}
@@ -85,11 +85,11 @@ export default class ADetailsType {
                     onChange={(sel) => updateValue([sel.value])}
                     options={options} />
             },
-            'chip': (adt) => <SmartChipWithTitle
-                content={adt.value[0]}
-                title={adt.a_details_type.name}
-                key={adt.id}
-                style={bgAndContrastPastel(adt.a_details_type_id)} />
+            'chip': (ad,adt) => <SmartChipWithTitle
+                content={ad.value[0]}
+                title={adt.name}
+                key={ad.id}
+                style={bgAndContrastPastel(adt.id)} />
         }
     }
 }

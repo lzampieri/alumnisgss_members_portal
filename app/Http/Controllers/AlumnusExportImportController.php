@@ -179,8 +179,8 @@ class AlumnusExportImportController extends Controller
         $sheet->setCellValue('A4', "Per motivi di sicurezza, il download di questo file è registrato assieme alle credenziali di accesso.");
         $sheet->getStyle('A4')->applyFromArray(['font' => ['bold' => true, 'color' => ['argb' => 'FF0000']]]);
 
-        $titles = ['ID', 'Cognome', 'Nome', 'Coorte', 'Stato', 'Tags'];
-        $keys   = ['id', 'surname', 'name', 'coorte', 'status', 'tags'];
+        $titles = ['ID', 'Cognome', 'Nome', 'Coorte', 'Stato', 'Tags', 'Consenso condivisione dettagli'];
+        $keys   = ['id', 'surname', 'name', 'coorte', 'status', 'tags', 'consent_to_network_share'];
 
         foreach ($titles as $col => $title) {
             $this->writeXY($sheet, $col + 1, 6, $title, ['font' => ['bold' => true]]);
@@ -205,6 +205,8 @@ class AlumnusExportImportController extends Controller
                 $content = $alumnus[$key];
                 if ($key == 'status')
                     $content = Alumnus::AlumnusStatusLabels[$content];
+                // if ($key == 'consent_to_network_share')
+                //     $content = $alumnus->consent_to_network_share ? 1 Alumnus::AlumnusStatusLabels[$content];
                 if (is_array($content))
                     $content = implode('; ', $content);
 
@@ -279,23 +281,26 @@ class AlumnusExportImportController extends Controller
         $alumnusNumber = $sheet->getHighestRow() - 6;
         if ($alumnusNumber < 1)
             return redirect()->back()->with('notistack', ['error', "Nessun alumno nella lista."]);
-        $columnsNumber = Coordinate::columnIndexFromString($sheet->getHighestColumn());
-        if ($columnsNumber < 6)
-            return redirect()->back()->with('notistack', ['error', "File non compatibile."]);
 
         // Standard fields
-        $stdkeys   = ['id', 'surname', 'name', 'coorte', 'status', 'tags'];
+        $stdkeys   = ['id', 'surname', 'name', 'coorte', 'status', 'tags', 'consent_to_network_share'];
+
+        $columnsNumber = Coordinate::columnIndexFromString($sheet->getHighestColumn());
+        if ($columnsNumber < count( $stdkeys ))
+            return redirect()->back()->with('notistack', ['error', "File non compatibile."]);
 
         // Compute the adetails dictionary
         $adtlist = ADetailsType::allOrdered()->keyBy('id')->toArray();
 
         // Associate adetails to columns
-        $titles = $sheet->rangeToArray("G6:" . $sheet->getHighestColumn() . "6")[0];
+        $titles = $sheet->rangeToArray("A6:" . $sheet->getHighestColumn() . "6")[0];
         $adtcols = [];
-        for ($i = 0; $i < count($titles); $i += 2) {
+        for ($i = count($stdkeys); $i < count($titles); $i += 2) {
             if ($titles[$i] != null && array_key_exists("" . $titles[$i], $adtlist))
                 $adtcols[$i + 7] = "" . $titles[$i];
         }
+
+        $colUpTo = Coordinate::stringFromColumnIndex(count($stdkeys));
 
         // Go alumnus by alumnus
         for ($i = 0; $i < $alumnusNumber; $i++) {
@@ -303,7 +308,7 @@ class AlumnusExportImportController extends Controller
             $toSave = false;
 
             // Load data from standard_cols
-            $newPars = array_combine($stdkeys, $sheet->rangeToArray("A$row:F$row")[0]);
+            $newPars = array_combine($stdkeys, $sheet->rangeToArray("A$row:$colUpTo$row")[0]);
             if (!$newPars['id']) continue;
             $alumnus = Alumnus::find($newPars['id']);
 
@@ -355,6 +360,14 @@ class AlumnusExportImportController extends Controller
                 $output .= "Updated tags for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newPars['tags'] . "\n";
 
                 $alumnus['tags'] = $newPars['tags_array'];
+            }
+
+            // Check consent_to_network_share
+            $newPars['consent_to_network_share'] = boolval($newPars['consent_to_network_share']);
+            if ($newPars['consent_to_network_share'] != $alumnus['consent_to_network_share']) {
+                $toSave = true;
+                $output .= "Updated consent_to_network_share for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . intval($newPars['consent_to_network_share']) . "\n";
+                $alumnus['consent_to_network_share'] = $newPars['consent_to_network_share'];
             }
 
             if ($toSave)

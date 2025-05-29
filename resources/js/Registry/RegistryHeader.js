@@ -36,10 +36,12 @@ export default function RegistryHeader({ where, quickFilter, setQuickFilter }) {
                     <FontAwesomeIcon icon={solid('circle-plus')} />
                     Uno
                 </Link>
-                <Link className="button ml-9" href={route('registry.addBulk')}>
-                    <FontAwesomeIcon icon={solid('folder-plus')} />
-                    Tanti
-                </Link>
+                {usePage().props.canImport &&
+                    <Link className="button ml-9" href={route('registry.addBulk')}>
+                        <FontAwesomeIcon icon={solid('folder-plus')} />
+                        Tanti
+                    </Link>
+                }
                 <Link className="button grow" href={route('ratifications.add')}>
                     <FontAwesomeIcon icon={solid('right-left')} />
                     Cambia stati

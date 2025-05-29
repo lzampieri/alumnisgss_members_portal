@@ -22,7 +22,7 @@ class AlumnusPolicy
     }
 
     /**
-     * Determine whether the user can view any models.
+     * Determine whether the user can view all the alumnus (members or not), with all the details
      *
      * @param  \Illuminate\Foundation\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
@@ -33,7 +33,7 @@ class AlumnusPolicy
     }
 
     /**
-     * Determine whether the user can view any models.
+     * Determine whether the user can view himself, and its details.
      *
      * @param  \Illuminate\Foundation\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
@@ -42,18 +42,32 @@ class AlumnusPolicy
     {
         return $user->identity_type == Alumnus::class;
     }
-    
+
     /**
-     * Determine whether the user can view the REGISTERED MEMBERS with ALL DETAILS
+     * Determine whether the user can view the REGISTERED MEMBERS
      *
-     * @param  \Illuminate\Foundation\Auth\User  $user optional
+     * @param  \Illuminate\Foundation\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function viewNetwork(User $user)
     {
         return $user->hasPermissionTo('network-view');
     }
-    
+
+    /**
+     * Determine whether the user can view the details for a specific ALUMNUS
+     *
+     * @param  \Illuminate\Foundation\Auth\User $user
+     * @params \App\Models\Alumnus $alumnus
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function viewNetworkDetails(User $user, Alumnus $alumnus)
+    {
+        // if( $user->hasPermissionTo('network-view-alldetails') ) return true;
+        if ($user->hasPermissionTo('network-view') && $alumnus->consent_to_network_share) return true;
+        return false;
+    }
+
     /**
      * Determine whether the user can edit the settings for the network visualization
      *
@@ -62,23 +76,26 @@ class AlumnusPolicy
      */
     public function editNetworkView(User $user)
     {
-            return $user->hasPermissionTo('network-edit-view');
+        return $user->hasPermissionTo('network-edit-view');
     }
 
     /**
      * Determine whether the user can edit an alumnus profile, limiting to the details of the network visualization
      *
      * @param  \Illuminate\Foundation\Auth\User  $user optional
+     * @param  \App\Models\Alumnus  $alumnus
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function editNetworkAlumnus(User $user)
+    public function editNetworkAlumnus(User $user, Alumnus $alumnus)
     {
-            return $user->hasPermissionTo('network-edit-alumnus');
+        if( $user->hasPermissionTo('network-edit-alumnus') ) return true;
+        if( $user->hasPermissionTo('network-edit-consenting-alumnus') && $alumnus->consent_to_network_share ) return true;
+        return false;
     }
 
 
     /**
-     * Determine whether the user can edit models.
+     * Determine whether the user can edit any alumnus (member or not).
      *
      * @param  \Illuminate\Foundation\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool

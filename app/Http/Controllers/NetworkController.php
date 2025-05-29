@@ -4,18 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\ADetailsType;
 use App\Models\Alumnus;
-use App\Models\ADetail;
-use App\Models\ADetailType;
-use App\Models\Identity;
-use App\Models\Ratification;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class NetworkController extends Controller
 {
@@ -25,19 +16,25 @@ class NetworkController extends Controller
 
         $alumni = Alumnus::whereIn('status', Alumnus::public_status)
             ->where('coorte', '>', 0)
-            ->with(['aDetails' => function ($query) {
-                $query->whereHas('aDetailsType', function ($query) {
-                    $query->where('visible', true);
-                })->orderBy( ADetailsType::select('order')->whereColumn('a_details_types.id', 'a_details.a_details_type_id') );
-            }, 'aDetails.aDetailsType'])
             ->orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
             ->get();
 
+        foreach ($alumni as $alumnus) {
+            if (Auth::user()->can('viewNetworkDetails', $alumnus)) {
+                $alumnus->load(['aDetails' => function ($query) {
+                    $query->whereHas('aDetailsType', function ($query) {
+                        $query->where('visible', true);
+                    })->orderBy(ADetailsType::select('order')->whereColumn('a_details_types.id', 'a_details.a_details_type_id'));
+                }, 'aDetails.aDetailsType']);
+            }
+        }
+
+        $alumni->append('can_be_network_edited');
+        
         return Inertia::render('Network/List', [
             'alumni' => $alumni,
-            'canEditView' => Auth::user()->can('editNetworkView', Alumnus::class),
-            'canEditAlumnus' => Auth::user()->can('editNetworkAlumnus', Alumnus::class),
+            'canEditView' => Auth::user()->can('editNetworkView', Alumnus::class)
         ]);
     }
 
@@ -100,7 +97,7 @@ class NetworkController extends Controller
 
     public function edit(Request $request, Alumnus $alumnus)
     {
-        $this->authorize('editNetworkAlumnus', Alumnus::class);
+        $this->authorize('editNetworkAlumnus', $alumnus);
 
         $adtlist = ADetailsType::allOrdered();
         $adtlist->load(['aDetails' => function ($query) use ($alumnus) {
@@ -117,7 +114,7 @@ class NetworkController extends Controller
 
     public function edit_post(Request $request, Alumnus $alumnus)
     {
-        $this->authorize('editNetworkAlumnus', Alumnus::class);
+        $this->authorize('editNetworkAlumnus', $alumnus);
 
         $validated = $request->validate([
             'adts' => 'array',
@@ -135,5 +132,4 @@ class NetworkController extends Controller
 
         return redirect()->route('network')->with(['notistack' => ['success', 'Salvato!']]);
     }
-
 }
