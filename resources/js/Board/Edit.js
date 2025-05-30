@@ -42,7 +42,7 @@ export default function Edit() {
 
     transform((data) => ({
         ...data,
-        attached_to_id: data.isAttachment ? data.attachedTo.value : null
+        attached_to_id: ( data.isAttachment && data.attachedTo ) ? data.attachedTo.value : null
     }))
 
     return (
@@ -63,9 +63,12 @@ export default function Edit() {
                         <Select classNames={{ control: () => 'selectDropdown' }} className="grow" value={data.attachedTo} options={parentable} onChange={(newDocument) => setData('attachedTo', newDocument)} />
                     </div>
                 }
-                <label>Visibilità</label>
-                <RolesChips roles={roles} list={data.roles} updateList={(newList) => setData('roles', newList)} />
-                <label className="error">{errors.privacy}</label>
+                {!data.isAttachment && <>
+                    <label>Visibilità</label>
+                    <RolesChips roles={roles} list={data.roles} updateList={(newList) => setData('roles', newList)} />
+                </>
+                }
+                <label className="error">{errors.roles}</label>
                 <label>Data di redazione</label>
                 <Datepicker classNames='w-full' options={{ defaultDate: data.date, maxDate: new Date(), language: 'it', theme: { input: '!text-black' } }} onChange={(date) => setData('date', date)} show={datePickerOpen} setShow={setDatePickerOpen} />
                 <label className="error">{errors.date}</label>

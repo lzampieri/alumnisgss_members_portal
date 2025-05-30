@@ -13,14 +13,16 @@ class DocumentPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view the model.
+     * Determine whether the user can view a document.
+     * Remember that, if the document is an attachment, the permission on the parent document will be checked
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \Illuminate\Foundation\Auth\User  $user
      * @param  \App\Models\Document  $document
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function view(?User $user, Document $document)
     {
+        if ($document->attached_to_id) return $this->view($user, $document->attached_to);
         return DynamicPermission::UserCanViewPermissable($document, $user ? $user->identity : null);
     }
 
@@ -36,15 +38,15 @@ class DocumentPolicy
     }
 
     /**
-     * Determine whether the user can edit the model.
+     * Determine whether the user can edit the document.
      *
      * @param  \Illuminate\Support\Facades\Auth\User  $user
      * @param  \App\Models\Document  $document
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function edit(User $user)
+    public function edit(User $user, Document $document)
     {
-        return $user->hasPermissionTo('documents-edit');
+        return $this->view($user, $document) && $user->hasPermissionTo('documents-edit');
     }
 
     /**
@@ -56,7 +58,7 @@ class DocumentPolicy
      */
     public function delete(User $user, Document $document)
     {
-        return $user->hasPermissionTo('documents-edit');
+        return $this->view($user, $document) && $user->hasPermissionTo('documents-edit');
     }
 
     /**
@@ -68,6 +70,6 @@ class DocumentPolicy
      */
     public function restore(User $user, Document $document)
     {
-        return $user->hasPermissionTo('documents-edit');
+        return $this->view($user, $document) && $user->hasPermissionTo('documents-edit');
     }
 }

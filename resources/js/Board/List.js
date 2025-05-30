@@ -3,7 +3,7 @@ import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { Link, usePage } from "@inertiajs/react";
 import { Documents } from "../Utils";
 
-function DocumentItem(document, canEdit, isAttachment = false) {
+function DocumentItem(document, isAttachment = false) {
     let date = new Date(document.date);
 
     return (
@@ -25,27 +25,26 @@ function DocumentItem(document, canEdit, isAttachment = false) {
                 <div className="grow flex flex-col">
                     <span className="text-gray-500 text-sm">Protocollo web {document.protocol}</span>
                     <span className="text-xl font-bold">{document.identifier}</span>
-                    <span className="text-sm">Visibilità:
+                    {!isAttachment && <span className="text-sm">Visibilità:
                         {" " + document.dynamic_permissions.map(dp => dp.role.common_name).join(", ")}
                         {document.note && " - Nota: " + document.note}
-                    </span>
+                    </span> }
                     <span className="text-gray-500 text-sm">Caricato il {new Date(document.created_at).toLocaleDateString('it-IT', { 'dateStyle': 'long' })} da {document.author.name} {document.author.surname}</span>
                 </div>
-                {document.canView && canEdit && <Link href={route('board.edit', { document: document.id })} className="">
+                {document.canView && document.canEdit && <Link href={route('board.edit', { document: document.id })} className="">
                     <FontAwesomeIcon icon={solid('pen')} className="text-4xl !p-4 icon-button" />
                 </Link>}
                 {document.canView && <a href={route('board.view_document', { protocol: document.protocol })} className="">
                     <FontAwesomeIcon icon={solid('file-pdf')} className="text-4xl !p-4 icon-button" />
                 </a>}
             </div>
-            {document.attachments && document.attachments.map(document => DocumentItem(document, canEdit, true))}
+            {document.attachments && document.attachments.map(document => DocumentItem(document, true))}
         </div>
     )
 }
 
 export default function List() {
     const documents = usePage().props.documents
-    const canEdit = usePage().props.canEdit
 
     return (
         <div className="main-container">
@@ -57,7 +56,7 @@ export default function List() {
             </div>}
             <span className="text-sm">{documents.length} document{documents.length == 1 ? 'o' : 'i'} visualizzabili coi correnti permessi.</span>
             <div className="w-full flex flex-col items-stretch mt-4">
-                {documents.map(document => DocumentItem(document, canEdit))}
+                {documents.map(document => DocumentItem(document))}
             </div>
         </div>
     );

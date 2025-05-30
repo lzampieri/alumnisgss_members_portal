@@ -66,7 +66,7 @@ export default function Upload() {
 
     transform((data) => ({
         ...data,
-        attached_to_id: data.isAttachment ? data.attachedTo.value : null
+        attached_to_id: ( data.isAttachment && data.attachedTo ) ? data.attachedTo.value : null
     }))
 
     return (
@@ -91,13 +91,16 @@ export default function Upload() {
             </>}
             <label className="error">{errors.identifier}</label>
 
-            <label>Visibilità</label>
-            <div className="w-full flex flex-row flex-wrap justify-start gap-y-2">
-                {roles.map(r =>
-                    <div key={r.id} className="chip px-4 py-2 cursor-pointer aria-disabled:disabled" aria-disabled={!data.roles.includes(r.id)} onClick={() => changeRole(r.id)}>
-                        {r.common_name}
-                    </div>)}
-            </div>
+            {!data.isAttachment && <>
+                <label>Visibilità</label>
+                <div className="w-full flex flex-row flex-wrap justify-start gap-y-2">
+                    {roles.map(r =>
+                        <div key={r.id} className="chip px-4 py-2 cursor-pointer aria-disabled:disabled" aria-disabled={!data.roles.includes(r.id)} onClick={() => changeRole(r.id)}>
+                            {r.common_name}
+                        </div>)}
+                </div>
+            </>}
+
             <label className="error">{errors.roles}</label>
             <label>Data di redazione</label>
             <Datepicker classNames='w-full' options={{ maxDate: new Date(), language: 'it', theme: { input: '!text-black' } }} onChange={(date) => setData('date', date)} show={datePickerOpen} setShow={setDatePickerOpen} />
