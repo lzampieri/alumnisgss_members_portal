@@ -63,7 +63,7 @@ class AlumnusPolicy
      */
     public function viewNetworkDetails(User $user, Alumnus $alumnus)
     {
-        // if( $user->hasPermissionTo('network-view-alldetails') ) return true;
+        if( $user->hasPermissionTo('network-view-alldetails') ) return true;
         if ($user->hasPermissionTo('network-view') && $alumnus->consent_to_network_share) return true;
         return false;
     }
