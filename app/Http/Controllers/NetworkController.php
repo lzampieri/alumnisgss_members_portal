@@ -14,8 +14,13 @@ class NetworkController extends Controller
     {
         $this->authorize('viewNetwork', Alumnus::class);
 
-        $alumni = Alumnus::whereIn('status', Alumnus::public_status)
-            ->where('coorte', '>', 0)
+        $prefilt = Alumnus::whereIn('status', Alumnus::public_status);
+
+        if( Auth::check() && Auth::user()->can('viewAny', Alumnus::class) ) {
+            $prefilt = Alumnus::where('coorte', '>', 0);
+        }
+
+        $alumni = $prefilt->where('coorte', '>', 0)
             ->orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
             ->get();

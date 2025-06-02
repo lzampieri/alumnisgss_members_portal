@@ -47,6 +47,12 @@ function AlumnusContent({ data }) {
     </div>
 }
 
+function stringifyData({ data }) {
+    return data.id + " " + data.name + " " + data.surname + 
+        " " + data.status + " " + AlumnusStatus.status[data.status]?.label + 
+        " " + data.coorte + " " + romanize(data.coorte) + " coorte" +
+        " " + data.a_details?.map((adt, i) => adt.value.map((entry, j) => entry).join(" ")).join(" ")
+}
 
 function ListAsATable({ alumni, quickFilter }) {
 
@@ -63,7 +69,7 @@ function ListAsATable({ alumni, quickFilter }) {
             cellRenderer: ({ value }) =>
                 <AlumnusContent data={value} />,
             filter: 'agTextColumnFilter',
-            filterValueGetter: ({ data }) => JSON.stringify(data),
+            filterValueGetter: stringifyData,
             valueGetter: ({ data }) => data,
             autoHeight: true,
             flex: 1
