@@ -153,9 +153,8 @@ class AlumnusExportImportController extends Controller
         $alumni = Alumnus::orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
             ->with(['aDetails' => function ($query) {
-                $query->whereHas('aDetailsType', function ($query) {
-                    $query->where('visible', true);
-                })->orderBy(ADetailsType::select('order')->whereColumn('a_details_types.id', 'a_details.a_details_type_id'));
+                $query->whereHas('aDetailsType')
+                    ->orderBy(ADetailsType::select('order')->whereColumn('a_details_types.id', 'a_details.a_details_type_id'));
             }, 'aDetails.aDetailsType'])
             ->orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
@@ -297,7 +296,7 @@ class AlumnusExportImportController extends Controller
         $adtcols = [];
         for ($i = count($stdkeys); $i < count($titles); $i += 2) {
             if ($titles[$i] != null && array_key_exists("" . $titles[$i], $adtlist))
-                $adtcols[$i + 7] = "" . $titles[$i];
+                $adtcols[$i] = "" . $titles[$i];
         }
 
         $colUpTo = Coordinate::stringFromColumnIndex(count($stdkeys));
@@ -375,7 +374,8 @@ class AlumnusExportImportController extends Controller
 
             // Check adetails
             foreach ($adtcols as $col => $adtKey) {
-                $newValue = $sheet->getCellByColumnAndRow($col + 1, $row)->getValue();
+                // I work only with the value, without checking for the ID
+                $newValue = $sheet->getCellByColumnAndRow($col + 2, $row)->getValue();
 
                 $newValueDecoded = json_decode($newValue);
                 if ($newValueDecoded && is_array($newValueDecoded)) {

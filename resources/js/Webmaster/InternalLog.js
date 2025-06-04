@@ -64,7 +64,7 @@ export default function InternalLog() {
         return {
             rowCount: undefined,
             getRows: async (params) => {
-                let page = Math.floor(params.startRow / perPage)
+                let page = Math.floor(params.startRow / perPage) + 1
                 let response = await fetch(route('webmaster.log.internal.getrows', { perPage: perPage, page: page }));
                 if (response.ok) {
                     let data = await response.json();
