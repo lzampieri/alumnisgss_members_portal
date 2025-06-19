@@ -36,8 +36,9 @@ class AuthController extends Controller
             if ($loginMethod->can('login', LoginMethod::class)) {
                 Auth::login($loginMethod);
 
-                LogController::log(LogEvents::LOGIN, $loginMethod);
+                LogController::log(LogEvents::LOGIN, $loginMethod,'scopes','',Socialite::driver('google')->user()->approvedScopes);
 
+                $loginMethod->token = null;
                 $loginMethod->last_login = Carbon::now();
                 $loginMethod->save();
 
@@ -56,5 +57,46 @@ class AuthController extends Controller
             Auth::logout();
 
         return redirect()->route('home');
+    }
+
+    // Level 2 login
+    function redirect_lv2(Request $request)
+    {
+        // TODO check for already auth
+        return Socialite::driver('google')->setScopes(['openid', 'email', 'https://www.googleapis.com/auth/contacts'])
+            ->with(['redirect_uri' => route('auth.callback_lv2.google') ])
+            ->redirect();
+    }
+
+    // Level 2 callback
+    function callback_lv2(Request $request)
+    {
+        // TODO check for already auth
+        $user = Socialite::driver('google')->with(['redirect_uri' => route('auth.callback_lv2.google') ])->user();
+        
+        $email = $user->email;
+        $scopes = $user->approvedScopes;
+
+        if( !in_array('https://www.googleapis.com/auth/contacts', $scopes) )
+            return redirect()->route('home')->with('notistack', ['error', 'Non hai garantito il permesso di accedere al tuo archivio contatti.']);
+
+        $loginMethod = LoginMethod::where('driver', 'google')->where('credential', $email)->first();
+
+        if ($loginMethod) {
+            if ($loginMethod->can('login', LoginMethod::class) && $loginMethod->can('upgrade_login', LoginMethod::class)) {
+                Auth::login($loginMethod);
+
+                LogController::log(LogEvents::LOGIN_LV2, $loginMethod,'scopes','',$user->approvedScopes);
+
+                $loginMethod->last_login = Carbon::now();
+                $loginMethod->token = $user->token;
+                $loginMethod->token_expdate = now()->addSeconds($user->expiresIn);
+                $loginMethod->save();
+
+                return redirect()->route('home');
+            }
+        }
+
+        return redirect()->route('home')->with('notistack', ['error', 'Non hai il permesso di accedere a questo livello.']);
     }
 }

@@ -11,6 +11,11 @@ export default function Access() {
                 <span className="text-primary-main">
                     Accesso eseguito come {user.identity ? (user.identity.name || '') + " " + (user.identity.surname || '') : user.credential}
                 </span>
+                {usePage().props.lev2_loggedin &&
+                    <span className="text-primary-main">
+                        Accesso eseguito con autorizzazioni elevate sull'account
+                    </span>
+                }
                 <a className="
                 border-4 border-primary-main rounded-3xl
                 text-primary-main bg-primary-contrast

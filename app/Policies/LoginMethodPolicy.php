@@ -22,6 +22,17 @@ class LoginMethodPolicy
     }
 
     /**
+     * Determine whether the user can login at level 2.
+     *
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function upgrade_login(User $user)
+    {
+        return  $user->hasPermissionTo('login') && $user->hasPermissionTo('upgrade-login');
+    }
+
+    /**
      * Determine whether the user can view any models.
      *
      * @param  \Illuminate\Support\Facades\Auth\User  $user

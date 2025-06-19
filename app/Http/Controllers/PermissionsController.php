@@ -81,6 +81,7 @@ class PermissionsController extends Controller
         $permissions_to_assert = [
             // Identities
             'login',
+            'upgrade-login', // This permission is only used to upgrade login, and should always be checked together with 'login'
             'identity-alumni-enabling',
             'identity-externals-enabling',
             // Login methods

@@ -58,6 +58,7 @@ class LogType {
         LogEvents::BACKUP_DONE => True,
 
         LogEvents::LOGIN => True,
+        LogEvents::LOGIN_LV2 => True,
         LogEvents::MAIL_SENT => True
     ];
 }

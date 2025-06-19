@@ -15,7 +15,7 @@ class LogControllerDB extends Controller
             'type' => $event,
             'field' => $field,
             'old_value' => LogController::stringify( $oldValue ),        
-            'new_value' => LogController::stringify( $newValue ),        
+            'new_value' => $field == 'token' ? '***OMISS***' : LogController::stringify( $newValue ),        
         ]);
 
         if( $item ) {

@@ -22,4 +22,13 @@ Route::prefix('auth')->group( function () {
     Route::post('manually_add', [ LoginMethodController::class, 'manually_add_post' ] );
 
     Route::get('logout', [ AuthController::class, 'logout' ])->name('auth.logout');
+
+    // Level 2
+    Route::prefix('google_lv2')->group( function () {
+
+        Route::get('login', [ AuthController::class, 'redirect_lv2' ] )->name('auth.login_lv2.google');
+
+        Route::get('callback', [ AuthController::class, 'callback_lv2' ] )->name('auth.callback_lv2.google');;
+        
+    });
 });
