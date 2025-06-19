@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ContactsSyncController;
 use App\Http\Controllers\Log;
 use App\Http\Controllers\WebmasterController;
 use App\Models\Alumnus;
@@ -34,4 +35,8 @@ Route::prefix('/webmaster')->group( function () {
     
     // test
     Route::get('/sendTestMail', [ WebmasterController::class, 'sendTestMail' ])->name('webmaster.sendTestMail');
+
+    // other
+    Route::get('/contacts_test', [ ContactsSyncController::class, 'contactsTest' ]);
+    Route::get('/translate', [ WebmasterController::class, 'translateLoginMethodsToEmails' ]);
 });

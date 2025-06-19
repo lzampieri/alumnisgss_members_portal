@@ -84,12 +84,12 @@ class PermissionsController extends Controller
             'upgrade-login', // This permission is only used to upgrade login, and should always be checked together with 'login'
             'identity-alumni-enabling',
             'identity-externals-enabling',
-            // Login methods
-            'logins-view',
-            'logins-add',
-            'logins-delete',
+            // Emails methods
+            'emails-view-all',
+            'emails-add', // TODO
+            'emails-delete',
             // Associate login methods and identities
-            'accesses-associate',
+            'emails-associate',
             'accesses-receive-request-emails',
             // Edit roles and permissions
             'permissions-view',

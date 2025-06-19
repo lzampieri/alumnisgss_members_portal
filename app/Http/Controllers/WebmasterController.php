@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
+use App\Models\Email;
 use App\Models\External;
 use App\Models\Log;
 use App\Models\LoginMethod;
@@ -186,5 +187,26 @@ class WebmasterController extends Controller
 
         return redirect()->back()
             ->with('notistack', ['success', "Mail inviata."]);
+    }
+
+    public function translateLoginMethodsToEmails() // TODO REMOVE
+    {
+        $lmth = LoginMethod::all();
+
+        foreach ($lmth as $lm) {
+            $em = new Email([
+                'address' => $lm->credential,
+                'primary' => false,
+                'comment' => $lm->comment,
+            ]);
+
+            $em->last_login = $lm->last_login;
+            $em->created_at = $lm->created_at;
+
+            if( $lm->identity ) {
+                $em->identity()->associate($lm->identity);
+            }
+            $em->save();
+        }
     }
 }

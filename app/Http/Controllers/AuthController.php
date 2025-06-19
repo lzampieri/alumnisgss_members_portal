@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LoginMethod;
+use App\Models\Email;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -30,17 +30,17 @@ class AuthController extends Controller
 
         $email = Socialite::driver('google')->user()->email;
 
-        $loginMethod = LoginMethod::where('driver', 'google')->where('credential', $email)->first();
+        $em = Email::where('address', $email)->first();
 
-        if ($loginMethod) {
-            if ($loginMethod->can('login', LoginMethod::class)) {
-                Auth::login($loginMethod);
+        if ($em) {
+            if ($em->can('login', Email::class)) {
+                Auth::login($em);
 
-                LogController::log(LogEvents::LOGIN, $loginMethod,'scopes','',Socialite::driver('google')->user()->approvedScopes);
+                LogController::log(LogEvents::LOGIN, $em);
 
-                $loginMethod->token = null;
-                $loginMethod->last_login = Carbon::now();
-                $loginMethod->save();
+                $em->token = null;
+                $em->last_login = Carbon::now();
+                $em->save();
 
                 return redirect()->intended( route('home') );
             }
@@ -80,18 +80,18 @@ class AuthController extends Controller
         if( !in_array('https://www.googleapis.com/auth/contacts', $scopes) )
             return redirect()->route('home')->with('notistack', ['error', 'Non hai garantito il permesso di accedere al tuo archivio contatti.']);
 
-        $loginMethod = LoginMethod::where('driver', 'google')->where('credential', $email)->first();
+        $em = Email::where('driver', 'google')->where('credential', $email)->first();
 
-        if ($loginMethod) {
-            if ($loginMethod->can('login', LoginMethod::class) && $loginMethod->can('upgrade_login', LoginMethod::class)) {
-                Auth::login($loginMethod);
+        if ($em) {
+            if ($em->can('login', Email::class) && $em->can('upgrade_login', Email::class)) {
+                Auth::login($em);
 
-                LogController::log(LogEvents::LOGIN_LV2, $loginMethod,'scopes','',$user->approvedScopes);
+                LogController::log(LogEvents::LOGIN_LV2, $em,'scopes','',$user->approvedScopes);
 
-                $loginMethod->last_login = Carbon::now();
-                $loginMethod->token = $user->token;
-                $loginMethod->token_expdate = now()->addSeconds($user->expiresIn);
-                $loginMethod->save();
+                $em->last_login = Carbon::now();
+                $em->token = $user->token;
+                $em->token_expdate = now()->addSeconds($user->expiresIn);
+                $em->save();
 
                 return redirect()->intended( route('home') );
             }
