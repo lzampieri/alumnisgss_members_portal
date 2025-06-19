@@ -42,7 +42,7 @@ class AuthController extends Controller
                 $loginMethod->last_login = Carbon::now();
                 $loginMethod->save();
 
-                return redirect()->route('home');
+                return redirect()->intended( route('home') );
             }
             return redirect()->route('home')->with('notistack', ['error', 'Non hai ancora il permesso di accedere.']);
         }
@@ -93,7 +93,7 @@ class AuthController extends Controller
                 $loginMethod->token_expdate = now()->addSeconds($user->expiresIn);
                 $loginMethod->save();
 
-                return redirect()->route('home');
+                return redirect()->intended( route('home') );
             }
         }
 
