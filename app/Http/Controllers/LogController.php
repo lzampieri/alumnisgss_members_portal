@@ -43,13 +43,22 @@ class LogType {
             External::class, LoginMethod::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
             Permalink::class, File::class, Stamp::class, Ticket::class, TicketComment::class ],
-        LogEvents::DOWNLOADED_DETAILS => True,
-        LogEvents::DOWNLOADED_SCHEMA => True,
-        LogEvents::LOGIN => True,
+        
         LogEvents::PERMISSION_GIVEN => True,
         LogEvents::PERMISSION_REVOKEN => True,
         LogEvents::ROLE_GIVEN => True,
-        LogEvents::ROLE_REVOKEN => True
+        LogEvents::ROLE_REVOKEN => True,
+
+        LogEvents::DOWNLOADED_SCHEMA => True,
+        LogEvents::DOWNLOADED_DETAILS => True,
+        LogEvents::DOWNLOADED_FILE => True,
+        LogEvents::DOWNLOADED_RATIFICATIONSLIST => True,
+        LogEvents::DOWNLOADED_REPORT => True,
+
+        LogEvents::BACKUP_DONE => True,
+
+        LogEvents::LOGIN => True,
+        LogEvents::MAIL_SENT => True
     ];
 }
 

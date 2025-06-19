@@ -38,27 +38,19 @@ class WebmasterController extends Controller
             env('DB_PASSWORD'),
             array(
                 'add-drop-table' => true,
-                // 'no-create-db' => true,
-                'no-create-info' => false,
+                'no-create-db' => true,
+                'no-create-info' => false,                
             )
         );
-
-        // $dump = new Mysqldump(
-        //     env('DB_CONNECTION') . ':host=' . env('DB_HOST') . ';dbname=' . env('DB_DATABASE'),
-        //     env('DB_USERNAME'),
-        //     env('DB_PASSWORD'),
-        //     array(
-        //         'no-create-db' => true,
-        //         'no-create-info' => true,
-        //     )
-        // );
         $dump->start($tempFile);
 
-        // $encrypted = Crypt::encryptString(file_get_contents($tempFile));
-        $encrypted = file_get_contents($tempFile);
+        $encrypted = Crypt::encryptString(file_get_contents($tempFile));
 
-        file_put_contents(storage_path() . '/app/backups/database_' . date('Ymd') . '.sql', $encrypted);
+        $filename = '/app/backups/database_' . date('Ymd') . '.sql';
+        file_put_contents(storage_path() . $filename, $encrypted);
         File::delete($tempFile);
+
+        LogController::log( LogEvents::BACKUP_DONE, NULL, 'filename', NULL, $filename );
     }
 
     public function backup()

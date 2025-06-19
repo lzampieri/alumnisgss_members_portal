@@ -19,6 +19,8 @@ class LogEvents {
     const DOWNLOADED_RATIFICATIONSLIST = 'downloaded_ratifications_list';
     const DOWNLOADED_REPORT = 'downloaded_variations_report';
 
+    const BACKUP_DONE = 'backup_done';
+
     const LOGIN = 'login';
     const MAIL_SENT = 'mail_sent';
 }
