@@ -7,6 +7,7 @@ use App\Models\Email;
 use App\Models\External;
 use App\Models\Log;
 use App\Models\LoginMethod;
+use App\Models\Permission;
 use Illuminate\Support\Facades\Artisan;
 use Inertia\Inertia;
 use Ifsnop\Mysqldump\Mysqldump;
@@ -171,12 +172,11 @@ class WebmasterController extends Controller
         $message = "Questo è un messaggio di prova inviato su richiesta del webmaster dal portale soci.";
 
         $message .= "Le mail di richiesta accesso sono tipicamente inviate a:\n";
-        foreach (LoginMethod::where('driver', 'google')->hasMorph('identity', [Alumnus::class, External::class])->get() as $lm) {
-            if ($lm->hasPermissionTo('accesses-receive-request-emails'))
-                $message .= $lm->credential . '\n';
-        }
+        $message .= implode("\n",MailerController::getAddresses( array_merge( Alumnus::allWithPermission('accesses-receive-request-emails'), External::allWithPermission('accesses-receive-request-emails'))) );
 
-        $email = Auth::user()->credential;
+        $email = Auth::user()->address;
+
+        LogController::log( LogEvents::MAIL_SENT, NULL, 'email', NULL, $email );
         
         Mail::raw(
             $message,

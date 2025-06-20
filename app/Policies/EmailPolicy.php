@@ -3,7 +3,6 @@
 namespace App\Policies;
 
 use App\Models\Email;
-use App\Models\LoginMethod;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User;
 
@@ -14,7 +13,7 @@ class EmailPolicy
     /**
      * Determine whether the user can login.
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $loginMethod
+     * @param  \Illuminate\Support\Facades\Auth\User $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function login(User $user)

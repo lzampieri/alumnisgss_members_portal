@@ -10,7 +10,7 @@ use App\Models\Document;
 use App\Models\DynamicPermission;
 use App\Models\External;
 use App\Models\File;
-use App\Models\LoginMethod;
+use App\Models\Email;
 use App\Models\Permalink;
 use App\Models\Permission;
 use App\Models\Ratification;
@@ -25,22 +25,22 @@ class LogType {
     const DB = [
         LogEvents::CREATE => [
             Alumnus::class, Document::class, DynamicPermission::class,
-            External::class, LoginMethod::class, Ratification::class,
+            External::class, Email::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
             Permalink::class, File::class, Stamp::class, Ticket::class, TicketComment::class ],
         LogEvents::RESTORED => [
             Alumnus::class, Document::class, DynamicPermission::class,
-            External::class, LoginMethod::class, Ratification::class,
+            External::class, Email::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
             Permalink::class, File::class, Stamp::class, Ticket::class, TicketComment::class ],
         LogEvents::UPDATE => [
             Alumnus::class, Document::class, DynamicPermission::class,
-            External::class, LoginMethod::class, Ratification::class,
+            External::class, Email::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
             Permalink::class, File::class, Stamp::class, Ticket::class, TicketComment::class ],
         LogEvents::DELETE => [
             Alumnus::class, Document::class, DynamicPermission::class,
-            External::class, LoginMethod::class, Ratification::class,
+            External::class, Email::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
             Permalink::class, File::class, Stamp::class, Ticket::class, TicketComment::class ],
         
@@ -101,8 +101,8 @@ class LogController extends Controller
             return "(" . $object->id . ") " . $object->surname . " "  . $object->name . " (" . $object->coorte . ") [" . $object->status . "]";
         if ($object instanceof External)
             return "(" . $object->id . ") " . $object->surname . " "  . $object->name . " [" . $object->note . "]";
-        if ($object instanceof LoginMethod)
-            return $object->credential . " (" . $object->driver . ")";
+        if ($object instanceof Email)
+            return $object->address;
         if ($object instanceof Permission)
             return $object->name;
         if ($object instanceof Role)

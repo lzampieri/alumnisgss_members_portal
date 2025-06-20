@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
-use App\Models\LoginMethod;
+use App\Models\Email;
 use App\Models\Stamp;
 use App\Policies\AlumnusPolicy;
 use Illuminate\Http\Request;
@@ -50,7 +50,7 @@ class AppsController extends Controller
             $apps[] = 'webmaster';
         }
 
-        if (Auth::user() && Auth::user()->can('viewAny', LoginMethod::class)) {
+        if (Auth::user() && Auth::user()->can('viewAny', Email::class)) {
             $apps[] = 'accesses';
         }
 

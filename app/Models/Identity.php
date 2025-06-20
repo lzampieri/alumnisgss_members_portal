@@ -85,9 +85,9 @@ abstract class Identity extends Model
         return $this->name . " " . $this->surname;
     }
 
-    public function loginMethods()
+    public function emails()
     {
-        return $this->morphMany(LoginMethod::class, 'identity');
+        return $this->morphMany(Email::class, 'identity');
     }
 
     public function documents()

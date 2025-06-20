@@ -19,7 +19,7 @@ class ProfileController extends Controller
         if (!$alumnus)
             return abort(404);
 
-        $alumnus->load(['ratifications', 'ratifications.document', 'loginMethods', 'roles']);
+        $alumnus->load(['ratifications', 'ratifications.document', 'emails', 'roles']);
 
         $adtlist = ADetailsType::allOrdered();
         $adtlist->load(['aDetails' => function ($query) use ($alumnus) {
