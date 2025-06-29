@@ -73,12 +73,12 @@ export function disappearing(visible) {
     }
 }
 
-export function postRequest(route_name, data, setProcessing, routeParams = {}, preserveState = true, preserveScroll = true) {
+export function postRequest(route_name, data, setProcessing, routeParams = {}, preserveState = true, preserveScroll = true, onFinish = () => { }) {
     setProcessing(true);
     router.post(
         route(route_name, routeParams),
         data,
-        { onFinish: () => { preserveState && setProcessing(false) }, onError: (e) => { enqueueSnackbar('Errore generico!', { variant: 'error' }), console.log(e) }, preserveState: preserveState, preserveScroll: preserveScroll }
+        { onFinish: () => { onFinish(); preserveState && setProcessing(false) }, onError: (e) => { enqueueSnackbar('Errore generico!', { variant: 'error' }), console.log(e) }, preserveState: preserveState, preserveScroll: preserveScroll }
     )
 }
 

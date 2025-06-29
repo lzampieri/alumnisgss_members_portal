@@ -66,7 +66,7 @@ class EmailPolicy
         if ($user->hasPermissionTo('emails-delete'))
             return true;
 
-        if ($email->identity && $email->identity->is($user))
+        if ($email->identity && $email->identity->is($user->identity))
             return true;
 
         return false;

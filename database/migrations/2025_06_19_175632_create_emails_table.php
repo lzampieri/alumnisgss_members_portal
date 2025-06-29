@@ -17,7 +17,7 @@ class CreateEmailsTable extends Migration
             $table->id();
             
             $table->timestamps();
-            $table->string('address', 300);
+            $table->string('address', 191)->unique();
             $table->timestamp('last_login')->nullable();
 
             $table->nullableMorphs('identity');

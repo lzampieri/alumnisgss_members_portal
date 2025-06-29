@@ -1,25 +1,29 @@
 <?php
 
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\IdentityController;
 use App\Http\Controllers\PermissionsController;
-use App\Http\Controllers\LoginMethodController;
 use App\Http\Controllers\RolesController;
 use Illuminate\Support\Facades\Route;
 
 // Accesses
 Route::prefix('/accesses')->group( function () {
-    Route::get('/', [ LoginMethodController::class, 'list' ] )->name('accesses');
+    Route::get('/', [ EmailController::class, 'list' ] )->name('accesses');
     
-    Route::post('/enabling', [ IdentityController::class, 'enabling' ] )->name('identity.enabling');
-
-    Route::post('/delete/{lmth}', [ LoginMethodController::class, 'delete' ] )->name('lmth.delete');
+    Route::post('/enabling', [ IdentityController::class, 'enabling' ] )->name('identity.enabling');  // TODO refactor
 
     // Roles
-    Route::post('/edit_roles', [ IdentityController::class, 'edit_roles'])->name('identity.edit_roles');
+    Route::post('/edit_roles', [ IdentityController::class, 'edit_roles'])->name('identity.edit_roles'); // TODO refactor
 
+});
+
+Route::prefix('/emails')->group( function () {
+    Route::post('manually_add', [ EmailController::class, 'manually_add_post' ] )->name('emails.manually_add');
+    Route::post('delete', [ EmailController::class, 'delete_post' ] )->name('emails.delete');
+    
     // Associate
-    Route::get('/associate/{lmth}', [ LoginMethodController::class, 'associate'])->name('lmth.associate');
-    Route::post('/associate/{lmth}', [ LoginMethodController::class, 'associate_post']);
+    Route::get('/associate/{email}', [ EmailController::class, 'associate'])->name('emails.associate');
+    Route::post('/associate/{email}', [ EmailController::class, 'associate_post']);
 });
 
 // Permissions

@@ -1,33 +1,36 @@
 import { useForm, usePage } from "@inertiajs/react";
-import { AlumnusStatus } from "../Utils";
-import Select from 'react-select';
+import EmptyDialog from "../Layout/EmptyDialog";
+import Backdrop from "../Layout/Backdrop";
+import TextareaAutosize from 'react-textarea-autosize';
 
-export default function ManuallyAdd() {
-    const drivers = usePage().props.drivers.map(i => ({ value: i, label: i }))
-
+// This guy is inserted into List.js
+export default function ManuallyAdd({ open, setClosed }) {
     const { data, setData, post, processing, errors } = useForm({
-        driver: null,
-        credential: ''
+        address: '',
+        comment: 'Aggiunta manualmente'
     })
-
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('auth.manually_add'));
+        post(route('emails.manually_add'), { onFinish: () => setClosed() });
+
     }
 
-
-    return (
-        <form className="flex flex-col w-full md:w-3/5" onSubmit={submit}>
-            <h3>Crea nuovo metodo di accesso</h3>
-            <label>Driver</label>
-            <Select 
-                    classNames={{ control: () => 'selectDropdown' }} value={drivers.find(i => i.value == data.driver)} onChange={(sel) => setData('driver', sel.value)} options={drivers} />
-            <label className="error">{errors.driver}</label>
-            <label>Credenziali</label>
-            <input type="text" value={data.credential} onChange={(e) => setData('credential', e.target.value)} />
-            <label className="error">{errors.credential}</label>
+    return <EmptyDialog open={open} onClose={setClosed}>
+        <form className="flex flex-col w-full" onSubmit={submit}>
+            <h3>Inserisci nuovo indirizzo mail</h3>
+            <label>Indirizzo</label>
+            <input type="text" value={data.address} onChange={(e) => setData('address', e.target.value)} />
+            <label className="error">{errors.address}</label>
+            <label>Commento</label>
+            <TextareaAutosize
+                className="w-full pretendToBeInput"
+                minRows={3}
+                value={data.comment}
+                onChange={(e) => setData('comment', e.target.value)} />
+            <label className="error">{errors.comment}</label>
             <input type="button" className="button mt-4" onClick={submit} value="Aggiungi" />
         </form>
-    );
+        <Backdrop open={processing} />
+    </EmptyDialog>
 }

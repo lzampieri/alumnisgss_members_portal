@@ -15,7 +15,6 @@ class Email extends Authenticatable
     protected $fillable = [
         'address',
         'primary',
-        'identity',
         'comment'
     ];
 
@@ -45,5 +44,9 @@ class Email extends Authenticatable
 
     public function lev2_loggedin() {
         return Auth::check() && Auth::user()->is( $this ) && $this->token && $this->token_expdate > now();
+    }
+
+    public function getCanDeleteAttribute() {
+        return Auth::check() && Auth::user()->can('delete', $this);
     }
 }
