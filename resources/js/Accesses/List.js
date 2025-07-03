@@ -8,10 +8,11 @@ import { useMemo, useState } from "react";
 import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
 import { themeQuartz } from "ag-grid-community";
 import { ModuleRegistry, ClientSideRowModelModule, RowAutoHeightModule, QuickFilterModule } from 'ag-grid-community';
-import { bgAndContrastPastel, postRequest, romanize } from "../Utils";
+import { bgAndContrastPastel, pastelColors, postRequest, romanize } from "../Utils";
 import Backdrop from "../Layout/Backdrop";
 import Dialog from "../Layout/Dialog";
 import ManuallyAdd from "./ManuallyAdd";
+import ReactSwitch from "react-switch";
 ModuleRegistry.registerModules([ClientSideRowModelModule, RowAutoHeightModule, QuickFilterModule]);
 
 const TYPE_ALUMNUS = 0;
@@ -33,7 +34,7 @@ function EmailDiv({ e, deleteAddress }) {
     </div>
 }
 
-function IdentityRoles({ identity, deleteRole, addRole }) {
+function IdentityRoles({ identity, removeRole, addRole }) {
     const editableRoles = usePage().props.editableRoles
     const editableRolesNames = editableRoles.map(role => role.name)
     const identityRolesNames = identity.roles.map(role => role.name)
@@ -46,7 +47,7 @@ function IdentityRoles({ identity, deleteRole, addRole }) {
                 <div className="rounded flex flex-row !no-underline items-center" style={bgAndContrastPastel(9)} key={role.name}>
                     <span className="px-2">{role.common_name}</span>
                     {editableRolesNames.indexOf(role.name) > -1 ?
-                        <FontAwesomeIcon icon={solid('xmark')} className="hover:bg-gray-100 hover:text-black cursor-pointer p-1 aspect-square rounded" onClick={() => deleteRole(identity, role)} />
+                        <FontAwesomeIcon icon={solid('xmark')} className="hover:bg-gray-100 hover:text-black cursor-pointer p-1 aspect-square rounded" onClick={() => removeRole(identity, role)} />
                         : ""}
                 </div>
             )
@@ -72,7 +73,7 @@ function IdentityRoles({ identity, deleteRole, addRole }) {
     </div>
 }
 
-function IdentityContent({ data, deleteAddress }) {
+function IdentityContent({ data, deleteAddress, removeRole, addRole, setEnabled }) {
     if (whichType(data) == TYPE_REQUEST) {
         return <div className="w-full border-2 border-black rounded border-dashed flex flex-row p-2 min-h-[3rem] justify-center gap-2 leading-normal	">
             <FontAwesomeIcon icon={solid('person-circle-question')} className="text-4xl" />
@@ -100,13 +101,19 @@ function IdentityContent({ data, deleteAddress }) {
     return <div className={
         "w-full border-2 rounded  flex flex-row p-2 min-h-[3rem] justify-center gap-2 leading-normal	" +
         (whichType(data) == TYPE_ALUMNUS ? ' border-primary-main' : ' border-[#00FF00]')}  >
-        <FontAwesomeIcon icon={whichType(data) == TYPE_ALUMNUS ? solid('person') : solid('person-digging')} className="text-4xl" />
+        <div className="flex flex-col">
+            <FontAwesomeIcon icon={whichType(data) == TYPE_ALUMNUS ? solid('person') : solid('person-digging')} className="text-4xl" style={{ color: pastelColors[ data.enabled ? 4 : 2 ]}} />
+            <ReactSwitch
+                    height={14} width={28} className="m-2"
+                    checked={data.enabled} onChange={(newState) => setEnabled(data,newState)}
+                />
+        </div>
         <div className="grow flex flex-col">
             <b>{data.name} {data.surname}</b>
             {whichType(data) == TYPE_ALUMNUS && romanize(data.coorte)}
             {data.notes}
             {data.emails.map((e) => <EmailDiv key={e.id} e={e} deleteAddress={deleteAddress} />)}
-            <IdentityRoles identity={data} deleteRole={deleteRole} addRole={addRole} />
+            <IdentityRoles identity={data} removeRole={removeRole} addRole={addRole} />
         </div>
     </div>
 }
@@ -119,7 +126,7 @@ function stringifyData({ data }) {
         " " + data.roles.map((r) => r.name + " " + r.common_name ).join(" ")
 }
 
-function ListAsATable({ identities, quickFilter, deleteAddress, deleteRole, addRole }) {
+function ListAsATable({ identities, quickFilter, deleteAddress, removeRole, addRole, setEnabled }) {
 
     const theme = themeQuartz.withParams({
         headerHeight: 0,
@@ -132,7 +139,7 @@ function ListAsATable({ identities, quickFilter, deleteAddress, deleteRole, addR
         {
             field: 'main',
             cellRenderer: ({ value }) =>
-                <IdentityContent data={value} deleteAddress={deleteAddress} deleteRole={deleteRole} addRole={addRole} />,
+                <IdentityContent data={value} deleteAddress={deleteAddress} removeRole={removeRole} addRole={addRole} setEnabled={setEnabled} />,
             filter: 'agTextColumnFilter',
             filterValueGetter: stringifyData,
             valueGetter: ({ data }) => data,
@@ -163,12 +170,34 @@ function emailDelete(e, setProcessing, setToDelete) {
     );
 }
 
-function deleteRole(identity, role, setProcessing) {
-    // TODO implement
+function removeRole(identity, role, setProcessing) {
+    postRequest(
+        'roles.remove',
+        { identity: identity.id, type: whichType(identity) == TYPE_ALUMNUS ? 'alumnus' : 'external', role: role.id },
+        setProcessing,
+        {},
+        false, false
+    );
 }
 
 function addRole(identity, role, setProcessing) {
-    // TODO implement
+    postRequest(
+        'roles.add',
+        { identity: identity.id, type: whichType(identity) == TYPE_ALUMNUS ? 'alumnus' : 'external', role: role.id },
+        setProcessing,
+        {},
+        false, false
+    );
+}
+
+function setEnabled(identity, enabled, setProcessing) {
+    postRequest(
+        'identity.enabled',
+        { identity: identity.id, type: whichType(identity) == TYPE_ALUMNUS ? 'alumnus' : 'external', enabled: enabled },
+        setProcessing,
+        {},
+        false, false
+    );
 }
 
 export default function List() {
@@ -193,8 +222,9 @@ export default function List() {
         <ListAsATable
             identities={list} quickFilter={quickFilter}
             deleteAddress={(e) => setToDelete(e)}
-            deleteRole={(identity, role) => deleteRole(identity, role, setProcessing)}
+            removeRole={(identity, role) => removeRole(identity, role, setProcessing)}
             addRole={(identity, role) => addRole(identity, role, setProcessing)}
+            setEnabled={(identity, enabled) => setEnabled(identity, enabled, setProcessing)}
         />
         <Backdrop open={processing} />
         <Dialog open={!!toDelete} onClose={() => setToDelete(null)} onConfirm={() => emailDelete(toDelete, setProcessing, setToDelete)}>

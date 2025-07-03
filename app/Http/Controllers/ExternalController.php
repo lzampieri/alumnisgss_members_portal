@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class ExternalController extends Controller
 {
 
-    public function add_and_associate_post(Request $request, Email $email)
+    public function create_and_associate_post(Request $request, Email $email)
     {
         $this->authorize('edit', Alumnus::class);
         $this->authorize('associate', Email::class);

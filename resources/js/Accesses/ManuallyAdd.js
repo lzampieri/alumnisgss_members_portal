@@ -12,8 +12,7 @@ export default function ManuallyAdd({ open, setClosed }) {
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('emails.manually_add'), { onFinish: () => setClosed() });
-
+        post(route('emails.manually_add'), { onSuccess: () => setClosed() });
     }
 
     return <EmptyDialog open={open} onClose={setClosed}>

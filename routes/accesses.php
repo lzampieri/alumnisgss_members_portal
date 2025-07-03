@@ -4,17 +4,14 @@ use App\Http\Controllers\EmailController;
 use App\Http\Controllers\IdentityController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\RolesController;
+use App\Models\Permission;
 use Illuminate\Support\Facades\Route;
 
 // Accesses
 Route::prefix('/accesses')->group( function () {
-    Route::get('/', [ EmailController::class, 'list' ] )->name('accesses');
+    Route::get('/', [ IdentityController::class, 'list' ] )->name('accesses');
     
-    Route::post('/enabling', [ IdentityController::class, 'enabling' ] )->name('identity.enabling');  // TODO refactor
-
-    // Roles
-    Route::post('/edit_roles', [ IdentityController::class, 'edit_roles'])->name('identity.edit_roles'); // TODO refactor
-
+    Route::post('/enabled', [ IdentityController::class, 'enabled' ] )->name('identity.enabled');
 });
 
 Route::prefix('/emails')->group( function () {
@@ -36,5 +33,8 @@ Route::prefix('/permissions')->group( function () {
 
 // Roles
 Route::prefix('/roles')->group( function () {
+    Route::post('/create', [ RolesController::class, 'create' ] )->name('roles.create');
+
     Route::post('/add', [ RolesController::class, 'add' ] )->name('roles.add');
+    Route::post('/remove', [ RolesController::class, 'remove' ] )->name('roles.remove');
 });

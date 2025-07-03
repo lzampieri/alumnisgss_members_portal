@@ -11,33 +11,6 @@ use Inertia\Inertia;
 
 class EmailController extends Controller
 {
-    public function list()
-    {
-        $this->authorize('viewAny', Email::class);
-
-        $ems = [
-            'alumni' => Alumnus::has('emails')->with('emails')->orderBy('surname')->orderBy('name')->get(),
-            'externals' => External::has('emails')->with('emails')->orderBy('surname')->orderBy('name')->get(),
-            'requests' => Email::whereNull('identity_id')->orderBy('created_at', 'desc')->get(),
-        ];
-
-        foreach (['alumni', 'externals'] as $key) {
-            foreach ($ems[$key] as $identity) {
-                $identity->roles = $identity->getAllRoles();
-                foreach( $identity->emails as $em ) {
-                    $em->append('can_delete');
-                }
-            }
-        }
-
-        return Inertia::render('Accesses/List', [
-            'list' => $ems,
-            'editableRoles' => Auth::user()->identity->editableRoles(),
-            'canAssociate' => Auth::user()->can('associate', Email::class),
-            'canAdd' => Auth::user()->can('add', Email::class)
-        ]);
-    }
-
     
     function manually_add_post(Request $request)
     {
@@ -67,7 +40,6 @@ class EmailController extends Controller
             $e->delete();
             return redirect()->route('accesses')->with(['notistack' => ['success', 'Cancellato']]);
         }
-        // TODO Questa cosa è scritta ma non verificata! Da verificare!!
         return redirect()->back()->with(['notistack' => ['error', 'Indirizzo non trovato']]);
     }
 

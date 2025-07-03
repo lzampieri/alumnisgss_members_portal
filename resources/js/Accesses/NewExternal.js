@@ -15,7 +15,7 @@ export default function NewExternal({ subject, open, setOpen }) {
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('externals.add_and_associate', { email: subject.id }));
+        post(route('externals.create_and_associate', { email: subject.id }));
     }
 
 

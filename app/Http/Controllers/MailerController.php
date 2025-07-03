@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Alumnus;
+use App\Models\External;
 use Illuminate\Support\Facades\Mail;
 
 class MailerController extends Controller
@@ -24,13 +26,13 @@ class MailerController extends Controller
         return array_unique(array_values($emails));
     }
 
-    static function sendEmail(array $identities, string $subject, string $message)
+    static function sendEmail(array $identities, string $subject, string $message, ?string $replyTo = 'webmaster@alumniscuolagalileiana.it' )
     {
         $emails = self::getAddresses($identities);
         
-        Mail::send([], [], function (\Illuminate\Mail\Message $msg) use ($emails, $subject, $message) {
+        Mail::send([], [], function (\Illuminate\Mail\Message $msg) use ($emails, $subject, $message, $replyTo) {
             $msg->to($emails);
-            $msg->replyTo('webmaster@alumniscuolagalileiana.it');
+            $msg->replyTo( $replyTo );
             $msg->subject($subject);
             $msg->setBody( nl2br( $message ), 'text/html');
         });

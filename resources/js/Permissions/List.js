@@ -74,7 +74,7 @@ function roleAdd(setProcessing) {
     const submit = (e) => {
         e.preventDefault()
         setProcessing(true)
-        post(route('roles.add'), { onFinish: () => setProcessing(false), onSuccess: () => { reset(), setOpen(false) }, preserveState: true, preserveScroll: true });
+        post(route('roles.create'), { onFinish: () => setProcessing(false), onSuccess: () => { reset(), setOpen(false) }, preserveState: true, preserveScroll: true });
     }
 
     return <div className="drawer-item" onClick={() => setOpen(true)} key={-1}>

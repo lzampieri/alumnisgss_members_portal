@@ -15,8 +15,8 @@ Route::prefix('auth')->group( function () {
 
     Route::redirect('login','google/login')->name('login');
 
-    Route::get('askaccess', [ LoginMethodController::class, 'askaccess' ] )->name('auth.askaccess');
-    Route::post('askaccess', [ LoginMethodController::class, 'askaccess_post' ] );
+    Route::get('askaccess', [ AuthController::class, 'askaccess' ] )->name('auth.askaccess');
+    Route::post('askaccess', [ AuthController::class, 'askaccess_post' ] );
 
     Route::get('logout', [ AuthController::class, 'logout' ])->name('auth.logout');
 

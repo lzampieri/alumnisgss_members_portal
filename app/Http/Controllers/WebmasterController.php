@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Alumnus;
 use App\Models\Email;
 use App\Models\External;
+use App\Models\Identity;
 use App\Models\Log;
 use App\Models\LoginMethod;
 use App\Models\Permission;
@@ -172,7 +173,7 @@ class WebmasterController extends Controller
         $message = "Questo è un messaggio di prova inviato su richiesta del webmaster dal portale soci.";
 
         $message .= "Le mail di richiesta accesso sono tipicamente inviate a:\n";
-        $message .= implode("\n",MailerController::getAddresses( array_merge( Alumnus::allWithPermission('accesses-receive-request-emails'), External::allWithPermission('accesses-receive-request-emails'))) );
+        $message .= implode("\n",MailerController::getAddresses( Identity::allWithPermission('accesses-receive-request-emails') ) );
 
         $email = Auth::user()->address;
 

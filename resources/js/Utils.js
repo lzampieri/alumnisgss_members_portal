@@ -49,7 +49,7 @@ export function bgAndContrast(bgColor) {
     }
 }
 
-export const pastelCorors = [
+export const pastelColors = [
     '#b6e3e7',
     '#f9df9f',
     '#fab394',
@@ -63,8 +63,8 @@ export const pastelCorors = [
 ]
 
 export function bgAndContrastPastel(count) {
-    while( count < 0 ) count += pastelCorors.length
-    return bgAndContrast(pastelCorors[count % pastelCorors.length])
+    while( count < 0 ) count += pastelColors.length
+    return bgAndContrast(pastelColors[count % pastelColors.length])
 }
 export function disappearing(visible) {
     return {

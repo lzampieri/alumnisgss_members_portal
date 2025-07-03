@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Email;
+use App\Models\Identity;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -98,5 +99,42 @@ class AuthController extends Controller
         }
 
         return redirect()->route('home')->with('notistack', ['error', 'Non hai il permesso di accedere a questo livello.']);
+    }
+    
+    function askaccess()
+    {
+        if (Auth::check())
+            return redirect()->route('home');
+
+        if (session()->has('email'))
+            return Inertia::render('Accesses/AskAccess', ['email' => session('email')]);
+
+        return redirect()->route('home');
+    }
+
+    function askaccess_post(Request $request)
+    {
+        if (Auth::check())
+            return redirect()->route('home');
+
+        $validated = $request->validate([
+            'comment' => 'required|min:3',
+            'address' => 'required|email|unique:emails,address'
+        ]);
+
+        Email::create([ 'address' => $validated['address'], 'comment' => $validated['comment']]);
+
+        $message = "E' stata inserita una nuova richiesta d'accesso\n";
+        $message .= "Indirizzo mail richiedente: " . $validated['address'] . "\n";
+        $message .= "Messaggio:\n" . $validated['comment'];
+
+        MailerController::sendEmail(
+            Identity::allWithPermission( 'accesses-receive-request-emails' ),
+            'Nuova richiesta di accesso a soci.alumnuscuolagalileiana.it',
+            $message,
+            $validated['address']
+        );
+        
+        return redirect()->route('home')->with(['notistack' => ['success', 'La richiesta è stata inoltrata alla segreteria.']]);
     }
 }

@@ -27,22 +27,24 @@ class LogType {
             Alumnus::class, Document::class, DynamicPermission::class,
             External::class, Email::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
-            Permalink::class, File::class, Stamp::class, Ticket::class, TicketComment::class ],
+            File::class, Stamp::class, Ticket::class, TicketComment::class ],
         LogEvents::RESTORED => [
             Alumnus::class, Document::class, DynamicPermission::class,
             External::class, Email::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
-            Permalink::class, File::class, Stamp::class, Ticket::class, TicketComment::class ],
+            File::class, Stamp::class, Ticket::class, TicketComment::class ],
         LogEvents::UPDATE => [
             Alumnus::class, Document::class, DynamicPermission::class,
             External::class, Email::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
-            Permalink::class, File::class, Stamp::class, Ticket::class, TicketComment::class ],
+            File::class, Stamp::class, Ticket::class, TicketComment::class ],
         LogEvents::DELETE => [
             Alumnus::class, Document::class, DynamicPermission::class,
             External::class, Email::class, Ratification::class,
             Resource::class, Permission::class, Role::class, ADetail::class, ADetailsType::class,
-            Permalink::class, File::class, Stamp::class, Ticket::class, TicketComment::class ],
+            File::class, Stamp::class, Ticket::class, TicketComment::class ],
+        // NOTE: Permalink::class is not logged into the DB, since it uses as a primary key a string, and therefore
+        // it is not compatible with the morphing structure of the "item" column in the DB
         
         LogEvents::PERMISSION_GIVEN => True,
         LogEvents::PERMISSION_REVOKEN => True,

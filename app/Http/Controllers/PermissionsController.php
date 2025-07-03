@@ -86,7 +86,7 @@ class PermissionsController extends Controller
             'identity-externals-enabling',
             // Emails methods
             'emails-view-all',
-            'emails-add', // TODO
+            'emails-add',
             'emails-delete',
             // Associate login methods and identities
             'emails-associate',
