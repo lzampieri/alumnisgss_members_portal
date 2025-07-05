@@ -38,5 +38,4 @@ Route::prefix('/webmaster')->group( function () {
 
     // other
     Route::get('/contacts_test', [ ContactsSyncController::class, 'contactsTest' ]);
-    Route::get('/translate', [ WebmasterController::class, 'translateLoginMethodsToEmails' ]);
 });

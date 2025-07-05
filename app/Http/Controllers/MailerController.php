@@ -14,7 +14,7 @@ class MailerController extends Controller
             if( $identity ) {
                 $this_id_emails = [];
                 foreach( $identity->emails as $em) {
-                    if( $em->primary ) {
+                    if( $em->primary ) { // TODO implement the management of the primary email
                         $this_id_emails = [ $em->address ]; // To the primary if there is a primary, to all elsewhere
                         break;
                     }

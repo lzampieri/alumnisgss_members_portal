@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\Alumnus;
 use App\Models\Block;
 use App\Models\External;
-use App\Models\LoginMethod;
+use App\Models\Email;
 use Illuminate\Database\Seeder;
 use PhpOption\None;
 
@@ -22,8 +22,7 @@ class UsersSeeder extends Seeder
             'name' => 'webmaster'
         ]);
 
-        $webmaster_lm = LoginMethod::create([
-            'driver' => 'google',
+        $webmaster_lm = Email::create([
             'credential' => 'zampieri.leonardo98@gmail.com',
         ]);
         $webmaster_lm->identity()->associate( $webmaster_user )->save();
@@ -35,12 +34,10 @@ class UsersSeeder extends Seeder
 
             $webmaster_user->assignRole('secretariat');
 
-            LoginMethod::create([
-                'driver' => 'google',
+            Email::create([
                 'credential' => 'zampieri.leonardo99@gmail.com',
             ])->identity()->associate( $webmaster_user )->save();
-            LoginMethod::create([
-                'driver' => 'github',
+            Email::create([
                 'credential' => 'zampieri.leonardo00@gmail.com',
             ])->identity()->associate( $webmaster_user )->save();
 
@@ -50,8 +47,7 @@ class UsersSeeder extends Seeder
                 'surname' => 'unimib'
             ]);
 
-            $secretariat_lm = LoginMethod::create([
-                'driver' => 'google',
+            $secretariat_lm = Email::create([
                 'credential' => 'l.zampieri4@campus.unimib.it',
             ]);
             $secretariat_lm->identity()->associate( $secretariat_user )->save();
@@ -68,15 +64,13 @@ class UsersSeeder extends Seeder
                 'tags' => []
             ]);
 
-            $alumnus_user_lm = LoginMethod::create([
-                'driver' => 'google',
+            $alumnus_user_lm = Email::create([
                 'credential' => 'leonardo.zampieri@studenti.unipd.it',
             ]);
             $alumnus_user_lm->identity()->associate( $alumnus_user )->save();
             $alumnus_user->givePermissionTo('login');
         
-            $orphan_lm = LoginMethod::create([
-                'driver' => 'google',
+            $orphan_lm = Email::create([
                 'credential' => 'leonardo.zampieri2@studenti.unipd.it',
                 'comment' => "Qui la richiesta d'accesso\nche in teoria può occupare\ntre linee"
             ]);
