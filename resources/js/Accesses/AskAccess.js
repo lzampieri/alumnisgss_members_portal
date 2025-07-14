@@ -40,7 +40,7 @@ export default function AskAccess() {
                 <label className="error">{errors.address}</label>
                 <label>È possibile lasciare un messaggio per la segreteria</label>
                 <label className="error">{errors.comment}</label>
-                <textarea className="textarea-container" rows={lines} value={data.comment} onChange={setComment} />
+                <textarea className="textarea-container" rows={lines} value={data.comment} onChange={setComment} /> {/*  TODO sostituire con textareaautoresize già installato in altri punti */}
                 <input type="submit" className="button" value="Invia richiesta" onClick={submit} />
             </form>
         </div>

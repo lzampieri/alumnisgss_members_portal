@@ -12,30 +12,6 @@ function twoDigits(num) {
     return ("" + num).padStart(2, '0');
 }
 
-// function Clock() {
-//     const {
-//         seconds,
-//         minutes,
-//         hours,
-//     } = useTime();
-
-//     return <>{twoDigits(hours)}:{twoDigits(minutes)}:{twoDigits(seconds)}</>
-// }
-
-// function Stopwatch({ from }) {
-//     const offsetTimestamp = new Date();
-//     offsetTimestamp.setSeconds(offsetTimestamp.getSeconds() + (offsetTimestamp - from) / 1000);
-//     const {
-//         seconds,
-//         minutes,
-//         hours,
-//     } = useStopwatch({ autoStart: true, offsetTimestamp: offsetTimestamp });
-
-//     if (hours > 0)
-//         return <>{twoDigits(hours)}:{twoDigits(minutes)}:{twoDigits(seconds)}</>
-//     return <>{twoDigits(minutes)}:{twoDigits(seconds)}</>
-// }
-
 function daysInMonth(month, year) {
     return new Date(year, month + 1, 0).getDate();
 }
@@ -174,34 +150,5 @@ export default function ManageSpecials() {
 
         <Backdrop open={processing} />
 
-        {/* <div className="flex flex-row gap-2 items-center">
-            <Link as="button" className="button" href={route('clockings.monthly', month == 1 ? { year: year - 1, month: 12 } : { year: year, month: month - 1 } )}>
-                <FontAwesomeIcon icon={solid('chevron-left')} />
-            </Link>
-            <h3>{ capFirst( date.toLocaleDateString('it-IT',{ 'month': 'long', 'year': 'numeric' }) )}</h3>
-            <Link as="button" className="button" href={route('clockings.monthly', month == 12 ? { year: year + 1, month: 1 } : { year: year, month: month + 1 } )} disabled={!nextAvailable}>
-                <FontAwesomeIcon icon={solid('chevron-right')} />
-            </Link>
-        </div>
-        <Table daysCount={ daysInMonth(month, year) } dateString={"" + year + "-" + twoDigits(month) + "-"} /> */}
-        {/* <span className="text-6xl md:text-9xl font-mono"><Clock /></span>
-        {lastClockIn && <div>
-            Entrato ore: {new Date(lastClockIn.clockin).toLocaleTimeString('it-IT', { 'hour': '2-digit', 'minute': '2-digit' })} - Dall'entrata <Stopwatch from={new Date(lastClockIn.clockin)} />
-        </div>}
-        <div className="grid grid-cols-2 content-center items-stretch gap-4">
-            <button className="button flex flex-col text-xl md:text-4xl font-bold aspect-square items-center justify-center gap-4" onClick={() => submit('clockin')} disabled={lastClockIn}>
-                <FontAwesomeIcon icon={solid('right-to-bracket')} className="text-5xl" />
-                Entrata
-            </button>
-            <button className="button flex flex-col text-xl md:text-4xl font-bold aspect-square items-center justify-center gap-4" onClick={() => submit('clockout')} disabled={!lastClockIn}>
-                <FontAwesomeIcon icon={solid('right-from-bracket')} className="text-5xl" />
-                Uscita
-            </button>
-        </div>
-        <Link className="button flex flex-row font-bold items-center justify-center" >
-            <FontAwesomeIcon icon={solid('rectangle-list')} className="text-xl" href={route('clockings.monthly')} />
-            Conteggi orari
-        </Link>
-        <Backdrop open={processing} /> */}
     </div>
 }

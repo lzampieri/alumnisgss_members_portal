@@ -3,55 +3,11 @@ import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import Backdrop from "../Layout/Backdrop";
 import { postRequest } from "../Utils";
 import { Fragment, useState } from "react";
-import { Link, usePage } from "@inertiajs/react";
+import { Link, useForm, usePage } from "@inertiajs/react";
 import { useStopwatch, useTime } from "react-timer-hook";
-
-function twoDigits(num) {
-    return ("" + num).padStart(2, '0');
-}
-
-function withQuarters(num) {
-    if( num < 0.2 ) return "0";
-
-    let intpart = Math.floor(num);
-    if( intpart < 1 ) intpart = "";
-    let decpart = num - intpart;
-    let decpart_str = "";
-    if( decpart > 0.2 ) decpart_str = "¼";
-    if( decpart > 0.4 ) decpart_str = "½";
-    if( decpart > 0.7 ) decpart_str = "¾";
-    return "" + intpart + decpart_str;
-}
-
-function withQuartersGT0(numOrStr) {
-    if( isNaN(numOrStr-0) ) return numOrStr;
-    if( numOrStr < 0.2 ) return "";
-    return withQuarters(numOrStr);
-}
-
-function withQuartersAndHours(num) {
-    let unit = num < 2 ? "ora" : "ore";
-    return withQuarters(num) + " " + unit;
-}
-
-
-
-function daysInMonth(month, year) {
-    return new Date(year, month, 0).getDate();
-}
-
-function totalCount(d) {
-    if (d == undefined) return '';
-    let workCount = 0;
-
-    for (let i = 0; i < d.length; i++) {
-        if (d[i].type.tag == 'work')
-            workCount += d[i].hours;
-        else return d[i].type.acronym;
-    }
-
-    return workCount;
-}
+import { totalCount, twoDigits, withQuartersAndHours, withQuartersGT0, withQuarters, daysInMonth, hhmm } from "./TimeUtils";
+import EmptyDialog from "../Layout/EmptyDialog";
+import TextareaAutosize from 'react-textarea-autosize';
 
 function Cell({ children, bold, left, color }) {
     return <div className={"justify-self-stretch flex border-r "
@@ -78,53 +34,80 @@ function Table({ daysCount }) {
 
 }
 
-function hhmm( t ) {
-    return new Date(t).toLocaleTimeString('it-IT', { 'hour': '2-digit', 'minute': '2-digit' });
-}
-
 function FullList({ dateString }) {
-    const data = usePage().props.data
+    const allStamps = usePage().props.data
 
-    console.log(data);
+    const [toComment, setToComment] = useState(null)
+    const { data, setData, processing, errors, post, reset } = useForm({
+        note: '',
+        id: -1
+    })
+    const submit = () => {
+        post(route('clockings.addnote'), { onSuccess: () => reset() });
+    }
+    const openDialog = (stamp) => {
+        setToComment(stamp)
+        setData({ 'id': stamp.id, 'note': stamp.note || '' })
+    }
+    // console.log(allStamps);
 
     return <div className="w-full md:w-3/5">
-        {data.map((d, id) => <Fragment key={id}>
+        {allStamps.map((d, id) => <Fragment key={id}>
             <h4>{d.name} {d.surname}</h4>
-            {Object.keys(d.stamps_grouped).map((day) => <Fragment key={day}>
-                {d.stamps_grouped[day].map((stamp) =>
-                    <div key={stamp.id}>
-                        <b>{twoDigits(day)}{dateString} </b>
-                        {stamp.type.label}
-                        { stamp.clockin ? " - Ingresso: " + hhmm(stamp.clockin) : ""}
-                        { stamp.clockout ? " - Uscita: " + hhmm(stamp.clockout) : ""}
-                        { stamp.clockout ? " - Totale: " + withQuartersAndHours(stamp.hours) : ""}
-                        { stamp.acpttickets.map((t) => 
-                            <Link className="icon-button-gray" href={route('ticket.view',{ticket:t.id})}>
-                                <FontAwesomeIcon icon={solid('screwdriver-wrench')} />
-                            </Link>
-                        )}
-                        { stamp.opentickets.map((t) => 
-                            <Link className="icon-button-gray" href={route('ticket.view',{ticket:t.id})}>
-                                <FontAwesomeIcon icon={solid('hourglass-half')} />
-                            </Link>
-                        )}
-                        {
-                            ( stamp.clockin || stamp.clockout ) && ( d.mayOpenTicket ) &&
-                            <Link className="icon-button" href={route('ticket.add',{type:'EditStamp',stampId:stamp.id})}>
-                                <FontAwesomeIcon icon={solid('screwdriver-wrench')} />
-                            </Link>
-                        }
-                    </div>)}
-            </Fragment>)}
+            <table><tbody>
+                {Object.keys(d.stamps_grouped).map((day) => <tr key={day}>
+                    <td className="align-top pr-2"><b>{twoDigits(day)}{dateString}</b></td>
+                    <td>
+                        {d.stamps_grouped[day].map((stamp) =>
+                            <div key={stamp.id}>
+                                {stamp.type.label}
+                                {stamp.clockin ? " - Ingresso: " + hhmm(stamp.clockin) : ""}
+                                {stamp.clockout ? " - Uscita: " + hhmm(stamp.clockout) : ""}
+                                {stamp.clockout ? " - Totale: " + withQuartersAndHours(stamp.hours) : ""}
+                                {stamp.acpttickets.map((t) =>
+                                    <Link className="icon-button-gray" href={route('ticket.view', { ticket: t.id })} key={t.id}>
+                                        <FontAwesomeIcon icon={solid('screwdriver-wrench')} />
+                                    </Link>
+                                )}
+                                {stamp.opentickets.map((t) =>
+                                    <Link className="icon-button-gray" href={route('ticket.view', { ticket: t.id })} key={t.id}>
+                                        <FontAwesomeIcon icon={solid('hourglass-half')} />
+                                    </Link>
+                                )}
+                                {
+                                    (stamp.clockin || stamp.clockout) && (d.mayOpenTicket) &&
+                                    <Link className="icon-button" href={route('ticket.add', { type: 'EditStamp', stampId: stamp.id })} key={'edit' + stamp.id}>
+                                        <FontAwesomeIcon icon={solid('screwdriver-wrench')} />
+                                    </Link>
+                                }
+                                {
+                                    (stamp.clockin || stamp.clockout) && (d.mayOpenTicket) &&
+                                    <span className="icon-button" onClick={() => openDialog(stamp)} key={'comment' + stamp.id}>
+                                        <FontAwesomeIcon icon={solid('comment')} />
+                                    </span>
+                                }
+                                {stamp.note && <div className="italic text-sm">Nota: {stamp.note}</div>}
+                            </div>)}
+                    </td>
+                </tr>)}
+            </tbody></table>
         </Fragment>)}
-        {/* {[...Array(32).keys()].map(i =>
-            <Cell key={i} bold>{(i > 0 && i <= daysCount) ? i : ''}</Cell>)}
-        {data.map((d,id) => <Fragment key={id}>
-            <Cell key={d.id + "-0"} left color={id%2}>{d.name} {d.surname}</Cell>
-            {[...Array(31).keys()].map(i => <Cell key={d.id + "-" + i} className="justify-self-center" color={id%2}>
-                {totalCount(d.stamps_grouped[i + 1])}
-            </Cell>)}
-        </Fragment>)} */}
+        <EmptyDialog open={data?.id >= 0} onClose={() => setData('id', -1)}>
+            <b>Aggiungi un commento alla timbratura</b>
+            {toComment?.type.label}
+            {toComment?.clockin ? " - Ingresso: " + hhmm(toComment.clockin) : ""}
+            {toComment?.clockout ? " - Uscita: " + hhmm(toComment.clockout) : ""}
+            {toComment?.clockout ? " - Totale: " + withQuartersAndHours(toComment.hours) : ""}
+            <TextareaAutosize
+                className="w-full pretendToBeInput mt-4"
+                minRows={3}
+                value={data.note}
+                placeholder="Nota..."
+                onChange={(e) => setData('note', e.target.value)} />
+            <label className="error">{errors.note}</label>
+            <input type="button" className="button mt-4" onClick={submit} value="Salva" />
+        </EmptyDialog>
+        <Backdrop open={processing} />
     </div>
 
 }

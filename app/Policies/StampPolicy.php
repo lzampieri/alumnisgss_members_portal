@@ -89,4 +89,16 @@ class StampPolicy
     {
         return $user->hasPermissionTo('clockin-edit-all');
     }
+
+    /**
+     * Determine whether the user can edit the note on stamps.
+     *
+     * @param  \Illuminate\Foundation\Auth\User  $user
+     * @param  \App\Models\Stamp  $stamp
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function editNote(User $user, Stamp $stamp)
+    {
+        return $stamp->employee->is($user->identity) || $user->hasPermissionTo('clockin-edit-all');
+    }
 }
