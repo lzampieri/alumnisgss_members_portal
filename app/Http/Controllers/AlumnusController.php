@@ -101,6 +101,7 @@ class AlumnusController extends Controller
 
         if ($alumnus) {
             $alumnus->load(['ratifications', 'ratifications.document']);
+            $alumnus->load('emails');
             $adtlist->load(['aDetails' => function ($query) use ($alumnus) {
                 $query->where('identity_type', Alumnus::class)->where('identity_id', $alumnus->id);
             }]);
@@ -130,6 +131,7 @@ class AlumnusController extends Controller
             'coorte' => 'required|numeric',
             'status' => 'required|in:' . implode(',', Alumnus::status),
             'tags' => 'nullable|array',
+            'emails' => 'nullable|array',
             'consent_to_network_share' => 'required|boolean',
             'adts' => 'array',
             'adts.*' => 'array',
@@ -171,6 +173,18 @@ class AlumnusController extends Controller
             if ($rat_needed) {
                 Ratification::create(['alumnus_id' => $alumnus->id, 'required_state' => $rat_newstatus]);
             }
+        }
+
+        // Update email addresses
+        $emails = $alumnus->emails->map(function ($email) {
+            return $email->address;
+        })->toArray();
+        // Create new addresses
+        foreach( array_diff( $validated['emails'], $emails ) as $email ) {
+            $alumnus->emails()->create(['address' => $email]);
+        }
+        foreach( array_diff( $emails, $validated['emails'] ) as $email ) {
+            $alumnus->emails()->where('address', $email)->delete();
         }
 
         // Update ADetails
