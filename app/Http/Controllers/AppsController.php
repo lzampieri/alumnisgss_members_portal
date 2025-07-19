@@ -61,10 +61,13 @@ class AppsController extends Controller
         if (Auth::user() && (Auth::user()->can('clockin', Stamp::class) || Auth::user()->can('viewAny', Stamp::class))) {
             $apps[] = 'clockings';
         }
-
         
         if (Auth::user()) {
             $apps[] = 'helpdesk';
+        }
+
+        if (Auth::user()  && Auth::user()->can('sync', Email::class) ) {
+            $apps[] = 'contacts';
         }
 
         return Inertia::render('Home', ['apps' => $apps]);

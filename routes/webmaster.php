@@ -35,7 +35,4 @@ Route::prefix('/webmaster')->group( function () {
     
     // test
     Route::get('/sendTestMail', [ WebmasterController::class, 'sendTestMail' ])->name('webmaster.sendTestMail');
-
-    // other
-    Route::get('/contacts_test', [ ContactsSyncController::class, 'contactsTest' ]);
 });

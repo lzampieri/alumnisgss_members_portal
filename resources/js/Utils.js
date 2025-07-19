@@ -1,4 +1,5 @@
 import { router } from "@inertiajs/react";
+import axios from "axios";
 import { contrastColor } from "contrast-color";
 import { enqueueSnackbar } from "notistack";
 
@@ -23,7 +24,7 @@ export class AlumnusStatus {
     static status = {
         member: { label: 'Socio', acronym: 'S', color: '#00CC00' },
         student_member: { label: 'Socio studente', acronym: 'SS', color: '#00FF99' },
-        pre_enrolled: { label: 'Preiscritto', acronym: 'PI', color: '#00FFFF'},
+        pre_enrolled: { label: 'Preiscritto', acronym: 'PI', color: '#00FFFF' },
         not_reached: { label: 'Non raggiunto', acronym: '?', color: '#FFFF00' },
         student_not_reached: { label: 'Studente non raggiunto', acronym: 'S?', color: '#FF9900' },
         student_not_agreed: { label: 'Studente rifiutante', acronym: 'SR', color: '#FF0000' },
@@ -63,7 +64,7 @@ export const pastelColors = [
 ]
 
 export function bgAndContrastPastel(count) {
-    while( count < 0 ) count += pastelColors.length
+    while (count < 0) count += pastelColors.length
     return bgAndContrast(pastelColors[count % pastelColors.length])
 }
 export function disappearing(visible) {
@@ -81,6 +82,21 @@ export function postRequest(route_name, data, setProcessing, routeParams = {}, p
         { onFinish: () => { onFinish(); preserveState && setProcessing(false) }, onError: (e) => { enqueueSnackbar('Errore generico!', { variant: 'error' }), console.log(e) }, preserveState: preserveState, preserveScroll: preserveScroll }
     )
 }
+
+export function asyncPostWithResult(route_name, data = {}, routeParams = {}) {
+    return new Promise((resolve, reject) =>
+        axios.post(
+            route(route_name, routeParams),
+            data)
+            .then( response => resolve( response.data ) )
+            .catch( e => reject(e) )
+        )
+}
+
+export async function sleep(milliseconds) { // To use with await
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
 
 export function randomHex(length) {
     let output = ""

@@ -148,7 +148,7 @@ export default function List() {
 
         <Backdrop open={processing} />
         <Dialog open={!!toAssociate} onClose={() => setToAssociate(null)} onConfirm={() => associate(subject, toAssociate, setProcessing, setToAssociate)}>
-            Sei sicuro di voler associare l'indirizzo mail {subject.address} a <b>{toAssociate?.name} {toAssociate?.surname}</b>?
+            Sei sicuro di voler associare l'indirizzo mail {subject.address} a <b>{toAssociate?.name} {toAssociate?.surname}</b>, e l'automatica abilitazione del profilo?
         </Dialog>
         <Dialog open={del} onClose={() => setDel(false)} onConfirm={() => deleteRequest(subject, setProcessing)}>
             Sei sicuro di voler cancellare la richiesta di accesso per l'indirizzo mail <b>{subject.address}</b>?

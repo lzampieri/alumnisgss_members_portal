@@ -35,6 +35,10 @@
         @apply no-underline;
         @apply cursor-pointer;
     }
+    .unlclickable-button {
+        @apply px-4 py-2 rounded border-2 border-primary-main text-primary-main bg-primary-contrast;
+        @apply no-underline;
+    }
     .chip-button {
         @apply rounded-3xl ml-2 px-2 border border-primary-main text-primary-main bg-primary-contrast;
         @apply hover:text-primary-contrast hover:bg-primary-main;

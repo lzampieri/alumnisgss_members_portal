@@ -27,9 +27,9 @@ class EmailPolicy
      * @param  \Illuminate\Support\Facades\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function upgrade_login(User $user)
+    public function login_lv2(User $user)
     {
-        return  $user->hasPermissionTo('login') && $user->hasPermissionTo('upgrade-login');
+        return  $user->hasPermissionTo('login') && $user->hasPermissionTo('login-lv2');
     }
 
     /**
@@ -82,5 +82,17 @@ class EmailPolicy
     public function associate(User $user)
     {
         return $user->hasPermissionTo('emails-associate');
+    }
+
+    /**
+     * Determine whether the user can access the sync tool.
+     *
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \App\Models\Email  $email
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function sync(User $user)
+    {
+        return $user->hasPermissionTo('emails-sync');
     }
 }

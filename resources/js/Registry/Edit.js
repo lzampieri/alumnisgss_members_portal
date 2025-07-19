@@ -24,6 +24,7 @@ export default function Edit() {
         coorte: prev?.coorte || 1,
         status: prev?.status || 'not_reached',
         tags: prev?.tags || [],
+        emails: prev?.emails?.map((e) => e.address) || [],
         consent_to_network_share: Boolean( prev?.consent_to_network_share ) || false,
         adts: adts.map((adt) => {
             return {
@@ -130,6 +131,13 @@ export default function Edit() {
             <CreatableSelect isMulti value={opt_arrs(data.tags)} onChange={(newValue) => setData('tags', newValue.map(i => i.value))} options={tags_options} />
             <label className="error">{errors.tags}</label>
 
+            <label>Indirizzi email</label>
+            <TokenizableInput
+                separatingCharacters={",; "}
+                tokensList={data.emails}
+                updateTokensList={(newList) => setData('emails', newList)} />
+            <label className="error">{errors.emails}</label>
+
             <label>Consenso alla condivisione dei dati</label>
             <ReactSwitch checked={data.consent_to_network_share} onChange={(newValue) => setData('consent_to_network_share', newValue)} />
 
@@ -162,20 +170,6 @@ export default function Edit() {
                 <FontAwesomeIcon icon={solid('save')} />
                 Salva
             </div>
-
-            {/* Questo è obsoleto, la ratifica ora è inserita in automatico cambiando lo stato */}
-            {/* <div className="flex flex-row-reverse my-4">
-                <button className="button" onClick={checkIfDirty}>Richiedi ratifica</button>
-                <label className="grow">Ricorda che alcuni stati non possono essere assegnati direttamente, ma è necessario richiedere una ratifica al consiglio di amministrazione.</label>
-                <Dialog open={dirtyDialog}
-                    undoLabel="Torna alle modifiche"
-                    onClose={() => setDirtyDialog(false)}
-                    confirmLabel="Abbandona le modifiche"
-                    onConfirm={goToRatification}
-                >
-                    Ci sono alcune modifiche all'alumno che non hai salvato. Vuoi abbandonarle?
-                </Dialog>
-            </div> */}
 
         </form>
     );

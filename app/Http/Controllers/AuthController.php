@@ -43,7 +43,7 @@ class AuthController extends Controller
                 $em->last_login = Carbon::now();
                 $em->save();
 
-                return redirect()->intended( route('home') );
+                return redirect()->intended(route('home'));
             }
             return redirect()->route('home')->with('notistack', ['error', 'Non hai ancora il permesso di accedere.']);
         }
@@ -61,46 +61,45 @@ class AuthController extends Controller
     }
 
     // Level 2 login
-    function redirect_lv2(Request $request)
+    function redirect_lv2()
     {
-        // TODO check for already auth
-        return Socialite::driver('google')->setScopes(['openid', 'email', 'https://www.googleapis.com/auth/contacts'])
-            ->with(['redirect_uri' => route('auth.callback_lv2.google') ])
+        return Socialite::driver('google')->setScopes(['openid', 'email', \Google\Service\PeopleService::CONTACTS])
+            ->with(['redirect_uri' => route('auth.callback_lv2.google')])
             ->redirect();
     }
 
     // Level 2 callback
-    function callback_lv2(Request $request)
+    function callback_lv2()
     {
-        // TODO check for already auth
-        $user = Socialite::driver('google')->with(['redirect_uri' => route('auth.callback_lv2.google') ])->user();
-        
+        $user = Socialite::driver('google')->with(['redirect_uri' => route('auth.callback_lv2.google')])->user();
+
         $email = $user->email;
         $scopes = $user->approvedScopes;
 
-        if( !in_array('https://www.googleapis.com/auth/contacts', $scopes) )
+        if (!in_array(\Google\Service\PeopleService::CONTACTS, $scopes))
             return redirect()->route('home')->with('notistack', ['error', 'Non hai garantito il permesso di accedere al tuo archivio contatti.']);
 
-        $em = Email::where('driver', 'google')->where('credential', $email)->first();
+        $em = Email::where('address', $email)->first();
 
         if ($em) {
-            if ($em->can('login', Email::class) && $em->can('upgrade_login', Email::class)) {
+            if ($em->can('login', Email::class) && $em->can('login_lv2', Email::class)) {
                 Auth::login($em);
 
-                LogController::log(LogEvents::LOGIN_LV2, $em,'scopes','',$user->approvedScopes);
+                LogController::log(LogEvents::LOGIN_LV2, $em, 'scopes', '', $user->approvedScopes);
 
                 $em->last_login = Carbon::now();
                 $em->token = $user->token;
                 $em->token_expdate = now()->addSeconds($user->expiresIn);
                 $em->save();
 
-                return redirect()->intended( route('home') );
+                return redirect()->intended(route('home'));
             }
         }
+        LogController::log("Login da indirizzo sconosciuto", $em, 'scopes', $email, $user->approvedScopes);
 
         return redirect()->route('home')->with('notistack', ['error', 'Non hai il permesso di accedere a questo livello.']);
     }
-    
+
     function askaccess()
     {
         if (Auth::check())
@@ -122,19 +121,19 @@ class AuthController extends Controller
             'address' => 'required|email|unique:emails,address'
         ]);
 
-        Email::create([ 'address' => $validated['address'], 'comment' => $validated['comment']]);
+        Email::create(['address' => $validated['address'], 'comment' => $validated['comment']]);
 
         $message = "E' stata inserita una nuova richiesta d'accesso\n";
         $message .= "Indirizzo mail richiedente: " . $validated['address'] . "\n";
         $message .= "Messaggio:\n" . $validated['comment'];
 
         MailerController::sendEmail(
-            Identity::allWithPermission( 'accesses-receive-request-emails' ),
+            Identity::allWithPermission('accesses-receive-request-emails'),
             'Nuova richiesta di accesso a soci.alumnuscuolagalileiana.it',
             $message,
             $validated['address']
         );
-        
+
         return redirect()->route('home')->with(['notistack' => ['success', 'La richiesta è stata inoltrata alla segreteria.']]);
     }
 }

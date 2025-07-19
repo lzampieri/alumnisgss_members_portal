@@ -8,6 +8,7 @@
         "php": "^7.4|^8.0",
         "doctrine/dbal": "^3.3",
         "fruitcake/laravel-cors": "^2.0",
+        "google/apiclient": "^2.16",
         "guzzlehttp/guzzle": "^7.0.1",
         "ifsnop/mysqldump-php": "^2.9",
         "inertiajs/inertia-laravel": "^0.6.4",

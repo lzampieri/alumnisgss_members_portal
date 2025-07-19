@@ -71,7 +71,8 @@ class EmailController extends Controller
 
         if( $identity ) {
             $email->identity()->associate($identity)->save();
-            return redirect()->route('accesses')->with(['notistack' => ['success', 'Associato']]);
+            $email->identity()->givePermissionTo('login');
+            return redirect()->route('accesses')->with(['notistack' => ['success', 'Associato e abilitato']]);
         }
 
         return redirect()->back()->with(['notistack' => ['error', 'Identità non trovata']]);
