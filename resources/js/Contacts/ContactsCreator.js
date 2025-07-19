@@ -1,7 +1,6 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useMemo, useState } from "react";
-import { asyncPostWithResult } from "../Utils";
 import SlowerDown from "./SlowerDown";
 
 const STEP = {

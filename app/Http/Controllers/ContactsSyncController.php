@@ -43,6 +43,24 @@ class ContactsSyncController extends Controller
         return response()->json($data);
     }
 
+    private function parsePerson($person)
+    {
+        $parsed = [
+            'id' => $person->getResourceName(),
+            'etag' => $person->getETag(),
+            'name' => $person->getNames()[0]->getDisplayName(),
+            'emails' => []
+        ];
+        foreach ($person->getExternalIds() as $exid) {
+            if ($exid->getType() == CUSTOM_FIELD_NAME) {
+                $parsed['member_id'] = $exid->getValue();
+            }
+        }
+        foreach ($person->getEmailAddresses() as $em)
+            $parsed['emails'][] = $em->getValue();
+        return $parsed;
+    }
+
     public function getContacts()
     {
         $this->authorize('sync', Email::class);
@@ -66,23 +84,8 @@ class ContactsSyncController extends Controller
 
         $output = [];
         foreach ($connections as $connection) {
-            $emails = [];
-            foreach ($connection->getEmailAddresses() as $em)
-                $emails[] = $em->getValue();
-
             if (count($connection->getNames()) > 0) {
-                $output[$connection->getResourceName()] = [
-                    'id' => $connection->getResourceName(),
-                    'etag' => $connection->getETag(),
-                    'name' => $connection->getNames()[0]->getDisplayName(),
-                    'emails' => $emails,
-                    'groups' => []
-                ];
-                foreach ($connection->getExternalIds() as $exid) {
-                    if ($exid->getType() == CUSTOM_FIELD_NAME) {
-                        $output[$connection->getResourceName()]['member_id'] = $exid->getValue();
-                    }
-                }
+                $output[$connection->getResourceName()] = $this->parsePerson($connection);
             }
         }
 
@@ -137,56 +140,52 @@ class ContactsSyncController extends Controller
     {
         $this->authorize('sync', Email::class);
 
-        $list = $request->input('list');
+        $item = $request->input('item');
 
         $peopleService = $this->getPeopleService();
 
-        foreach ($list as $id) {
-            $etag = $peopleService->people->get($id, ['personFields' => 'names'])->getEtag();
+        $etag = $peopleService->people->get($item, ['personFields' => 'names'])->getEtag();
 
-            $updatedVersion = new \Google\Service\PeopleService\Person();
-            $updatedVersion->setEtag($etag);
-            $updatedVersion->setExternalIds([]);
+        $updatedVersion = new \Google\Service\PeopleService\Person();
+        $updatedVersion->setEtag($etag);
+        $updatedVersion->setExternalIds([]);
 
-            $peopleService->people->updateContact(
-                $id,
-                $updatedVersion,
-                ['updatePersonFields' => 'externalIds']
-            );
-        }
+        $peopleService->people->updateContact(
+            $item,
+            $updatedVersion,
+            ['updatePersonFields' => 'externalIds']
+        );
+        return response()->json([]);
 
-        return response()->json(count($list));
     }
 
     public function associate(Request $request)
     {
         $this->authorize('sync', Email::class);
 
-        $list = $request->input('list');
+        $item = $request->input('item');
 
         $peopleService = $this->getPeopleService();
 
-        foreach ($list as $item) {
-            $etag = $peopleService->people->get($item['res_id'], ['personFields' => 'names'])->getEtag();
+        $etag = $peopleService->people->get($item['res_id'], ['personFields' => 'names'])->getEtag();
 
-            $updatedVersion = new \Google\Service\PeopleService\Person();
-            $updatedVersion->setEtag($etag);
+        $updatedVersion = new \Google\Service\PeopleService\Person();
+        $updatedVersion->setEtag($etag);
 
-            $newId = new \Google\Service\PeopleService\ExternalId();
-            $newId->setValue($item['member_id']);
-            $newId->setType(CUSTOM_FIELD_NAME);
-            $newId->setFormattedType(CUSTOM_FIELD_NAME);
+        $newId = new \Google\Service\PeopleService\ExternalId();
+        $newId->setValue($item['member_id']);
+        $newId->setType(CUSTOM_FIELD_NAME);
+        $newId->setFormattedType(CUSTOM_FIELD_NAME);
 
-            $updatedVersion->setExternalIds([$newId]);
+        $updatedVersion->setExternalIds([$newId]);
 
-            $peopleService->people->updateContact(
-                $item['res_id'],
-                $updatedVersion,
-                ['updatePersonFields' => 'externalIds']
-            );
-        }
+        $peopleService->people->updateContact(
+            $item['res_id'],
+            $updatedVersion,
+            ['updatePersonFields' => 'externalIds']
+        );
 
-        return response()->json(count($list));
+        return response()->json();
     }
 
     public function create(Request $request)
@@ -215,22 +214,19 @@ class ContactsSyncController extends Controller
 
         $person = $peopleService->people->createContact($newPerson, ['personFields' => 'names,emailAddresses,externalIds']);
 
-        return response()->json( $person );
+        return response()->json( $this->parsePerson($person) );
     }
 
     public function addOnPortal(Request $request)
     {
         $this->authorize('sync', Email::class);
 
-        $list = $request->input('list');
+        $item = $request->input('item');
 
-        foreach ($list as $item) {
+        $alumnus = Alumnus::find($item['member_id']);
+        if (!$alumnus) return;
 
-            $alumnus = Alumnus::find($item['member_id']);
-            if (!$alumnus) continue;
-
-            $alumnus->emails()->create(['address' => $item['address']]);
-        }
+        $alumnus->emails()->create(['address' => $item['address']]);
 
         return response()->json([]);
     }
@@ -239,8 +235,10 @@ class ContactsSyncController extends Controller
     {
         $this->authorize('sync', Email::class);
 
-        $resid = $request->input('contact');
-        $address = $request->input('address');
+        $item = $request->input('item');
+
+        $resid = $item['contact'];
+        $address = $item['address'];
 
         $peopleService = $this->getPeopleService();
 

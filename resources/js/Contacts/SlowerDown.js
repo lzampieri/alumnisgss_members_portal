@@ -12,14 +12,13 @@ async function startProcessing(route, list, setDone, setFinish) {
         try {
             output.push(await asyncPostWithResult(route, { item: list[index] }));
         } catch (e) {
+            console.log( e );
             console.log("Getting error! Retrying in 15s...");
             index--;
             await sleep(15000);
         }
         index++;
         setDone(index);
-
-        if( index > 0 ) break;
     }
     setFinish(output);
 }

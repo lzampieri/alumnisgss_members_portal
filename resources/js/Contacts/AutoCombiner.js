@@ -1,7 +1,7 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import { asyncPostWithResult } from "../Utils";
+import SlowerDown from "./SlowerDown";
 
 const STEP = {
     ERROR: 500,
@@ -9,8 +9,9 @@ const STEP = {
     PREVCOMB: 0,
     AUTOCOMB: 1,
     COMBDONE: 2,
-    SAVING: 3,
-    SAVED: 4
+    REMOVING: 3,
+    ADDING: 4,
+    SAVED: 5
 }
 
 function parseName(name) {
@@ -49,39 +50,6 @@ async function autocombine(members, contacts, setStatus, setPrevComb, setAutoCom
     setStatus(STEP.COMBDONE);
 }
 
-async function saveData(setStatus, prevToRemove, autoComb) {
-    setStatus(STEP.SAVING);
-
-    try {
-
-        if (prevToRemove.length > 0) {
-            const count = await asyncPostWithResult('contacts.deassociate', { list: prevToRemove });
-            console.log(count + " contatti disassociati");
-        }
-
-        if (Object.keys(autoComb).length > 0) {
-            let list = [];
-            Object.keys(autoComb).forEach((member_id) => {
-                list.push({ 'res_id': autoComb[member_id]['id'], 'member_id': member_id });
-            })
-
-            // Does 10 items per time
-            for (let i = 0; i < list.length; i += 10) {
-                const count = await asyncPostWithResult('contacts.associate', { list: list.slice(i, i + 10) });
-                console.log(count + " contatti associati");
-            }
-        }
-
-        setStatus(STEP.SAVED);
-
-    } catch (e) {
-        console.log("Errore!");
-        console.log(e);
-        setStatus(STEP.ERROR);
-    }
-
-}
-
 function delFromObject(obj, key) {
     const newobj = { ...obj };
     delete newobj[key];
@@ -101,12 +69,12 @@ export default function AutoCombiner({ members, contacts, setCombs, next }) {
     }, []);
 
     const proceed = () => {
-        setCombs( { ...prevComb, ...autoComb } );
+        setCombs({ ...prevComb, ...autoComb });
         next();
     }
 
     useEffect(() => {
-        if( status == STEP.SAVED ) {
+        if (status == STEP.SAVED) {
             proceed();
         }
     }, [status]);
@@ -164,17 +132,15 @@ export default function AutoCombiner({ members, contacts, setCombs, next }) {
                 </tbody></table>
             </div>}
 
-            {status == STEP.COMBDONE && <div className="button" onClick={() => saveData(setStatus, prevToRemove, autoComb)}>
+            {status == STEP.COMBDONE && <div className="button" onClick={() => setStatus(STEP.REMOVING)}>
                 {Object.keys(autoComb).length + prevToRemove.length > 0 ? "Salva e continua" : "Continua"}
             </div>}
 
 
-            {status == STEP.SAVING && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
+            {(status == STEP.REMOVING || status == STEP.ADDING) && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
                 Sto salvando...<br />
-                <svg className="animate-spin -ml-1 mr-3 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
+                {status == STEP.REMOVING && <SlowerDown route={'contacts.deassociate'} list={prevToRemove} setFinish={() => setStatus(STEP.ADDING)} />}
+                {status == STEP.ADDING && <SlowerDown route={'contacts.associate'} list={Object.keys(autoComb).map((member_id) => { return { 'res_id': autoComb[member_id]['id'], 'member_id': member_id } })} setFinish={() => setStatus(STEP.SAVED)} />}
             </div>}
 
             {status == STEP.ERROR && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
