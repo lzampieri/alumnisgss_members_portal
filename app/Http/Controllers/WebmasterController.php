@@ -41,7 +41,7 @@ class WebmasterController extends Controller
             array(
                 'add-drop-table' => true,
                 'no-create-db' => true,
-                'no-create-info' => false,                
+                'no-create-info' => false,
             )
         );
         $dump->start($tempFile);
@@ -52,7 +52,7 @@ class WebmasterController extends Controller
         file_put_contents(storage_path() . $filename, $encrypted);
         File::delete($tempFile);
 
-        LogController::log( LogEvents::BACKUP_DONE, NULL, 'filename', NULL, $filename );
+        LogController::log(LogEvents::BACKUP_DONE, NULL, 'filename', NULL, $filename);
     }
 
     public function backup()
@@ -80,7 +80,7 @@ class WebmasterController extends Controller
     public function decryptUtilityPost(Request $request)
     {
         // Must be logged in - guaranteed in middleware
-        
+
         try {
             $validated = $request->validate([
                 'file' => 'required',
@@ -160,9 +160,23 @@ class WebmasterController extends Controller
     {
         $this->authorizeRole('webmaster'); // Todo add specific authorization
 
-        $rows = Log::with(['agent','item'])->orderBy('id', 'desc')->paginate( $perPage, ['*'], 'page', $page ); // todo check if here I should add a +1
+        $rows = Log::with(['agent', 'item'])->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page); // todo check if here I should add a +1
 
         return json_encode($rows);
+    }
+
+    public function enable_all_public()
+    {
+        $this->authorizeRole('webmaster'); // Todo add specific authorization
+
+        $alumnus = Alumnus::whereIn('status', Alumnus::public_status)
+            ->where('coorte', '>', 0)
+            ->get();
+
+        foreach( $alumnus as $a )
+            $a->givePermissionTo('login');
+
+        return redirect()->back()->with('notistack', ['success', 'Tutti i soci con ruolo pubblico abilitati al login!']);
     }
 
     public function sendTestMail()
@@ -172,18 +186,19 @@ class WebmasterController extends Controller
         $message = "Questo è un messaggio di prova inviato su richiesta del webmaster dal portale soci.";
 
         $message .= "Le mail di richiesta accesso sono tipicamente inviate a:\n";
-        $message .= implode("\n",MailerController::getAddresses( Identity::allWithPermission('accesses-receive-request-emails') ) );
+        $message .= implode("\n", MailerController::getAddresses(Identity::allWithPermission('accesses-receive-request-emails')));
 
         $email = Auth::user()->address;
 
-        LogController::log( LogEvents::MAIL_SENT, NULL, 'email', NULL, $email );
-        
+        LogController::log(LogEvents::MAIL_SENT, NULL, 'email', NULL, $email);
+
         Mail::raw(
             $message,
             function (\Illuminate\Mail\Message $message) use ($email) {
                 $message->to($email);
                 $message->subject('Messaggio di test da soci.alumnuscuolagalileiana.it');
-        });
+            }
+        );
 
         return redirect()->back()
             ->with('notistack', ['success', "Mail inviata."]);

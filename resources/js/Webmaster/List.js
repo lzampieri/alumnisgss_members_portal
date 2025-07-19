@@ -30,6 +30,7 @@ export default function List() {
                 <li><RequireConfirmLink href={route('webmaster.remigrate')}>Reset di tutte le migrazioni PERICOLOSO</RequireConfirmLink></li>
                 <li><a href={route('webmaster.partremigrate', { count: 1 })}>Reset di tutte le migrazioni a step</a></li>
                 <li><a href={route('webmaster.sendTestMail')}>Invia mail di test</a></li>
+                <li><RequireConfirmLink href={route('webmaster.sendTestMail')}>Abilita al login tutti gli alumni con stato pubblico (membri, studenti, preiscritti).</RequireConfirmLink></li>
                 <li><a href={route('auth.login_lv2.google')}>Forza accesso con autorizzazioni elevate</a></li>
             </ul>
         </div>

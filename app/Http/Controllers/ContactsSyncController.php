@@ -226,6 +226,9 @@ class ContactsSyncController extends Controller
         $alumnus = Alumnus::find($item['member_id']);
         if (!$alumnus) return;
 
+        // Check for unicity
+        if ($alumnus->emails()->where('address', $item['address'])->exists()) return;
+
         $alumnus->emails()->create(['address' => $item['address']]);
 
         return response()->json([]);

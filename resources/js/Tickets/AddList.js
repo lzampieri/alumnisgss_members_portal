@@ -5,7 +5,7 @@ import { Link, usePage } from "@inertiajs/react";
 
 export default function AddList() {
     const availableTypes = usePage().props.availableTypes;
-    console.log( availableTypes );
+    // console.log( availableTypes );
 
     return <div className="main-container">
         <Link className="button self-start" href={route('helpdesk')}>

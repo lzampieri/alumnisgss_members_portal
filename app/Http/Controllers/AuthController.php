@@ -95,7 +95,6 @@ class AuthController extends Controller
                 return redirect()->intended(route('home'));
             }
         }
-        LogController::log("Login da indirizzo sconosciuto", $em, 'scopes', $email, $user->approvedScopes);
 
         return redirect()->route('home')->with('notistack', ['error', 'Non hai il permesso di accedere a questo livello.']);
     }

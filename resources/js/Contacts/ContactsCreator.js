@@ -36,7 +36,6 @@ export default function ContactsCreator({ members, combs, setCombs, next }) {
 
     const parseResult = (output) => {
         setCombs( { ...combs, ...Object.fromEntries( output.map( o => [ o['member_id'], o ] ) ) } );
-        console.log( { ...combs, ...Object.fromEntries( output.map( o => [ o['member_id'], o ] ) ) } )
         setStep(STEP.SAVED);
     }
 

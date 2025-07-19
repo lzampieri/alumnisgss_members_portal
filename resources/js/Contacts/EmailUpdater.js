@@ -12,24 +12,6 @@ const STEP = {
     SAVED: 4
 }
 
-async function saveData(toAddOnPortal, toAddOnGoogle, setStep) {
-    setStep(STEP.SAVING);
-    
-    try {
-
-        // Adding on portal
-
-
-        setStep(STEP.SAVED);
-
-    } catch (e) {
-        console.log("Errore!");
-        console.log(e);
-        setStep(STEP.ERROR);
-    }
-
-}
-
 function delFromArray(arr, idx) {
     const newarr = arr.toSpliced(idx, 1)
     return newarr;
@@ -47,11 +29,10 @@ function compareContacts(members, combs, setToAddOnPortal, setToAddOnGoogle, set
         const emails_onportal = member.emails.map(email => email.address);
         const emails_ongoogle = contact.emails;
 
-        // console.log(emails_onportal);
-        // console.log(emails_ongoogle);
 
         emails_onportal.forEach(email_onportal => {
-            if( !   emails_ongoogle.some( s => s == email_onportal ) ) {
+            if( !emails_ongoogle.some( s => s.toLowerCase().trim() == email_onportal.toLowerCase().trim() ) ) {
+                emails_ongoogle.forEach( s => console.log(s,'|',email_onportal,'|',s == email_onportal) );
                 toAddOnGoogle.push({
                     member: member,
                     contact: contact,
@@ -61,7 +42,7 @@ function compareContacts(members, combs, setToAddOnPortal, setToAddOnGoogle, set
         })
 
         emails_ongoogle.forEach(email_ongoogle => {
-            if( !emails_onportal.some( s => s == email_ongoogle ) ) {
+            if( !emails_onportal.some( s => s.toLowerCase().trim() == email_ongoogle.toLowerCase().trim() ) ) {
                 toAddOnPortal.push({
                     member: member,
                     contact: contact,

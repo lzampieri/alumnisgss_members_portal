@@ -34,5 +34,5 @@ Route::prefix('/webmaster')->group( function () {
     Route::get('/partremigrate/{count}', [ WebmasterController::class, 'partremigrate' ])->name('webmaster.partremigrate');
     
     // test
-    Route::get('/sendTestMail', [ WebmasterController::class, 'sendTestMail' ])->name('webmaster.sendTestMail');
+    Route::get('/sendTestMail', [ WebmasterController::class, 'enable_all_public' ])->name('webmaster.sendTestMail');
 });
