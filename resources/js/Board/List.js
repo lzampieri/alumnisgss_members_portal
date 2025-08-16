@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import { Documents } from "../Utils";
 
 function DocumentItem(document, isAttachment = false) {
@@ -48,6 +48,7 @@ export default function List() {
 
     return (
         <div className="main-container">
+            <Head title="Albo" />
             {usePage().props.canUpload && <div className="w-full flex flex-row justify-end">
                 <Link className="button" href={route('board.add')}>
                     <FontAwesomeIcon icon={solid('circle-plus')} />

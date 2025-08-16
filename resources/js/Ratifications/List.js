@@ -1,6 +1,6 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import Backdrop from "../Layout/Backdrop";
 import { AlumnusStatus, postRequest, romanize } from "../Utils";
@@ -24,6 +24,7 @@ export default function List() {
 
     return (
         <div className="main-container">
+            <Head title="Ratifiche" />
             <div className="w-full flex flex-row justify-end gap-2">
                 {usePage().props.canAdd && <Link className="button" href={route('ratifications.add')}>
                     <FontAwesomeIcon icon={solid('circle-plus')} />

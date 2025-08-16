@@ -6,6 +6,7 @@ import { Stringifier, Tooltipier } from './Stringifier';
 import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
 import { themeQuartz , ModuleRegistry, InfiniteRowModelModule } from 'ag-grid-community';
 import { createPortal } from 'react-dom';
+import { Head } from '@inertiajs/react';
 ModuleRegistry.registerModules([InfiniteRowModelModule]);
 
 
@@ -76,6 +77,7 @@ export default function InternalLog() {
     }, [])
 
     return <div className="main-container-large h-[80vh] gap-1">
+        <Head title="Log interno in database" />
         <div className='ag-theme-quartz w-full grow'>
             <AgGridReact
                 columnDefs={columns}

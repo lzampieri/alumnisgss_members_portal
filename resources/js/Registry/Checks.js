@@ -1,4 +1,4 @@
-import { Link, useForm, usePage } from "@inertiajs/react";
+import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import ADetailsType from "../Network/ADetailsType";
 import { useMemo, useState } from "react";
 import Select from 'react-select';
@@ -114,6 +114,7 @@ export default function Checks() {
 
     return <>
         <h3>Controlli integrità anagrafica</h3>
+        <Head title="Controlli integrità anagrafe" />
         <div className="w-full flex-col">
             {wrongSelect()}
             <hr className="my-2" />

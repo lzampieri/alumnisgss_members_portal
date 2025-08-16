@@ -1,4 +1,4 @@
-import { Link, useForm, usePage } from "@inertiajs/react";
+import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { AlumnusStatus, bgAndContrast, bgAndContrastPastel, romanize } from "../Utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
@@ -30,6 +30,7 @@ export default function Edit() {
 
     return (
         <form className="flex flex-col w-full md:w-3/5 items-start gap-2" onSubmit={submit}>
+            <Head title="Modifica profilo" />
             <div className="flex flex-row justify-between w-full">
                 <Link className="button flex flex-row items-center self-start mb-4" href={route('profile')}>
                     <FontAwesomeIcon icon={solid('chevron-left')} />

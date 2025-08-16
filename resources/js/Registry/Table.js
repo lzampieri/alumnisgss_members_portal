@@ -1,4 +1,4 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { AlumnusStatus, bgAndContrastPastel } from "../Utils";
 import { useMemo, useState } from 'react';
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
@@ -34,7 +34,7 @@ function adtRenderer(adt, i) {
 }
 
 function adtFilterValueGetter(data, adtId) {
-    return JSON.stringify( adtValueGetter( data, adtId )?.value )?.toLowerCase();
+    return JSON.stringify(adtValueGetter(data, adtId)?.value)?.toLowerCase();
 }
 
 export default function Table() {
@@ -60,6 +60,7 @@ export default function Table() {
     const [quickFilter, setQuickFilter] = useState('')
 
     return <div className="main-container-large h-[80vh] gap-1">
+        <Head title="Anagrafe" />
         <RegistryHeader where='table' quickFilter={quickFilter} setQuickFilter={setQuickFilter} />
         <div className='ag-theme-quartz w-full grow'>
             <AgGridReact

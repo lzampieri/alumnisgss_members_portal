@@ -1,4 +1,4 @@
-import { useForm } from "@inertiajs/react";
+import { Head, useForm } from "@inertiajs/react";
 import { useState } from "react";
 import Backdrop from "../Layout/Backdrop";
 import EmptyDialog from "../Layout/EmptyDialog";
@@ -17,6 +17,7 @@ export default function NewVersion({ document }) {
     }
 
     return (<>
+        <Head title="Carica revisione" />
         <div className="button self-start" onClick={() => setOpen(true)}>Carica revisione</div>
         <EmptyDialog open={open}
             onClose={() => setOpen(false)}>

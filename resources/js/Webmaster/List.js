@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Dialog from "../Layout/Dialog";
-import { Link } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 
 
 function RequireConfirmLink({ href, children }) {
@@ -21,6 +21,7 @@ export default function List() {
 
     return (
         <div className="main-container">
+            <Head title="Funzioni webmaster" />
             <ul>
                 <li><a href={route('log')}>Log</a></li>
                 <li><a href={route('webmaster.log.internal')}>Internal log</a></li>

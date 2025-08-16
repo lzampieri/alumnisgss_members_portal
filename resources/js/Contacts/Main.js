@@ -1,6 +1,6 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import { AlumnusStatus, bgAndContrast, romanize } from "../Utils";
 import { useEffect, useMemo, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
@@ -33,6 +33,7 @@ export default function Main() {
 
     return (
         <div className="main-container-large gap-1">
+            <Head title="Sincronizzazione rubrica" />
             { step == STEP.DOWNLOAD && <DataDownloader setMembers={setMembers} setContacts={setContacts} setGroups={setGroups} next={() => setStep(STEP.AUTOCOMBINE)} /> }
             { step == STEP.AUTOCOMBINE && <AutoCombiner members={members} contacts={contacts} setCombs={setCombs} next={() => setStep(STEP.NEWCONTACTS)} /> }
             { step == STEP.NEWCONTACTS && <ContactsCreator members={members} combs={combs} setCombs={setCombs} next={() => setStep(STEP.EMAILUPDATE)} /> }

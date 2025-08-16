@@ -3,7 +3,7 @@ import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import Backdrop from "../Layout/Backdrop";
 import { postRequest } from "../Utils";
 import { Fragment, useState } from "react";
-import { Link, useForm, usePage } from "@inertiajs/react";
+import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { useStopwatch, useTime } from "react-timer-hook";
 import { totalCount, twoDigits, withQuartersAndHours, withQuartersGT0, withQuarters, daysInMonth, hhmm } from "./TimeUtils";
 import EmptyDialog from "../Layout/EmptyDialog";
@@ -126,6 +126,7 @@ export default function Monthly() {
     }
 
     return <div className="main-container-large gap-4">
+        <Head title={capFirst(date.toLocaleDateString('it-IT', { 'month': 'long', 'year': 'numeric' }))} />
         <h3>Registro timbrature</h3>
         <div className="flex flex-row gap-2 items-center">
             <Link as="button" className="button" href={route('clockings.monthly', month == 1 ? { year: year - 1, month: 12 } : { year: year, month: month - 1 })}>

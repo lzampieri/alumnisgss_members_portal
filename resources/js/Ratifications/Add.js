@@ -1,4 +1,4 @@
-import { useForm, usePage } from "@inertiajs/react";
+import { Head, useForm, usePage } from "@inertiajs/react";
 import { AlumnusStatus, romanize } from "../Utils";
 import Select, { createFilter } from 'react-select';
 import { countBy, keys } from "lodash";
@@ -31,6 +31,7 @@ export default function Add() {
 
     return (
         <form className="flex flex-col w-full md:w-3/5" onSubmit={submit}>
+            <Head title="Nuova ratifica" />
             <h3>Variazioni di stato</h3>
             <label>Alumni interessato</label>
             <Select

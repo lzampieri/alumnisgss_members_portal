@@ -1,4 +1,4 @@
-import { Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import { AlumnusStatus, bgAndContrast, bgAndContrastPastel, romanize } from "../Utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
@@ -28,7 +28,7 @@ export default function Myself() {
 
     return (
         <div className="flex flex-col w-full md:w-3/5 items-start gap-2">
-
+            <Head title="Il mio profilo" />
             <h3>{alumnus.name} {alumnus.surname}</h3>
             <div className="flex flex-row w-full flex-wrap">
                 <div className="chip group relative z-auto" style={bgAndContrast('6b7280')} key='coorte'>

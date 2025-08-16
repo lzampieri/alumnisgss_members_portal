@@ -1,4 +1,4 @@
-import { useForm, usePage } from "@inertiajs/react";
+import { Head, useForm, usePage } from "@inertiajs/react";
 import { AlumnusStatus } from "../Utils";
 import Select from 'react-select';
 import { useState } from "react";
@@ -20,6 +20,7 @@ export default function ImportDetails() {
 
     return (
         <div className="main-container">
+            <Head title="Importa dati" />
             <div className="w-full flex flex-col justify-start items-start gap-2">
                 <h3>Import database</h3>
                 Attraverso questa pagina è possibile importare il database degli alumni da un file excel. <br/>

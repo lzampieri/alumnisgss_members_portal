@@ -1,6 +1,6 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, useForm, usePage } from "@inertiajs/react";
+import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { AlumnusStatus, bgAndContrast, postRequest, romanize } from "../Utils";
 import { useMemo, useState } from "react";
 import Dialog from "../Layout/Dialog";
@@ -151,6 +151,7 @@ function ADlist() {
 
 export default function Settings() {
     return <div className="main-container gap-1">
+        <Head title="Impostazioni rete" />
         <Link className="button flex flex-row items-baseline self-start" href={route('network')}>
             <FontAwesomeIcon icon={solid('chevron-left')} />
             Indietro

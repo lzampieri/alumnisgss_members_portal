@@ -1,4 +1,4 @@
-import { Link, useForm, usePage } from "@inertiajs/react";
+import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import React, { Fragment, useState } from "react";
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
@@ -36,6 +36,7 @@ export default function Edit() {
 
     return (
         <form className="flex flex-col w-full md:w-3/5 items-start gap-2" onSubmit={submit}>
+            <Head title={alumnus.name + " " + alumnus.surname} />
             <div className="flex flex-row justify-between w-full">
                 <Link className="button flex flex-row items-center self-start mb-4" href={route('network')}>
                     <FontAwesomeIcon icon={solid('chevron-left')} />

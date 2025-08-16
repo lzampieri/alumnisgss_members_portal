@@ -1,4 +1,4 @@
-import { useForm, usePage } from "@inertiajs/react";
+import { Head, useForm, usePage } from "@inertiajs/react";
 import { Fragment, useState } from "react";
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
@@ -71,6 +71,7 @@ export default function Edit() {
 
     return (
         <form className="flex flex-col w-full md:w-3/5" onSubmit={submit}>
+            <Head title={prev ? prev.name + " " + prev.surname : "Nuovo alumno"} />
             <div className="w-full justify-between flex flex-row">
                 <h3>{prev ? "Aggiorna" : "Crea nuovo"} alumno</h3>
                 <div className="button flex flex-row items-center" onClick={submit}>

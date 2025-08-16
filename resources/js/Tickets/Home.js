@@ -1,6 +1,6 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 
 import { useMemo, useState } from 'react';
 
@@ -73,6 +73,7 @@ export default function Home() {
     }, [])
 
     return <div className="main-container-large">
+        <Head title="Helpdesk" />
         <div className="w-full flex flex-row gap-2 mb-1 items-start">
             <input type="text" className="grow" value={quickFilter} onChange={(e) => setQuickFilter(e.target.value)} placeholder="Filtra.../ Ancora non implementato" />
             <Link className="button mb-2 grow-0" href={route('ticket.addList')}>

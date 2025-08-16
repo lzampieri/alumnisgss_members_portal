@@ -1,13 +1,13 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 
 
 export default function AddList() {
     const availableTypes = usePage().props.availableTypes;
-    // console.log( availableTypes );
 
     return <div className="main-container">
+        <Head title="Nuovo ticket" />
         <Link className="button self-start" href={route('helpdesk')}>
             <FontAwesomeIcon icon={solid('circle-left')} className="pr-2" />
             Indietro

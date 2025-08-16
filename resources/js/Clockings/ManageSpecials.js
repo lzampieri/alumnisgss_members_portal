@@ -3,7 +3,7 @@ import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import Backdrop from "../Layout/Backdrop";
 import { bgAndContrast, postRequest } from "../Utils";
 import { useState } from "react";
-import { Link, useForm, usePage } from "@inertiajs/react";
+import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { Collapse } from 'react-collapse';
 import Select from 'react-select';
 import { faL } from "@fortawesome/free-solid-svg-icons";
@@ -123,6 +123,7 @@ export default function ManageSpecials() {
     })
 
     return <div className="main-container-large gap-4">
+        <Head title="Gestione ferie e permessi" />
         <h3>Gestione ferie e permessi</h3>
         Oggi puoi gestire le ferie e i permessi per il periodo dal {from.toLocaleDateString()} al {to.toLocaleDateString()}
 

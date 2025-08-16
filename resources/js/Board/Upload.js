@@ -1,4 +1,4 @@
-import { useForm, usePage } from "@inertiajs/react";
+import { Head, useForm, usePage } from "@inertiajs/react";
 import { AlumnusStatus, Documents, romanize } from "../Utils";
 import IdSelector from "./IdSelector";
 import IdSelector_Attachment from "./IdSelector_Attachment";
@@ -71,6 +71,7 @@ export default function Upload() {
 
     return (
         <form className="flex flex-col w-full md:w-3/5" onSubmit={submit}>
+            <Head title="Carica documento" />
             <h3>Carica documento</h3>
             {!usePage().props.canEdit && <label className="error">Attenzione: possiedi i permessi di caricare documenti, ma non di modificare documenti già caricati. Rivedi con attenzione tutti i campi prima di salvare.</label>}
             <label>È un allegato</label>

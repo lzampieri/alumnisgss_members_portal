@@ -1,12 +1,13 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 
 export default function Reports() {
     const options = usePage().props.options
 
     return (
         <div className="main-container">
+            <Head title="Reports" />
             <div className="w-full md:w-3/4 flex flex-col items-stretch mt-4">
                 {options.map(opt => (
                     <div className="flex flex-row-reverse items-center bg-gray-100 border-gray-400 border py-2 px-4 rounded-first-last" key={opt.name}>

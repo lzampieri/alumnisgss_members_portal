@@ -1,6 +1,6 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import { AlumnusStatus, bgAndContrast, bgAndContrastPastel, romanize } from "../Utils";
 import { useMemo, useState } from "react";
 import SmartChip from "./SmartChip";
@@ -92,6 +92,7 @@ export default function List() {
     const [quickFilter, setQuickFilter] = useState('')
 
     return <div className="main-container-large h-[80vh] gap-1">
+        <Head title="Rete sociale" />
         <div className="w-full flex flex-row justify-center gap-2">
             <input className="w-full md:w-1/2" type='text' value={quickFilter} onChange={(e) => setQuickFilter(e.target.value)} placeholder='Cerca...' />
             {usePage().props.canEditView &&

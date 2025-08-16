@@ -1,12 +1,13 @@
 import { useState } from "react";
 import Dialog from "../Layout/Dialog";
-import { usePage } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 
 
 export default function DecryptUtility() {
 
     return (
         <div className="main-container">
+            <Head title="Utility per decriptazione AES" />
             <h3>Utility per decriptazione AES.</h3>
             <form target="_blank" action={route('webmaster.decryptUtility')} method="POST" className="w-full flex flex-col justify-start" enctype="multipart/form-data">
                 <label>File da decriptare</label>

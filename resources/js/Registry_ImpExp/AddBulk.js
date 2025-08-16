@@ -1,4 +1,4 @@
-import { useForm, usePage } from "@inertiajs/react";
+import { Head, useForm, usePage } from "@inertiajs/react";
 import { AlumnusStatus } from "../Utils";
 import Select from 'react-select';
 import { useMemo, useState } from "react";
@@ -78,8 +78,9 @@ export default function Bulk() {
 
     return (
         <form className="flex flex-col w-full md:w-3/5" onSubmit={submit}>
+            <Head title="Inserimento di massa" />
             <div className="w-full justify-between flex flex-row">
-                <h3>Inserimento in massa di {data.rows.length} alunni</h3>
+                <h3>Inserimento in massa di {data.rows.length-1} alumni</h3>
                 <div className="button flex flex-row items-center" onClick={submit}>
                     <FontAwesomeIcon icon={solid('save')} />
                     Salva

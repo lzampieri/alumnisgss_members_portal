@@ -1,6 +1,6 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import { AlumnusStatus, bgAndContrast, romanize } from "../Utils";
 import { useMemo, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
@@ -75,6 +75,7 @@ export default function List() {
 
     return (
         <div className="main-container-large gap-1">
+            <Head title="Soci" />
             <Counters {...counts} />
             <div className="w-full md:w-3/5 relative mb-4">
                 <input type="text" className="w-full text-center" placeholder="Cerca..." value={quickFilter} onChange={(e) => setQuickFilter(e.target.value)} />

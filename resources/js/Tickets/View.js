@@ -1,6 +1,6 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, useForm, usePage } from "@inertiajs/react";
+import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import React, { useState } from "react";
 import TextareaAutosize from 'react-textarea-autosize';
 import Backdrop from "../Layout/Backdrop";
@@ -80,6 +80,7 @@ export default function View() {
             <FontAwesomeIcon icon={solid('circle-left')} className="pr-2" />
             Indietro
         </Link> */}
+        <Head title={"Ticket #" + ticket.id + " (" + usePage().props.commonName + ")"} />
         <h3 className="my-3">Ticket #{ticket.id}</h3>
         <h4>{usePage().props.commonName}: {ticket.instance.subject}</h4>
 

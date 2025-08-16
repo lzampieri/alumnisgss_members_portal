@@ -3,7 +3,7 @@ import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import Backdrop from "../Layout/Backdrop";
 import { postRequest } from "../Utils";
 import { useState } from "react";
-import { Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import { useStopwatch, useTime } from "react-timer-hook";
 import EmptyDialog from "../Layout/EmptyDialog";
 
@@ -73,6 +73,7 @@ export default function Clocker() {
     }
 
     return <div className="main-container gap-4">
+        <Head title="Timbratore" />
         <h3>Timbrature dipendenti - <i>{user.identity ? (user.identity.name || '') + " " + (user.identity.surname || '') : user.credential}</i></h3>
         <span className="text-6xl md:text-9xl font-mono"><Clock /></span>
         {lastClockIn && canClockToday && <div>

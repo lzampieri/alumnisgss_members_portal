@@ -14,4 +14,5 @@ createInertiaApp({
     setup({ el, App, props }) {
         render(<App {...props} />, el)
     },
+    title: (title) => `${process.env.MIX_APP_NAME_PREFIX}${title} - ${process.env.MIX_APP_NAME_SUFFIX}`,
 })

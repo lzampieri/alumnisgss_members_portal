@@ -1,6 +1,6 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, router, useForm, usePage } from "@inertiajs/react";
+import { Head, Link, router, useForm, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import { hhmm, totalCount, twoDigits, withQuartersAndHours } from "./TimeUtils";
 import EmptyDialog from "../Layout/EmptyDialog";
@@ -25,6 +25,7 @@ export default function TooMuchTime() {
 
     return (
         <div className="main-container gap-4">
+            <Head title="Timbratore" />
             <div className="unlclickable-button flex flex-col text-xl md:text-4xl font-bold aspect-square items-center justify-center gap-4">
                 <FontAwesomeIcon icon={solid('triangle-exclamation')} className="text-5xl" />
                 Attenzione

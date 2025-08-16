@@ -1,4 +1,4 @@
-import { Link, useForm, usePage } from "@inertiajs/react";
+import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import ReactSwitch from "react-switch";
 import { Roles } from "../Utils";
@@ -100,6 +100,7 @@ export default function List() {
     const [selectedIdx, setSelectedIdx] = useState(-1);
 
     return <div className="main-container-drawer">
+        <Head title="Gestione permessi" />
         <ResponsiveDrawer buttonTitle={selectedIdx >= 0 ? roles[selectedIdx].common_name : "Ruoli"} initiallyOpen={selectedIdx < 0}>
             <ResponsiveDrawer.Drawer>
                 {roles.map((role, idx) =>

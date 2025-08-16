@@ -1,4 +1,4 @@
-import { Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import { AlumnusStatus, bgAndContrast, bgAndContrastPastel, postRequest, romanize } from "../Utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
@@ -14,6 +14,7 @@ export default function DataConsent() {
 
     return (
         <div className="flex flex-col w-full md:w-3/5 items-start gap-2">
+            <Head title="Il mio profilo" />
 
             <h3>{alumnus.name} {alumnus.surname}</h3>
             <div className="font-bold text-primary-main mt-4">Consenso alla diffusione dei dettagli</div>

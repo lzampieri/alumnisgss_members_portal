@@ -1,4 +1,4 @@
-import { Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import ResponsiveDrawer from "../Layout/ResponsiveDrawer";
 import BlocksViewer from "../Blocks/BlocksViewer";
 import { Fragment, useState } from "react";
@@ -32,6 +32,7 @@ export default function Main() {
 
     return (
         <div className="main-container-drawer">
+            <Head title={resource ? resource.title : "Risorse"} />
             <ResponsiveDrawer buttonTitle={resource ? resource.title : "Risorse"} initiallyOpen={!resource}>
                 <ResponsiveDrawer.Drawer>
                     {resource?.parent && <ResLink res={resource.parent} selected={resource?.id == resource.parent.id} key={resource.parent.id} isParent />}

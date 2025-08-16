@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { enqueueSnackbar, SnackbarProvider } from 'notistack';
 import { useEffect } from 'react';
 import ErrorDialog from './ErrorDialog';
@@ -12,6 +12,7 @@ export default function MainLayout(page) {
 
 
     return <SnackbarProvider>
+        <Head title="Associazione Alumni Scuola Galileiana" />
         <div className="flex flex-col md:flex-row w-full items-center px-8 py-2 bg-header-bg text-header-tx">
             <a href={route('main')} className="grow-0 w-full md:w-1/3">
                 <h6 className="text-xl md:text-2xl underline">Associazione Alumni Scuola Galileiana</h6>

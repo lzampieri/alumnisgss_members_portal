@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import Datepicker from "tailwind-datepicker-react"
 import { useState } from "react";
-import { usePage } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 import { AlumnusStatus } from "../Utils";
 
 function YearPicker({ year, setYear }) {
@@ -91,6 +91,7 @@ export default function MembersVariations() {
 
     return (
         <div className="main-container">
+            <Head title="Variazioni nei libri societari" />
             <h3>Variazioni nei libri societari</h3>
             Relativa agli stati:
             <div className="flex flex-row gap-6">

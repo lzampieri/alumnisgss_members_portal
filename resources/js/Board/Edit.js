@@ -1,4 +1,4 @@
-import { useForm, usePage } from "@inertiajs/react";
+import { Head, useForm, usePage } from "@inertiajs/react";
 import { AlumnusStatus, Documents, romanize } from "../Utils";
 import IdSelector from "./IdSelector";
 import Datepicker from "tailwind-datepicker-react"
@@ -47,6 +47,7 @@ export default function Edit() {
 
     return (
         <div className="flex flex-col w-full md:w-3/5">
+            <Head title="Modifica documento" />
             <h3>Modifica documento</h3>
             <span className="font-bold">Protocollo web: {prevDoc.protocol}</span>
 

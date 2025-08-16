@@ -1,6 +1,6 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, useForm, usePage } from "@inertiajs/react";
+import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import React from "react";
 import TextareaAutosize from 'react-textarea-autosize';
 import Backdrop from "../Layout/Backdrop";
@@ -24,6 +24,7 @@ export default function Add() {
     }
 
     return <div className="main-container">
+        <Head title={"Nuovo ticket - " + usePage().props.name} />
         {/* <Link className="button self-start" href={route('ticket.addList')}>
             <FontAwesomeIcon icon={solid('circle-left')} className="pr-2" />
             Indietro

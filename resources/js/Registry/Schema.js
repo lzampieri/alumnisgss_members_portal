@@ -1,6 +1,6 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import { AlumnusStatus, bgAndContrast, romanize } from "../Utils";
 import { useMemo, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
@@ -88,6 +88,7 @@ export default function Schema() {
 
     return (
         <div className="main-container-large h-[80vh] gap-1">
+            <Head title="Anagrafe" />
             <RegistryHeader where='schema' quickFilter={quickFilter} setQuickFilter={setQuickFilter} />
             <div className="w-full grow overflow-scroll flex flex-row">
                 {Object.entries(data).map(([coorte,content]) => <CoorteColumns key={coorte} coorte={coorte} data={content} tagsDict={tagsDict} quickFilter={quickFilter} />)}
