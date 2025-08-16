@@ -4,6 +4,7 @@ import EmptyDialog from "../Layout/EmptyDialog";
 import { useState } from "react";
 import { useForm, usePage } from "@inertiajs/react";
 import RolesChips from "../Permissions/RolesChips";
+import ParentSelector from "./ParentSelector";
 
 
 export default function Create() {
@@ -13,7 +14,8 @@ export default function Create() {
     const { data, setData, post, processing, errors, reset } = useForm({
         title: '',
         canView: [],
-        canEdit: []
+        canEdit: [],
+        parent: undefined
     })
 
     const submit = (e) => {
@@ -32,6 +34,9 @@ export default function Create() {
                 <label>Titolo</label>
                 <input type="text" value={data.title} onChange={(e) => setData('title', e.target.value)} />
                 <label className="error">{errors.title}</label>
+                <label>All'interno di:</label>
+                <ParentSelector value={data.parent} setValue={(newParent) => setData('parent', newParent)} />
+                <label className="error">{errors.parent}</label>
                 <label>Visibile da:</label>
                 <RolesChips roles={roles} list={data.canView} updateList={(newList) => setData('canView', newList)} />
                 <label className="error">{errors.canView}</label>

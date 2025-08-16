@@ -16,7 +16,7 @@ function ResLink({res, selected, isChild = false, isParent = false}) {
         href={computeResourceLink(res)}
         as="div"
     >
-        <div className= {"w-full flex flex-row flex-wrap" + ( isChild ? " ml-2" : "" )} >
+        <div className= {"flex flex-row flex-wrap" + ( isChild ? " ml-2" : "" )} >
             <div>{isChild > 0 && <FontAwesomeIcon icon={solid('chevron-right')} className="mr-2" />}</div>
             <div>{isParent > 0 && <FontAwesomeIcon icon={solid('chevron-left')} className="mr-2" />}</div>
             <div className="flex-grow">{res.title}</div>
@@ -34,7 +34,7 @@ export default function Main() {
         <div className="main-container-drawer">
             <ResponsiveDrawer buttonTitle={resource ? resource.title : "Risorse"} initiallyOpen={!resource}>
                 <ResponsiveDrawer.Drawer>
-                    {resource.parent && <ResLink res={resource.parent} selected={resource?.id == resource.parent.id} key={resource.parent.id} isParent />}
+                    {resource?.parent && <ResLink res={resource.parent} selected={resource?.id == resource.parent.id} key={resource.parent.id} isParent />}
                     {resources.map(res => <Fragment key={res.id}>
                         <ResLink res={res} selected={resource?.id == res.id} key={res.id} />
                         { resource?.id == res.id && resource.visibleChildren.map(child => <ResLink res={child} selected={resource?.id == child.id} key={child.id} isChild />) }

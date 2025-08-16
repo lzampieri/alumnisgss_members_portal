@@ -9,7 +9,9 @@ use App\Models\Resource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Str;
 
 class ResourceController extends Controller
 {
@@ -35,8 +37,10 @@ class ResourceController extends Controller
                 ->load(['dynamicPermissions', 'dynamicPermissions.role', 'files', 'permalinks']);
 
             $params['resource']->makeHidden('children');
-            if( !$params['resource']->parent->canView ) {
-                $params['resource']->makeHidden('parent');
+
+            if( $params['resource']->parent ) {
+                if( !$params['resource']->parent->canView ) $params['resource']->makeHidden('parent');
+                else $params['resource']->parent->load('permalinks');
             }
         }
 
@@ -46,6 +50,7 @@ class ResourceController extends Controller
         $params['allowedFormats'] = File::ALLOWED_FORMATS;
 
         $params['possibleParents'] = $this->getPossibleParentsList($resource);
+        $params['possibleParentsForNew'] = $this->getPossibleParentsList();
 
         return Inertia::render('Resources/Main', $params);
     }
@@ -63,9 +68,11 @@ class ResourceController extends Controller
     public function create(Request $request)
     {
         $this->authorize('create', Resource::class);
+        $possibleParents = implode(',', array_map(function ($res) { return $res['id']; }, $this->getPossibleParentsList() ) );
 
         $validated = $request->validate([
             'title' => 'required|min:3',
+            'parent' => 'in:' . $possibleParents,
             'canView' => 'array|min:1',
             'canView.*' => 'integer|exists:roles,id',
             'canEdit' => 'array|min:1',
@@ -83,6 +90,11 @@ class ResourceController extends Controller
 
         // Create the resource
         $res = Resource::create(['title' => $validated['title']]);
+
+        if(isset($validated['parent'])) {
+            $res->parent_id = $validated['parent'];
+            $res->save();
+        }
 
         // Save the canView
         foreach ($validated['canView'] as $role) {
@@ -227,5 +239,24 @@ class ResourceController extends Controller
         $permalink->save();
 
         return redirect()->route('permalink', ['permalink' => $permalink])->with(['notistack' => ['success', 'Salvato']]);
+    }
+
+    public function magic_link(Resource $resource, Request $request)
+    {
+        $this->authorize('edit', $resource);
+
+        $enabled = $request->input('enabled', false);
+
+        if( $enabled ) {
+            if( $resource->access_token == null )
+                $resource->access_token = Str::random(16);
+        }
+        else {
+            $resource->access_token = null;
+        }
+
+        $resource->save();
+
+        return redirect()->back()->with(['notistack' => ['success', 'Salvato']]);
     }
 }

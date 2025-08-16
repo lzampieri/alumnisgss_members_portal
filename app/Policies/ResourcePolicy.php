@@ -21,6 +21,16 @@ class ResourcePolicy
      */
     public function view(?User $user, Resource $resource)
     {
+        // Check for Magic Link
+        $token = request()->get('tk');
+        if( $token ) {
+            $res = $resource;
+            while( $res ) {
+                if( $res->access_token == $token ) return true;
+                $res = $res->parent;
+            }
+        }
+
         return DynamicPermission::UserCanViewPermissable($resource, $user ? $user->identity : NULL) || DynamicPermission::UserCanEditPermissable($resource, $user ? $user->identity : NULL);
     }
 

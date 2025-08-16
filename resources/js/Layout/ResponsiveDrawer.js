@@ -30,22 +30,22 @@ function ResponsiveDrawer({ children, buttonTitle, initiallyOpen }) {
                 (isOpen
                 ? " transition-opacity opacity-100 duration-500 translate-x-0"
                 : " transition-all duration-500 opacity-0 -translate-x-full") +
-                " md:relative md:inset-auto md:transform-none md:opacity-100 md:w-1/4 md:h-auto"
+                " lg:relative lg:inset-auto lg:transform-none lg:opacity-100 lg:w-1/4 lg:h-auto"
             }
             onClick={() => setIsOpen(false)}
             >
                 <div className={
                     "w-4/5 min-h-screen left-0 absolute shadow-xl delay-400 duration-500 ease-in-out transition-all transform " +
                     (isOpen ? " translate-x-0 " : " -translate-x-full ") +
-                    " md:w-full md:min-h-0 md:sticky md:transform-none md:h-full " +
+                    " lg:w-full lg:min-h-0 lg:sticky lg:transform-none lg:h-full " +
                     " bg-white p-4"
                     }>
                     { drawerContent }
                 </div>
         </div>
-        <div className="w-full md:w-3/4 flex flex-col items-start p-4">
-            <button className="button md:hidden" onClick={() => setIsOpen(true)}>
-                <FontAwesomeIcon icon={solid('bars')} />
+        <div className="w-full lg:w-3/4 flex flex-col items-start p-4">
+            <button className="button lg:hidden" onClick={() => setIsOpen(true)}>
+                <FontAwesomeIcon icon={solid('bars')} className="mr-2"/>
                 { buttonTitle }
             </button>     
             { mainContent }

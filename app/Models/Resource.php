@@ -31,6 +31,15 @@ class Resource extends Model
 
     public function getCanViewAttribute()
     {
+        $token = request()->get('tk');
+        if( $token ) {
+            $res = $this;
+            while( $res ) {
+                if( $res->access_token == $token ) return true;
+                $res = $res->parent;
+            }
+        }
+        
         return DynamicPermission::UserCanViewPermissable($this) || DynamicPermission::UserCanEditPermissable($this);
     }
     public function getCanEditAttribute()
@@ -50,6 +59,6 @@ class Resource extends Model
 
     public function getVisibleChildrenAttribute()
     {
-        return $this->children->filter->canView;
+        return $this->children()->with(['permalinks'])->withCount(['children'])->get()->filter->canView;
     }
 }

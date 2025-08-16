@@ -17,4 +17,5 @@ Route::prefix('/resources')->group( function () {
     Route::post('/uploadFile', [ ResourceController::class, 'upload_file' ] )->name('resources.uploadFile');
     Route::post('/delete', [ ResourceController::class, 'delete' ] )->name('resources.delete');
     Route::post('/addPermalink', [ ResourceController::class, 'add_permalink' ] )->name('resources.addPermalink');
+    Route::post('/magicLink/{resource}', [ ResourceController::class, 'magic_link' ] )->name('resources.magicLink');
 });
