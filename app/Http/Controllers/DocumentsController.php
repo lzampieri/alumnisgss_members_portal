@@ -80,7 +80,6 @@ class DocumentsController extends Controller
             ]
         ]);
 
-        Log::debug('Adding document: ', $validated);
 
         $validated['author_type'] = Auth::user()->identity_type;
         $validated['author_id'] = Auth::user()->identity_id;

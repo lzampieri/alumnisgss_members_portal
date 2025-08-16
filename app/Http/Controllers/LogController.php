@@ -61,7 +61,9 @@ class LogType {
 
         LogEvents::LOGIN => True,
         LogEvents::LOGIN_LV2 => True,
-        LogEvents::MAIL_SENT => True
+        LogEvents::MAIL_SENT => True,
+
+        LogEvents::RESOURCE_VIA_MAGICLINK => True
     ];
 }
 

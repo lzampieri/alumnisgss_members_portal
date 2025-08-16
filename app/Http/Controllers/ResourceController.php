@@ -148,7 +148,6 @@ class ResourceController extends Controller
         $this->authorize('edit', $resource);
 
         $possibleParents = implode(',', array_map(function ($res) { return $res['id']; }, $this->getPossibleParentsList($resource) ) );
-        Log::debug($possibleParents);
 
         $validated = $request->validate([
             'title' => 'required|min:3',

@@ -24,4 +24,6 @@ class LogEvents {
     const LOGIN = 'login';
     const LOGIN_LV2 = 'level 2 login';
     const MAIL_SENT = 'mail_sent';
+
+    const RESOURCE_VIA_MAGICLINK = 'resource_accessed_via_magiclink';
 }

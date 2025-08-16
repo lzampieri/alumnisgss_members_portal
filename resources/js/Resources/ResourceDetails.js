@@ -173,14 +173,14 @@ export default function ResourceDetails({ resource }) {
 
     return <div className="flex flex-col w-full items-start">
         <h3>{resource.title} <span className="text-sm">{resource.canEdit && <EditTitle resource={resource} setProcessing={setProcessing} />}</span></h3>
-        <div className="text-sm text-gray-400">
+        {resource.canEdit && <div className="text-sm text-gray-400">
             Visibile da {canView.map(r => r.common_name).join(", ")}
-            {resource.canEdit && <EditRoles type="view" initialList={canView.map(r => r.id)} resourceId={resource.id} setProcessing={setProcessing} />}
-        </div>
-        <div className="text-sm text-gray-400">
+            <EditRoles type="view" initialList={canView.map(r => r.id)} resourceId={resource.id} setProcessing={setProcessing} />
+        </div> }
+        {resource.canEdit && <div className="text-sm text-gray-400">
             Modificabile da {canEdit.map(r => r.common_name).join(", ")}
-            {resource.canEdit && <EditRoles type="edit" initialList={canEdit.map(r => r.id)} resourceId={resource.id} setProcessing={setProcessing} />}
-        </div>
+            <EditRoles type="edit" initialList={canEdit.map(r => r.id)} resourceId={resource.id} setProcessing={setProcessing} />
+        </div> }
         <div className="text-sm text-gray-400">
             {hasPermalinks ? <>
                 Permalinks: {resource.permalinks.map(i => <Link href={route('permalink', { 'permalink': i.id })} key={i.id}>{i.id}</Link>).reduce((prev, curr) => [prev, ', ', curr])}

@@ -2,6 +2,9 @@
 
 namespace App\Policies;
 
+use App\Http\Controllers\Log;
+use App\Http\Controllers\LogController;
+use App\Http\Controllers\LogEvents;
 use App\Models\Resource;
 use App\Models\DynamicPermission;
 use Illuminate\Foundation\Auth\User;
@@ -21,17 +24,23 @@ class ResourcePolicy
      */
     public function view(?User $user, Resource $resource)
     {
+        if( DynamicPermission::UserCanViewPermissable($resource, $user ? $user->identity : NULL) || DynamicPermission::UserCanEditPermissable($resource, $user ? $user->identity : NULL) )
+            return true;
+
         // Check for Magic Link
         $token = request()->get('tk');
         if( $token ) {
             $res = $resource;
             while( $res ) {
-                if( $res->access_token == $token ) return true;
+                if( $res->access_token == $token ) {
+                    LogController::log( LogEvents::RESOURCE_VIA_MAGICLINK, $resource, 'via token of resource:', $res->id );
+                    return true;
+                }
                 $res = $res->parent;
             }
         }
 
-        return DynamicPermission::UserCanViewPermissable($resource, $user ? $user->identity : NULL) || DynamicPermission::UserCanEditPermissable($resource, $user ? $user->identity : NULL);
+        return false;
     }
 
     /**
