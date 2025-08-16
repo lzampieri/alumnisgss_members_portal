@@ -4,8 +4,8 @@ import BigTooltip from '../Layout/BigTooltip';
 import { Stringifier, Tooltipier } from './Stringifier';
 
 import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
-import { themeQuartz } from "ag-grid-community";
-import { ModuleRegistry, InfiniteRowModelModule } from 'ag-grid-community';
+import { themeQuartz , ModuleRegistry, InfiniteRowModelModule } from 'ag-grid-community';
+import { createPortal } from 'react-dom';
 ModuleRegistry.registerModules([InfiniteRowModelModule]);
 
 
@@ -23,15 +23,15 @@ function AgentTooltip({ data, value }) {
 function ItemTooltip({ data, value }) {
     return <Tooltip content={
         <div>
-            {Tooltipier( data?.item_type, data?.item )}
+            {Tooltipier(data?.item_type, data?.item)}
         </div>
     }>
-        {Stringifier( data?.item_type, data?.item )}
+        {Stringifier(data?.item_type, data?.item)}
     </Tooltip>
 }
 
 function NewValueTooltip({ data, value }) {
-    if( value?.length < 25 ) return <div>{value}</div>
+    if (value?.length < 25) return <div>{value}</div>
     return <BigTooltip content={
         <div>
             {value}
@@ -44,14 +44,14 @@ function NewValueTooltip({ data, value }) {
 export default function InternalLog() {
 
     const columns = useMemo(() => [
-        { field: 'id', headerName : 'ID', width: 70 },
-        { field: 'date', headerName: 'Data', valueGetter: ({ data }) => new Date(data?.created_at).toLocaleString('it-IT', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }) },
-        { field: 'agent', headerName: 'Agent', valueGetter: ({ data }) => data?.agent, cellRenderer: ({ data, value }) => <AgentTooltip data={data} value={value} /> },
-        { field: 'item', headerName: 'Item', valueGetter: ({ data }) => data?.item, cellRenderer: ({ data, value }) => <ItemTooltip data={data} value={value} /> },
-        { field: 'type', headerName: 'Type' },
-        { field: 'field', headerName: 'Field' },
-        { field: 'old_value', headerName: 'Old Value' },
-        { field: 'new_value', headerName: 'New Value', cellRenderer: ({ data, value }) => <NewValueTooltip data={data} value={value} /> },
+        { field: 'id', headerName: 'ID', width: 70, sortable: false },
+        { field: 'date', headerName: 'Data', valueGetter: ({ data }) => new Date(data?.created_at).toLocaleString('it-IT', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }), sortable: false },
+        { field: 'agent', headerName: 'Agent', valueGetter: ({ data }) => data?.agent, cellRenderer: ({ data, value }) => <AgentTooltip data={data} value={value} />, sortable: false },
+        { field: 'item', headerName: 'Item', valueGetter: ({ data }) => data?.item, cellRenderer: ({ data, value }) => <ItemTooltip data={data} value={value} />, sortable: false },
+        { field: 'type', headerName: 'Type', sortable: false },
+        { field: 'field', headerName: 'Field', sortable: false },
+        { field: 'old_value', headerName: 'Old Value', sortable: false },
+        { field: 'new_value', headerName: 'New Value', cellRenderer: ({ data, value }) => <NewValueTooltip data={data} value={value} />, sortable: false },
     ], [])
 
     const [quickFilter, setQuickFilter] = useState('')
@@ -85,5 +85,8 @@ export default function InternalLog() {
                 datasource={dataSource}
                 theme={themeQuartz} />
         </div>
+        {createPortal(<div className="fixed bottom-0 w-full flex flex-row justify-center">
+            <input type='text' className="w-3/4" value={quickFilter} onChange={(e) => setQuickFilter(e.target.value)} placeholder='Cerca... - la ricerca non funziona ancora per il server-side row model'/>
+        </div>, document.body)}
     </div>
 }
