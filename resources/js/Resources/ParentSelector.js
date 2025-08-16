@@ -3,9 +3,9 @@ import { useMemo } from 'react';
 import Select from 'react-select';
 
 
-export default function ParentSelector({ value, setValue }) {
+export default function ParentSelector({ value, setValue, isCreate = false }) {
 
-    const possibleParents = usePage().props.possibleParents;
+    const possibleParents = isCreate ? usePage().props.possibleParentsForNew : usePage().props.possibleParents;
     const typesOptions = useMemo(() => [{ value: undefined, label: '-' }].concat(
         possibleParents.map( p => ({
             value: p.id,

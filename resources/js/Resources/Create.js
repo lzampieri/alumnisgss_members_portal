@@ -35,7 +35,7 @@ export default function Create() {
                 <input type="text" value={data.title} onChange={(e) => setData('title', e.target.value)} />
                 <label className="error">{errors.title}</label>
                 <label>All'interno di:</label>
-                <ParentSelector value={data.parent} setValue={(newParent) => setData('parent', newParent)} />
+                <ParentSelector value={data.parent} setValue={(newParent) => setData('parent', newParent)} isCreate />
                 <label className="error">{errors.parent}</label>
                 <label>Visibile da:</label>
                 <RolesChips roles={roles} list={data.canView} updateList={(newList) => setData('canView', newList)} />
