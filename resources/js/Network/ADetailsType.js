@@ -32,7 +32,7 @@ export default class ADetailsType {
                     className="w-full"
                     value={value[0]}
                     onChange={e => updateValue([e.target.value])} />,
-            'chip': (ad,adt) => <SmartChipWithTitle
+            'chip': (ad, adt) => <SmartChipWithTitle
                 content={ad.value[0]}
                 title={adt.name}
                 key={ad.id}
@@ -47,7 +47,7 @@ export default class ADetailsType {
                     minRows={3}
                     value={value[0]}
                     onChange={e => updateValue([e.target.value])} />,
-            'chip': (ad,adt) => <SmartChipWithTitle
+            'chip': (ad, adt) => <SmartChipWithTitle
                 content={ad.value[0]}
                 title={adt.name}
                 key={ad.id}
@@ -59,15 +59,15 @@ export default class ADetailsType {
             'paramDefault': 'Valore 1;Valore 2',
             'expval': '1',
             'editor': (ad, value, updateValue) => {
-                const options = ad.param?.split(';').map(i => ({ value: i, label: i })) || [];
+                const options = [{ value: undefined, label: '-' }].concat( ad.param?.split(';').map(i => ({ value: i, label: i })) || [] );
                 return <Select
                     className="w-full"
                     classNames={{ control: () => 'selectDropdown' }}
                     value={{ value: value[0], label: value[0] }}
-                    onChange={(sel) => updateValue([sel.value])}
+                    onChange={(sel) => updateValue(sel.value ? [sel.value] : [])}
                     options={options} />
             },
-            'chip': (ad,adt) => <SmartChipWithTitle
+            'chip': (ad, adt) => <SmartChipWithTitle
                 content={ad.value[0]}
                 title={adt.name}
                 key={ad.id}
@@ -77,15 +77,15 @@ export default class ADetailsType {
             'label': 'Scelta multipla o nuovo valore',
             'expval': '1',
             'editor': (ad, value, updateValue) => {
-                const options = ad.usedValues?.map(i => ({ value: i, label: i })) || [];
+                const options = [{ value: undefined, label: '-' }].concat(ad.usedValues?.filter(i => i.length > 0).map(i => ({ value: i[0], label: i[0] })) || []);
                 return <CreatableSelect
                     className="w-full"
                     classNames={{ control: () => 'selectDropdown' }}
                     value={{ value: value[0], label: value[0] }}
-                    onChange={(sel) => updateValue([sel.value])}
+                    onChange={(sel) => updateValue(sel.value ? [sel.value] : [])}
                     options={options} />
             },
-            'chip': (ad,adt) => <SmartChipWithTitle
+            'chip': (ad, adt) => <SmartChipWithTitle
                 content={ad.value[0]}
                 title={adt.name}
                 key={ad.id}

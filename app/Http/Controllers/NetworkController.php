@@ -129,6 +129,9 @@ class NetworkController extends Controller
         ]);
 
         foreach ($validated['adts'] as $adts) {
+            if( ( count( $adts['value'] ) == 1 ) && is_array( $adts['value'][0] ) ) // Extra check to prevent array of array
+                $adts['value'] = $adts['value'][0];
+
             $alumnus->aDetails()->updateOrCreate(
                 ['a_details_type_id' => $adts['id']],
                 ['value' => $adts['value']]
