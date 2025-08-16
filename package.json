@@ -30,6 +30,7 @@
         "immutable": "^3.8.2",
         "laravel-mix": "^6.0.49",
         "lodash": "^4.17.21",
+        "mix-env-file": "^0.1.1",
         "notistack": "^3.0.1",
         "postcss": "^8.4.21",
         "react": "^18.2.0",

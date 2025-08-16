@@ -12,6 +12,7 @@ Route::prefix('/resources')->group( function () {
     // Resource management
     Route::post('/create', [ ResourceController::class, 'create' ] )->name('resources.create');
     Route::post('/updatePermissions', [ ResourceController::class, 'update_permissions' ] )->name('resources.updatePermissions');
+    Route::post('/updateTitle/{resource}', [ ResourceController::class, 'update_title' ] )->name('resources.updateTitle');
     Route::post('/updateContent', [ ResourceController::class, 'update_content' ] )->name('resources.updateContent');
     Route::post('/uploadFile', [ ResourceController::class, 'upload_file' ] )->name('resources.uploadFile');
     Route::post('/delete', [ ResourceController::class, 'delete' ] )->name('resources.delete');

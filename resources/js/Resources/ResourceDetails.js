@@ -8,6 +8,8 @@ import EmptyDialog from "../Layout/EmptyDialog";
 import RolesChips from "../Permissions/RolesChips";
 import { postRequest } from "../Utils";
 import Backdrop from "../Layout/Backdrop";
+import Select from 'react-select';
+import ParentSelector from "./ParentSelector";
 
 function EditRoles({ type, initialList, resourceId, setProcessing }) {
     if (!(type == 'view' || type == 'edit'))
@@ -34,12 +36,42 @@ function EditRoles({ type, initialList, resourceId, setProcessing }) {
     return <>
         <FontAwesomeIcon icon={solid('pencil')} className="icon-button mx-3" onClick={() => openDialog(true)} />
         <EmptyDialog open={dialog} onClose={() => openDialog(false)}>
-            <h3 className="mb-3">
+            <label className="mb-3">
                 {type == 'view' && "Visibile da:"}
                 {type == 'edit' && "Modificabile da:"}
-            </h3>
+            </label>
             <RolesChips roles={roles} list={currentList} updateList={updateList} />
-            <div className='button items-end self-end' onClick={save}>Salva</div>
+            <div className='button items-end self-end mt-2' onClick={save}>Salva</div>
+        </EmptyDialog>
+    </>
+}
+
+function EditTitle({ resource, setProcessing }) {
+
+    // const roles = usePage().props.roles;
+    const [dialog, openDialog] = useState(false);
+    const [title, setTitle] = useState(resource.title);
+    const [parent, setParent] = useState(resource.parent_id);
+
+    const save = () => {
+        openDialog(false);
+
+        postRequest(
+            'resources.updateTitle',
+            { title: title, parent: parent },
+            setProcessing,
+            { resource: resource.id }
+        )
+    }
+
+    return <>
+        <FontAwesomeIcon icon={solid('pencil')} className="icon-button mx-3" onClick={() => openDialog(true)} />
+        <EmptyDialog open={dialog} onClose={() => openDialog(false)}>
+            <label>Titolo:</label>
+            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+            <label>All'interno di:</label>
+            <ParentSelector value={parent} setValue={setParent}  />
+            <div className='button items-end self-end mt-2' onClick={save}>Salva</div>
         </EmptyDialog>
     </>
 }
@@ -53,11 +85,11 @@ function AddPermalink({ resourceId }) {
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('resources.addPermalink'), { onSuccess: openDialog( false ) });
+        post(route('resources.addPermalink'), { onSuccess: openDialog(false) });
     }
 
-    const setLink = ( new_link ) => {
-        setData('link', new_link.replace(/[^0-9a-zA-Z_-]/g,'') );   
+    const setLink = (new_link) => {
+        setData('link', new_link.replace(/[^0-9a-zA-Z_-]/g, ''));
     }
 
     return <>
@@ -69,7 +101,7 @@ function AddPermalink({ resourceId }) {
                 </h3>
                 <div className="text-error text-sm">Attenzione: l'aggiunta di permalink è permanente. Una volta aggiunto, un permalink non potrà essere rimosso o modificato.</div>
                 <input className="w-full my-2" type="text" maxLength={125} id="link" name="link" value={data.link} onChange={(e) => setLink(e.target.value)} />
-                <label className="error">{ errors.link }</label>
+                <label className="error">{errors.link}</label>
                 <div className='button self-end' onClick={submit}>Salva</div>
             </form>
         </EmptyDialog>
@@ -133,12 +165,12 @@ function Delete({ resource, setProcessing }) {
 export default function ResourceDetails({ resource }) {
     const [processing, setProcessing] = useState(false);
 
-    const canView = resource.dynamic_permissions.filter(dp => dp.type == 'view').map(dp => dp.role)
-    const canEdit = resource.dynamic_permissions.filter(dp => dp.type == 'edit').map(dp => dp.role)
+    const canView = resource.dynamic_permissions.filter(dp => dp.role != null).filter(dp => dp.type == 'view').map(dp => dp.role)
+    const canEdit = resource.dynamic_permissions.filter(dp => dp.role != null).filter(dp => dp.type == 'edit').map(dp => dp.role)
     const hasPermalinks = resource?.permalinks?.length
 
     return <div className="flex flex-col w-full items-start">
-        <h3>{resource.title}</h3>
+        <h3>{resource.title} <span className="text-sm">{resource.canEdit && <EditTitle resource={resource} setProcessing={setProcessing} />}</span></h3>
         <div className="text-sm text-gray-400">
             Visibile da {canView.map(r => r.common_name).join(", ")}
             {resource.canEdit && <EditRoles type="view" initialList={canView.map(r => r.id)} resourceId={resource.id} setProcessing={setProcessing} />}
@@ -149,12 +181,15 @@ export default function ResourceDetails({ resource }) {
         </div>
         <div className="text-sm text-gray-400">
             {hasPermalinks ? <>
-                Permalinks: {resource.permalinks.map(i => <Link href={route('permalink', {'permalink': i.id})} key={i.id}>{i.id}</Link>).reduce((prev,curr) => [prev, ', ',curr])}
+                Permalinks: {resource.permalinks.map(i => <Link href={route('permalink', { 'permalink': i.id })} key={i.id}>{i.id}</Link>).reduce((prev, curr) => [prev, ', ', curr])}
             </> : <>
-                { resource.canEdit && "Nessun permalink assegnato" }
+                {resource.canEdit && "Nessun permalink assegnato"}
             </>}
             {resource.canEdit && <AddPermalink resourceId={resource.id} setProcessing={setProcessing} />}
         </div>
+        { resource.ancestors?.length > 0 && <div className="text-sm text-gray-400">
+            All'interno di { resource.ancestors.slice().reverse().map((r) => <Link href={route('resources', { 'resource': r.id })} key={r.id}>{r.title}</Link>).reduce((prev, curr) => [prev, ' > ', curr]) }
+        </div>}
         <Content resource={resource} setProcessing={setProcessing} />
         <Backdrop open={processing} />
     </div>

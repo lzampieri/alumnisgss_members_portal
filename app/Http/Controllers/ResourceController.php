@@ -19,14 +19,25 @@ class ResourceController extends Controller
 
         $params = [];
 
-        $params['resources'] = Resource::with('permalinks')->get()->filter->canView;
-        $params['hidden'] = Resource::count() - $params['resources']->count();
+        // The shown resources are the ones at the same level
+        if ( is_null($resource) || $resource->isRoot ) {
+            $prequery = Resource::isRoot();
+        } else {
+            $prequery = $resource->siblingsAndSelf();
+        }
+
+        $params['resources'] = $prequery->with(['permalinks'])->withCount(['children'])->get()->filter->canView;
 
         if ($resource) {
             $this->authorize('view', $resource);
 
-            $params['resource'] = $resource->append(['canView', 'canEdit'])
+            $params['resource'] = $resource->load(['ancestors','parent'])->append(['canView', 'canEdit', 'visibleChildren'])
                 ->load(['dynamicPermissions', 'dynamicPermissions.role', 'files', 'permalinks']);
+
+            $params['resource']->makeHidden('children');
+            if( !$params['resource']->parent->canView ) {
+                $params['resource']->makeHidden('parent');
+            }
         }
 
         $params['roles'] = Role::where('name', '!=', 'webmaster')->orderBy('id')->get();
@@ -34,7 +45,18 @@ class ResourceController extends Controller
 
         $params['allowedFormats'] = File::ALLOWED_FORMATS;
 
+        $params['possibleParents'] = $this->getPossibleParentsList($resource);
+
         return Inertia::render('Resources/Main', $params);
+    }
+
+    public function getPossibleParentsList(Resource $resource = null) {
+        $resources = Resource::tree()->depthFirst()->get(['id','title','depth','path']);
+        $resources = $resources->filter(function ($res) use ($resource) {
+            return is_null($resource) || !in_array( $resource->id, explode('.', $res->path) );
+        })->filter->canView;
+
+        return array_values($resources->toArray());
     }
 
 
@@ -107,6 +129,25 @@ class ResourceController extends Controller
         }
 
         return redirect()->back()->with(['notistack' => ['success', 'Permessi aggiornati']]);
+    }
+
+    public function update_title(Resource $resource, Request $request)
+    {
+        $this->authorize('edit', $resource);
+
+        $possibleParents = implode(',', array_map(function ($res) { return $res['id']; }, $this->getPossibleParentsList($resource) ) );
+        Log::debug($possibleParents);
+
+        $validated = $request->validate([
+            'title' => 'required|min:3',
+            'parent' => 'in:' . $possibleParents
+        ]);
+
+        $resource->title = $validated['title'];
+        $resource->parent_id = $validated['parent'];
+        $resource->save();
+
+        return redirect()->back()->with(['notistack' => ['success', 'Risorsa aggiornata']]);
     }
 
     public function update_content(Request $request)

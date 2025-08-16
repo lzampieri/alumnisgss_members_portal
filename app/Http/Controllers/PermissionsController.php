@@ -28,7 +28,7 @@ class PermissionsController extends Controller
 
         $this->authorize('permissions-view');
         $roles = Role::with('permissions')->get();
-        $perms = Permission::all()->pluck('name');
+        $perms = Permission::orderBy('name')->get()->pluck('name');
 
         foreach ($roles as &$role) {
             $role->permissions_names = $role->permissions->pluck('name');
@@ -115,6 +115,8 @@ class PermissionsController extends Controller
             'documents-edit',
             // Resources
             'resources-create',
+            'resources-view-all',
+            'resources-edit-all',
             // Clockings
             'clockin',
             'clockin-view-all',

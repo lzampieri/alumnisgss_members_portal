@@ -55,7 +55,7 @@ class DynamicPermission extends Model
             $id = Auth::user()->identity;
         }
 
-        if ($id->hasRole(Role::findByName('webmaster')))
+        if( $id->hasPermissionTo('resources-view-all') )
             return true;
 
         return $permissable
@@ -82,7 +82,7 @@ class DynamicPermission extends Model
             $id = Auth::user()->identity;
         }
 
-        if ($id->hasRole(Role::findByName('webmaster')))
+        if( $id->hasPermissionTo('resources-edit-all') )
             return true;
 
         return $permissable

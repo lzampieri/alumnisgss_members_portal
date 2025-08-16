@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Resource extends Model
 {
+    use \Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
+
     use SoftDeletes;
     use EditsAreLogged, SoftEditsAreLogged;
 
@@ -16,24 +18,38 @@ class Resource extends Model
         'title',
         'content'
     ];
-    
-    public function dynamicPermissions() {
-        return $this->morphMany( DynamicPermission::class, 'permissable' );
+
+    public function dynamicPermissions()
+    {
+        return $this->morphMany(DynamicPermission::class, 'permissable');
     }
-    
-    public function files() {
-        return $this->morphMany( File::class, 'parent' );
+
+    public function files()
+    {
+        return $this->morphMany(File::class, 'parent');
     }
-    
-    public function getCanViewAttribute() {
+
+    public function getCanViewAttribute()
+    {
         return DynamicPermission::UserCanViewPermissable($this) || DynamicPermission::UserCanEditPermissable($this);
     }
-    public function getCanEditAttribute() {
+    public function getCanEditAttribute()
+    {
         return DynamicPermission::UserCanEditPermissable($this);
     }
 
-    public function permalinks() {
-        return $this->morphMany( Permalink::class, 'linkable' );
+    public function permalinks()
+    {
+        return $this->morphMany(Permalink::class, 'linkable');
     }
 
+    public function childrenCount()
+    {
+        return $this->children()->count();
+    }
+
+    public function getVisibleChildrenAttribute()
+    {
+        return $this->children->filter->canView;
+    }
 }
