@@ -38,7 +38,6 @@ export default class File {
     }
 
     static mainElementReadOnly = ({item}) => {
-        console
         return <a
             className="w-full div-highlighted flex flex-row items-center gap-4 my-2 p-4 no-underline"
             href={ item.fileHandle && route('resources.file', { 'handle': item.fileHandle } ) }>

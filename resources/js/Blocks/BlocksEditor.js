@@ -50,9 +50,9 @@ export default function BlocksEditor({ initialContent, saveCallback }) {
     return <>
         <div className='button items-end self-end' onClick={save}>Salva</div>
         <div className="w-full border rounded m-2 p-2">
-            <DraggingManagement list={list} updateOrder={updateOrder} renderItem={(item, index) =>
+            <DraggingManagement list={list} updateOrder={updateOrder} renderItem={(item, index, dndContextId) =>
                 <BlockEnvironment index={index} addBlockAt={addBlockAt} updateOrder={updateOrder} deleteItem={deleteItem}>
-                    {BlockParser.render(item, (key, value) => setData(index, key, value), true)}
+                    {BlockParser.render(item, (key, value) => setData(index, key, value), true, dndContextId)}
                 </BlockEnvironment>
             } />
             <div className="w-full flex flex-col items-end mt-2">

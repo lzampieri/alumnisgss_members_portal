@@ -42,7 +42,7 @@ export default function BlockEnvironment({ children, index, addBlockAt, updateOr
                 <FontAwesomeIcon icon={solid('chevron-down')} className="!pr-0" />
             </div>
         </div>
-        <div className="grow">{children}</div>
+        <div className="grow min-w-0">{children}</div>
         <div className="self-end w-6">
             <AddBlock addBlock={(props) => addBlockAt(props, index + 1)} />
         </div>

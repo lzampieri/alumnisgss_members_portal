@@ -48,6 +48,7 @@ class ResourceController extends Controller
         $params['canCreate'] = Auth::check() && Auth::user()->can('create', Resource::class);
 
         $params['allowedFormats'] = File::ALLOWED_FORMATS;
+        $params['allowedImagesFormats'] = File::ALLOWED_IMAGES_FORMATS;
 
         $params['possibleParents'] = $this->getPossibleParentsList($resource);
         $params['possibleParentsForNew'] = $this->getPossibleParentsList();
@@ -205,6 +206,48 @@ class ResourceController extends Controller
         $validated['file']->storeAs('files', $file->handle);
 
         return redirect()->back()->with(['notistack' => ['success', 'File caricato'], 'inertiaFlash' => ['selectedFileHandle' => $file->handle, 'selectedFileExt' => $extension]]);
+    }
+
+    public function retrive_image($handle = null)
+    {
+        $fallback = storage_path() . '/app/utils/no-image.jpg';
+        $image = File::where('handle', $handle)->first();
+        
+        // Check that the image exists
+        if( !$image )
+            return response()->file( $fallback );
+        
+        // Check that the image can be seen by the current user
+        if( !Auth::user()->can('view', $image) )
+            return response()->file( $fallback );
+
+        return response()->file( $image->path() );
+    }
+
+    public function upload_image(Request $request)
+    {
+        // No authorization: visible by anyone
+        
+        $validated = $request->validate([
+            'resourceId' => 'required|integer|exists:resources,id',
+            'file' => 'required|mimes:' . implode(",", File::ALLOWED_IMAGES_FORMATS),
+        ]);
+        $res = Resource::find($validated['resourceId']);
+
+        // Validate file extension
+        $filename = $validated['file']->getClientOriginalName();
+        $extension = pathinfo($filename)['extension'];
+        if (!in_array($extension, File::ALLOWED_IMAGES_FORMATS))
+            return back()->withErrors(['file' => 'Estensione non riconosciuta'])->withInput();
+
+        // Upload file
+        $file = File::create();
+        $file->handle =  'img' . $file->id . '.' . $extension;
+        $file->parent()->associate($res)->save();
+        $file->save();
+        $validated['file']->storeAs('files', $file->handle);
+
+        return redirect()->back()->with(['notistack' => ['success', 'File caricato'], 'inertiaFlash' => ['selectedImageHandle' => $file->handle]]);
     }
 
     public function delete(Request $request)

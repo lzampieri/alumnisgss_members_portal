@@ -14,7 +14,7 @@ export default class Title {
     static mainElementEditable = ({ item, setItemValue }) => {
         return <input
             type="text"
-            className="w-full text-2xl"
+            className="w-full text-2xl mt-4"
             value={item.content}
             onChange={(e)=>setItemValue('content',e.target.value)}
             placeholder="Titolo"
@@ -22,7 +22,7 @@ export default class Title {
     }
 
     static mainElementReadOnly = ({ item }) => {
-        return <h3>
+        return <h3 className="mt-4">
             {item.content}
         </h3>
     }

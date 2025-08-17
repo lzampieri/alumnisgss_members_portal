@@ -61,7 +61,7 @@ export default function FileUploadModal({ fileHandle, setFileHandle, setFileExt 
                 <label className="error">{errors.file}</label>
                 <small>Formati accettati: {allowed_formats.join(", ")}</small>
             </div>
-            {files?.length && <i>oppure seleziona un file caricato in precendenza:</i>}
+            {files?.length > 0 && <i>oppure seleziona un file caricato in precendenza:</i>}
             {
                 files?.map(f =>
                     <div className="button" key={f.id} onClick={() => selectFile(f.id)}>

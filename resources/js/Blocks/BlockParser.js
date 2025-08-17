@@ -3,12 +3,12 @@ import RegisteredTools from "./RegisteredTools";
 
 export default class BlockParser {
 
-    static render(item, setItemValue, isEditable) {
+    static render(item, setItemValue, isEditable, dndContextId = null ) {
 
         if (RegisteredTools[item.type] !== undefined) {
 
             if (isEditable)
-                return createElement(RegisteredTools[item.type].mainElementEditable, { item: item, setItemValue: setItemValue });
+                return createElement(RegisteredTools[item.type].mainElementEditable, { item: item, setItemValue: setItemValue, dndContextId: dndContextId });
 
             return createElement(RegisteredTools[item.type].mainElementReadOnly, { item: item, setItemValue: setItemValue });
         }

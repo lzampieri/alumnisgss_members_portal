@@ -19,7 +19,7 @@ export default function DraggingManagement({ list, updateOrder, renderItem }) {
                         <Draggable key={item.id} draggableId={"" + item.id} index={index}>
                             {(provided) =>
                                 <li ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} className="w-full">
-                                    {renderItem(item, index)}
+                                    {renderItem(item, index, provided.dragHandleProps?.["data-rbd-drag-handle-context-id"])}
                                 </li>
                             }
                         </Draggable>
