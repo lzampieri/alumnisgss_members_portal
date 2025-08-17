@@ -39,7 +39,7 @@ export default class Image {
 
     static mainElementReadOnly = ({ item }) => {
         return <div className="w-full flex flex-row justify-center p-4">
-            <img src={route('resources.image', { 'handle': item.imageHandle })} loading="lazy"
+            <img src={route('resources.image', { 'handle': item.imageHandle }) + window.location.search} loading="lazy"
                 className={this.sizes.find(s => s.value == item.imageSize)?.class || "w-[50%]"}
             />
         </div>

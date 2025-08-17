@@ -6,6 +6,7 @@ use App\Models\DynamicPermission;
 use App\Models\File;
 use App\Models\Permalink;
 use App\Models\Resource;
+use App\Policies\FilePolicy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -28,7 +29,7 @@ class ResourceController extends Controller
             $prequery = $resource->siblingsAndSelf();
         }
 
-        $params['resources'] = $prequery->with(['permalinks'])->withCount(['children'])->get()->filter->canView;
+        $params['resources'] = array_values( $prequery->with(['permalinks'])->withCount(['children'])->get()->filter->canView->toArray() );
 
         if ($resource) {
             $this->authorize('view', $resource);
@@ -218,7 +219,7 @@ class ResourceController extends Controller
             return response()->file( $fallback );
         
         // Check that the image can be seen by the current user
-        if( !Auth::user()->can('view', $image) )
+        if( !(new FilePolicy)->view(Auth::user(), $image) ) // Cannot use Auth::user->can since user can be null!
             return response()->file( $fallback );
 
         return response()->file( $image->path() );

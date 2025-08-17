@@ -3,6 +3,7 @@ import EmptyDialog from "../Layout/EmptyDialog";
 import { useState } from "react";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { postRequest } from "../Utils";
+import computeResourceLink from "./computeResourceLink";
 
 
 export default function MagicLink({ resource, setProcessing }) {
@@ -42,8 +43,8 @@ export default function MagicLink({ resource, setProcessing }) {
             {resource.access_token && <>
                 <span>Per questa risorsa è già attivo un magic link.</span>
                 <div className="w-full flex flex-row items-center">
-                    <input type="text" className="w-full flex-grow" value={route('resources', { resource: resource.id, tk: resource.access_token })} readOnly />
-                    <div className="button aspect-square flex flex-col justify-center" onClick={() => navigator.clipboard.writeText(route('resources', { resource: resource.id, tk: resource.access_token }))}><FontAwesomeIcon icon={solid('copy')} /></div>
+                    <input type="text" className="w-full flex-grow" value={computeResourceLink(resource, resource.access_token)} readOnly />
+                    <div className="button aspect-square flex flex-col justify-center" onClick={() => navigator.clipboard.writeText(computeResourceLink(resource, resource.access_token))}><FontAwesomeIcon icon={solid('copy')} /></div>
 
                 </div>
                 <div className="button self-center mt-2" onClick={() => setDeleteOpen(true)}>Elimina MagicLink</div>

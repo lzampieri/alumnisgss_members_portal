@@ -22,14 +22,14 @@ class FilePolicy
     public function view(?User $user, File $file)
     {
         $parent_type = $file->parent_type;
-        
+
         // Resource
         if ($parent_type == Resource::class) {
             $resource = $file->parent;
             /** @var Resource $resource */
-            
+
             // Assert that the resource can be seen
-            if (!$user->can('view', $resource) )
+            if (!(new ResourcePolicy())->view($user, $resource)) // Cannot use $user->can since $user can be null!
                 return false;
 
             // Assert that the file is actually present in the resource
@@ -44,7 +44,7 @@ class FilePolicy
                     if ($block['imageHandle'] == $file->handle)
                         return true;
                 }
-                if( $user->can('edit', $resource) ) // if the user can edit the resource
+                if ($user && $user->can('edit', $resource)) // if the user can edit the resource, but must check $user not to be null!
                     return true;
             }
         }
