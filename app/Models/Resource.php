@@ -61,4 +61,14 @@ class Resource extends Model
     {
         return $this->children()->with(['permalinks'])->withCount(['children'])->get()->filter->canView;
     }
+    public function getVisibleAncestorsAttribute()
+    {
+        return $this->ancestors()->with(['permalinks'])->withCount(['children'])->get()->filter->canView;
+    }
+    public function getPluckedParentAttribute()
+    {
+        $parent = $this->parent()->with(['permalinks'])->withCount(['children'])->first();
+        if( !$parent || !$parent->canView ) return null;
+        return $parent;
+    }
 }

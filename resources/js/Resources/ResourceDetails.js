@@ -190,8 +190,8 @@ export default function ResourceDetails({ resource }) {
             {resource.canEdit && <AddPermalink resourceId={resource.id} setProcessing={setProcessing} />}
         </div>
         { resource.canEdit && <MagicLink resource={resource} setProcessing={setProcessing} /> }
-        { resource.ancestors?.length > 0 && <div className="text-sm text-gray-400">
-            All'interno di { resource.ancestors.slice().reverse().map((r) => <Link href={computeResourceLink(r)} key={r.id}>{r.title}</Link>).reduce((prev, curr) => [prev, ' > ', curr]) }
+        { resource.visibleAncestors?.length > 0 && <div className="text-sm text-gray-400">
+            All'interno di { resource.visibleAncestors.slice().reverse().map((r) => <Link href={computeResourceLink(r)} key={r.id}>{r.title}</Link>).reduce((prev, curr) => [prev, ' > ', curr]) }
         </div>}
         <Content resource={resource} setProcessing={setProcessing} />
         <Backdrop open={processing} />

@@ -23,9 +23,17 @@ class ResourceController extends Controller
         $params = [];
 
         // The shown resources are the ones at the same level
-        if ( is_null($resource) || $resource->isRoot ) {
+        $token = request()->get('tk');
+        if ( $token && $resource && $resource->access_token == $token ) {
+            // I am accessing with a magic link relative to this specific resource (and its sons):
+            // Only show resources at the same level
+            $prequery = Resource::where('id', $resource->id);
+        }
+        else if ( is_null($resource) || $resource->isRoot ) {
+            // I am accessing the root: show all roots
             $prequery = Resource::isRoot();
         } else {
+            // I am accessing a leaf or a branch: show all resources at the same level
             $prequery = $resource->siblingsAndSelf();
         }
 
@@ -34,15 +42,10 @@ class ResourceController extends Controller
         if ($resource) {
             $this->authorize('view', $resource);
 
-            $params['resource'] = $resource->load(['ancestors','parent'])->append(['canView', 'canEdit', 'visibleChildren'])
+            $params['resource'] = $resource->append(['canView', 'canEdit', 'visibleChildren', 'visibleAncestors', 'pluckedParent'])
                 ->load(['dynamicPermissions', 'dynamicPermissions.role', 'files', 'permalinks']);
 
             $params['resource']->makeHidden('children');
-
-            if( $params['resource']->parent ) {
-                if( !$params['resource']->parent->canView ) $params['resource']->makeHidden('parent');
-                else $params['resource']->parent->load('permalinks');
-            }
         }
 
         $params['roles'] = Role::where('name', '!=', 'webmaster')->orderBy('id')->get();
@@ -153,11 +156,14 @@ class ResourceController extends Controller
 
         $validated = $request->validate([
             'title' => 'required|min:3',
-            'parent' => 'in:' . $possibleParents
+            'parent' => 'nullable|in:' . $possibleParents
         ]);
 
         $resource->title = $validated['title'];
-        $resource->parent_id = $validated['parent'];
+        if( array_key_exists('parent', $validated) )
+            $resource->parent_id = $validated['parent'];
+        else
+            $resource->parent_id = null;
         $resource->save();
 
         return redirect()->back()->with(['notistack' => ['success', 'Risorsa aggiornata']]);
