@@ -59,9 +59,27 @@ class Resource extends Model
         return $this->children()->count();
     }
 
+    public function isChildOfArchived()
+    {
+        return $this->ancestors()->where('archived', true)->exists();
+    }
+
+    public function getIsChildOfArchivedAttribute()
+    {
+        return $this->isChildOfArchived();
+    }
+
     public function getVisibleChildrenAttribute()
     {
-        return $this->children()->with(['permalinks'])->withCount(['children'])->get()->filter->canView->map->only(['id','title','archived','permalinks','children_count']);
+        if( $this->archived || $this->isChildOfArchived() ) {
+            // It is already child of an archived resource, and therefore archive navigation is active: should show also archived resources
+            $children = $this->children();
+        } else {
+            // Outside of archive, non archived resources should be hidden
+            $children = $this->children()->where('archived', false);
+        }
+            
+        return $children->with(['permalinks'])->withCount(['children'])->get()->filter->canView->map->only(['id','title','archived','permalinks','children_count']);
     }
     public function getVisibleAncestorsAttribute()
     {

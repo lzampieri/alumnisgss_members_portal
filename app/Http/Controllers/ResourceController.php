@@ -22,6 +22,35 @@ class ResourceController extends Controller
 
         $params = [];
 
+        if ($resource) {
+            $this->authorize('view', $resource);
+
+            $params['resource'] = $resource->append(['canView', 'canEdit', 'visibleChildren', 'visibleAncestors', 'pluckedParent'])
+                ->load(['dynamicPermissions', 'dynamicPermissions.role', 'files', 'permalinks']);
+
+            $params['resource']->makeHidden('children');
+        }
+
+        $params['possibleParents'] = $this->getPossibleParentsList($resource);
+
+        return Inertia::render('Resources/Main', $params + $this->getParamsForMenu($resource));
+    }
+
+    public function archive_list()
+    {
+        $this->authorize('see_archive', Resource::class);
+
+        $params = [];
+        
+        $resources = Resource::tree()->depthFirst()->with(['permalinks'])->withCount(['children'])->get();
+        $params['list'] = $resources->filter->canView->map->only(['id','title','path','depth','archived','permalinks','children_count']);
+
+        return Inertia::render('Resources/Archive', $params + $this->getParamsForMenu());
+    }
+
+    protected function getParamsForMenu(Resource $resource = null) {
+        $params = [];
+
         // The shown resources are the ones at the same level
         $token = request()->get('tk');
         if ( $token && $resource && $resource->access_token == $token ) {
@@ -37,34 +66,31 @@ class ResourceController extends Controller
             $prequery = $resource->siblingsAndSelf();
         }
 
+        // If not already in the archive, not show archive.
+        if( is_null($resource) || ( !$resource->archived && !$resource->isChildOfArchived() ) ) $prequery = $prequery->where('archived', false);
+
         $params['resources'] = array_values( $prequery->with(['permalinks'])->withCount(['children'])->get()->filter->canView->toArray() );
 
-        if ($resource) {
-            $this->authorize('view', $resource);
-
-            $params['resource'] = $resource->append(['canView', 'canEdit', 'visibleChildren', 'visibleAncestors', 'pluckedParent'])
-                ->load(['dynamicPermissions', 'dynamicPermissions.role', 'files', 'permalinks']);
-
-            $params['resource']->makeHidden('children');
-        }
 
         $params['roles'] = Role::where('name', '!=', 'webmaster')->orderBy('id')->get();
         $params['canCreate'] = Auth::check() && Auth::user()->can('create', Resource::class);
+        $params['canSeeArchive'] = Auth::check() && Auth::user()->can('see_archive', Resource::class);
 
         $params['allowedFormats'] = File::ALLOWED_FORMATS;
         $params['allowedImagesFormats'] = File::ALLOWED_IMAGES_FORMATS;
 
-        $params['possibleParents'] = $this->getPossibleParentsList($resource);
         $params['possibleParentsForNew'] = $this->getPossibleParentsList();
 
-        return Inertia::render('Resources/Main', $params);
+        return $params;
     }
 
     public function getPossibleParentsList(Resource $resource = null) {
-        $resources = Resource::tree()->depthFirst()->get(['id','title','depth','path']);
+        $resources = Resource::tree()->depthFirst()->get();
         $resources = $resources->filter(function ($res) use ($resource) {
             return is_null($resource) || !in_array( $resource->id, explode('.', $res->path) );
-        })->filter->canView;
+        })->filter(function ($res) {
+            return !$res->archived && !$res->isChildOfArchived();
+        })->filter->canView->map->only(['id','title','path','depth']);
 
         return array_values($resources->toArray());
     }
@@ -255,6 +281,23 @@ class ResourceController extends Controller
         $validated['file']->storeAs('files', $file->handle);
 
         return redirect()->back()->with(['notistack' => ['success', 'File caricato'], 'inertiaFlash' => ['selectedImageHandle' => $file->handle]]);
+    }
+
+    public function archive(Request $request)
+    {
+        $validated = $request->validate([
+            'resourceId' => 'required|integer|exists:resources,id',
+            'newState' => 'required|boolean'
+        ]);
+
+        $res = Resource::find($validated['resourceId']);
+
+        $this->authorize('edit', $res);
+
+        $res->archived = $validated['newState'];
+        $res->save();
+
+        return redirect()->route('resources')->with(['notistack' => ['success', $validated['newState'] ? 'Archiviata' : 'Ripristinata']]);
     }
 
     public function delete(Request $request)

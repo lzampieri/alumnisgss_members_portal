@@ -125,13 +125,60 @@ function Content({ resource, setProcessing }) {
     }
 
     return <>
-        {resource.canEdit && !isEditing && <div className='button items-end self-end' onClick={() => setIsEditing(true)}><FontAwesomeIcon icon={solid('pencil')} className="" />Modifica</div>}
+        {resource.canEdit && !isEditing && 
+            <div className="flex flex-col md:flex-row w-full justify-end items-end">
+                <div className='button' onClick={() => setIsEditing(true)}><FontAwesomeIcon icon={solid('pencil')} className="" />Modifica</div>
+                <Archive resource={resource} setProcessing={setProcessing} />
+                <Delete resource={resource} setProcessing={setProcessing} />
+            </div>}
         {isEditing ?
             <BlocksEditor initialContent={JSON.parse(resource.content)} saveCallback={save} /> :
             <BlocksViewer content={JSON.parse(resource.content)} />}
-        {resource.canEdit && <Delete resource={resource} setProcessing={setProcessing} />}
     </>
 
+}
+
+function Archive({ resource, setProcessing }) {
+    const [archiving, setIsArchiving] = useState(false);
+
+    const archivingPost = (newState) => {
+        setIsArchiving(false);
+
+        postRequest(
+            'resources.archive',
+            { resourceId: resource.id, newState: newState },
+            setProcessing,
+            {},
+            false
+        )
+    }
+
+    return <>
+        <div className='button ml-2' onClick={() => setIsArchiving(true)}><FontAwesomeIcon icon={resource.archived ? solid('box-open') : solid('box-archive')} />{ resource.archived ? "Ripristina" : "Archivia"}</div>
+        <EmptyDialog open={archiving && resource.archived} onClose={() => setIsArchiving(false)}>
+            <h3 className="mb-3">
+                Ripristino
+            </h3>
+            <span>La risorsa verrà ripristinata, e tornerà ad essere visibile nel menù. I link diretti alla risorsa continueranno a funzionare.</span>
+            { resource.visibleAncestors.map( (va) => va.archived && <div className="w-full bg-error bg-opacity-10">
+                Attenzione: la risorsa non sarà comunque visibile, perché è all'interno della risorsa archivata <i>{va.title}</i>. Per rendere questa risorsa visibile, alternativamente ripristinare anche la risorsa genitore o modificare la gerarchia.
+            </div>)}
+            <div className="w-full flex flex-row justify-end my-2 gap-2">
+                <div className='button items-end self-end' onClick={() => setIsArchiving(false)}>Annulla</div>
+                <div className='button items-end self-end' onClick={() => archivingPost(false)}>Conferma</div>
+            </div>
+        </EmptyDialog>
+        <EmptyDialog open={archiving && !resource.archived} onClose={() => setIsArchiving(false)}>
+            <h3 className="mb-3">
+                Archiviazione
+            </h3>
+            <span>Una volta archiviata, la risorsa non sarà più visibile nel menù laterale, ma rimarrà nella sezione "archivio". I link diretti alla risorsa continueranno a funzionare.</span>
+            <div className="w-full flex flex-row justify-end my-2 gap-2">
+                <div className='button items-end self-end' onClick={() => setIsArchiving(false)}>Annulla</div>
+                <div className='button items-end self-end' onClick={() => archivingPost(true)}>Conferma</div>
+            </div>
+        </EmptyDialog>
+    </>
 }
 
 function Delete({ resource, setProcessing }) {
@@ -150,7 +197,7 @@ function Delete({ resource, setProcessing }) {
     }
 
     return <>
-        <div className='button items-end self-end' onClick={() => setIsDeleting(true)}><FontAwesomeIcon icon={solid('trash')} />Elimina</div>
+        <div className='button ml-2' onClick={() => setIsDeleting(true)}><FontAwesomeIcon icon={solid('trash')} />Elimina</div>
         <EmptyDialog open={deleting} onClose={() => setIsDeleting(false)}>
             <h3 className="mb-3">
                 Attenzione!

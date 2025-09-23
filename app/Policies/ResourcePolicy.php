@@ -59,6 +59,18 @@ class ResourcePolicy
         return $user->hasPermissionTo('resources-create');
     }
 
+
+    /**
+     * Determine whether the user can see archived models.
+     *
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function see_archive(User $user)
+    {
+        return $user->hasPermissionTo('resources-see-archive');
+    }
+
     /**
      * Determine whether the user can update the model.
      *

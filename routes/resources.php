@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('/resources')->group( function () {
     Route::get('/{resource?}', [ ResourceController::class, 'list' ] )->where('resource', '[0-9]+')->name('resources');
     Route::get('/f/{handle}', [ FileController::class, 'fromHandle' ] )->name('resources.file');
+    Route::get('/archive', [ ResourceController::class, 'archive_list' ] )->name('resources.archive');
    
     // Resource management
     Route::post('/create', [ ResourceController::class, 'create' ] )->name('resources.create');
@@ -17,6 +18,7 @@ Route::prefix('/resources')->group( function () {
     Route::post('/uploadFile', [ ResourceController::class, 'upload_file' ] )->name('resources.uploadFile');
     Route::get('/image/{handle?}', [ ResourceController::class, 'retrive_image' ] )->name('resources.image');
     Route::post('/uploadImage', [ ResourceController::class, 'upload_image' ] )->name('resources.uploadImage');
+    Route::post('/archive', [ ResourceController::class, 'archive' ] ); // ->name('resources.archive')
     Route::post('/delete', [ ResourceController::class, 'delete' ] )->name('resources.delete');
     Route::post('/addPermalink', [ ResourceController::class, 'add_permalink' ] )->name('resources.addPermalink');
     Route::post('/magicLink/{resource}', [ ResourceController::class, 'magic_link' ] )->name('resources.magicLink');

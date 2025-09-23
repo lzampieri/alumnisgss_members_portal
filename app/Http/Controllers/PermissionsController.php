@@ -115,6 +115,7 @@ class PermissionsController extends Controller
             'documents-edit',
             // Resources
             'resources-create',
+            'resources-see-archive',
             'resources-view-all',
             'resources-edit-all',
             // Clockings
