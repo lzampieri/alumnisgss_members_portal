@@ -16,7 +16,9 @@ class Resource extends Model
 
     protected $fillable = [
         'title',
-        'content'
+        'content',
+        'type',
+        'archive'
     ];
 
     public function dynamicPermissions()
@@ -59,16 +61,16 @@ class Resource extends Model
 
     public function getVisibleChildrenAttribute()
     {
-        return $this->children()->with(['permalinks'])->withCount(['children'])->get()->filter->canView;
+        return $this->children()->with(['permalinks'])->withCount(['children'])->get()->filter->canView->map->only(['id','title','archived','permalinks','children_count']);
     }
     public function getVisibleAncestorsAttribute()
     {
-        return $this->ancestors()->with(['permalinks'])->withCount(['children'])->get()->filter->canView;
+        return $this->ancestors()->with(['permalinks'])->withCount(['children'])->get()->filter->canView->map->only(['id','title','archived','permalinks','children_count']);
     }
     public function getPluckedParentAttribute()
     {
         $parent = $this->parent()->with(['permalinks'])->withCount(['children'])->first();
         if( !$parent || !$parent->canView ) return null;
-        return $parent;
+        return $parent->only(['id','title','archived','permalinks','children_count']);
     }
 }
