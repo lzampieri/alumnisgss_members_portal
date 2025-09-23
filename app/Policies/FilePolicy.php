@@ -29,7 +29,7 @@ class FilePolicy
             /** @var Resource $resource */
 
             // Assert that the resource can be seen
-            if (!(new ResourcePolicy())->view($user, $resource)) // Cannot use $user->can since $user can be null!
+            if (!(new ResourcePolicy())->view($user, $resource, $file)) // Cannot use $user->can since $user can be null!
                 return false;
 
             // Assert that the file is actually present in the resource

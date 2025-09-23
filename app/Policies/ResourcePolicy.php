@@ -7,8 +7,10 @@ use App\Http\Controllers\LogController;
 use App\Http\Controllers\LogEvents;
 use App\Models\Resource;
 use App\Models\DynamicPermission;
+use App\Models\File;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ResourcePolicy
@@ -22,7 +24,7 @@ class ResourcePolicy
      * @param  \App\Models\Resource  $resource
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(?User $user, Resource $resource)
+    public function view(?User $user, Resource $resource, ?File $file = null)
     {
         if( DynamicPermission::UserCanViewPermissable($resource, $user ? $user->identity : NULL) || DynamicPermission::UserCanEditPermissable($resource, $user ? $user->identity : NULL) )
             return true;
@@ -33,7 +35,10 @@ class ResourcePolicy
             $res = $resource;
             while( $res ) {
                 if( $res->access_token == $token ) {
-                    LogController::log( LogEvents::RESOURCE_VIA_MAGICLINK, $resource, 'via token of resource:', $res->id );
+                    if( $file )
+                        LogController::log( LogEvents::FILE_VIA_MAGICLINK, $file, 'via token of resource:', $res->id );
+                    else
+                        LogController::log( LogEvents::RESOURCE_VIA_MAGICLINK, $resource, 'via token of resource:', $res->id );
                     return true;
                 }
                 $res = $res->parent;

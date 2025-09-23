@@ -40,7 +40,7 @@ export default class File {
     static mainElementReadOnly = ({item}) => {
         return <a
             className="w-full div-highlighted flex flex-row items-center gap-4 my-2 p-4 no-underline"
-            href={ item.fileHandle && route('resources.file', { 'handle': item.fileHandle } ) }>
+            href={ item.fileHandle && route('resources.file', { 'handle': item.fileHandle } ) + window.location.search }>
             <FontAwesomeIcon icon={solid('file')} className="text-6xl" />
             <div className="flex flex-col grow gap-2">
                 <div className="text-lg">{item.title}</div>

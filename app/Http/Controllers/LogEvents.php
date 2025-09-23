@@ -26,4 +26,5 @@ class LogEvents {
     const MAIL_SENT = 'mail_sent';
 
     const RESOURCE_VIA_MAGICLINK = 'resource_accessed_via_magiclink';
+    const FILE_VIA_MAGICLINK = 'file_accessed_via_magiclink';
 }

@@ -145,7 +145,7 @@ class PermissionsController extends Controller
                 Permission::findOrCreate($permission);
             } catch(\Illuminate\Database\QueryException $ex){
                 if( $ex->getCode() == 23000 ) {
-                    Log::debug("Error 2300 in adding permission " . $permission . ", ignored", $ex->getCode() );
+                    Log::debug("Error 23000 in adding permission " . $permission . ", ignored", $ex->getCode() );
                 }
                 else return redirect()->back()->with(['notistack' => ['error', "C'è stato un errore."]]);
             }
