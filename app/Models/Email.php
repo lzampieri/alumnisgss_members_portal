@@ -49,4 +49,8 @@ class Email extends Authenticatable
     public function getCanDeleteAttribute() {
         return Auth::check() && Auth::user()->can('delete', $this);
     }
+
+    public function getCanViewAttribute() {
+        return Auth::check() && Auth::user()->can('view', $this);
+    }
 }

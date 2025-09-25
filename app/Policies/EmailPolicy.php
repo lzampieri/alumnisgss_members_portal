@@ -2,7 +2,9 @@
 
 namespace App\Policies;
 
+use App\Models\Alumnus;
 use App\Models\Email;
+use App\Models\External;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User;
 
@@ -41,6 +43,32 @@ class EmailPolicy
     public function viewAny(User $user)
     {
         return $user->hasPermissionTo('emails-view-all');
+    }
+
+    /**
+     * Determine whether the user can view an email.
+     *
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function view (User $user, Email $email)
+    {
+        if( $email->identity && $email->identity->is($user->identity) )
+            return true;
+        if( $user->hasPermissionTo('emails-view-all') )
+            return true;
+        if( $email->identity ) {
+            if( $email->identity_type == External::class )
+                if( $user->hasPermissionTo('emails-view-external') )
+                    return true;
+
+            if( $email->identity_type == Alumnus::class )
+                if( in_array( $email->identity->status, Alumnus::public_status ) )
+                    if( $user->hasPermissionTo('emails-view-public-alumnus') )
+                        return true;
+        }
+
+        return false;
     }
 
     /**

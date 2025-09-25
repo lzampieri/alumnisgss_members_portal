@@ -30,7 +30,7 @@ class StampPolicy
      */
     public function view(User $user, Stamp $stamp)
     {
-        return $stamp->employee->is($user) || $user->hasPermissionTo('clockin-view-all');
+        return $stamp->employee->is($user->identity) || $user->hasPermissionTo('clockin-view-all');
     }
 
     /**

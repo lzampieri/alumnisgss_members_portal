@@ -31,7 +31,7 @@ class NewsletterPolicy
      */
     public function view(User $user, Newsletter $newsletter)
     {
-        return $newsletter->owner()->is($user) || $user->hasPermissionTo('newsletters-master');
+        return $newsletter->owner()->is($user->identity) || $user->hasPermissionTo('newsletters-master');
     }
 
     /**
@@ -54,6 +54,6 @@ class NewsletterPolicy
     public function edit(User $user, Newsletter $newsletter)
     {
         if( $newsletter->sent_at ) return false;
-        return $newsletter->owner()->is($user) || $user->hasPermissionTo('newsletters-master');
+        return $newsletter->owner()->is($user->identity) || $user->hasPermissionTo('newsletters-master');
     }
 }
