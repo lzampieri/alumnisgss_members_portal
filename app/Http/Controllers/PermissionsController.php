@@ -32,7 +32,7 @@ class PermissionsController extends Controller
 
         foreach ($roles as &$role) {
             $role->permissions_names = $role->permissions->pluck('name');
-            $role->identities = Alumnus::role($role)->get()->concat(External::role($role)->get());
+            $role->identities = Alumnus::role($role)->with('emails')->get()->concat(External::role($role)->with('emails')->get());
         }
 
         return Inertia::render('Permissions/List', ['roles' => $roles, 'perms' => $perms]);
@@ -49,16 +49,14 @@ class PermissionsController extends Controller
             'webmaster',
             'secretariat',
             'cda',
-            'member',
-            'student_member',
+            ...Alumnus::public_status,
             'everyone'
         ];
         $roles_to_assert_names = [
             'WebMaster',
             'Segreteria',
             'Consiglio di Amministrazione',
-            'Socio',
-            'Socio studente',
+            ...array_map(fn ($s) => Alumnus::AlumnusStatusLabels[$s], Alumnus::public_status),
             'Tutti'
         ];
 
@@ -85,6 +83,8 @@ class PermissionsController extends Controller
             'identity-externals-enabling',
             // Emails methods
             'emails-view-all',
+            'emails-view-external',
+            'emails-view-public-alumnus',
             'emails-add',
             'emails-edit',
             'emails-delete',
@@ -139,8 +139,8 @@ class PermissionsController extends Controller
 
         // Roles edit
         foreach (Role::all()->pluck('name') as $role) {
-            // never for members and student members and anyone
-            if ($role == 'member' || $role == 'student_member' || $role == 'everyone') continue;
+            // never for Alumnus::public_status and everyone
+            if ( in_array($role, Alumnus::public_status) || $role == 'everyone') continue;
             $permissions_to_assert[] = 'user-edit-' . $role;
         }
 

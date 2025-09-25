@@ -4,6 +4,7 @@ namespace App\Models;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\LogEvents;
 use App\Traits\EditsAreLogged;
+use Spatie\Permission\Exceptions\RoleDoesNotExist;
 use Spatie\Permission\Models\Role as SpatieRole;
 
 class Role extends SpatieRole {
@@ -20,4 +21,11 @@ class Role extends SpatieRole {
         parent::revokePermissionTo($permission);
     }
 
+    static function findByNameOrNull($name) {
+        try {
+            return self::findByName($name);
+        } catch (RoleDoesNotExist $e) {
+            return null;
+        }
+    }
 }

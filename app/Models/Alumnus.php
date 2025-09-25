@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\LogEvents;
 use App\Traits\EditsAreLogged;
-use Spatie\Permission\Models\Role;
 
 class Alumnus extends Identity
 {
@@ -97,16 +96,17 @@ class Alumnus extends Identity
 
     public function checkMemberRole($permission)
     {
-        if ($this->status == 'member' && Role::findByName('member')->hasPermissionTo($permission)) return true;
-        if ($this->status == 'student_member' && Role::findByName('student_member')->hasPermissionTo($permission)) return true;
-        return false;
+        $role = Role::findByNameOrNull($this->status);
+        if( $role )
+            return $role->hasPermissionTo($permission);
     }
 
     public function getAllRoles()
     {
         $roles = parent::getAllRoles();
-        if ($this->status == 'member') $roles->push(Role::findByName('member'));
-        if ($this->status == 'student_member') $roles->push(Role::findByName('student_member'));
+        $role = Role::findByNameOrNull($this->status);
+        if( $role )
+            $roles->push($role);
         return $roles;
     }
 

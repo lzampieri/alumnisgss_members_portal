@@ -66,7 +66,7 @@ abstract class Identity extends Model
         $editableRoles = [];
 
         foreach ($roles as $role) {
-            if ($role->name == 'member' || $role->name == 'student_member' || $role->name == 'everyone') continue;
+            if ( in_array($role->name, Alumnus::public_status) || $role->name == 'everyone') continue;
             if ($this->hasPermissionTo('user-edit-' . $role->name)) {
                 $editableRoles[] = $role;
             }
