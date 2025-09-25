@@ -126,6 +126,9 @@ class PermissionsController extends Controller
             // Helpdesk
             'helpdesk-master',
             'helpdesk-solve-plain',
+            // Newsletter
+            'newsletters-create',
+            'newsletters-master',
             // Webmaster stuff
             'logfile-view',
             'logdb-view',

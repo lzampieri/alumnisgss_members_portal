@@ -45,5 +45,7 @@ include( 'tickets.php' );
 
 include( 'contacts.php' );
 
+include( 'newsletters.php' );
+
 Route::redirect('/main','https://www.alumniscuolagalileiana.it')->name('main');
 

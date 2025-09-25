@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
 use App\Models\Email;
+use App\Models\Newsletters;
 use App\Models\Stamp;
 use App\Policies\AlumnusPolicy;
 use Illuminate\Http\Request;
@@ -68,6 +69,13 @@ class AppsController extends Controller
 
         if (Auth::user()  && Auth::user()->can('sync', Email::class) ) {
             $apps[] = 'contacts';
+        }
+
+        if (Auth::user()  && (
+            Auth::user()->can('create', Newsletter::class) ||
+            Auth::user()->identity->newsletters()->count() > 0
+        )) {
+            $apps[] = 'newsletters';
         }
 
         return Inertia::render('Home', ['apps' => $apps]);

@@ -10,6 +10,7 @@ export default [
     { id: 'reports', name: 'Report', url: route('reports'), icon: solid('file-pen') },
     { id: 'resources', name: 'Risorse', url: route('resources'), icon: solid('box-archive') },
     { id: 'clockings', name: 'Timbrature', url: route('clockings'), icon: solid('business-time') },
+    { id: 'newsletters', name: 'Newsletters', url: route('newsletters'), icon: solid('envelope-open-text') },
     { id: 'accesses', name: 'Accessi', url: route('accesses'), icon: solid('id-badge') },
     { id: 'permissions', name: 'Ruoli e permessi', url: route('permissions'), icon: solid('id-card') },
     { id: 'contacts', name: 'Sincronizza rubrica', url: route('contacts'), icon: solid('address-book') },
