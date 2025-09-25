@@ -55,6 +55,23 @@ class EmailPolicy
     }
 
     /**
+     * Determine whether the user can edit an instance of the model.
+     *
+     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function edit(User $user, Email $email)
+    {
+        if ($user->hasPermissionTo('emails-edit'))
+            return true;
+
+        if ($email->identity && $email->identity->is($user->identity))
+            return true;
+
+        return false;
+    }
+
+    /**
      * Determine whether the user can delete the models.
      *
      * @param  \Illuminate\Support\Facades\Auth\User  $user

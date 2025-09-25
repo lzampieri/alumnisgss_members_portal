@@ -25,9 +25,11 @@ function whichType(item) {
     return TYPE_EXTERNAL;
 }
 
-function EmailDiv({ e, deleteAddress }) {
+function EmailDiv({ e, isFirst, setPrimary, deleteAddress }) {
     return <div>
         <FontAwesomeIcon icon={solid('at')} className="mr-2" />
+        {isFirst ? <FontAwesomeIcon icon={solid('star')} className="mr-2 text-[#f5b700]" />
+            : <FontAwesomeIcon icon={solid('star')} className="mr-2 text-gray-200 hover:text-[#f5b700] cursor-pointer" onClick={() => setPrimary(e.id)} />}
         {e.address}
         {e.last_login && <span className="text-gray-400 ml-2">Last seen {new Date(e.last_login).toLocaleDateString('it-IT', { year: 'numeric', month: '2-digit', day: '2-digit' })}</span>}
         {e.can_delete && <FontAwesomeIcon icon={solid('trash')} className="icon-button ml-2" onClick={() => deleteAddress(e)} />}
@@ -73,7 +75,7 @@ function IdentityRoles({ identity, removeRole, addRole }) {
     </div>
 }
 
-function IdentityContent({ data, deleteAddress, removeRole, addRole, setEnabled }) {
+function IdentityContent({ data, setPrimary, deleteAddress, removeRole, addRole, setEnabled }) {
     if (whichType(data) == TYPE_REQUEST) {
         return <div className="w-full border-2 border-black rounded border-dashed flex flex-row p-2 min-h-[3rem] justify-center gap-2 leading-normal	">
             <FontAwesomeIcon icon={solid('person-circle-question')} className="text-4xl" />
@@ -102,17 +104,17 @@ function IdentityContent({ data, deleteAddress, removeRole, addRole, setEnabled 
         "w-full border-2 rounded  flex flex-row p-2 min-h-[3rem] justify-center gap-2 leading-normal	" +
         (whichType(data) == TYPE_ALUMNUS ? ' border-primary-main' : ' border-[#00FF00]')}  >
         <div className="flex flex-col">
-            <FontAwesomeIcon icon={whichType(data) == TYPE_ALUMNUS ? solid('person') : solid('person-digging')} className="text-4xl" style={{ color: pastelColors[ data.enabled ? 4 : 2 ]}} />
+            <FontAwesomeIcon icon={whichType(data) == TYPE_ALUMNUS ? solid('person') : solid('person-digging')} className="text-4xl" style={{ color: pastelColors[data.enabled ? 4 : 2] }} />
             <ReactSwitch
-                    height={14} width={28} className="m-2"
-                    checked={data.enabled} onChange={(newState) => setEnabled(data,newState)}
-                />
+                height={14} width={28} className="m-2"
+                checked={data.enabled} onChange={(newState) => setEnabled(data, newState)}
+            />
         </div>
         <div className="grow flex flex-col">
             <b>{data.name} {data.surname}</b>
             {whichType(data) == TYPE_ALUMNUS && romanize(data.coorte)}
             {data.notes}
-            {data.emails.map((e) => <EmailDiv key={e.id} e={e} deleteAddress={deleteAddress} />)}
+            {data.emails.map((e, i) => <EmailDiv key={e.id} isFirst={i == 0} e={e} setPrimary={setPrimary} deleteAddress={deleteAddress} />)}
             <IdentityRoles identity={data} removeRole={removeRole} addRole={addRole} />
         </div>
     </div>
@@ -123,10 +125,10 @@ function stringifyData({ data }) {
         return data.address + " " + data.comment
     return data.name + " " + data.surname + " " + romanize(data.coorte) +
         " " + data.emails.map((e) => e.address).join(" ") +
-        " " + data.roles.map((r) => r.name + " " + r.common_name ).join(" ")
+        " " + data.roles.map((r) => r.name + " " + r.common_name).join(" ")
 }
 
-function ListAsATable({ identities, quickFilter, deleteAddress, removeRole, addRole, setEnabled }) {
+function ListAsATable({ identities, quickFilter, setPrimary, deleteAddress, removeRole, addRole, setEnabled }) {
 
     const theme = themeQuartz.withParams({
         headerHeight: 0,
@@ -139,7 +141,7 @@ function ListAsATable({ identities, quickFilter, deleteAddress, removeRole, addR
         {
             field: 'main',
             cellRenderer: ({ value }) =>
-                <IdentityContent data={value} deleteAddress={deleteAddress} removeRole={removeRole} addRole={addRole} setEnabled={setEnabled} />,
+                <IdentityContent data={value} setPrimary={setPrimary} deleteAddress={deleteAddress} removeRole={removeRole} addRole={addRole} setEnabled={setEnabled} />,
             filter: 'agTextColumnFilter',
             filterValueGetter: stringifyData,
             valueGetter: ({ data }) => data,
@@ -167,6 +169,16 @@ function emailDelete(e, setProcessing, setToDelete) {
         {},
         false, false,
         () => setToDelete(null)
+    );
+}
+
+function setPrimary(emailId, setProcessing) {
+    postRequest(
+        'emails.setPrimary',
+        { id: emailId },
+        setProcessing,
+        {},
+        false, false
     );
 }
 
@@ -222,6 +234,7 @@ export default function List() {
         <ManuallyAdd open={addOpen} setClosed={() => setAddOpen(false)} />
         <ListAsATable
             identities={list} quickFilter={quickFilter}
+            setPrimary={(emailId)=>setPrimary(emailId,setProcessing)}
             deleteAddress={(e) => setToDelete(e)}
             removeRole={(identity, role) => removeRole(identity, role, setProcessing)}
             addRole={(identity, role) => addRole(identity, role, setProcessing)}

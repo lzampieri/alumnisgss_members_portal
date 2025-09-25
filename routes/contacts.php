@@ -15,6 +15,8 @@ Route::prefix('/contacts')->middleware('auth.lev2')->group( function () {
     Route::post('/create', [ ContactsSyncController::class, 'create' ] )->name('contacts.create');
     Route::post('/addOnPortal', [ ContactsSyncController::class, 'addOnPortal' ] )->name('contacts.addOnPortal');
     Route::post('/addOnGoogle', [ ContactsSyncController::class, 'addOnGoogle' ] )->name('contacts.addOnGoogle');
+    Route::post('/priorOnPortal', [ ContactsSyncController::class, 'priorOnPortal' ] )->name('contacts.priorOnPortal');
+    Route::post('/priorOnGoogle', [ ContactsSyncController::class, 'priorOnGoogle' ] )->name('contacts.priorOnGoogle');
     Route::post('/modifyGroup', [ ContactsSyncController::class, 'modifyGroup' ] )->name('contacts.modifyGroup');
     
 });

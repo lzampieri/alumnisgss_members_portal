@@ -26,9 +26,27 @@ class EmailController extends Controller
         return redirect()->back()->with(['notistack' => ['success', 'Aggiunto']]);
     } 
 
+    function set_primary_post(Request $request)
+    {
+        
+        $validated = $request->validate([
+            'id' => 'required|numeric',
+        ]);
+        
+        $e = Email::find($validated['id']);
+        
+        if( $e ) {
+            $this->authorize('edit', $e);
+
+            $e->primary = max( $e->identity->emails()->pluck('emails.primary')->toArray() ) + 1;
+            $e->save();
+            return redirect()->route('accesses')->with(['notistack' => ['success', 'Precedenza impostata']]);
+        }
+        return redirect()->back()->with(['notistack' => ['error', 'Indirizzo non trovato']]);
+    }
+
     function delete_post(Request $request)
     {
-        $this->authorize('add', Email::class);
         
         $validated = $request->validate([
             'id' => 'required|numeric',
@@ -37,6 +55,8 @@ class EmailController extends Controller
         $e = Email::find($validated['id']);
         
         if( $e ) {
+            $this->authorize('delete', $e);
+
             $e->delete();
             return redirect()->route('accesses')->with(['notistack' => ['success', 'Cancellato']]);
         }

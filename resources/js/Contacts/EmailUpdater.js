@@ -9,7 +9,8 @@ const STEP = {
     LIST: 1,
     ADDING_PORTAL: 2,
     ADDING_GOOGLE: 3,
-    SAVED: 4
+    UPDATING: 4,
+    SAVED: 5
 }
 
 function delFromArray(arr, idx) {
@@ -20,9 +21,6 @@ function delFromArray(arr, idx) {
 function compareContacts(members, combs, setToAddOnPortal, setToAddOnGoogle, setStep) {
     const toAddOnPortal = []
     const toAddOnGoogle = []
-
-    // console.log( members )
-    // console.log( combs )
 
     Object.entries(combs).forEach(([member_id, contact]) => {
         const member = members[member_id];
@@ -57,8 +55,21 @@ function compareContacts(members, combs, setToAddOnPortal, setToAddOnGoogle, set
     setStep(STEP.LIST);
 }
 
+function updateCombs(toAddOnPortal, toAddOnGoogle, members, combs, setMembers, setCombs, setStep) {
+    toAddOnPortal.forEach(({member, contact, address})=> {
+        members[member.id].emails.push({address: address, primary: 0});
+
+    })
+    toAddOnGoogle.forEach(({member, contact, address})=> {
+        combs[member.id].emails.push(address);
+    })
+    setMembers( { ...members } )
+    setCombs( { ...combs } )
+    setStep( STEP.SAVED );
+}
+
 // This guy is inside Main.js
-export default function EmailUpdater({ members, combs, next }) {
+export default function EmailUpdater({ members, combs, setMembers, setCombs, next }) {
     const [step, setStep] = useState(STEP.COMPARING);
     const [toAddOnPortal, setToAddOnPortal] = useState([]);
     const [toAddOnGoogle, setToAddOnGoogle] = useState([]);
@@ -66,6 +77,9 @@ export default function EmailUpdater({ members, combs, next }) {
     useEffect(() => compareContacts(members, combs, setToAddOnPortal, setToAddOnGoogle, setStep), []);
 
     useEffect(() => {
+        if( step == STEP.UPDATING ) {
+            updateCombs(toAddOnPortal, toAddOnGoogle, members, combs, setMembers, setCombs, setStep);
+        }
         if( step == STEP.SAVED ) {
             next();
         }
@@ -153,7 +167,7 @@ export default function EmailUpdater({ members, combs, next }) {
             {(step == STEP.ADDING_PORTAL || step == STEP.ADDING_GOOGLE) && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
                 Sto salvando...<br />
                 { step == STEP.ADDING_PORTAL && <SlowerDown route={'contacts.addOnPortal'} list={toAddOnPortal_data()} setFinish={() => setStep(STEP.ADDING_GOOGLE)} /> }
-                { step == STEP.ADDING_GOOGLE && <SlowerDown route={'contacts.addOnGoogle'} list={toAddOnGoogle_data()} setFinish={() => setStep(STEP.SAVED)} /> }
+                { step == STEP.ADDING_GOOGLE && <SlowerDown route={'contacts.addOnGoogle'} list={toAddOnGoogle_data()} setFinish={() => setStep(STEP.UPDATING)} /> }
             </div>}
 
             {step == STEP.ERROR && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">

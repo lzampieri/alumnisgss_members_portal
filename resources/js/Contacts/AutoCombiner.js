@@ -96,24 +96,6 @@ export default function AutoCombiner({ members, contacts, setCombs, next }) {
                 }
             </div>
             {status == STEP.COMBDONE && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
-                <b>Contatti già abbinati in precedenza</b>
-                <table><tbody>
-                    <tr>
-                        <th className="px-2">Nome sul portale</th>
-                        <th className="px-2">Nome nella rubrica</th>
-                    </tr>
-                    {Object.keys(prevComb).map((member_id, index) => {
-                        return (
-                            <tr className={index % 2 == 0 ? "bg-gray-100" : ""} key={member_id}>
-                                <td className="px-2">{members[member_id]['name']} {members[member_id]['surname']}</td>
-                                <td className="px-2">{prevComb[member_id]['name']}</td>
-                                <td><FontAwesomeIcon icon={solid('trash')} className="icon-button" onClick={() => { setPrevToRemove([...prevToRemove, prevComb[member_id]['id']]); setPrevComb(delFromObject(prevComb, member_id)); }} /></td>
-                            </tr>
-                        )
-                    })}
-                </tbody></table>
-            </div>}
-            {status == STEP.COMBDONE && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
                 <b>Contatti automaticamente abbinati da verificare</b>
                 <table><tbody>
                     <tr>
@@ -126,6 +108,29 @@ export default function AutoCombiner({ members, contacts, setCombs, next }) {
                                 <td className="px-2">{members[member_id]['name']} {members[member_id]['surname']}</td>
                                 <td className="px-2">{autoComb[member_id]['name']}</td>
                                 <td><FontAwesomeIcon icon={solid('trash')} className="icon-button" onClick={() => setAutoComb(delFromObject(autoComb, member_id))} /></td>
+                            </tr>
+                        )
+                    })}
+                </tbody></table>
+            </div>}
+
+            {status == STEP.COMBDONE && <div className="button" onClick={() => setStatus(STEP.REMOVING)}>
+                {Object.keys(autoComb).length + prevToRemove.length > 0 ? "Salva e continua" : "Continua"}
+            </div>}
+            
+            {status == STEP.COMBDONE && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
+                <b>Contatti già abbinati in precedenza</b>
+                <table><tbody>
+                    <tr>
+                        <th className="px-2">Nome sul portale</th>
+                        <th className="px-2">Nome nella rubrica</th>
+                    </tr>
+                    {Object.keys(prevComb).map((member_id, index) => {
+                        return (
+                            <tr className={index % 2 == 0 ? "bg-gray-100" : ""} key={member_id}>
+                                <td className="px-2">{members[member_id]['name']} {members[member_id]['surname']}</td>
+                                <td className="px-2">{prevComb[member_id]['name']}</td>
+                                <td><FontAwesomeIcon icon={solid('trash')} className="icon-button" onClick={() => { setPrevToRemove([...prevToRemove, prevComb[member_id]['id']]); setPrevComb(delFromObject(prevComb, member_id)); }} /></td>
                             </tr>
                         )
                     })}

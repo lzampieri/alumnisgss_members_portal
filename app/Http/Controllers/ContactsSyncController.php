@@ -56,7 +56,12 @@ class ContactsSyncController extends Controller
                 $parsed['member_id'] = $exid->getValue();
             }
         }
-        foreach ($person->getEmailAddresses() as $em)
+        $emails = $person->getEmailAddresses();
+        usort($emails, function ($a, $b) {
+            return $b->getMetadata()->primary - $a->getMetadata()->primary;
+        });
+
+        foreach ($emails as $em)
             $parsed['emails'][] = $em->getValue();
         return $parsed;
     }
@@ -156,7 +161,6 @@ class ContactsSyncController extends Controller
             ['updatePersonFields' => 'externalIds']
         );
         return response()->json([]);
-
     }
 
     public function associate(Request $request)
@@ -214,7 +218,7 @@ class ContactsSyncController extends Controller
 
         $person = $peopleService->people->createContact($newPerson, ['personFields' => 'names,emailAddresses,externalIds']);
 
-        return response()->json( $this->parsePerson($person) );
+        return response()->json($this->parsePerson($person));
     }
 
     public function addOnPortal(Request $request)
@@ -251,6 +255,49 @@ class ContactsSyncController extends Controller
         $newEmail->setValue($address);
 
         $person->setEmailAddresses(array_merge($person->getEmailAddresses(), [$newEmail]));
+
+        $peopleService->people->updateContact($resid, $person, ['updatePersonFields' => 'emailAddresses']);
+
+        return response()->json([]);
+    }
+
+    public function priorOnPortal(Request $request)
+    {
+        $this->authorize('sync', Email::class);
+
+        $item = $request->input('email');
+
+        $e = Email::where('address', $item)->first();
+        if (!$e) return;
+
+        $e->primary = max($e->identity->emails()->pluck('emails.primary')->toArray()) + 1;
+        $e->save();
+
+        return response()->json([]);
+    }
+
+
+
+    public function priorOnGoogle(Request $request)
+    {
+        $this->authorize('sync', Email::class);
+
+        $resid = $request->input('resId');
+        $email = $request->input('email');
+
+        $peopleService = $this->getPeopleService();
+
+        $person = $peopleService->people->get($resid, ['personFields' => 'emailAddresses']);
+
+        $addresses = $person->getEmailAddresses();
+
+        foreach ($addresses as &$a) {
+            $mt = $a->getMetadata();
+            $mt->setSourcePrimary(strcmp($a->getValue(), $email) == 0);
+            $a->setMetadata($mt);
+        }
+
+        $person->setEmailAddresses($addresses);
 
         $peopleService->people->updateContact($resid, $person, ['updatePersonFields' => 'emailAddresses']);
 

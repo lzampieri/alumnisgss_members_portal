@@ -16,6 +16,7 @@ Route::prefix('/accesses')->group( function () {
 
 Route::prefix('/emails')->group( function () {
     Route::post('manually_add', [ EmailController::class, 'manually_add_post' ] )->name('emails.manually_add');
+    Route::post('setPrimary', [ EmailController::class, 'set_primary_post' ] )->name('emails.setPrimary');
     Route::post('delete', [ EmailController::class, 'delete_post' ] )->name('emails.delete');
     
     // Associate

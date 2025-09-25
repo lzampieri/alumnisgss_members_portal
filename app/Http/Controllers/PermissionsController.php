@@ -86,6 +86,7 @@ class PermissionsController extends Controller
             // Emails methods
             'emails-view-all',
             'emails-add',
+            'emails-edit',
             'emails-delete',
             // Contacts (emails sync)
             'login-lv2',

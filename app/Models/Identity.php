@@ -87,7 +87,7 @@ abstract class Identity extends Model
 
     public function emails()
     {
-        return $this->morphMany(Email::class, 'identity');
+        return $this->morphMany(Email::class, 'identity')->orderBy('primary','desc');
     }
 
     public function newsletters()

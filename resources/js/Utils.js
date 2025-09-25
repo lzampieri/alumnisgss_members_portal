@@ -93,6 +93,17 @@ export function asyncPostWithResult(route_name, data = {}, routeParams = {}) {
         )
 }
 
+export function noninertiaPostRequest(route_name, data, setProcessing, routeParams = {}, onFinish = () => { }) {
+    setProcessing(true);
+    return new Promise((resolve, reject) =>
+        axios.post(
+            route(route_name, routeParams),
+            data)
+            .then( response => { resolve( response.data ); setProcessing(false); onFinish(); } )
+            .catch( e => reject(e) )
+        )
+}
+
 export async function sleep(milliseconds) { // To use with await
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }

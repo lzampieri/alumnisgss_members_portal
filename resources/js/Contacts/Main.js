@@ -8,6 +8,7 @@ import DataDownloader from "./DataDownloader";
 import AutoCombiner from "./AutoCombiner";
 import ContactsCreator from "./ContactsCreator";
 import EmailUpdater from "./EmailUpdater";
+import PrimaryEmailUpdater from "./PrimaryEmailUpdater";
 import GroupsUpdater from "./GroupsUpdater";
 import Final from "./Final";
 // import RegistryHeader from "./RegistryHeader";
@@ -18,8 +19,9 @@ const STEP = {
     AUTOCOMBINE: 1,
     NEWCONTACTS: 2,
     EMAILUPDATE: 3,
-    GROUPSUPDATE: 4,
-    FINAL: 5
+    PRIMARYEMAILUPDATE: 4,
+    GROUPSUPDATE: 5,
+    FINAL: 6
 }
 
 export default function Main() {
@@ -37,7 +39,8 @@ export default function Main() {
             { step == STEP.DOWNLOAD && <DataDownloader setMembers={setMembers} setContacts={setContacts} setGroups={setGroups} next={() => setStep(STEP.AUTOCOMBINE)} /> }
             { step == STEP.AUTOCOMBINE && <AutoCombiner members={members} contacts={contacts} setCombs={setCombs} next={() => setStep(STEP.NEWCONTACTS)} /> }
             { step == STEP.NEWCONTACTS && <ContactsCreator members={members} combs={combs} setCombs={setCombs} next={() => setStep(STEP.EMAILUPDATE)} /> }
-            { step == STEP.EMAILUPDATE && <EmailUpdater members={members} combs={combs} next={() => setStep(STEP.GROUPSUPDATE)} /> }
+            { step == STEP.EMAILUPDATE && <EmailUpdater members={members} combs={combs} setMembers={setMembers} setCombs={setCombs} next={() => setStep(STEP.PRIMARYEMAILUPDATE)} /> }
+            { step == STEP.PRIMARYEMAILUPDATE && <PrimaryEmailUpdater members={members} combs={combs} next={() => setStep(STEP.GROUPSUPDATE)} /> }
             { step == STEP.GROUPSUPDATE && <GroupsUpdater members={members} combs={combs} groups={groups} next={() => setStep(STEP.FINAL)} /> }
             { step == STEP.FINAL && <Final members={members} combs={combs} contacts={contacts} groups={groups} /> }
         </div>
