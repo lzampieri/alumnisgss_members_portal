@@ -30,7 +30,6 @@ function compareContacts(members, combs, setToAddOnPortal, setToAddOnGoogle, set
 
         emails_onportal.forEach(email_onportal => {
             if( !emails_ongoogle.some( s => s.toLowerCase().trim() == email_onportal.toLowerCase().trim() ) ) {
-                emails_ongoogle.forEach( s => console.log(s,'|',email_onportal,'|',s == email_onportal) );
                 toAddOnGoogle.push({
                     member: member,
                     contact: contact,

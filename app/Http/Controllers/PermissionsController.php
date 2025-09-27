@@ -130,6 +130,7 @@ class PermissionsController extends Controller
             // Newsletter
             'newsletters-create',
             'newsletters-master',
+            'newsletters-send',
             // Webmaster stuff
             'logfile-view',
             'logdb-view',

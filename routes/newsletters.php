@@ -10,4 +10,8 @@ Route::prefix('/newsletters')->group( function () {
     
     Route::get('/edit/{newsletter}', [ NewsletterController::class, 'edit' ] )->name('newsletter.edit');
     Route::post('/edit/{newsletter}', [ NewsletterController::class, 'edit_post' ] );
+    
+    Route::get('/preview/{newsletter}', [ NewsletterController::class, 'preview' ] )->name('newsletter.preview');
+    
+    Route::get('/send/{newsletter}', [ NewsletterController::class, 'send' ] )->name('newsletter.send');
 });

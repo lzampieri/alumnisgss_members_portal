@@ -1,4 +1,4 @@
-import { Head, useForm, usePage } from "@inertiajs/react";
+import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import Backdrop from "../Layout/Backdrop";
 import TokenizableInput from "../Libs/react-tokenizable-inputs/TokenizableInput";
 import { enqueueSnackbar } from "notistack";
@@ -6,11 +6,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { useMemo, useState } from "react";
 import EmptyDialog from "../Layout/EmptyDialog";
+import sanitizeHtml from "sanitize-html";
 
 import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
 import { themeQuartz } from "ag-grid-community";
 import { ModuleRegistry, ClientSideRowModelModule, ColumnAutoSizeModule, QuickFilterModule } from 'ag-grid-community';
 import { AlumnusStatus, bgAndContrast } from "../Utils";
+import DefaultEditor, { BtnBold, BtnBulletList, BtnItalic, BtnLink, BtnNumberedList, BtnRedo, BtnStrikeThrough, BtnUnderline, BtnUndo, Editor, EditorProvider, Separator, Toolbar } from "react-simple-wysiwyg";
+import { to } from "@react-spring/web";
 ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnAutoSizeModule, QuickFilterModule]);
 
 function StatusTooltip({ status }) {
@@ -86,8 +89,8 @@ function Groups({ to, setTo, setNotFound }) {
         const notfound = [];
 
         group.identities.forEach((identity) => {
-            if( identity.emails.length > 0 ) {
-                if( !newto.includes(identity.emails[0].address) ) newto.push(identity.emails[0].address);
+            if (identity.emails.length > 0) {
+                if (!newto.includes(identity.emails[0].address)) newto.push(identity.emails[0].address);
             }
             else notfound.push(identity.name + " " + identity.surname);
         });
@@ -108,6 +111,7 @@ function Groups({ to, setTo, setNotFound }) {
                     <FontAwesomeIcon icon={solid('circle-plus')} className="mr-2" />
                     {g.common_name}
                 </div>)}
+                {groups.length == 0 && "Nessun gruppo disponibile"}
             </div>
         </EmptyDialog>
     </>
@@ -116,7 +120,7 @@ function Groups({ to, setTo, setNotFound }) {
 export default function Edit() {
     const prevDraft = usePage().props.newsletter;
 
-    const { data, setData, post, processing, errors, isDirty } = useForm({
+    const { data, setData, post, processing, errors, isDirty, transform } = useForm({
         subject: prevDraft.subject || "",
         body: prevDraft.body || "",
         to: prevDraft.to || [],
@@ -132,18 +136,43 @@ export default function Edit() {
         )
     }
 
+    transform((data) => ({
+        ...data,
+        body: sanitizeHtml(data.body),
+    }));
+
     return (
         <div className="flex flex-col w-full md:w-3/5">
             <Head title={data.subject + " | Bozza"} />
             <h3>Preparazione newsletter</h3>
             <form className="flex flex-col w-full" onSubmit={submit}>
-                <button className="button self-end">Salva bozza</button>
+                <div className="flex flex-row self-end gap-2">
+                    <button className="button self-end">Salva bozza</button>
+                    {!processing && !isDirty && <Link className="button self-end" href={route('newsletter.preview', { newsletter: prevDraft.id })}>Anteprima</Link>}
+                </div>
                 <label>Oggetto</label>
                 <input type="text" className="w-full" value={data.subject} onChange={(e) => setData('subject', e.target.value)} />
                 <label className="error">{errors.subject}</label>
 
                 <label>Contenuto</label>
-                <input type="text" className="w-full" value={data.body} onChange={(e) => setData('body', e.target.value)} />
+                <EditorProvider>
+                    <Editor value={data.body} onChange={(e) => setData('body', e.target.value)} className="pretendToBeInput">
+                        <Toolbar>
+                            <BtnUndo />
+                            <BtnRedo />
+                            <Separator />
+                            <BtnBold />
+                            <BtnItalic />
+                            <BtnUnderline />
+                            <BtnStrikeThrough />
+                            <Separator />
+                            <BtnNumberedList />
+                            <BtnBulletList />
+                            <Separator />
+                            <BtnLink />
+                        </Toolbar>
+                    </Editor>
+                </EditorProvider>
                 <label className="error">{errors.body}</label>
 
                 <label>Destinatari</label>
@@ -158,8 +187,10 @@ export default function Edit() {
                     <Groups to={data.to} setTo={(newVal) => setData('to', newVal)} setNotFound={setNotFound} />
                 </div>
                 {notFound.length > 0 && <label className="error">Non sono stati trovati indirizzi email per: {notFound.join(", ")}</label>}
-                <button className="button self-end">Salva bozza</button>
-                <button className="button self-end">Anteprima e invio</button>
+                <div className="flex flex-row self-end gap-2">
+                    <button className="button self-end">Salva bozza</button>
+                    {!processing && !isDirty && <Link className="button self-end" href={route('newsletter.preview', { newsletter: prevDraft.id })}>Anteprima</Link>}
+                </div>
             </form>
             <Backdrop open={processing} />
         </div>

@@ -10,7 +10,6 @@ import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
 import { themeQuartz } from "ag-grid-community";
 import { ModuleRegistry, ClientSideRowModelModule, NumberEditorModule, TextEditorModule, ValidationModule } from 'ag-grid-community';
 import { enqueueSnackbar } from "notistack";
-import { transform } from "lodash";
 ModuleRegistry.registerModules([ClientSideRowModelModule, NumberEditorModule, TextEditorModule, ValidationModule]);
 
 export default function Bulk() {

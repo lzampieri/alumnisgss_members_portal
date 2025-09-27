@@ -128,7 +128,7 @@ class AuthController extends Controller
 
         MailerController::sendEmail(
             Identity::allWithPermission('accesses-receive-request-emails'),
-            'Nuova richiesta di accesso a soci.alumnuscuolagalileiana.it',
+            'Nuova richiesta di accesso a soci.alumniscuolagalileiana.it',
             $message,
             $validated['address']
         );

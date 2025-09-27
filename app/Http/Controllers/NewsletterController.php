@@ -8,17 +8,26 @@ use App\Models\External;
 use App\Models\Newsletter;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Mail\Mailer;
+use Illuminate\Mail\MailServiceProvider;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Swift_Mailer;
+use Swift_Message;
+use Swift_SmtpTransport;
+
+define('EMAILS_PER_PAGE', 45);
+define('PAGES_PER_ADDRESS', 4);
 
 class NewsletterController extends Controller
 {
     public function list()
     {
         if (Auth::user()->can('viewAll', Newsletter::class)) {
-            $newsletters = Newsletter::with('owner')->orderBy('updated_at','desc')->get();
+            $newsletters = Newsletter::with('owner')->orderBy('updated_at', 'desc')->get();
         } else {
-            $newsletters = Auth::user()->identity->newsletters()->with('owner')->orderBy('updated_at','desc')->get();
+            $newsletters = Auth::user()->identity->newsletters()->with('owner')->orderBy('updated_at', 'desc')->get();
         }
 
         return Inertia::render(
@@ -45,41 +54,40 @@ class NewsletterController extends Controller
     {
         $this->authorize('edit', $newsletter);
 
-        $emails = Email::with('identity')->get();
-        $emails = $emails->sortBy([['identity.surname','asc'],['identity.name','asc'],['primary','desc']]);
+        $emails = Email::whereHas('identity')->with('identity')->get();
+        $emails = $emails->sortBy([['identity.surname', 'asc'], ['identity.name', 'asc'], ['primary', 'desc']]);
         $emails = $emails->append('canView')->filter->canView->toArray();
 
-        for($i = 0; $i < count($emails); $i++) {
-            if( $i == 0 || $emails[$i]['identity']['id'] != $emails[$i-1]['identity']['id'] ) {
+        for ($i = 0; $i < count($emails); $i++) {
+            if ($i == 0 || ($emails[$i]['identity']['id'] != $emails[$i - 1]['identity']['id'])) {
                 $emails[$i]['isPrimary'] = true;
-            }
-            else $emails[$i]['isPrimary'] = false;
+            } else $emails[$i]['isPrimary'] = false;
         }
 
         $user = Auth::user();
 
         $roles = Role::all()->filter(function ($role) use ($user) {
-            if( $user->hasPermissionTo('emails-view-all') ) return true;
+            if ($user->hasPermissionTo('emails-view-all')) return true;
 
-            if( $role->name == 'everyone' ) return false;
-            if( in_array( $role->name, Alumnus::public_status ) )
+            if ($role->name == 'everyone') return false;
+            if (in_array($role->name, Alumnus::public_status))
                 return $user->hasPermissionTo('emails-view-public-alumnus');
 
             return $user->hasPermissionTo('user-edit-' . $role->name);
         });
 
         foreach ($roles as &$role) {
-            if( $role->name == 'everyone' ) $role->identities = Alumnus::with('emails')->get()->concat(External::with('emails')->get());
-            else if( in_array( $role->name, Alumnus::public_status ) ) $role->identities = Alumnus::where('status',$role->name)->with('emails')->get();
+            if ($role->name == 'everyone') $role->identities = Alumnus::with('emails')->get()->concat(External::with('emails')->get());
+            else if (in_array($role->name, Alumnus::public_status)) $role->identities = Alumnus::where('status', $role->name)->with('emails')->get();
             else $role->identities = Alumnus::role($role)->with('emails')->get()->concat(External::role($role)->with('emails')->get());
         }
-        
+
 
         return Inertia::render(
             'Newsletter/Edit',
             [
                 'newsletter' => $newsletter,
-                'rubrica' => array_values( $emails ),
+                'rubrica' => array_values($emails),
                 'groups' => $roles
             ]
         );
@@ -99,10 +107,135 @@ class NewsletterController extends Controller
         ]);
 
         $newsletter->subject = $validated['subject'];
-        $newsletter->to = in_array('to',$validated) ? $validated['to'] : [];
+        $newsletter->to = array_key_exists('to', $validated) ? $validated['to'] : [];
         $newsletter->body = $validated['body'];
         $newsletter->save();
 
         return redirect()->back()->with('notistack', ['success', 'Bozza salvata']);
+    }
+
+    public function preview(Newsletter $newsletter)
+    {
+        $this->authorize('edit', $newsletter);
+
+        $user = Auth::user()->identity->load('emails');
+        $email = null;
+
+        if (count($user->emails) > 0) {
+            $email = $user->emails[0]->address;
+
+            Mail::send([], [], function (\Illuminate\Mail\Message $msg) use ($email, $newsletter) {
+                $msg->to($email);
+                $msg->replyTo("info@alumniscuolagalileiana.it");
+                $msg->from("info@alumniscuolagalileiana.it");
+                $msg->subject("Test | " . $newsletter->subject);
+                $msg->setBody($newsletter->body, 'text/html');
+            });
+            LogController::log(LogEvents::MAIL_SENT, NULL, $newsletter->subject, [$email, $newsletter]);
+        }
+
+        return Inertia::render(
+            'Newsletter/Preview',
+            [
+                'newsletter' => $newsletter,
+                'sentTo' => $email,
+                'canSend' => Auth::user()->can('send', $newsletter)
+            ]
+        );
+    }
+
+    public function send(Newsletter $newsletter)
+    {
+        $this->authorize('send', $newsletter);
+
+        $froms = explode(",", env('MAIL_FROM_BULK', ""));
+        $froms_pw = env('MAIL_FROM_BULK_PASSWORD', "");
+
+        $debug_addr = env('MAIL_FROM_ADDRESS', "");
+
+        if (count($froms) == 0) {
+            return redirect()->back()->with('notistack', ['error', 'Nessun indirizzo di invio configurato']);
+        }
+
+        if (count($newsletter->to) == 0) {
+            return redirect()->back()->with('notistack', ['error', 'Nessun destinatario']);
+        }
+
+        if (count($newsletter->to) > EMAILS_PER_PAGE * PAGES_PER_ADDRESS * count($froms)) {
+            return redirect()->back()->with('notistack', ['error', 'Troppi indirizzi email. Max ' . (EMAILS_PER_PAGE * PAGES_PER_ADDRESS * count($froms)) . ', richiesti ' . count($newsletter->to)]);
+        }
+
+        // TODO add check for multiple emails on the same day
+
+        $newsletters = [];
+
+        $page = 1;
+        $address = 0;
+        $newsletter->from = $froms[0];
+
+        while (count($newsletter->to) > EMAILS_PER_PAGE) {
+            $newsletters[] = Newsletter::create([
+                'subject' => $newsletter->subject,
+                'to' => array_slice($newsletter->to, -EMAILS_PER_PAGE),
+                'body' => $newsletter->body,
+                'owner_id' => $newsletter->owner_id,
+                'owner_type' => $newsletter->owner_type,
+                'from' => $froms[$address]
+            ]);
+            $newsletter->to = array_slice($newsletter->to, 0, -EMAILS_PER_PAGE);
+
+            $page++;
+            if ($page >= PAGES_PER_ADDRESS) {
+                $page = 0;
+                $address++;
+            }
+        }
+
+        $newsletter->save();
+        $newsletters[] = $newsletter;
+
+        $reuseaddress = "";
+        $swift_mailer = null;
+
+        $count = 1;
+
+        foreach ($newsletters as &$nl) {
+            if ($reuseaddress != $nl->from) {
+                $transport = new Swift_SmtpTransport(
+                    env('MAIL_HOST', 'localhost'),
+                    env('MAIL_PORT', 587)
+                );
+                $transport->setEncryption(env('MAIL_ENCRYPTION', 'tls'));
+                $transport->setUsername($nl->from);
+                $reuseaddress = $nl->from;
+                $transport->setPassword($froms_pw);
+
+                $swift_mailer = new Swift_Mailer($transport);
+            }
+
+            LogController::log(LogEvents::MAIL_SENT, NULL, $nl->subject, [...$nl->to, $debug_addr]);
+
+            $message = new Swift_Message($nl->subject);
+            $message->setBody($nl->body, 'text/html');
+            $message->setBcc([...$nl->to, $debug_addr]);
+            $message->setReplyTo("info@alumniscuolagalileiana.it");
+            $message->setFrom(["info@alumniscuolagalileiana.it" => "Associazione Alumni Scuola Galileiana"]);
+            
+            // Add reference to the newsletter
+            $headers = $message->getHeaders();
+            $headers->addTextHeader('X-Newsletter-ID', $nl->id . " daughter of " . $newsletter->id);
+            $headers->addTextHeader('X-Newsletter-progress', $count . "/" . count($newsletters));
+            
+            $swift_mailer->send($message);
+
+            // TODO distinguish MAIL_SENT, NEWSLETTER_SENT, NEWSLETEER_DEBUG_SENT
+            LogController::log(LogEvents::MAIL_SENT, NULL, $newsletter->subject, [$nl]);
+            $nl->sent_at = now();
+            $nl->save();
+
+            $count++;
+        }
+
+        return redirect()->route('newsletters')->with('notistack', ['success', 'Invio avvenuto con successo']);
     }
 }

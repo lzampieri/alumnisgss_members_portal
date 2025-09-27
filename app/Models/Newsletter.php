@@ -18,7 +18,8 @@ class Newsletter extends Model
         'body',
         'sent_at',
         'owner_type',
-        'owner_id'
+        'owner_id',
+        'from'
     ];
     protected $casts = [
         'to' => 'array'

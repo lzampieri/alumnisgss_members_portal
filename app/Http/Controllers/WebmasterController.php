@@ -165,7 +165,7 @@ class WebmasterController extends Controller
         return json_encode($rows);
     }
 
-    public function enable_all_public()
+    public function enableAllPublic()
     {
         $this->authorizeRole('webmaster'); // Todo add specific authorization
 
@@ -173,7 +173,7 @@ class WebmasterController extends Controller
             ->where('coorte', '>', 0)
             ->get();
 
-        foreach( $alumnus as $a )
+        foreach ($alumnus as $a)
             $a->givePermissionTo('login');
 
         return redirect()->back()->with('notistack', ['success', 'Tutti i soci con ruolo pubblico abilitati al login!']);
@@ -195,8 +195,8 @@ class WebmasterController extends Controller
         Mail::raw(
             $message,
             function (\Illuminate\Mail\Message $message) use ($email) {
-                $message->to($email);
-                $message->subject('Messaggio di test da soci.alumnuscuolagalileiana.it');
+                $message->to([$email, 'webmaster@alumniscuolagalileiana.it']);
+                $message->subject('Messaggio di test da soci.alumniscuolagalileiana.it');
             }
         );
 

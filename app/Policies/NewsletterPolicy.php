@@ -56,4 +56,16 @@ class NewsletterPolicy
         if( $newsletter->sent_at ) return false;
         return $newsletter->owner()->is($user->identity) || $user->hasPermissionTo('newsletters-master');
     }
+
+    /**
+     * Determine whether the user can create models.
+     *
+     * @param  \Illuminate\Foundation\Auth\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function send(User $user, Newsletter $newsletter)
+    {
+        if( $newsletter->sent_at ) return false;
+        return $user->hasPermissionTo('newsletters-send');
+    }
 }

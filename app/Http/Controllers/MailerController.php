@@ -33,7 +33,7 @@ class MailerController extends Controller
         Mail::send([], [], function (\Illuminate\Mail\Message $msg) use ($emails, $subject, $message, $replyTo) {
             $msg->to($emails);
             $msg->replyTo( $replyTo );
-            $msg->subject($subject);
+            $msg->subject( $subject);
             $msg->setBody( nl2br( $message ), 'text/html');
         });
         LogController::log( LogEvents::MAIL_SENT, NULL, $subject, [$emails, $message]);
