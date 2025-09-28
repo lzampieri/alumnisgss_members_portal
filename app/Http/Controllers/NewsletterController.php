@@ -14,8 +14,10 @@ use Illuminate\Mail\MailServiceProvider;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Swift_Attachment;
 use Swift_Mailer;
 use Swift_Message;
+use Swift_Preferences;
 use Swift_SmtpTransport;
 
 define('EMAILS_PER_PAGE', 45);
@@ -178,6 +180,12 @@ class NewsletterController extends Controller
         $user = Auth::user()->identity->load('emails');
         $email = null;
 
+        if( env('APP_ENV', 'local') == 'local' ) {
+            Swift_Preferences::getInstance()->setCacheType('null');
+            // Local development is done on windows, which does not
+            // like swiftmailer's cache system
+        }
+
         if (count($user->emails) > 0) {
             $email = $user->emails[0]->address;
 
@@ -187,6 +195,9 @@ class NewsletterController extends Controller
                 $msg->from("info@alumniscuolagalileiana.it");
                 $msg->subject("Test | " . $newsletter->subject);
                 $msg->setBody($newsletter->body, 'text/html');
+                foreach( $newsletter->attachments as $att ) {
+                    $msg->attach($att->path());
+                }
             });
             LogController::log(LogEvents::MAIL_SENT, NULL, $newsletter->subject, [$email, $newsletter]);
         }
@@ -229,6 +240,18 @@ class NewsletterController extends Controller
         $page = 1;
         $address = 0;
         $newsletter->from = $froms[0];
+
+        $attachments = [];
+
+        if( env('APP_ENV', 'local') == 'local' ) {
+            Swift_Preferences::getInstance()->setCacheType('null');
+            // Local development is done on windows, which does not
+            // like swiftmailer's cache system
+        }
+            
+        foreach ($newsletter->attachments as $att) {
+            $attachments[] = Swift_Attachment::fromPath( $att->path());
+        }
 
         while (count($newsletter->to) > EMAILS_PER_PAGE) {
             $newsletters[] = Newsletter::create([
@@ -278,6 +301,10 @@ class NewsletterController extends Controller
             $message->setBcc([...$nl->to, $debug_addr]);
             $message->setReplyTo("info@alumniscuolagalileiana.it");
             $message->setFrom(["info@alumniscuolagalileiana.it" => "Associazione Alumni Scuola Galileiana"]);
+
+            foreach( $attachments as $att ) {
+                $message->attach($att);
+            }
 
             // Add reference to the newsletter
             $headers = $message->getHeaders();
