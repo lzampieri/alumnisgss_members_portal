@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Document;
 use App\Models\File;
+use App\Models\Newsletter;
 use App\Models\Resource;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -55,6 +56,12 @@ class FilePolicy
             // Document cannot be seen from here, but must be seen from the document app
             // which will add the footer and everything else
         }
+
+        // Newsletter
+        if ($parent_type == Newsletter::class) {
+            return (new NewsletterPolicy())->view($user, $file->parent);
+        }
+
 
         return false;
     }

@@ -93,14 +93,15 @@ export function asyncPostWithResult(route_name, data = {}, routeParams = {}) {
         )
 }
 
-export function noninertiaPostRequest(route_name, data, setProcessing, routeParams = {}, onFinish = () => { }) {
+export function noninertiaPostRequest(route_name, data, setProcessing, routeParams = {}, onFinish = ( data ) => { }, allowFiles = false, onFail = ( data ) => { }) {
     setProcessing(true);
     return new Promise((resolve, reject) =>
         axios.post(
             route(route_name, routeParams),
-            data)
-            .then( response => { resolve( response.data ); setProcessing(false); onFinish(); } )
-            .catch( e => reject(e) )
+            data,
+            ( allowFiles ?  { headers: { 'Content-Type': 'multipart/form-data' } } : {} ))
+            .then( response => { resolve( response.data ); setProcessing(false); onFinish( response.data ); } )
+            .catch( e => { reject(e); setProcessing(false); onFail( e?.response?.data );  } )
         )
 }
 

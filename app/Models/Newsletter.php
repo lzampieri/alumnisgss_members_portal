@@ -19,7 +19,8 @@ class Newsletter extends Model
         'sent_at',
         'owner_type',
         'owner_id',
-        'from'
+        'from',
+        'parent_id'
     ];
     protected $casts = [
         'to' => 'array'
@@ -28,6 +29,18 @@ class Newsletter extends Model
     public function owner()
     {
         return $this->morphTo('owner');
+    }
+
+    public function parent()
+    {
+        return $this->morphTo('parent_id');
+    }
+
+    public function attachments()
+    {
+        if( $this->parent_id )
+            return $this->parent()->morphMany(File::class, 'parent');
+        return $this->morphMany(File::class, 'parent');
     }
 
 }

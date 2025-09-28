@@ -10,7 +10,7 @@ export default function Preview() {
     router.on('start', () => setIsLoading(true));
     router.on('finish', () => setIsLoading(false));
 
-    
+
     return (
         <div className="flex flex-col w-full md:w-3/5">
             <Head title={newsletter.subject + " | Anteprima"} />
@@ -18,6 +18,12 @@ export default function Preview() {
             {sentTo && <div className="mb-4">Newsletter di prova inviata a: {sentTo}</div>}
             <b>Oggetto: {newsletter.subject}</b>
             <div className="w-full" dangerouslySetInnerHTML={{ __html: newsletter.body }} />
+            {newsletter.attachments?.length > 0 && <label>Allegati:</label>}
+            {
+                newsletter.attachments?.map((f, idx) =>
+                    <a target="_blank" href={route('newsletter.attachment', { id: f.id })}>{f.handle}</a>
+                )
+            }
             <label>Destinatari:</label>
             {newsletter.to?.join(", ")}
             {usePage().props.canSend ?

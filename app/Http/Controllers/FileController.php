@@ -15,4 +15,11 @@ class FileController extends Controller
 
         return response()->file($file->path());
     }
+
+    public function fromId(File $id)
+    {
+        $this->authorize('view', $id);
+
+        return response()->file($id->path());
+    }
 }

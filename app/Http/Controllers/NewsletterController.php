@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Alumnus;
 use App\Models\Email;
 use App\Models\External;
+use App\Models\File;
 use App\Models\Newsletter;
 use App\Models\Role;
 use Illuminate\Http\Request;
@@ -54,6 +55,8 @@ class NewsletterController extends Controller
     {
         $this->authorize('edit', $newsletter);
 
+        $newsletter->load('attachments');
+
         $emails = Email::whereHas('identity')->with('identity')->get();
         $emails = $emails->sortBy([['identity.surname', 'asc'], ['identity.name', 'asc'], ['primary', 'desc']]);
         $emails = $emails->append('canView')->filter->canView->toArray();
@@ -88,7 +91,8 @@ class NewsletterController extends Controller
             [
                 'newsletter' => $newsletter,
                 'rubrica' => array_values($emails),
-                'groups' => $roles
+                'groups' => $roles,
+                'allowedFormats' => [...File::ALLOWED_FORMATS, ...File::ALLOWED_IMAGES_FORMATS]
             ]
         );
     }
@@ -101,7 +105,9 @@ class NewsletterController extends Controller
             'subject' => 'required',
             'to' => 'array',
             'to.*' => 'required|email',
-            'body' => 'required'
+            'body' => 'required',
+            'attachments' => 'array',
+            'attachments.*' => 'integer|exists:files,id'
         ], [
             'to.*.email' => ':input non è un indirizzo email valido '
         ]);
@@ -109,14 +115,65 @@ class NewsletterController extends Controller
         $newsletter->subject = $validated['subject'];
         $newsletter->to = array_key_exists('to', $validated) ? $validated['to'] : [];
         $newsletter->body = $validated['body'];
+
+        // Illegal to associate attachments to daughter newsletter
+        if ($newsletter->parent_id == null) {
+            $toRemove = $newsletter->attachments()->whereNotIn('id', $validated['attachments'])->get();
+            foreach( $toRemove as $att ) {
+                $att->parent()->dissociate()->save();
+            }
+
+            // This should not be needed, meaning when a file is uploaded it is automatically
+            // associated to the newsletter. But who knows, bug can happen, so this is
+            // redundancy
+            $toAdd = File::whereIn('id', $validated['attachments'])->whereNull('parent_id')->get();
+            foreach( $toAdd as $att ) {
+                $att->parent()->associate($newsletter)->save();
+            }
+        }
+
         $newsletter->save();
 
         return redirect()->back()->with('notistack', ['success', 'Bozza salvata']);
     }
 
+    public function uploadAttachments(Newsletter $newsletter, Request $request)
+    {
+        $this->authorize('edit', $newsletter);
+
+        $validated = $request->validate([
+            'attachments' => 'required|array',
+            'attachments.*' => 'required|mimes:' . implode(",", [...File::ALLOWED_FORMATS, ...File::ALLOWED_IMAGES_FORMATS])
+        ]);
+
+        $outputs = [];
+
+        foreach ($validated['attachments'] as $attch) {
+            $filename = $attch->getClientOriginalName();
+            $extension = pathinfo($filename)['extension'];
+
+            // Compute cleaned file name
+            $cleaned_name = preg_replace("([^\w\s\d\_])", "", str_replace(" ", "_", pathinfo($filename)['filename']));
+
+            // Upload file
+            $file = File::create();
+            $file->handle =  $cleaned_name . '_' . $file->id . '.' . $extension;
+            $file->parent()->associate($newsletter)->save();
+            $file->save();
+
+            $attch->storeAs('files', $file->handle);
+
+            $outputs[] = $file;
+        }
+
+        return response()->json($outputs);
+    }
+
     public function preview(Newsletter $newsletter)
     {
         $this->authorize('edit', $newsletter);
+
+        $newsletter->load('attachments');
 
         $user = Auth::user()->identity->load('emails');
         $email = null;
@@ -180,7 +237,8 @@ class NewsletterController extends Controller
                 'body' => $newsletter->body,
                 'owner_id' => $newsletter->owner_id,
                 'owner_type' => $newsletter->owner_type,
-                'from' => $froms[$address]
+                'from' => $froms[$address],
+                'parent_id' => $newsletter->id
             ]);
             $newsletter->to = array_slice($newsletter->to, 0, -EMAILS_PER_PAGE);
 
@@ -220,12 +278,12 @@ class NewsletterController extends Controller
             $message->setBcc([...$nl->to, $debug_addr]);
             $message->setReplyTo("info@alumniscuolagalileiana.it");
             $message->setFrom(["info@alumniscuolagalileiana.it" => "Associazione Alumni Scuola Galileiana"]);
-            
+
             // Add reference to the newsletter
             $headers = $message->getHeaders();
             $headers->addTextHeader('X-Newsletter-ID', $nl->id . " daughter of " . $newsletter->id);
             $headers->addTextHeader('X-Newsletter-progress', $count . "/" . count($newsletters));
-            
+
             $swift_mailer->send($message);
 
             // TODO distinguish MAIL_SENT, NEWSLETTER_SENT, NEWSLETEER_DEBUG_SENT

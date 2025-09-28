@@ -4,17 +4,23 @@ import TokenizableInput from "../Libs/react-tokenizable-inputs/TokenizableInput"
 import { enqueueSnackbar } from "notistack";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import EmptyDialog from "../Layout/EmptyDialog";
 import sanitizeHtml from "sanitize-html";
+import { useDropzone } from "react-dropzone";
 
 import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
 import { themeQuartz } from "ag-grid-community";
 import { ModuleRegistry, ClientSideRowModelModule, ColumnAutoSizeModule, QuickFilterModule } from 'ag-grid-community';
-import { AlumnusStatus, bgAndContrast } from "../Utils";
+import { AlumnusStatus, asyncPostWithResult, bgAndContrast, noninertiaPostRequest, postRequest } from "../Utils";
 import DefaultEditor, { BtnBold, BtnBulletList, BtnItalic, BtnLink, BtnNumberedList, BtnRedo, BtnStrikeThrough, BtnUnderline, BtnUndo, Editor, EditorProvider, Separator, Toolbar } from "react-simple-wysiwyg";
 import { to } from "@react-spring/web";
 ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnAutoSizeModule, QuickFilterModule]);
+
+function delFromArray(arr, idx) {
+    const newarr = arr.toSpliced(idx, 1)
+    return newarr;
+}
 
 function StatusTooltip({ status }) {
     if (AlumnusStatus.status[status])
@@ -117,6 +123,53 @@ function Groups({ to, setTo, setNotFound }) {
     </>
 }
 
+function AttachmentSelector({ attachments, setAttachments, newsletterId }) {
+    const [loading, setIsLoading] = useState(false);
+    const [errors, setErrors] = useState("");
+
+    const onDrop = acceptedAttachments => {
+        if (acceptedAttachments.length == 0) return;
+
+        noninertiaPostRequest(
+            'newsletter.uploadAttachments',
+            { attachments: acceptedAttachments },
+            setIsLoading,
+            { newsletter: newsletterId },
+            (data) => {
+                setAttachments([...attachments, ...data]);
+            },
+            true,
+            (data) => {
+                if (data?.errors) {
+                    setErrors(Object.values(data?.errors).flat().join("\n"));
+                }
+            }
+        )
+    }
+
+    const { getRootProps, getInputProps } = useDropzone({ onDrop, multiple: true })
+
+    return <>
+        <div {...getRootProps()} className="border-2 border-dashed rounded-md my-4 flex flex-col items-center p-4">
+            <input {...getInputProps()} />
+            <FontAwesomeIcon icon={solid('file-arrow-up')} className="text-4xl" />
+            <div className="text-center">Trascina qui il file da caricare, o clicca per selezionarlo dal pc.</div>
+            <small>Formati accettati: {usePage().props.allowedFormats.join(", ")}</small>
+            <label className="error whitespace-pre-wrap">{errors}</label>
+        </div>
+        {attachments?.length > 0 && <label>Attualmente caricati:</label>}
+        {
+            attachments?.map((f,idx) =>
+                <div className="w-full flex flex-row items-center" key={f.id}>
+                    <div className="button mr-2" onClick={() => setAttachments(delFromArray(attachments, idx))}><FontAwesomeIcon icon={solid('trash-can')} /></div>
+                    <a target="_blank" href={route('newsletter.attachment', { id: f.id })}>{f.handle}</a>
+                </div>
+            )
+        }
+        <Backdrop open={loading} />
+    </>
+}
+
 export default function Edit() {
     const prevDraft = usePage().props.newsletter;
 
@@ -124,6 +177,7 @@ export default function Edit() {
         subject: prevDraft.subject || "",
         body: prevDraft.body || "",
         to: prevDraft.to || [],
+        attachments: prevDraft.attachments || []
     })
 
     const [notFound, setNotFound] = useState([]);
@@ -139,6 +193,7 @@ export default function Edit() {
     transform((data) => ({
         ...data,
         body: sanitizeHtml(data.body),
+        attachments: data.attachments.map((a) => a.id)
     }));
 
     return (
@@ -174,6 +229,10 @@ export default function Edit() {
                     </Editor>
                 </EditorProvider>
                 <label className="error">{errors.body}</label>
+
+                <label>Allegati</label>
+                <label className="error">{errors.attachments}</label>
+                {prevDraft.parent_id ? <span>Questa bozza è copiata da un'altra bozza, da cui eredita gli allegati. Non è possibile modificare gli allegati specifici, prego modificare la bozza originale <Link href={route('newsletter.edit', { newsletter: prevDraft.parent_id })}>qui</Link>.</span> : <AttachmentSelector attachments={data.attachments} setAttachments={(newVal) => setData('attachments', newVal)} newsletterId={prevDraft.id} />}
 
                 <label>Destinatari</label>
                 <TokenizableInput

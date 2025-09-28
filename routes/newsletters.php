@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\NewsletterController;
 use Illuminate\Support\Facades\Route;
 
@@ -10,6 +11,8 @@ Route::prefix('/newsletters')->group( function () {
     
     Route::get('/edit/{newsletter}', [ NewsletterController::class, 'edit' ] )->name('newsletter.edit');
     Route::post('/edit/{newsletter}', [ NewsletterController::class, 'edit_post' ] );
+    Route::post('/uploadAttachments/{newsletter}', [ NewsletterController::class, 'uploadAttachments' ] )->name('newsletter.uploadAttachments');
+    Route::get('/attachment/{id}', [ FileController::class, 'fromId' ] )->name('newsletter.attachment');
     
     Route::get('/preview/{newsletter}', [ NewsletterController::class, 'preview' ] )->name('newsletter.preview');
     
