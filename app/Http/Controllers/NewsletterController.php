@@ -20,9 +20,6 @@ use Swift_Message;
 use Swift_Preferences;
 use Swift_SmtpTransport;
 
-define('EMAILS_PER_PAGE', 45);
-define('PAGES_PER_ADDRESS', 4);
-
 class NewsletterController extends Controller
 {
     public function list()
@@ -216,12 +213,15 @@ class NewsletterController extends Controller
     {
         $this->authorize('send', $newsletter);
 
-        $froms = explode(",", env('MAIL_FROM_BULK', ""));
+        $froms_all = explode(",", env('MAIL_FROM_BULK', ""));
         $froms_pw = env('MAIL_FROM_BULK_PASSWORD', "");
+
+        $emails_per_page = env('EMAILS_PER_PAGE', 45);
+        $pages_per_address = env('PAGES_PER_ADDRESS', 4);
 
         $debug_addr = env('MAIL_FROM_ADDRESS', "");
 
-        if (count($froms) == 0) {
+        if (count($froms_all) == 0) {
             return redirect()->back()->with('notistack', ['error', 'Nessun indirizzo di invio configurato']);
         }
 
@@ -229,11 +229,13 @@ class NewsletterController extends Controller
             return redirect()->back()->with('notistack', ['error', 'Nessun destinatario']);
         }
 
-        if (count($newsletter->to) > EMAILS_PER_PAGE * PAGES_PER_ADDRESS * count($froms)) {
-            return redirect()->back()->with('notistack', ['error', 'Troppi indirizzi email. Max ' . (EMAILS_PER_PAGE * PAGES_PER_ADDRESS * count($froms)) . ', richiesti ' . count($newsletter->to)]);
-        }
-
         // TODO add check for multiple emails on the same day
+        $used_from = Newsletter::whereDate('sent_at', '>=', now()->subDays(1))->select('from')->distinct()->pluck('from')->toArray();
+        $froms = array_values( array_diff($froms_all, $used_from) );
+
+        if (count($newsletter->to) > $emails_per_page * $pages_per_address * count($froms)) {
+            return redirect()->back()->with('notistack', ['error', 'Troppi indirizzi email. Max ' . ($emails_per_page * $pages_per_address * count($froms)) . ' rimanenti oggi, richiesti ' . count($newsletter->to)]);
+        }
 
         $newsletters = [];
 
@@ -253,20 +255,20 @@ class NewsletterController extends Controller
             $attachments[] = Swift_Attachment::fromPath( $att->path());
         }
 
-        while (count($newsletter->to) > EMAILS_PER_PAGE) {
+        while (count($newsletter->to) > $emails_per_page) {
             $newsletters[] = Newsletter::create([
                 'subject' => $newsletter->subject,
-                'to' => array_slice($newsletter->to, -EMAILS_PER_PAGE),
+                'to' => array_slice($newsletter->to, -$emails_per_page),
                 'body' => $newsletter->body,
                 'owner_id' => $newsletter->owner_id,
                 'owner_type' => $newsletter->owner_type,
                 'from' => $froms[$address],
                 'parent_id' => $newsletter->id
             ]);
-            $newsletter->to = array_slice($newsletter->to, 0, -EMAILS_PER_PAGE);
+            $newsletter->to = array_slice($newsletter->to, 0, -$emails_per_page);
 
             $page++;
-            if ($page >= PAGES_PER_ADDRESS) {
+            if ($page >= $pages_per_address) {
                 $page = 0;
                 $address++;
             }
