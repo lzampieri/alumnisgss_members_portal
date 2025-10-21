@@ -84,6 +84,18 @@ class NewsletterController extends Controller
             else $role->identities = Alumnus::role($role)->with('emails')->get()->concat(External::role($role)->with('emails')->get());
         }
 
+        // Aspirant
+        foreach (Alumnus::require_ratification as $i=>$status) {
+            $roles[] = [
+                'id' => -$i-1,
+                'name' => 'aspirant_' . $status,
+                'common_name' => 'Candidati ' . Alumnus::AlumnusStatusLabels[ $status ],
+                'identities' => Alumnus::where('status','!=',$status)->whereHas('ratifications', function ($query) use ($status) {
+                    $query->where('required_state', $status)->whereNull('document_id');
+                })->with('emails')->get()
+            ];
+        }
+
 
         return Inertia::render(
             'Newsletter/Edit',

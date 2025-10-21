@@ -23,7 +23,7 @@ class Alumnus extends Identity
     const public_status = ['member', 'student_member', 'pre_enrolled'];
 
     // Status for which entering or exiting required ratification
-    const require_ratification = ['member'];
+    const require_ratification = ['member', 'student_member'];
 
     // Assignable status without ratification
     public static function availableStatus(Alumnus $alumnus = null)
