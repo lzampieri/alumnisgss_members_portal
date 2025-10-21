@@ -31,6 +31,7 @@ export class AlumnusStatus {
         hasnt_right: { label: 'Non avente diritto', acronym: 'NAD', color: '#FF00FF' },
         dead: { label: 'Deceduto', acronym: 'D', color: '#003300' },
         not_agreed: { label: 'Rifiutante', acronym: 'R', color: '#FF0000' },
+        honorary: { label: 'Socio Onorario', acronym: 'O', color: '#00CC00' },
     };
 }
 

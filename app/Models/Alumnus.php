@@ -17,13 +17,14 @@ class Alumnus extends Identity
         'pre_enrolled',
         'not_reached', 'student_not_reached', 'student_not_agreed', 'hasnt_right',
         'dead',
-        'not_agreed'
+        'not_agreed',
+        'honorary'
     ];
     // Public visible status
     const public_status = ['member', 'student_member', 'pre_enrolled'];
 
     // Status for which entering or exiting required ratification
-    const require_ratification = ['member', 'student_member'];
+    const require_ratification = ['member', 'student_member', 'honorary'];
 
     // Assignable status without ratification
     public static function availableStatus(Alumnus $alumnus = null)
@@ -61,7 +62,8 @@ class Alumnus extends Identity
         'student_not_agreed' => 'Studente rifiutante',
         'hasnt_right' => 'Non avente diritto',
         'dead' => 'Deceduto',
-        'not_agreed' => 'Rifiutante'
+        'not_agreed' => 'Rifiutante',
+        'honorary' => 'Socio onorario'
     ];
     // Colors ( for export xlsx )
     const AlumnusStatusColors = [
@@ -74,6 +76,7 @@ class Alumnus extends Identity
         'hasnt_right' => 'FF00FF',
         'dead' => '003300',
         'not_agreed' => 'FF0000',
+        'honorary' => '00CC00',
     ];
 
 
