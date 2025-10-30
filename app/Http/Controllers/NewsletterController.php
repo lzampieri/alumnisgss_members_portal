@@ -58,7 +58,7 @@ class NewsletterController extends Controller
 
         $emails = Email::whereHas('identity')->with('identity')->get();
         $emails = $emails->sortBy([['identity.surname', 'asc'], ['identity.name', 'asc'], ['primary', 'desc']]);
-        $emails = $emails->append('canView')->filter->canView->toArray();
+        $emails = array_values( $emails->append('canView')->filter->canView->toArray() );
 
         for ($i = 0; $i < count($emails); $i++) {
             if ($i == 0 || ($emails[$i]['identity']['id'] != $emails[$i - 1]['identity']['id'])) {
@@ -78,14 +78,20 @@ class NewsletterController extends Controller
             return $user->hasPermissionTo('user-edit-' . $role->name);
         });
 
+        $aspirant_toappend = [];
+
         foreach ($roles as &$role) {
             if ($role->name == 'everyone') $role->identities = Alumnus::with('emails')->get()->concat(External::with('emails')->get());
             else if (in_array($role->name, Alumnus::public_status)) $role->identities = Alumnus::where('status', $role->name)->with('emails')->get();
             else $role->identities = Alumnus::role($role)->with('emails')->get()->concat(External::role($role)->with('emails')->get());
+
+            if( in_array( $role->name, Alumnus::require_ratification ) ) $aspirant_toappend[] = $role->name;
         }
 
+        $roles = array_values( $roles->toArray() );
+
         // Aspirant
-        foreach (Alumnus::require_ratification as $i=>$status) {
+        foreach ($aspirant_toappend as $i=>$status) {
             $roles[] = [
                 'id' => -$i-1,
                 'name' => 'aspirant_' . $status,
@@ -101,7 +107,7 @@ class NewsletterController extends Controller
             'Newsletter/Edit',
             [
                 'newsletter' => $newsletter,
-                'rubrica' => array_values($emails),
+                'rubrica' => $emails,
                 'groups' => $roles,
                 'allowedFormats' => [...File::ALLOWED_FORMATS, ...File::ALLOWED_IMAGES_FORMATS]
             ]
