@@ -7,6 +7,8 @@ use App\Traits\SoftEditsAreLogged;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use function PHPUnit\Framework\isNull;
+
 class Newsletter extends Model
 {
     use SoftDeletes;
@@ -33,13 +35,24 @@ class Newsletter extends Model
 
     public function parent()
     {
-        return $this->morphTo('parent_id');
+        return $this->belongsTo(Newsletter::class, 'parent_id');
     }
 
-    public function attachments()
+    public function childrens()
     {
-        if( $this->parent_id )
-            return $this->parent()->morphMany(File::class, 'parent');
+        return $this->hasMany(Newsletter::class, 'parent_id');
+    }
+
+    public function getAttachmentsAttribute()
+    {
+        if( is_null( $this->parent_id ) )
+            return $this->attch_mine;
+        else
+            return $this->parent->attch_mine;
+    }
+
+    public function attch_mine()
+    {
         return $this->morphMany(File::class, 'parent');
     }
 

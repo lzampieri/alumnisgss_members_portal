@@ -54,7 +54,7 @@ class NewsletterController extends Controller
     {
         $this->authorize('edit', $newsletter);
 
-        $newsletter->load('attachments');
+        $newsletter->append('attachments');
 
         $emails = Email::whereHas('identity')->with('identity')->get();
         $emails = $emails->sortBy([['identity.surname', 'asc'], ['identity.name', 'asc'], ['primary', 'desc']]);
@@ -135,7 +135,7 @@ class NewsletterController extends Controller
 
         // Illegal to associate attachments to daughter newsletter
         if ($newsletter->parent_id == null) {
-            $toRemove = $newsletter->attachments()->whereNotIn('id', $validated['attachments'])->get();
+            $toRemove = $newsletter->attch_mine()->whereNotIn('id', $validated['attachments'])->get();
             foreach( $toRemove as $att ) {
                 $att->parent()->dissociate()->save();
             }
@@ -190,7 +190,7 @@ class NewsletterController extends Controller
     {
         $this->authorize('edit', $newsletter);
 
-        $newsletter->load('attachments');
+        $newsletter->append('attachments');
 
         $user = Auth::user()->identity->load('emails');
         $email = null;
@@ -342,5 +342,28 @@ class NewsletterController extends Controller
         }
 
         return redirect()->route('newsletters')->with('notistack', ['success', 'Invio avvenuto con successo']);
+    }
+
+    public function view(Newsletter $newsletter)
+    {
+        $this->authorize('view', $newsletter);
+
+        $newsletter->load('parent');
+        $newsletter->append('attachments');
+
+        $parent = $newsletter;
+        if( $newsletter->parent ) $parent = $newsletter->parent;
+
+        $alladdresses_sent    =  $parent->childrens()->whereNotNull('sent_at')->pluck('to')->flatten()->unique();
+        $alladdresses_waiting =  $parent->childrens()->whereNull('sent_at')   ->pluck('to')->flatten()->unique();
+
+        return Inertia::render(
+            'Newsletter/View',
+            [
+                'newsletter' => $newsletter,
+                'alladdresses_sent' => $alladdresses_sent,
+                'alladdresses_waiting' => $alladdresses_waiting,
+            ]
+        );
     }
 }

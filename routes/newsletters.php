@@ -17,4 +17,6 @@ Route::prefix('/newsletters')->group( function () {
     Route::get('/preview/{newsletter}', [ NewsletterController::class, 'preview' ] )->name('newsletter.preview');
     
     Route::get('/send/{newsletter}', [ NewsletterController::class, 'send' ] )->name('newsletter.send');
+
+    Route::get('/view/{newsletter}', [ NewsletterController::class, 'view' ] )->name('newsletter.view');
 });

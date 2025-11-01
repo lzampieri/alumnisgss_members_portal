@@ -32,7 +32,11 @@ export default function List() {
             field: 'status', headerName: 'Stato', valueGetter: ({ data }) => data.sent_at ? "Inviata " + new Date(data?.sent_at).toLocaleDateString('it-IT', { year: 'numeric', month: '2-digit', day: '2-digit' }) : "Bozza", filter: 'agTextColumnFilter',
         },
         {
-            field: 'go', headerName: '', valueGetter: ({ data }) => data.id, cellRenderer: ({ value, data }) => data.sent_at ? "" : <Link className="button" href={route('newsletter.edit', { id: value })}><FontAwesomeIcon icon={solid('pen-to-square')} /></Link>,
+            field: 'go', headerName: '', valueGetter: ({ data }) => data.id, cellRenderer: ({ value, data }) => <>
+                {data.sent_at ? ""
+                    : <Link className="button" href={route('newsletter.edit', { id: value })}><FontAwesomeIcon icon={solid('pen-to-square')} /></Link>}
+                <Link className="button" href={route('newsletter.view', { id: value })}><FontAwesomeIcon icon={solid('eye')} /></Link>
+            </>
         },
         {
             field: 'from', headerName: 'Canale',
