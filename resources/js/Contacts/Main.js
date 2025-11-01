@@ -26,22 +26,26 @@ const STEP = {
 
 export default function Main() {
     const [step,setStep] = useState(STEP.NONE);
-    const [members,setMembers] = useState([]);
-    const [groups,setGroups] = useState([]);
-    const [combs, setCombs] = useState({});
-    const [contacts,setContacts] = useState([]);
+    const [googleData,setGoogleData] = useState([]);
+    const [localData,setLocalData] = useState([]);
+    const [pairs,setPairs] = useState([]);
+    const [localOrphans,setLocalOrphans] = useState([]);
+    // const [members,setMembers] = useState([]);
+    // const [groups,setGroups] = useState([]);
+    // const [combs, setCombs] = useState({});
+    // const [contacts,setContacts] = useState([]);
 
     useEffect(() => step == STEP.NONE && setStep(STEP.DOWNLOAD), []);
 
     return (
         <div className="main-container-large gap-1">
             <Head title="Sincronizzazione rubrica" />
-            { step == STEP.DOWNLOAD && <DataDownloader setMembers={setMembers} setContacts={setContacts} setGroups={setGroups} next={() => setStep(STEP.AUTOCOMBINE)} /> }
-            { step == STEP.AUTOCOMBINE && <AutoCombiner members={members} contacts={contacts} setCombs={setCombs} next={() => setStep(STEP.NEWCONTACTS)} /> }
-            { step == STEP.NEWCONTACTS && <ContactsCreator members={members} combs={combs} setCombs={setCombs} next={() => setStep(STEP.EMAILUPDATE)} /> }
-            { step == STEP.EMAILUPDATE && <EmailUpdater members={members} combs={combs} setMembers={setMembers} setCombs={setCombs} next={() => setStep(STEP.PRIMARYEMAILUPDATE)} /> }
-            { step == STEP.PRIMARYEMAILUPDATE && <PrimaryEmailUpdater members={members} combs={combs} next={() => setStep(STEP.GROUPSUPDATE)} /> }
-            { step == STEP.GROUPSUPDATE && <GroupsUpdater members={members} combs={combs} groups={groups} next={() => setStep(STEP.FINAL)} /> }
+            { step == STEP.DOWNLOAD && <DataDownloader setGoogleData={setGoogleData} setLocalData={setLocalData} next={() => setStep(STEP.AUTOCOMBINE)} /> }
+            { step == STEP.AUTOCOMBINE && <AutoCombiner localData={localData} googleData={googleData} setPairs={setPairs} setLocalOrphans={setLocalOrphans} next={() => setStep(STEP.NEWCONTACTS)} /> }
+            { step == STEP.NEWCONTACTS && <ContactsCreator localOrphans={localOrphans} appendToPairs={(newP) => setPairs([...pairs,...newP])} next={() => setStep(STEP.EMAILUPDATE)} /> }
+            { step == STEP.EMAILUPDATE && <EmailUpdater pairs={pairs} setPairs={setPairs} next={() => setStep(STEP.PRIMARYEMAILUPDATE)} /> }
+            { step == STEP.PRIMARYEMAILUPDATE && <PrimaryEmailUpdater pairs={pairs} next={() => setStep(STEP.FINAL)} /> }
+            {/* { step == STEP.GROUPSUPDATE && <GroupsUpdater members={members} combs={combs} groups={groups} next={() => setStep(STEP.FINAL)} /> } */}
             { step == STEP.FINAL && <Final members={members} combs={combs} contacts={contacts} groups={groups} /> }
         </div>
     );

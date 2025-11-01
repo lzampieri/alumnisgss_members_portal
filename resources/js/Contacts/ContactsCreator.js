@@ -10,22 +10,19 @@ const STEP = {
     SAVED: 2
 }
 
-function delFromObject(obj, key) {
-    const newobj = { ...obj };
-    delete newobj[key];
-    return newobj;
+function delFromArray(arr, idx) {
+    const newarr = arr.toSpliced(idx, 1)
+    return newarr;
 }
 
 // This guy is inside Main.js
-export default function ContactsCreator({ members, combs, setCombs, next }) {
+export default function ContactsCreator({ localOrphans, appendToPairs, next }) {
     const [step, setStep] = useState(STEP.LIST);
 
-    const [membersToCreate, setMembersToCreate] = useState([]);
+    const [toCreate, setToCreate] = useState(localOrphans);
 
     useEffect(() => {
-        let mtc = Object.fromEntries(Object.values(members).filter(member => !(member['id'] in combs)).map(member => [member['id'], member]));
-        setMembersToCreate( mtc );
-        if( Object.keys(mtc).length == 0 ) next(); // If nothing to create, the step is skipped
+        if( localOrphans.length == 0 ) setStep(STEP.SAVED); // If nothing to create, the step is skipped
     }, []) // List of members to create is initialized at the beginning
 
     useEffect(() => {
@@ -34,29 +31,24 @@ export default function ContactsCreator({ members, combs, setCombs, next }) {
         }
     }, [step]);
 
-    const parseResult = (output) => {
-        setCombs( { ...combs, ...Object.fromEntries( output.map( o => [ o['member_id'], o ] ) ) } );
-        setStep(STEP.SAVED);
-    }
-
     return (
         <div className="flex flex-col items-center">
             <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
-                Verranno creati <b>{Object.keys(membersToCreate).length}</b> nuovi contatti.<br />
-                {step == STEP.LIST && <div className="button" onClick={() => setMembersToCreate({})}>
+                Verranno creati <b>{localOrphans.length}</b> nuovi contatti.<br />
+                {step == STEP.LIST && <div className="button" onClick={() => next()}>
                     Non creare nulla di nuovo
                 </div> }
                 {step == STEP.LIST && <table><tbody>
                     <tr>
                         <th className="px-2">Nome sul portale</th>
-                        <th className="px-2">Nome nella rubrica</th>
+                        <th className="px-2">Nome su Gmail</th>
                     </tr>
-                    {Object.keys(membersToCreate).map((member_id, index) => {
+                    {toCreate.map((local, index) => {
                         return (
-                            <tr className={index % 2 == 0 ? "bg-gray-100" : ""} key={member_id}>
-                                <td className="px-2">{membersToCreate[member_id]['name']} {membersToCreate[member_id]['surname']}</td>
-                                <td className="px-2">{membersToCreate[member_id]['name']} {membersToCreate[member_id]['surname']}</td>
-                                <td><FontAwesomeIcon icon={solid('trash')} className="icon-button" onClick={() => { setMembersToCreate(delFromObject(membersToCreate, member_id)); }} /></td>
+                            <tr className={index % 2 == 0 ? "bg-gray-100" : ""} key={index}>
+                                <td className="px-2">{local['name']} {local['surname']}</td>
+                                <td className="px-2">{local['name']} {local['surname']}</td>
+                                <td><FontAwesomeIcon icon={solid('trash')} className="icon-button" onClick={() => { setToCreate(delFromArray(toCreate, index)); }} /></td>
                             </tr>
                         )
                     })}
@@ -64,13 +56,19 @@ export default function ContactsCreator({ members, combs, setCombs, next }) {
             </div>
 
             {step == STEP.LIST && <div className="button" onClick={() => setStep(STEP.SAVING)}>
-                {Object.keys(membersToCreate).length > 0 ? "Salva e continua" : "Continua"}
+                {toCreate.length > 0 ? "Salva e continua" : "Continua"}
             </div>}
 
 
             {step == STEP.SAVING && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
                 Sto salvando...<br />
-                <SlowerDown route={'contacts.create'} list={Object.keys(membersToCreate)} setFinish={parseResult} />
+                <SlowerDown route={'contacts.create'} list={toCreate.map(l => l['id'])} setFinish={(output) => {
+                    appendToPairs( output.map( out => [
+                        toCreate.find((ctc) => ctc['id'] == out['member_id']),
+                        out
+                    ]) );
+                    setStep(STEP.SAVED);
+                }} />
             </div>}
 
             {step == STEP.ERROR && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">

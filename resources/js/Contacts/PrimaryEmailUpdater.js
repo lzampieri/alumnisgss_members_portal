@@ -12,24 +12,24 @@ const STEP = {
     SAVED: 4
 }
 
-function compareContacts(members, combs, setDifferences, setStep) {
+function compareContacts(pairs, setDifferences, setStep) {
     const differences = []
 
-    Object.entries(combs).forEach(([member_id, contact]) => {
-        const member = members[member_id];
-        const emails_onportal = member.emails.map(email => email.address);
-        const emails_ongoogle = contact.emails;
+    pairs.forEach(({ local, google }) => {
+        const emails_onportal = local.emails.map(email => email.address);
+        const emails_ongoogle = google.emails;
 
-        if( emails_ongoogle[0] == emails_onportal[0] ) return;
-        
+        if (emails_onportal.length * emails_ongoogle.length == 0) return;
+        if (emails_ongoogle[0] == emails_onportal[0]) return;
+
         // First email is different! Should change
-        difference = { member: member, contact: contact };
-        
-        difference.first_onportal_is_ongoogle = emails_ongoogle.findIndex( s => s == emails_onportal[0] );
+        difference = { local: local, google: google };
 
-        difference.first_ongoogle_is_onportal = emails_onportal.findIndex( s => s == emails_ongoogle[0] );
+        difference.first_onportal_is_ongoogle = emails_ongoogle.findIndex(s => s == emails_onportal[0]);
 
-        if( difference.first_onportal_is_ongoogle + difference.first_ongoogle_is_onportal > -2)
+        difference.first_ongoogle_is_onportal = emails_onportal.findIndex(s => s == emails_ongoogle[0]);
+
+        if (difference.first_onportal_is_ongoogle + difference.first_ongoogle_is_onportal > -2)
             differences.push(difference);
     })
 
@@ -58,15 +58,15 @@ function priorOnGoogle(email, resId, setProcessing, onSuccess) {
 }
 
 // This guy is inside Main.js
-export default function PrimaryEmailUpdater({ members, combs, next }) {
+export default function PrimaryEmailUpdater({ pairs, next }) {
     const [step, setStep] = useState(STEP.COMPARING);
     const [differences, setDifferences] = useState([]);
     const [processing, setProcessing] = useState(false);
 
-    useEffect(() => compareContacts(members, combs, setDifferences, setStep), []);
+    useEffect(() => compareContacts(pairs, setDifferences, setStep), []);
 
     useEffect(() => {
-        if( step == STEP.SAVED ) {
+        if (step == STEP.SAVED) {
             next();
         }
     }, [step]);
@@ -81,7 +81,7 @@ export default function PrimaryEmailUpdater({ members, combs, next }) {
                 </svg>
             </div>}
 
-            { step == STEP.LIST && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
+            {step == STEP.LIST && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
                 {differences.length} contatti hanno l'indirizzo prioritario diverso tra portale e google.<br />
                 <table><tbody>
                     <tr>
@@ -89,23 +89,23 @@ export default function PrimaryEmailUpdater({ members, combs, next }) {
                         <th className="px-2">Indirizzi sul portale</th>
                         <th className="px-2">Indirizzi su google</th>
                     </tr>
-                    {differences.map(({ member, contact, first_onportal_is_ongoogle, first_ongoogle_is_onportal }, index) => {
+                    {differences.map(({ local, google, first_onportal_is_ongoogle, first_ongoogle_is_onportal }, index) => {
                         return (
                             <tr className={index % 2 == 0 ? "bg-gray-100" : ""} key={index}>
-                                <td className="px-2">{member['name']} {member['surname']}</td>
+                                <td className="px-2">{local['name']} {local['surname']}</td>
                                 <td className="px-2">
-                                    { member.emails.map( ( email, idx ) => <p className={idx == 0 ? "font-bold" : ""} key={email.address}>{email.address}</p> ) }
-                                    { first_onportal_is_ongoogle > -1 && <div className="button justify-self-center" onClick={() => priorOnGoogle(member.emails[0].address, contact['id'], setProcessing, () => setDifferences(differences.toSpliced(index,1)))} ><FontAwesomeIcon icon={solid('angles-right')} /></div>}
+                                    {local.emails.map((email, idx) => <p className={idx == 0 ? "font-bold" : ""} key={idx}>{email.address}</p>)}
+                                    {first_onportal_is_ongoogle > -1 && <div className="button justify-self-center" onClick={() => priorOnGoogle(local.emails[0].address, google['id'], setProcessing, () => setDifferences(differences.toSpliced(index, 1)))} ><FontAwesomeIcon icon={solid('angles-right')} /></div>}
                                 </td>
                                 <td className="px-2">
-                                    { contact.emails.map( ( email, idx ) => <p className={idx == 0 ? "font-bold" : ""} key={email}>{email}</p> ) }
-                                    { first_ongoogle_is_onportal > -1 && <div className="button justify-self-center"  onClick={() => priorOnPortal(contact.emails[0], setProcessing, () => setDifferences(differences.toSpliced(index,1)))} ><FontAwesomeIcon icon={solid('angles-left')}/></div>}
+                                    {google.emails.map((email, idx) => <p className={idx == 0 ? "font-bold" : ""} key={email}>{email}</p>)}
+                                    {first_ongoogle_is_onportal > -1 && <div className="button justify-self-center" onClick={() => priorOnPortal(google.emails[0], setProcessing, () => setDifferences(differences.toSpliced(index, 1)))} ><FontAwesomeIcon icon={solid('angles-left')} /></div>}
                                 </td>
                             </tr>
                         )
                     })}
                 </tbody></table>
-            </div> }
+            </div>}
 
             {step == STEP.LIST && <div className="button" onClick={() => setStep(STEP.SAVED)}>
                 {differences.length > 0 ? "Ignora e continua" : "Continua"}

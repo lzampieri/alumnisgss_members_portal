@@ -9,7 +9,6 @@ const STEP = {
     LIST: 1,
     ADDING_PORTAL: 2,
     ADDING_GOOGLE: 3,
-    UPDATING: 4,
     SAVED: 5
 }
 
@@ -18,35 +17,32 @@ function delFromArray(arr, idx) {
     return newarr;
 }
 
-function compareContacts(members, combs, setToAddOnPortal, setToAddOnGoogle, setStep) {
+function compareContacts(pairs, setToAddOnPortal, setToAddOnGoogle, setStep) {
     const toAddOnPortal = []
     const toAddOnGoogle = []
 
-    Object.entries(combs).forEach(([member_id, contact]) => {
-        const member = members[member_id];
-        const emails_onportal = member.emails.map(email => email.address);
-        const emails_ongoogle = contact.emails;
-
+    pairs.forEach(({ local, google }, index) => {
+        const emails_onportal = local.emails.map(email => email.address);
+        const emails_ongoogle = google.emails;
 
         emails_onportal.forEach(email_onportal => {
-            if( !emails_ongoogle.some( s => s.toLowerCase().trim() == email_onportal.toLowerCase().trim() ) ) {
+            if (!emails_ongoogle.some(s => s.toLowerCase().trim() == email_onportal.toLowerCase().trim())) {
                 toAddOnGoogle.push({
-                    member: member,
-                    contact: contact,
+                    pair_id: index,
                     address: email_onportal
                 })
             }
         })
 
         emails_ongoogle.forEach(email_ongoogle => {
-            if( !emails_onportal.some( s => s.toLowerCase().trim() == email_ongoogle.toLowerCase().trim() ) ) {
+            if (!emails_onportal.some(s => s.toLowerCase().trim() == email_ongoogle.toLowerCase().trim())) {
                 toAddOnPortal.push({
-                    member: member,
-                    contact: contact,
+                    pair_id: index,
                     address: email_ongoogle
                 })
             }
         })
+
     })
 
     setToAddOnPortal(toAddOnPortal);
@@ -54,52 +50,60 @@ function compareContacts(members, combs, setToAddOnPortal, setToAddOnGoogle, set
     setStep(STEP.LIST);
 }
 
-function updateCombs(toAddOnPortal, toAddOnGoogle, members, combs, setMembers, setCombs, setStep) {
-    toAddOnPortal.forEach(({member, contact, address})=> {
-        members[member.id].emails.push({address: address, primary: 0});
-
-    })
-    toAddOnGoogle.forEach(({member, contact, address})=> {
-        combs[member.id].emails.push(address);
-    })
-    setMembers( { ...members } )
-    setCombs( { ...combs } )
-    setStep( STEP.SAVED );
-}
-
 // This guy is inside Main.js
-export default function EmailUpdater({ members, combs, setMembers, setCombs, next }) {
+export default function EmailUpdater({ pairs, setPairs, next }) {
     const [step, setStep] = useState(STEP.COMPARING);
     const [toAddOnPortal, setToAddOnPortal] = useState([]);
     const [toAddOnGoogle, setToAddOnGoogle] = useState([]);
 
-    useEffect(() => compareContacts(members, combs, setToAddOnPortal, setToAddOnGoogle, setStep), []);
+    useEffect(() => compareContacts(pairs, setToAddOnPortal, setToAddOnGoogle, setStep), []);
+
 
     useEffect(() => {
-        if( step == STEP.UPDATING ) {
-            updateCombs(toAddOnPortal, toAddOnGoogle, members, combs, setMembers, setCombs, setStep);
-        }
-        if( step == STEP.SAVED ) {
+        if (step == STEP.SAVED) {
             next();
         }
     }, [step]);
 
-    
-    const toAddOnPortal_data = () => toAddOnPortal.map(({ member, address }) => {
+
+    const toAddOnPortal_data = () => toAddOnPortal.map(({ pair_id, address }) => {
         return {
-            member_id: member['id'],
+            pair_id: pair_id,
+            local_id: pairs[pair_id].local['id'],
             address: address
         }
     });
-    const toAddOnGoogle_data = () => toAddOnGoogle.map(({ contact, address }) => {
+    const toAddOnPortal_response = (output) => {
+        let newPairs = pairs.slice();
+        output.forEach(({pair_id,local}) => newPairs[pair_id].local = local );
+        setPairs(newPairs);
+        setStep(STEP.ADDING_GOOGLE);
+    }
+    const toAddOnGoogle_data = () => toAddOnGoogle.map(({ pair_id, address }) => {
         return {
-            contact: contact['id'],
+            pair_id: pair_id,
+            google_id: pairs[pair_id].google['id'],
             address: address
         }
     });
+    const toAddOnGoogle_response = (output) => {
+        let newPairs = pairs.slice();
+        output.forEach(({pair_id,google}) => newPairs[pair_id].google = google );
+        setPairs(newPairs);
+        setStep(STEP.SAVED);
+    }
 
     return (
         <div className="flex flex-col items-center">
+
+            {step == STEP.LIST && <div className="button" onClick={() => setStep(STEP.SAVED)}>
+                {toAddOnGoogle.length + toAddOnPortal.length > 0 ? "Ignora" : "Continua"}
+            </div>}
+
+            {/* {step == STEP.LIST && <div className="button" onClick={() => { setToAddOnGoogle([toAddOnGoogle[0]]); setToAddOnPortal([toAddOnPortal[0]])}}>
+                {"Test"}
+            </div>} */}
+        
             {step == STEP.COMPARING && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
                 Sto verificando gli indirizzi mail<br />
                 <svg className="animate-spin -ml-1 mr-3 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -108,7 +112,7 @@ export default function EmailUpdater({ members, combs, setMembers, setCombs, nex
                 </svg>
             </div>}
 
-            { step == STEP.LIST && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
+            {step == STEP.LIST && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
                 {toAddOnGoogle.length} indirizzi email verranno importati dal portale a Google.<br />
                 <table><tbody>
                     <tr>
@@ -116,24 +120,25 @@ export default function EmailUpdater({ members, combs, setMembers, setCombs, nex
                         <th className="px-2">Indirizzi sul portale</th>
                         <th className="px-2">Indirizzi su google</th>
                     </tr>
-                    {toAddOnGoogle.map(({member, contact, address}, index) => {
+                    {toAddOnGoogle.map(({ pair_id, address }, index) => {
+                        let { local, google } = pairs[pair_id];
                         return (
                             <tr className={index % 2 == 0 ? "bg-gray-100" : ""} key={index}>
-                                <td className="px-2">{member['name']} {member['surname']}</td>
+                                <td className="px-2">{local['name']} {local['surname']}</td>
                                 <td className="px-2">
-                                    { member.emails.map( ( email ) => <p className={email.address == address ? "font-bold" : ""} key={email.address}>{email.address}</p> ) }
+                                    {local.emails.map((email,idx) => <p className={email.address == address ? "font-bold" : ""} key={idx}>{email.address}</p>)}
                                 </td>
                                 <td className="px-2">
-                                    { contact.emails.map( ( email ) => <p key={email}>{email}</p> ) }
+                                    {google.emails.map((email,idx) => <p key={idx}>{email}</p>)}
                                 </td>
                                 <td><FontAwesomeIcon icon={solid('trash')} className="icon-button" onClick={() => { setToAddOnGoogle(delFromArray(toAddOnGoogle, index)); }} /></td>
                             </tr>
                         )
                     })}
                 </tbody></table>
-            </div> }
+            </div>}
 
-            { step == STEP.LIST && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
+            {step == STEP.LIST && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
                 {toAddOnPortal.length} indirizzi email verranno importati da Google al portale.<br />
                 <table><tbody>
                     <tr>
@@ -141,22 +146,23 @@ export default function EmailUpdater({ members, combs, setMembers, setCombs, nex
                         <th className="px-2">Indirizzi sul portale</th>
                         <th className="px-2">Indirizzi su google</th>
                     </tr>
-                    {toAddOnPortal.map(({member, contact, address}, index) => {
+                    {toAddOnPortal.map(({ pair_id, address }, index) => {
+                        let { local, google } = pairs[pair_id];
                         return (
                             <tr className={index % 2 == 0 ? "bg-gray-100" : ""} key={index}>
-                                <td className="px-2">{member['name']} {member['surname']}</td>
+                                <td className="px-2">{local['name']} {local['surname']}</td>
                                 <td className="px-2">
-                                    { member.emails.map( ( email ) => <p key={email.address}>{email.address}</p> ) }
+                                    {local.emails.map((email,idx) => <p key={idx}>{email.address}</p>)}
                                 </td>
                                 <td className="px-2">
-                                    { contact.emails.map( ( email ) => <p className={email == address ? "font-bold" : ""} key={email}>{email}</p> ) }
+                                    {google.emails.map((email,idx) => <p className={email == address ? "font-bold" : ""} key={idx}>{email}</p>)}
                                 </td>
                                 <td><FontAwesomeIcon icon={solid('trash')} className="icon-button" onClick={() => { setToAddOnPortal(delFromArray(toAddOnPortal, index)); }} /></td>
                             </tr>
                         )
                     })}
                 </tbody></table>
-            </div> }
+            </div>}
 
             {step == STEP.LIST && <div className="button" onClick={() => setStep(STEP.ADDING_PORTAL)}>
                 {toAddOnGoogle.length + toAddOnPortal.length > 0 ? "Salva e continua" : "Continua"}
@@ -165,8 +171,8 @@ export default function EmailUpdater({ members, combs, setMembers, setCombs, nex
 
             {(step == STEP.ADDING_PORTAL || step == STEP.ADDING_GOOGLE) && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
                 Sto salvando...<br />
-                { step == STEP.ADDING_PORTAL && <SlowerDown route={'contacts.addOnPortal'} list={toAddOnPortal_data()} setFinish={() => setStep(STEP.ADDING_GOOGLE)} /> }
-                { step == STEP.ADDING_GOOGLE && <SlowerDown route={'contacts.addOnGoogle'} list={toAddOnGoogle_data()} setFinish={() => setStep(STEP.UPDATING)} /> }
+                {step == STEP.ADDING_PORTAL && <SlowerDown route={'contacts.addOnPortal'} list={toAddOnPortal_data()} setFinish={toAddOnPortal_response} />}
+                {step == STEP.ADDING_GOOGLE && <SlowerDown route={'contacts.addOnGoogle'} list={toAddOnGoogle_data()} setFinish={toAddOnGoogle_response} />}
             </div>}
 
             {step == STEP.ERROR && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">

@@ -10,6 +10,7 @@ async function startProcessing(route, list, setDone, setFinish) {
 
     while( index < list.length ) {
         try {
+            // console.log("Contacting ", route, " with data ", list[index])
             output.push(await asyncPostWithResult(route, { item: list[index] }));
         } catch (e) {
             console.log( e );

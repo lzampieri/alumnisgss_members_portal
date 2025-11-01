@@ -8,8 +8,8 @@ Route::prefix('/contacts')->middleware('auth.lev2')->group( function () {
 
 
     // API
-    Route::post('/get_members', [ ContactsSyncController::class, 'getMembers' ] )->name('contacts.get_members');
-    Route::post('/get_contacts', [ ContactsSyncController::class, 'getContacts' ] )->name('contacts.get_contacts');
+    Route::post('/get_members', [ ContactsSyncController::class, 'getLocal' ] )->name('contacts.get_local');
+    Route::post('/get_contacts', [ ContactsSyncController::class, 'getGoogle' ] )->name('contacts.get_google');
     Route::post('/deassociate', [ ContactsSyncController::class, 'deassociate' ] )->name('contacts.deassociate');
     Route::post('/associate', [ ContactsSyncController::class, 'associate' ] )->name('contacts.associate');
     Route::post('/create', [ ContactsSyncController::class, 'create' ] )->name('contacts.create');

@@ -6,8 +6,6 @@ import SlowerDown from "./SlowerDown";
 const STEP = {
     ERROR: 500,
     NONE: -1,
-    PREVCOMB: 0,
-    AUTOCOMB: 1,
     COMBDONE: 2,
     REMOVING: 3,
     ADDING: 4,
@@ -18,76 +16,80 @@ function parseName(name) {
     return name.split(" ").sort().join("").replace(/\([^\)]+\)/g, '').replace(/^[a-zA-Z0-9]/g, '');
 }
 
-async function autocombine(members, contacts, setStatus, setPrevComb, setAutoComb) {
-    setStatus(STEP.PREVCOMB);
+async function autocombine(localData, googleData, setStatus, setPrevComb, setAutoComb, setLocalUnpaired) {
 
-    let prevComb = {};
-    let contacts_dict = {};
-    contacts.forEach((contact) => {
-        if (contact['member_id'] && contact['member_id'] in members) {
-            prevComb[contact['member_id']] = contact;
-            // console.log("Associated ", contact['name'], " with ", members[contact['member_id']]['name']);
-        } else {
-            contacts_dict[parseName(contact['name'])] = contact;
-            // console.log("Keyd ", contact['name'], ' as ', parseName(contact['name']));
+    let prevCombinedDict = Object.fromEntries(googleData.map(ctc => ['member_id' in ctc ? ctc['member_id'] : parseName(ctc['name']), ctc]))
+
+    let prevCombs = [];
+    let autoCombs = [];
+    let unpaired = [];
+
+    localData.forEach((localEntry) => {
+
+        // Already associated
+        if (localEntry.id in prevCombinedDict) {
+            prevCombs.push({
+                'local': localEntry,
+                'google': prevCombinedDict[localEntry.id]
+            });
+            return;
         }
+
+        // Automatically associated
+        let namekey = parseName(localEntry['name'] + " " + localEntry['surname']);
+        if (namekey in prevCombinedDict) {
+            autoCombs.push({
+                'local': localEntry,
+                'google': prevCombinedDict[namekey]
+            });
+            return;
+        }
+
+        // Not associated
+        unpaired.push(localEntry);
     })
 
-    setPrevComb(prevComb);
-    setStatus(STEP.AUTOCOMB);
+    setPrevComb(prevCombs);
+    setAutoComb(autoCombs);
+    setLocalUnpaired(unpaired);
 
-    let autoComb = {};
-    Object.keys(members).forEach((member_id) => {
-        if (members[member_id]['contact']) return;
-
-        let key = parseName(members[member_id]['name'] + " " + members[member_id]['surname']);
-        if (key in contacts_dict) {
-            autoComb[member_id] = contacts_dict[key];
-        }
-    })
-
-    setAutoComb(autoComb);
     setStatus(STEP.COMBDONE);
 }
 
-function delFromObject(obj, key) {
-    const newobj = { ...obj };
-    delete newobj[key];
-    return newobj;
+function delFromArray(arr, idx) {
+    const newarr = arr.toSpliced(idx, 1)
+    return newarr;
 }
 
 // This guy is inside Main.js
-export default function AutoCombiner({ members, contacts, setCombs, next }) {
+export default function AutoCombiner({ localData, googleData, setPairs, setLocalOrphans, next }) {
     const [status, setStatus] = useState(STEP.NONE);
+
     const [prevComb, setPrevComb] = useState({});
     const [autoComb, setAutoComb] = useState({});
+    const [localUnpaired, setLocalUnpaired] = useState({});
 
     const [prevToRemove, setPrevToRemove] = useState([]);
 
     useEffect(() => {
-        autocombine(members, contacts, setStatus, setPrevComb, setAutoComb);
+        autocombine(localData, googleData, setStatus, setPrevComb, setAutoComb, setLocalUnpaired);
     }, []);
-
-    const proceed = () => {
-        setCombs({ ...prevComb, ...autoComb });
-        next();
-    }
 
     useEffect(() => {
         if (status == STEP.SAVED) {
-            proceed();
+            setPairs([...prevComb, ...autoComb]);
+            setLocalOrphans(localUnpaired);
+            next();
         }
     }, [status]);
 
     return (
         <div className="flex flex-col items-center">
             <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
-                Sto analizzando {Object.keys(members).length} soci e {contacts.length} contatti. <br />
-                È in corso l'abbinamento automatico... <br />
-                {status == STEP.PREVCOMB && "Sto verificando i contatti già abbinati in precedenza..."}
-                {status > STEP.PREVCOMB && "Sono stati riabbinati " + Object.keys(prevComb).length + " contatti già abbinati in precedenza."}  <br />
-                {status == STEP.PREVCOMB && "Sto abbinando automaticamente i contatti simili..."}
-                {status > STEP.AUTOCOMB && "Sono stati automaticamente abbinati " + Object.keys(autoComb).length + " contatti."}  <br />
+                {status < STEP.COMBDONE ? "Sto analizzando " : "Ho analizzato "} {localData.length} soci dal portale e {googleData.length} contatti da Gmail. <br />
+                {status < STEP.COMBDONE && <>È in corso l'abbinamento automatico... <br /></> }
+                {status >= STEP.COMBDONE && "Sono stati riabbinati " + prevComb.length + " contatti già abbinati in precedenza."}  <br />
+                {status >= STEP.COMBDONE && "Sono stati automaticamente abbinati " + autoComb.length + " contatti."}  <br />
                 {status < STEP.COMBDONE &&
                     <svg className="animate-spin -ml-1 mr-3 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -100,14 +102,19 @@ export default function AutoCombiner({ members, contacts, setCombs, next }) {
                 <table><tbody>
                     <tr>
                         <th className="px-2">Nome sul portale</th>
-                        <th className="px-2">Nome nella rubrica</th>
+                        <th className="px-2">Nome su Gmail</th>
                     </tr>
-                    {Object.keys(autoComb).map((member_id, index) => {
+                    {autoComb.map(({ local, google }, index) => {
                         return (
-                            <tr className={index % 2 == 0 ? "bg-gray-100" : ""} key={member_id}>
-                                <td className="px-2">{members[member_id]['name']} {members[member_id]['surname']}</td>
-                                <td className="px-2">{autoComb[member_id]['name']}</td>
-                                <td><FontAwesomeIcon icon={solid('trash')} className="icon-button" onClick={() => setAutoComb(delFromObject(autoComb, member_id))} /></td>
+                            <tr className={index % 2 == 0 ? "bg-gray-100" : ""} key={index}>
+                                <td className="px-2">{local['name']} {local['surname']}</td>
+                                <td className="px-2">{google['name']}</td>
+                                <td><FontAwesomeIcon icon={solid('trash')} className="icon-button" onClick={() => {
+                                    let autocombnew = autoComb.toSpliced();
+                                    let toAdd = autoCombNew.splice(index,1);
+                                    setAutoComb(autoCombNew);
+                                    setLocalUnpaired([...localUnpaired,...toAdd]);
+                                }} /></td>
                             </tr>
                         )
                     })}
@@ -115,22 +122,25 @@ export default function AutoCombiner({ members, contacts, setCombs, next }) {
             </div>}
 
             {status == STEP.COMBDONE && <div className="button" onClick={() => setStatus(STEP.REMOVING)}>
-                {Object.keys(autoComb).length + prevToRemove.length > 0 ? "Salva e continua" : "Continua"}
+                {autoComb.length + prevToRemove.length > 0 ? "Salva e continua" : "Continua"}
             </div>}
-            
+
             {status == STEP.COMBDONE && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
                 <b>Contatti già abbinati in precedenza</b>
                 <table><tbody>
                     <tr>
                         <th className="px-2">Nome sul portale</th>
-                        <th className="px-2">Nome nella rubrica</th>
+                        <th className="px-2">Nome su Gmail</th>
                     </tr>
-                    {Object.keys(prevComb).map((member_id, index) => {
+                    {prevComb.map(({ local, google }, index) => {
                         return (
-                            <tr className={index % 2 == 0 ? "bg-gray-100" : ""} key={member_id}>
-                                <td className="px-2">{members[member_id]['name']} {members[member_id]['surname']}</td>
-                                <td className="px-2">{prevComb[member_id]['name']}</td>
-                                <td><FontAwesomeIcon icon={solid('trash')} className="icon-button" onClick={() => { setPrevToRemove([...prevToRemove, prevComb[member_id]['id']]); setPrevComb(delFromObject(prevComb, member_id)); }} /></td>
+                            <tr className={index % 2 == 0 ? "bg-gray-100" : ""} key={index}>
+                                <td className="px-2">{local['name']} {local['surname']}</td>
+                                <td className="px-2">{google['name']}</td>
+                                <td><FontAwesomeIcon icon={solid('trash')} className="icon-button" onClick={() => {
+                                    setPrevToRemove([...prevToRemove, google['id']]);
+                                    setPrevComb(delFromArray(prevComb, index));
+                                }} /></td>
                             </tr>
                         )
                     })}
@@ -138,14 +148,14 @@ export default function AutoCombiner({ members, contacts, setCombs, next }) {
             </div>}
 
             {status == STEP.COMBDONE && <div className="button" onClick={() => setStatus(STEP.REMOVING)}>
-                {Object.keys(autoComb).length + prevToRemove.length > 0 ? "Salva e continua" : "Continua"}
+                {autoComb.length + prevToRemove.length > 0 ? "Salva e continua" : "Continua"}
             </div>}
 
 
             {(status == STEP.REMOVING || status == STEP.ADDING) && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
                 Sto salvando...<br />
                 {status == STEP.REMOVING && <SlowerDown route={'contacts.deassociate'} list={prevToRemove} setFinish={() => setStatus(STEP.ADDING)} />}
-                {status == STEP.ADDING && <SlowerDown route={'contacts.associate'} list={Object.keys(autoComb).map((member_id) => { return { 'res_id': autoComb[member_id]['id'], 'member_id': member_id } })} setFinish={() => setStatus(STEP.SAVED)} />}
+                {status == STEP.ADDING && <SlowerDown route={'contacts.associate'} list={autoComb.map(({local,google}) => { return { 'local_id': local['id'], 'google_id': google['id'] } })} setFinish={() => setStatus(STEP.SAVED)} />}
             </div>}
 
             {status == STEP.ERROR && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">

@@ -29,7 +29,7 @@ class ContactsSyncController extends Controller
         return Inertia::render('Contacts/Main');
     }
 
-    public function getMembers()
+    public function getLocal()
     {
         $this->authorize('sync', Email::class);
 
@@ -66,7 +66,7 @@ class ContactsSyncController extends Controller
         return $parsed;
     }
 
-    public function getContacts()
+    public function getGoogle()
     {
         $this->authorize('sync', Email::class);
 
@@ -94,51 +94,52 @@ class ContactsSyncController extends Controller
             }
         }
 
-        $groups_data = $peopleService->contactGroups->listContactGroups();
-        $groups_list = [];
-        foreach ($groups_data->getContactGroups() as $group) {
-            if ($group->getGroupType() != 'USER_CONTACT_GROUP') continue;
+        // $groups_data = $peopleService->contactGroups->listContactGroups();
+        // $groups_list = [];
+        // foreach ($groups_data->getContactGroups() as $group) {
+        //     if ($group->getGroupType() != 'USER_CONTACT_GROUP') continue;
 
-            $key = array_search($group->getName(), GROUPS);
-            if ($key === false) continue;
+        //     $key = array_search($group->getName(), GROUPS);
+        //     if ($key === false) continue;
 
-            $groups_list[$key] = [
-                'id' => $group->getResourceName(),
-                'name' => $group->getName(),
-                'members' => []
-            ];
+        //     $groups_list[$key] = [
+        //         'id' => $group->getResourceName(),
+        //         'name' => $group->getName(),
+        //         'members' => []
+        //     ];
 
-            $group_details = $peopleService->contactGroups->get($group->getResourceName(), [
-                'maxMembers' => count($connections)
-            ]);
+        //     $group_details = $peopleService->contactGroups->get($group->getResourceName(), [
+        //         'maxMembers' => count($connections)
+        //     ]);
 
-            if (!$group_details->getMemberResourceNames()) continue;
-            foreach ($group_details->getMemberResourceNames() as $memberId) {
-                $groups_list[$key]['members'][] = $memberId;
-            }
-        }
-        foreach (GROUPS as $key => $group) {
-            if (!array_key_exists($key, $groups_list)) {
-                $draft = new \Google\Service\PeopleService\ContactGroup();
-                $draft->setName(GROUPS[$key]);
+        //     if (!$group_details->getMemberResourceNames()) continue;
+        //     foreach ($group_details->getMemberResourceNames() as $memberId) {
+        //         $groups_list[$key]['members'][] = $memberId;
+        //     }
+        // }
+        // foreach (GROUPS as $key => $group) {
+        //     if (!array_key_exists($key, $groups_list)) {
+        //         $draft = new \Google\Service\PeopleService\ContactGroup();
+        //         $draft->setName(GROUPS[$key]);
 
-                $rqt = new \Google\Service\PeopleService\CreateContactGroupRequest();
-                $rqt->setContactGroup($draft);
+        //         $rqt = new \Google\Service\PeopleService\CreateContactGroupRequest();
+        //         $rqt->setContactGroup($draft);
 
-                $group = $peopleService->contactGroups->create($rqt);
+        //         $group = $peopleService->contactGroups->create($rqt);
 
-                $groups_list[$key] = [
-                    'id' => $group->getResourceName(),
-                    'name' => $group->getName(),
-                    'members' => []
-                ];
-            }
-        }
+        //         $groups_list[$key] = [
+        //             'id' => $group->getResourceName(),
+        //             'name' => $group->getName(),
+        //             'members' => []
+        //         ];
+        //     }
+        // }
 
-        return response()->json([
-            'groups' => $groups_list,
-            'contacts' => array_values($output)
-        ]);
+        return response()->json(array_values($output));
+        // return response()->json([
+        //     'groups' => $groups_list,
+        //     'contacts' => array_values($output)
+        // ]);
     }
 
     public function deassociate(Request $request)
@@ -171,20 +172,20 @@ class ContactsSyncController extends Controller
 
         $peopleService = $this->getPeopleService();
 
-        $etag = $peopleService->people->get($item['res_id'], ['personFields' => 'names'])->getEtag();
+        $etag = $peopleService->people->get($item['google_id'], ['personFields' => 'names'])->getEtag();
 
         $updatedVersion = new \Google\Service\PeopleService\Person();
         $updatedVersion->setEtag($etag);
 
         $newId = new \Google\Service\PeopleService\ExternalId();
-        $newId->setValue($item['member_id']);
+        $newId->setValue(strval($item['local_id']));
         $newId->setType(CUSTOM_FIELD_NAME);
         $newId->setFormattedType(CUSTOM_FIELD_NAME);
 
         $updatedVersion->setExternalIds([$newId]);
 
         $peopleService->people->updateContact(
-            $item['res_id'],
+            $item['google_id'],
             $updatedVersion,
             ['updatePersonFields' => 'externalIds']
         );
@@ -211,7 +212,7 @@ class ContactsSyncController extends Controller
         $newPerson->setNames([$name]);
 
         $newId = new \Google\Service\PeopleService\ExternalId();
-        $newId->setValue($item);
+        $newId->setValue(strval($item));
         $newId->setType(CUSTOM_FIELD_NAME);
         $newId->setFormattedType(CUSTOM_FIELD_NAME);
         $newPerson->setExternalIds([$newId]);
@@ -227,7 +228,7 @@ class ContactsSyncController extends Controller
 
         $item = $request->input('item');
 
-        $alumnus = Alumnus::find($item['member_id']);
+        $alumnus = Alumnus::find($item['local_id']);
         if (!$alumnus) return;
 
         // Check for unicity
@@ -235,7 +236,11 @@ class ContactsSyncController extends Controller
 
         $alumnus->emails()->create(['address' => $item['address']]);
 
-        return response()->json([]);
+        $newProfile = Alumnus::where('id',$item['local_id'])
+            ->with('emails')
+            ->get();
+
+        return response()->json(['pair_id' => $item['pair_id'], 'local' =>  $newProfile]);
     }
 
     public function addOnGoogle(Request $request)
@@ -244,7 +249,7 @@ class ContactsSyncController extends Controller
 
         $item = $request->input('item');
 
-        $resid = $item['contact'];
+        $resid = $item['google_id'];
         $address = $item['address'];
 
         $peopleService = $this->getPeopleService();
@@ -258,7 +263,9 @@ class ContactsSyncController extends Controller
 
         $peopleService->people->updateContact($resid, $person, ['updatePersonFields' => 'emailAddresses']);
 
-        return response()->json([]);
+        $person = $peopleService->people->get($resid, ['personFields' => 'names,emailAddresses,externalIds']);
+
+        return response()->json(['pair_id' => $item['pair_id'], 'google' => $this->parsePerson($person)]);
     }
 
     public function priorOnPortal(Request $request)
