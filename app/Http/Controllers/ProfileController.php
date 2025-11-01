@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ADetailsType;
 use App\Models\Alumnus;
+use App\Models\Email;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -65,6 +66,45 @@ class ProfileController extends Controller
         $alumnus->save();
 
         return redirect()->route('profile')->with(['notistack' => ['success', 'Salvato!']]);
+    }
+    
+    function addEmail_post(Request $request)
+    {
+        $this->authorize('viewHimself', Alumnus::class);
+        
+        $validated = $request->validate([
+            'address' => 'required|email|unique:emails,address'
+        ]);
+
+        $em = Email::create([
+            'address' => $validated['address'],
+            'comment' => "Aggiunto dall'utente"
+        ]);
+
+        $em->identity()->associate( Auth::user()->identity )->save();
+
+        return redirect()->back()->with(['notistack' => ['success', 'Aggiunto']]);
+    }
+
+    function setPrimary_post(Request $request)
+    {
+        $this->authorize('viewHimself', Alumnus::class);
+        
+        $validated = $request->validate([
+            'id' => 'required|numeric',
+        ]);
+        
+        $e = Email::find($validated['id']);
+        
+        if( !$e )
+            return redirect()->back()->with(['notistack' => ['error', 'Indirizzo non trovato']]);
+
+        if( !$e->identity->is(Auth::user()->identity))
+            return redirect()->back()->with(['notistack' => ['error', 'Indirizzo non riconosciuto']]);
+        
+        $e->primary = max( $e->identity->emails()->pluck('emails.primary')->toArray() ) + 1;
+        $e->save();
+        return redirect()->back()->with(['notistack' => ['success', 'Precedenza impostata']]);
     }
     
     public function edit()

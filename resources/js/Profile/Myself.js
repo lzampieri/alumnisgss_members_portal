@@ -1,10 +1,13 @@
 import { Head, Link, usePage } from "@inertiajs/react";
-import { AlumnusStatus, bgAndContrast, bgAndContrastPastel, romanize } from "../Utils";
+import { AlumnusStatus, bgAndContrast, bgAndContrastPastel, postRequest, romanize } from "../Utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import ADetailsType from "../Network/ADetailsType";
 import SmartChip from "../Network/SmartChip";
+import EmptyDialog from "../Layout/EmptyDialog";
+import ManuallyAddEmail from "./ManuallyAddEmail";
+import Backdrop from "../Layout/Backdrop";
 
 function adtRenderer(ad, adt, i) {
 
@@ -20,9 +23,32 @@ function adtRenderer(ad, adt, i) {
         )
 }
 
+function EmailDiv({ e, isFirst, setPrimary, deleteAddress }) {
+    return <div>
+        <FontAwesomeIcon icon={solid('at')} className="mr-2" />
+        {isFirst ? <FontAwesomeIcon icon={solid('star')} className="mr-2 text-[#f5b700]" />
+            : <FontAwesomeIcon icon={solid('star')} className="mr-2 text-gray-200 hover:text-[#f5b700] cursor-pointer" onClick={() => setPrimary(e.id)} />}
+        {e.address}
+        {e.last_login && <span className="text-gray-400 ml-2">Ultimo accesso {new Date(e.last_login).toLocaleDateString('it-IT', { year: 'numeric', month: '2-digit', day: '2-digit' })}</span>}
+    </div>
+}
+
+function emailPrimary(emailId, setProcessing) {
+    postRequest(
+        'profile.set_primary',
+        { id: emailId },
+        setProcessing,
+        {},
+        false, false
+    );
+}
+
 export default function Myself() {
     const alumnus = usePage().props.alumnus;
     const adts = usePage().props.adts;
+
+    const [processing, setProcessing] = useState(false);
+    const [addEmailDialog, setAddEmailDialog] = useState(false);
 
     let roles = alumnus.roles.filter((e, i, self) => i === self.findIndex((ee) => ee.id === e.id));
 
@@ -52,16 +78,17 @@ export default function Myself() {
                 </div>
             </div>
 
-            <div className="font-bold text-primary-main mt-4">Metodi di accesso</div>
-            <ul className="list-disc list-inside">
-                {
-                    alumnus.login_methods.map(lmth => <li key={lmth.id}>
-                        {lmth.credential} ({lmth.driver}) - dal {new Date(lmth.created_at).toLocaleDateString("it-IT")}
-                    </li>
-                    )
-                }
-            </ul>
-
+            <div className="font-bold text-primary-main mt-4">Indirizzi mail</div>
+            <div className="text-gray-400 text-sm">
+                <FontAwesomeIcon icon={solid('circle-info')} className="ml-2 mr-1" />
+                Utilizza la stellina per definire l'indirizzo di preferenza, al quale verrai contattato dall'associazione. Utilizza il "+" per aggiungere un nuovo indirizzo email. Non è possibile cancellare un indirizzo da questa pagina; se vi sono indirizzi errati da cancellare, <Link href={route('ticket.add', { type: 'ProfileEdit' })}> segnalacelo!</Link>
+            </div>
+            {alumnus.emails.map((e, i) => <EmailDiv
+                key={e.id} isFirst={i == 0} e={e}
+                setPrimary={(id) => emailPrimary(id, setProcessing)}
+                deleteAddress={(id) => emailDelete(id, setProcessing)}
+            />)}
+            <ManuallyAddEmail />
 
             <div className="font-bold text-primary-main mt-4">Storico</div>
             <ul className="list-disc list-inside">
@@ -96,7 +123,7 @@ export default function Myself() {
             </div>
             <div className="text-gray-400 text-sm">
                 <FontAwesomeIcon icon={solid('circle-info')} className="ml-2 mr-1" />
-                <b>Chi vede questi dati? </b>Lo scegli tu! Se accetti che i tuoi dati vengano condivisi con tutti i soci, saranno disponibili su questo stesso portale per soci e soci studenti, alla <Link href={route('network')}>pagina dedicata</Link>; altrimenti, rimarranno a sola consultazione dello staff di segreteria e di chi si occupa del networking associativo. I dati segnati come <i>campo nascosto</i> rimangono nascosti a prescindere, e sono utilizzati per soli fini statistici.
+                <b>Chi vede questi dati? </b>Lo scegli tu! Se accetti che i tuoi dati vengano condivisi con tutti i soci, saranno disponibili su questo stesso portale per soci e soci studenti, in una apposita sezione ancora in fase di sviluppo; altrimenti, rimarranno a sola consultazione dello staff di segreteria e di chi si occupa del networking associativo. I dati segnati come <i>campo nascosto</i> rimangono nascosti a prescindere, e sono utilizzati per soli fini statistici.
             </div>
 
             <label>Consenso alla condivisione dei dati</label>
@@ -125,6 +152,8 @@ export default function Myself() {
                 Aggiorna dati
                 <FontAwesomeIcon icon={solid('pen-to-square')} className="ml-2" />
             </Link>
+
+            <Backdrop open={processing} />
 
         </div>
 

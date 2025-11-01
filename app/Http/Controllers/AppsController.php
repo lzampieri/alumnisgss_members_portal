@@ -29,7 +29,7 @@ class AppsController extends Controller
             $apps[] = 'registry';
         }
 
-        if (Auth::user() && Auth::user()->can('viewHimself', Alumnus::class) && Auth::user()->can('viewNetwork', Alumnus::class) ) { // TODO remove permission to network view, it is only for functionality preview!
+        if (Auth::user() && Auth::user()->can('viewHimself', Alumnus::class) ) {
             $apps[] = 'profile';
         }
 

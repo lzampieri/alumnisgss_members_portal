@@ -354,8 +354,11 @@ class NewsletterController extends Controller
         $parent = $newsletter;
         if( $newsletter->parent ) $parent = $newsletter->parent;
 
-        $alladdresses_sent    =  $parent->childrens()->whereNotNull('sent_at')->pluck('to')->flatten()->unique();
-        $alladdresses_waiting =  $parent->childrens()->whereNull('sent_at')   ->pluck('to')->flatten()->unique();
+        $alladdresses_sent    =  $parent->childrens()->whereNotNull('sent_at')->pluck('to')->flatten();
+        $alladdresses_waiting =  $parent->childrens()->whereNull('sent_at')   ->pluck('to')->flatten();
+
+        if( $parent->sent_at ) $alladdresses_sent = $alladdresses_sent->concat($parent['to']);
+        else $alladdresses_waiting = $alladdresses_waiting->concat($parent['to']);
 
         return Inertia::render(
             'Newsletter/View',

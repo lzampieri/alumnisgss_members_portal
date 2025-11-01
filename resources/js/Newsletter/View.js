@@ -5,6 +5,7 @@ import { useState } from "react";
 export default function View() {
     const newsletter = usePage().props.newsletter;
 
+    console.log(newsletter);
     console.log(usePage().props.alladdresses_sent);
 
     return (
