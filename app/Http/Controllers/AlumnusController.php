@@ -133,6 +133,7 @@ class AlumnusController extends Controller
             'tags' => 'nullable|array',
             'emails' => 'nullable|array',
             'consent_to_network_share' => 'required|boolean',
+            'enabled' => 'required|boolean',
             'adts' => 'array',
             'adts.*' => 'array',
             'adts.*.id' => 'required|distinct|exists:a_details_types,id',
@@ -159,6 +160,17 @@ class AlumnusController extends Controller
             if ($update) $alumnus->save();
         } else {
             $alumnus = Alumnus::create($validated);
+        }
+
+        // Check for consent to login
+        if ($alumnus->enabled && !$validated['enabled']) {
+            // Request to disabled
+            if (!$alumnus->hasRole('webmaster')) {// No effects on webmaster
+                $alumnus->revokePermissionTo('login');
+            }
+        }
+        if (!$alumnus->enabled && $validated['enabled']) {
+            $alumnus->givePermissionTo('login');
         }
 
         // Eventually create ratification

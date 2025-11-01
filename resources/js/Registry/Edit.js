@@ -18,6 +18,8 @@ export default function Edit() {
 
     const [dirtyDialog, setDirtyDialog] = useState(false);
 
+    console.log(prev);
+
     const { data, setData, post, processing, errors, isDirty } = useForm({
         surname: prev?.surname || '',
         name: prev?.name || '',
@@ -25,7 +27,8 @@ export default function Edit() {
         status: prev?.status || 'not_reached',
         tags: prev?.tags || [],
         emails: prev?.emails?.map((e) => e.address) || [],
-        consent_to_network_share: Boolean( prev?.consent_to_network_share ) || false,
+        consent_to_network_share: Boolean( prev?.consent_to_network_share ),
+        enabled: prev ? Boolean( prev?.enabled ) : true,
         adts: adts.map((adt) => {
             return {
                 id: adt.id,
@@ -141,6 +144,9 @@ export default function Edit() {
 
             <label>Consenso alla condivisione dei dati</label>
             <ReactSwitch checked={data.consent_to_network_share} onChange={(newValue) => setData('consent_to_network_share', newValue)} />
+
+            <label>Autorizzato all'accesso al sito</label>
+            <ReactSwitch checked={data.enabled} onChange={(newValue) => setData('enabled', newValue)} />
 
 
             <div className="button flex flex-row items-center self-end my-4" onClick={submit}>
