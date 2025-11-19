@@ -89,6 +89,22 @@ export default function Myself() {
                 deleteAddress={(id) => emailDelete(id, setProcessing)}
             />)}
             <ManuallyAddEmail />
+            <div className="text-gray-400 text-sm">
+                <FontAwesomeIcon icon={solid('circle-info')} className="ml-2 mr-1" />
+                <b>Chi vede questi indirizzi email? </b>Lo scegli tu! Se accetti che i tuoi indirizzi email vengano condivisi con tutti i soci, saranno disponibili su questo stesso portale per soci e soci studenti, in una apposita sezione ancora in fase di sviluppo; altrimenti, rimarranno a sola consultazione dello staff di segreteria e di chi si occupa del networking associativo.
+            </div>
+
+            <label>Consenso alla condivisione degli indirizzi email</label>
+            <div className="flex flex-row">
+                {alumnus.consent_to_email_share ?
+                    <SmartChip content="Visibili a tutti i soci registrati" style={bgAndContrastPastel(4)} /> :
+                    <SmartChip content="Visibili solo allo staff" style={bgAndContrastPastel(2)} />
+                }
+                <Link className="chip-button" href={route('profile.email_consent')}>
+                    Cambia
+                    <FontAwesomeIcon icon={solid('pen-to-square')} className="ml-2" />
+                </Link>
+            </div>
 
             <div className="font-bold text-primary-main mt-4">Storico</div>
             <ul className="list-disc list-inside">

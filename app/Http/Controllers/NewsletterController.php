@@ -192,7 +192,7 @@ class NewsletterController extends Controller
 
         $newsletter->append('attachments');
 
-        $user = Auth::user()->identity->load('emails');
+        $user = Auth::user()->identity->load('emails','emails.identity');
         $email = null;
 
         if( env('APP_ENV', 'local') == 'local' ) {

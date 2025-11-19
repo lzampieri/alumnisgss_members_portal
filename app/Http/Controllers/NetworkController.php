@@ -16,7 +16,7 @@ class NetworkController extends Controller
 
         $prefilt = Alumnus::whereIn('status', Alumnus::public_status);
 
-        if( Auth::check() && Auth::user()->can('viewAny', Alumnus::class) ) {
+        if (Auth::check() && Auth::user()->can('viewAny', Alumnus::class)) {
             $prefilt = Alumnus::where('coorte', '>', 0);
         }
 
@@ -25,6 +25,9 @@ class NetworkController extends Controller
             ->orderBy('surname')->orderBy('name')
             ->get();
 
+        $alumni->load('emails');
+        $alumni->load('emails.identity');
+
         foreach ($alumni as $alumnus) {
             if (Auth::user()->can('viewNetworkDetails', $alumnus)) {
                 $alumnus->load(['aDetails' => function ($query) {
@@ -32,13 +35,33 @@ class NetworkController extends Controller
                         $query->where('visible', true);
                     })->orderBy(ADetailsType::select('order')->whereColumn('a_details_types.id', 'a_details.a_details_type_id'));
                 }, 'aDetails.aDetailsType']);
+                $alumnus['filtered_details'] = $alumnus->aDetails;
+            } else {
+                $alumnus['filtered_details'] = [];
             }
+            
+            $alumnus['visible_emails'] = $alumnus->emails->filter->canView;
         }
 
         $alumni->append('can_be_network_edited');
-        
+
+        $alumni_cleaned = $alumni->map->only([
+            'id',
+            'name',
+            'surname',
+            'coorte',
+            'status',
+
+            'filtered_details',
+            'visible_emails',
+
+            'can_be_network_edited',
+            'consent_to_email_share',
+            'consent_to_network_share',
+        ]);
+
         return Inertia::render('Network/List', [
-            'alumni' => $alumni,
+            'alumni' => $alumni_cleaned,
             'canEditView' => Auth::user()->can('editNetworkView', Alumnus::class)
         ]);
     }
@@ -110,8 +133,23 @@ class NetworkController extends Controller
         }]);
         $adtlist->append('usedValues');
 
+        $alumnus['visible_emails'] = $alumnus->emails->filter->canView;
+        $cleaned_alumnus = $alumnus->only([
+            'id',
+            'name',
+            'surname',
+            'coorte',
+            'status',
+
+            'visible_emails',
+
+            'can_be_network_edited',
+            'consent_to_email_share',
+            'consent_to_network_share',
+        ]);
+
         return Inertia::render('Network/Edit', [
-            'alumnus' => $alumnus,
+            'alumnus' => $cleaned_alumnus,
             'adts' => $adtlist
         ]);
     }
@@ -129,7 +167,7 @@ class NetworkController extends Controller
         ]);
 
         foreach ($validated['adts'] as $adts) {
-            if( ( count( $adts['value'] ) == 1 ) && is_array( $adts['value'][0] ) ) // Extra check to prevent array of array
+            if ((count($adts['value']) == 1) && is_array($adts['value'][0])) // Extra check to prevent array of array
                 $adts['value'] = $adts['value'][0];
 
             $alumnus->aDetails()->updateOrCreate(

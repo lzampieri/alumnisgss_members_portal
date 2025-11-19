@@ -69,6 +69,15 @@ export default function Edit() {
                 <SmartChip content="Dettagli visibili solo allo staff" style={bgAndContrastPastel(2)} />
             }
 
+            <div className="flex flex-row w-full flex-wrap">
+                {alumnus.visible_emails?.map((email) => <SmartChip style={bgAndContrastPastel(1)} content={email.address} key={email.id} />)}
+            </div>
+            
+            {alumnus.consent_to_email_share ?
+                <SmartChip content="Indirizzi mail visibili a tutti i soci registrati" style={bgAndContrastPastel(4)} /> :
+                <SmartChip content="Indirizzi mail visibili solo allo staff" style={bgAndContrastPastel(2)} />
+            }
+
             {
                 adts.map((adt, i) => <Fragment key={adt.id}>
                     <label key={"label_" + adt.id}>{adt.name} {!adt.visible && <i> - Campo nascosto</i>}</label>

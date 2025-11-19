@@ -18,15 +18,14 @@ export default function Edit() {
 
     const [dirtyDialog, setDirtyDialog] = useState(false);
 
-    console.log(prev);
-
     const { data, setData, post, processing, errors, isDirty } = useForm({
         surname: prev?.surname || '',
         name: prev?.name || '',
-        coorte: prev?.coorte || 1,
+        coorte: prev?.coorte || 0,
         status: prev?.status || 'not_reached',
         tags: prev?.tags || [],
         emails: prev?.emails?.map((e) => e.address) || [],
+        consent_to_email_share: Boolean( prev?.consent_to_email_share ),
         consent_to_network_share: Boolean( prev?.consent_to_network_share ),
         enabled: prev ? Boolean( prev?.enabled ) : true,
         adts: adts.map((adt) => {
@@ -141,6 +140,9 @@ export default function Edit() {
                 tokensList={data.emails}
                 updateTokensList={(newList) => setData('emails', newList)} />
             <label className="error">{errors.emails}</label>
+
+            <label>Consenso alla condivisione degli indirizzi mail</label>
+            <ReactSwitch checked={data.consent_to_email_share} onChange={(newValue) => setData('consent_to_email_share', newValue)} />
 
             <label>Consenso alla condivisione dei dati</label>
             <ReactSwitch checked={data.consent_to_network_share} onChange={(newValue) => setData('consent_to_network_share', newValue)} />

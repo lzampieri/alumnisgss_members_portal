@@ -48,7 +48,14 @@ export default function Table() {
         { field: 'coorte', headerName: 'Coorte', filter: 'agTextColumnFilter', width: 100 },
         { field: 'status', headerName: 'Stato', filter: 'agTextColumnFilter', filterValueGetter: ({ data }) => AlumnusStatus.status[data.status].label, cellRenderer: ({ data, value }) => <span><span style={{ color: AlumnusStatus.status[value].color }}>⬤</span> {AlumnusStatus.status[value].label}{data.pending_ratifications_count > 0 && <FontAwesomeIcon icon={solid('hourglass-half')} className='ml-2' />}</span> },
         { field: 'tags', headerName: 'Tags', valueGetter: ({ data }) => (data.tags || []).join(', '), cellRenderer: ({ data }) => (data.tags || []).map((i, idx) => <span key={idx} className='bg-gray-100 border border-gray-300 rounded px-2 py-1'>{i}</span>) },
-        { field: 'consent_to_network_share', headerName: 'Consenso', cellRenderer: ({ value }) => <span><span style={{ color: value ? '#00CC00' : '#FF0000' }}>⬤</span> {value ? "Dettagli condivisi" : "Dettagli riservati"}</span> },
+        {
+            field: 'consents', headerName: 'Consensi',
+            valueGetter: ({ data }) => "" + data.consent_to_email_share + data.consent_to_network_share,
+            cellRenderer: ({ data }) => <div className="flex flex-row justify-start align-middle">
+                <SmartChip content="Mail" style={bgAndContrastPastel(data.consent_to_email_share ? 4 : 2)} />
+                <SmartChip content="Dettagli" style={bgAndContrastPastel(data.consent_to_network_share ? 4 : 2)} />
+            </div>
+        },
         ...adtlist.map(i => ({
             field: i.name, headerName: i.name, valueGetter: ({ data }) => adtValueGetter(data, i.id),
             cellRenderer: ({ value, instanceId }) => adtRenderer(value, instanceId),

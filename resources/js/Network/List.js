@@ -27,10 +27,14 @@ function AlumnusContent({ data }) {
         <div className="w-full flex flex-row justify-start flex-wrap">
             <SmartChip style={bgAndContrast(AlumnusStatus.status[data.status].color)} key='status' content={AlumnusStatus.status[data.status].label} />
             <SmartChip style={bgAndContrastPastel(-1)} key='coorte' content={(data.coorte > 0) ? (romanize(data.coorte) + " coorte") : "Onorario"} />
-            { data.a_details?.length > 0 && !data.consent_to_network_share && <SmartChip content="Dettagli visibili solo allo staff, nascosti ai soci" style={bgAndContrastPastel(2)} /> }
+            { data.filtered_details?.length > 0 && !data.consent_to_network_share && <SmartChip content="Dettagli visibili solo allo staff, nascosti ai soci" style={bgAndContrastPastel(2)} /> }
+        </div>
+        <div className="w-full flex flex-row justify-start flex-wrap">
+            { data.visible_emails?.map((email) => <SmartChip style={bgAndContrastPastel(1)} content={email.address} key={email.id} />) }
+            { data.visible_emails?.length > 0 && !data.consent_to_email_share && <SmartChip content="Indirizzi mail visibili solo allo staff, nascosti ai soci" style={bgAndContrastPastel(2)} /> }
         </div>
         <div className="w-full flex flex-row justify-start flex-wrap gap-y-2">
-            {data.a_details?.map((adt, i) => {
+            {data.filtered_details?.map((adt, i) => {
                 if (adt.value.length > 0) {
                     if (adt.a_details_type && adt.a_details_type?.type in ADetailsType.values)
                         return ADetailsType.values[adt.a_details_type?.type].chip(adt, adt.a_details_type, i)
@@ -51,7 +55,7 @@ function stringifyData({ data }) {
     return data.id + " " + data.name + " " + data.surname + 
         " " + data.status + " " + AlumnusStatus.status[data.status]?.label + 
         " " + data.coorte + " " + romanize(data.coorte) + " coorte" +
-        " " + data.a_details?.map((adt, i) => adt.value.map((entry, j) => entry).join(" ")).join(" ")
+        " " + data.filtered_details?.map((adt, i) => adt.value.map((entry, j) => entry).join(" ")).join(" ")
 }
 
 function ListAsATable({ alumni, quickFilter }) {

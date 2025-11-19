@@ -5,9 +5,6 @@ import { useState } from "react";
 export default function View() {
     const newsletter = usePage().props.newsletter;
 
-    console.log(newsletter);
-    console.log(usePage().props.alladdresses_sent);
-
     return (
         <div className="flex flex-col w-full md:w-3/5">
             <Head title={newsletter.subject + " | Inviata"} />

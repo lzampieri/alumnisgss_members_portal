@@ -15,7 +15,7 @@ class EmailPolicy
     /**
      * Determine whether the user can login.
      *
-     * @param  \Illuminate\Support\Facades\Auth\User $user
+     * @param  \Illuminate\Foundation\Auth\User $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function login(User $user)
@@ -26,7 +26,7 @@ class EmailPolicy
     /**
      * Determine whether the user can login at level 2.
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \Illuminate\Foundation\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function login_lv2(User $user)
@@ -37,7 +37,7 @@ class EmailPolicy
     /**
      * Determine whether the user can view all emails.
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \Illuminate\Foundation\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function viewAny(User $user)
@@ -48,7 +48,7 @@ class EmailPolicy
     /**
      * Determine whether the user can view an email.
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \Illuminate\Foundation\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function view (User $user, Email $email)
@@ -67,6 +67,9 @@ class EmailPolicy
                     if( $user->hasPermissionTo('emails-view-public-alumnus') )
                         return true;
         }
+        if( ( new AlumnusPolicy() )->viewNetworkDetails($user, $email->identity) )
+            if( $email->identity->consent_to_email_share )
+                return true;
 
         return false;
     }
@@ -74,7 +77,7 @@ class EmailPolicy
     /**
      * Determine whether the user can add a new instance of the model.
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \Illuminate\Foundation\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function add(User $user)
@@ -85,7 +88,7 @@ class EmailPolicy
     /**
      * Determine whether the user can edit an instance of the model.
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \Illuminate\Foundation\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function edit(User $user, Email $email)
@@ -102,7 +105,7 @@ class EmailPolicy
     /**
      * Determine whether the user can delete the models.
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \Illuminate\Foundation\Auth\User  $user
      * @param  \App\Models\Email  $email
      * @return \Illuminate\Auth\Access\Response|bool
      */
@@ -120,7 +123,7 @@ class EmailPolicy
     /**
      * Determine whether the user can associate an email to an identity.
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \Illuminate\Foundation\Auth\User  $user
      * @param  \App\Models\Email  $email
      * @return \Illuminate\Auth\Access\Response|bool
      */
@@ -132,7 +135,7 @@ class EmailPolicy
     /**
      * Determine whether the user can access the sync tool.
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \Illuminate\Foundation\Auth\User  $user
      * @param  \App\Models\Email  $email
      * @return \Illuminate\Auth\Access\Response|bool
      */

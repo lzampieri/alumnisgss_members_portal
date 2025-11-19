@@ -86,6 +86,7 @@ class Alumnus extends Identity
         'coorte',
         'status',
         'tags',
+        'consent_to_email_share',
         'consent_to_network_share'
     ];
     protected $casts = [

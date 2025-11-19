@@ -9,7 +9,7 @@ function GenerateInput({type, value, setValue}) {
     if (type == 'shortText') return <input type="text" value={value} onChange={(e) => setValue(e.target.value)} />
     if (type == 'longText') return <TextareaAutosize className="w-full pretendToBeInput" minRows={10} value={value} onChange={e => setValue(e.target.value)}/>
     if (type == 'fixed') return <div className="w-full p-2">{value}</div>
-    if (type == 'time') return <input type="time" value={value} onChange={(e) => { console.log( e.target.value ); setValue(e.target.value) } } />
+    if (type == 'time') return <input type="time" value={value} onChange={(e) => setValue(e.target.value) } />
 }
 
 export default function Add() {

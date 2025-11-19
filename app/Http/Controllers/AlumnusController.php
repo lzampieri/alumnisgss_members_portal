@@ -132,6 +132,7 @@ class AlumnusController extends Controller
             'status' => 'required|in:' . implode(',', Alumnus::status),
             'tags' => 'nullable|array',
             'emails' => 'nullable|array',
+            'consent_to_email_share' => 'required|boolean',
             'consent_to_network_share' => 'required|boolean',
             'enabled' => 'required|boolean',
             'adts' => 'array',
@@ -151,7 +152,7 @@ class AlumnusController extends Controller
 
         // Create or update alumnus
         if ($alumnus) {
-            foreach (['surname', 'name', 'coorte', 'status', 'tags', 'consent_to_network_share'] as $key) {
+            foreach (['surname', 'name', 'coorte', 'status', 'tags', 'consent_to_email_share', 'consent_to_network_share'] as $key) {
                 if ($validated[$key] !== $alumnus[$key]) {
                     $alumnus[$key] = $validated[$key];
                     $update = true;

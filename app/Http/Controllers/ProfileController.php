@@ -36,6 +36,23 @@ class ProfileController extends Controller
         );
     }
 
+    public function emailConsent()
+    {
+        $this->authorize('viewHimself', Alumnus::class);
+
+        $alumnus = Auth::user()->identity;
+
+        if (!$alumnus)
+            return abort(404);
+        
+        return Inertia::render(
+            'Profile/EmailConsent',
+            [
+                'alumnus' => $alumnus,
+            ]
+        );
+    }
+
     public function dataConsent()
     {
         $this->authorize('viewHimself', Alumnus::class);
@@ -51,6 +68,21 @@ class ProfileController extends Controller
                 'alumnus' => $alumnus,
             ]
         );
+    }
+    
+    public function emailConsent_post()
+    {
+        $this->authorize('viewHimself', Alumnus::class);
+
+        $alumnus = Auth::user()->identity;
+
+        if (!$alumnus)
+            return abort(404);
+
+        $alumnus->consent_to_email_share = !$alumnus->consent_to_email_share;
+        $alumnus->save();
+
+        return redirect()->route('profile')->with(['notistack' => ['success', 'Salvato!']]);
     }
 
     public function dataConsent_post()

@@ -178,8 +178,8 @@ class AlumnusExportImportController extends Controller
         $sheet->setCellValue('A4', "Per motivi di sicurezza, il download di questo file è registrato assieme alle credenziali di accesso.");
         $sheet->getStyle('A4')->applyFromArray(['font' => ['bold' => true, 'color' => ['argb' => 'FF0000']]]);
 
-        $titles = ['ID', 'Cognome', 'Nome', 'Coorte', 'Stato', 'Tags', 'Consenso condivisione dettagli'];
-        $keys   = ['id', 'surname', 'name', 'coorte', 'status', 'tags', 'consent_to_network_share'];
+        $titles = ['ID', 'Cognome', 'Nome', 'Coorte', 'Stato', 'Tags', 'Consenso condivisione indirizzi mail', 'Consenso condivisione dettagli'];
+        $keys   = ['id', 'surname', 'name', 'coorte', 'status', 'tags', 'consent_to_email_share', 'consent_to_network_share'];
 
         foreach ($titles as $col => $title) {
             $this->writeXY($sheet, $col + 1, 6, $title, ['font' => ['bold' => true]]);
@@ -204,8 +204,6 @@ class AlumnusExportImportController extends Controller
                 $content = $alumnus[$key];
                 if ($key == 'status')
                     $content = Alumnus::AlumnusStatusLabels[$content];
-                // if ($key == 'consent_to_network_share')
-                //     $content = $alumnus->consent_to_network_share ? 1 Alumnus::AlumnusStatusLabels[$content];
                 if (is_array($content))
                     $content = implode('; ', $content);
 
@@ -245,6 +243,7 @@ class AlumnusExportImportController extends Controller
 
         // Output
         $writer = new Xlsx($spreadsheet);
+        $writer->setPreCalculateFormulas(false);
 
         return response()->streamDownload(function () use ($writer) {
             $writer->save('php://output');
@@ -282,7 +281,7 @@ class AlumnusExportImportController extends Controller
             return redirect()->back()->with('notistack', ['error', "Nessun alumno nella lista."]);
 
         // Standard fields
-        $stdkeys   = ['id', 'surname', 'name', 'coorte', 'status', 'tags', 'consent_to_network_share'];
+        $stdkeys   = ['id', 'surname', 'name', 'coorte', 'status', 'tags', 'consent_to_email_share', 'consent_to_network_share'];
 
         $columnsNumber = Coordinate::columnIndexFromString($sheet->getHighestColumn());
         if ($columnsNumber < count( $stdkeys ))
@@ -359,6 +358,14 @@ class AlumnusExportImportController extends Controller
                 $output .= "Updated tags for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . $newPars['tags'] . "\n";
 
                 $alumnus['tags'] = $newPars['tags_array'];
+            }
+
+            // Check consent_to_email_share
+            $newPars['consent_to_email_share'] = boolval($newPars['consent_to_email_share']);
+            if ($newPars['consent_to_email_share'] != $alumnus['consent_to_email_share']) {
+                $toSave = true;
+                $output .= "Updated consent_to_email_share for " . $alumnus['surname'] . " " . $alumnus['name'] . " to " . intval($newPars['consent_to_email_share']) . "\n";
+                $alumnus['consent_to_email_share'] = $newPars['consent_to_email_share'];
             }
 
             // Check consent_to_network_share
