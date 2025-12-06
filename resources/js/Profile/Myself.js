@@ -8,6 +8,7 @@ import SmartChip from "../Network/SmartChip";
 import EmptyDialog from "../Layout/EmptyDialog";
 import ManuallyAddEmail from "./ManuallyAddEmail";
 import Backdrop from "../Layout/Backdrop";
+import { Collapse } from "react-collapse";
 
 function adtRenderer(ad, adt, i) {
 
@@ -43,12 +44,24 @@ function emailPrimary(emailId, setProcessing) {
     );
 }
 
+function InfoBtn({ children }) {
+    const [open, setOpen] = useState(false);
+    return <>
+        <button className={( open ? "text-gray-800" : "text-gray-400" ) + " hover:text-primary-main"} onClick={() => setOpen(!open)}>
+            <FontAwesomeIcon icon={solid('circle-question')} className="ml-2" />
+        </button>
+        <Collapse theme={{ collapse: "w-full cpm font-light text-gray-400 text-sm text-justify" }} isOpened={open}>
+            <FontAwesomeIcon icon={solid('circle-info')} className="ml-2 mr-1" />
+            {children}
+        </Collapse>
+    </>
+}
+
 export default function Myself() {
     const alumnus = usePage().props.alumnus;
     const adts = usePage().props.adts;
 
     const [processing, setProcessing] = useState(false);
-    const [addEmailDialog, setAddEmailDialog] = useState(false);
 
     let roles = alumnus.roles.filter((e, i, self) => i === self.findIndex((ee) => ee.id === e.id));
 
@@ -78,10 +91,10 @@ export default function Myself() {
                 </div>
             </div>
 
-            <div className="font-bold text-primary-main mt-4">Indirizzi mail</div>
-            <div className="text-gray-400 text-sm">
-                <FontAwesomeIcon icon={solid('circle-info')} className="ml-2 mr-1" />
-                Utilizza la stellina per definire l'indirizzo di preferenza, al quale verrai contattato dall'associazione. Utilizza il "+" per aggiungere un nuovo indirizzo email. Non è possibile cancellare un indirizzo da questa pagina; se vi sono indirizzi errati da cancellare, <Link href={route('ticket.add', { type: 'ProfileEdit' })}> segnalacelo!</Link>
+            <div className="font-bold text-primary-main mt-4">Indirizzi mail
+                <InfoBtn>
+                    Utilizza la stellina per definire l'indirizzo di preferenza, al quale verrai contattato dall'associazione. Utilizza il "+" per aggiungere un nuovo indirizzo email. Non è possibile cancellare un indirizzo da questa pagina; se vi sono indirizzi errati da cancellare, <Link href={route('ticket.add', { type: 'ProfileEdit' })}> segnalacelo!</Link>
+                </InfoBtn>
             </div>
             {alumnus.emails.map((e, i) => <EmailDiv
                 key={e.id} isFirst={i == 0} e={e}
@@ -89,12 +102,10 @@ export default function Myself() {
                 deleteAddress={(id) => emailDelete(id, setProcessing)}
             />)}
             <ManuallyAddEmail />
-            <div className="text-gray-400 text-sm">
-                <FontAwesomeIcon icon={solid('circle-info')} className="ml-2 mr-1" />
-                <b>Chi vede questi indirizzi email? </b>Lo scegli tu! Se accetti che i tuoi indirizzi email vengano condivisi con tutti i soci, saranno disponibili su questo stesso portale per soci e soci studenti, in una apposita sezione ancora in fase di sviluppo; altrimenti, rimarranno a sola consultazione dello staff di segreteria e di chi si occupa del networking associativo.
-            </div>
 
-            <label>Consenso alla condivisione degli indirizzi email</label>
+            <label>Consenso alla condivisione degli indirizzi email <InfoBtn>
+                <b>Chi vede questi indirizzi email? </b>Lo scegli tu! Se accetti che i tuoi indirizzi email vengano condivisi con tutti i soci, saranno disponibili su questo stesso portale per soci e soci studenti, nella sezione dedicata al networking; altrimenti, rimarranno a sola consultazione dello staff di segreteria e di chi si occupa del networking associativo.
+            </InfoBtn></label>
             <div className="flex flex-row">
                 {alumnus.consent_to_email_share ?
                     <SmartChip content="Visibili a tutti i soci registrati" style={bgAndContrastPastel(4)} /> :
@@ -106,19 +117,6 @@ export default function Myself() {
                 </Link>
             </div>
 
-            <div className="font-bold text-primary-main mt-4">Storico</div>
-            <ul className="list-disc list-inside">
-                <li>Creazione profilo: {new Date(alumnus.created_at).toLocaleDateString("it-IT")}</li>
-                <li>Ultima modifica: {new Date(alumnus.updated_at).toLocaleDateString("it-IT")}</li>
-                {alumnus.ratifications.map(r =>
-                    <li key={r.id}>Passaggio allo stato di {AlumnusStatus.status[r.required_state].label}: {
-                        r.document_id == null ? <span className="italic">richiesta in attesa</span> : <span>
-                            {new Date(r.document.date).toLocaleDateString("it-IT")} (<a href={route('board.view_document', { protocol: r.document.protocol })}>{r.document.identifier}</a>)
-                        </span>
-                    }</li>
-                )}
-            </ul>
-
             <div className="font-bold text-primary-main mt-4">Gruppi</div>
             <div className="w-full flex flex-row flex-wrap gap-y-2">
                 {roles.map(role =>
@@ -128,31 +126,14 @@ export default function Myself() {
                 )}
             </div>
 
-            <div className="font-bold text-primary-main mt-4">Altri dettagli</div>
+            <div className="font-bold text-primary-main mt-4">Altri dettagli<InfoBtn>
+                <b>Perchè questi dati? </b>Conserviamo questi dati per favorire il networking associativo. Grazie a queste informazioni, possiamo mettere in contatto giovani galileiani con vecchi soci che siano disponibili per idee, suggerimenti e consigli
+            </InfoBtn></div>
             <Link className="chip-button" href={route('profile.edit')}>
                 Aggiorna dati
                 <FontAwesomeIcon icon={solid('pen-to-square')} className="ml-2" />
             </Link>
-            <div className="text-gray-400 text-sm">
-                <FontAwesomeIcon icon={solid('circle-info')} className="ml-2 mr-1" />
-                <b>Perchè questi dati? </b>Conserviamo questi dati per favorire il networking associativo. Grazie a queste informazioni, possiamo mettere in contatto giovani galileiani con vecchi soci che siano disponibili per idee, suggerimenti e consigli
-            </div>
-            <div className="text-gray-400 text-sm">
-                <FontAwesomeIcon icon={solid('circle-info')} className="ml-2 mr-1" />
-                <b>Chi vede questi dati? </b>Lo scegli tu! Se accetti che i tuoi dati vengano condivisi con tutti i soci, saranno disponibili su questo stesso portale per soci e soci studenti, in una apposita sezione ancora in fase di sviluppo; altrimenti, rimarranno a sola consultazione dello staff di segreteria e di chi si occupa del networking associativo. I dati segnati come <i>campo nascosto</i> rimangono nascosti a prescindere, e sono utilizzati per soli fini statistici.
-            </div>
 
-            <label>Consenso alla condivisione dei dati</label>
-            <div className="flex flex-row">
-                {alumnus.consent_to_network_share ?
-                    <SmartChip content="Visibili a tutti i soci registrati" style={bgAndContrastPastel(4)} /> :
-                    <SmartChip content="Visibili solo allo staff" style={bgAndContrastPastel(2)} />
-                }
-                <Link className="chip-button" href={route('profile.data_consent')}>
-                    Cambia
-                    <FontAwesomeIcon icon={solid('pen-to-square')} className="ml-2" />
-                </Link>
-            </div>
 
             {
                 adts.map((adt, i) => <Fragment key={adt.id}>
@@ -168,6 +149,20 @@ export default function Myself() {
                 Aggiorna dati
                 <FontAwesomeIcon icon={solid('pen-to-square')} className="ml-2" />
             </Link>
+
+            <label>Consenso alla condivisione dei dati<InfoBtn>
+                <b>Chi vede questi dati? </b>Lo scegli tu! Se accetti che i tuoi dati vengano condivisi con tutti i soci, saranno disponibili su questo stesso portale per soci e soci studenti, nella sezione dedicata al networking; altrimenti, rimarranno a sola consultazione dello staff di segreteria e di chi si occupa del networking associativo. I dati segnati come <i>campo nascosto</i> rimangono nascosti a prescindere, e sono utilizzati per soli fini statistici.
+            </InfoBtn></label>
+            <div className="flex flex-row">
+                {alumnus.consent_to_network_share ?
+                    <SmartChip content="Visibili a tutti i soci registrati" style={bgAndContrastPastel(4)} /> :
+                    <SmartChip content="Visibili solo allo staff" style={bgAndContrastPastel(2)} />
+                }
+                <Link className="chip-button" href={route('profile.data_consent')}>
+                    Cambia
+                    <FontAwesomeIcon icon={solid('pen-to-square')} className="ml-2" />
+                </Link>
+            </div>
 
             <Backdrop open={processing} />
 
