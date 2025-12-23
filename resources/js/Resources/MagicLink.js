@@ -1,9 +1,11 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import EmptyDialog from "../Layout/EmptyDialog";
 import { useState } from "react";
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+
 import { postRequest } from "../Utils";
 import computeResourceLink from "./computeResourceLink";
+import { faAdd, faCopy, faInfo } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
 export default function MagicLink({ resource, setProcessing }) {
@@ -33,9 +35,9 @@ export default function MagicLink({ resource, setProcessing }) {
 
     return <div className="text-sm text-gray-400">
         {resource.access_token ? <>
-            È attivo un magic link per l'accesso alla risorsa <FontAwesomeIcon icon={solid('info')} className="ml-2 icon-button" onClick={() => setIsOpen(true)} />
+            È attivo un magic link per l'accesso alla risorsa <FontAwesomeIcon icon={faInfo} className="ml-2 icon-button" onClick={() => setIsOpen(true)} />
         </> : <>
-            Nessun magic link per l'accesso alla risorsa <FontAwesomeIcon icon={solid('add')} className="ml-2 icon-button" onClick={() => setIsOpen(true)} />
+            Nessun magic link per l'accesso alla risorsa <FontAwesomeIcon icon={faAdd} className="ml-2 icon-button" onClick={() => setIsOpen(true)} />
         </>}
         <EmptyDialog open={isOpen} onClose={() => setIsOpen(false)}>
             <h4>MagicLink</h4>
@@ -44,7 +46,7 @@ export default function MagicLink({ resource, setProcessing }) {
                 <span>Per questa risorsa è già attivo un magic link.</span>
                 <div className="w-full flex flex-row items-center">
                     <input type="text" className="w-full flex-grow" value={computeResourceLink(resource, resource.access_token)} readOnly />
-                    <div className="button aspect-square flex flex-col justify-center" onClick={() => navigator.clipboard.writeText(computeResourceLink(resource, resource.access_token))}><FontAwesomeIcon icon={solid('copy')} /></div>
+                    <div className="button aspect-square flex flex-col justify-center" onClick={() => navigator.clipboard.writeText(computeResourceLink(resource, resource.access_token))}><FontAwesomeIcon icon={faCopy} /></div>
 
                 </div>
                 <div className="button self-center mt-2" onClick={() => setDeleteOpen(true)}>Elimina MagicLink</div>

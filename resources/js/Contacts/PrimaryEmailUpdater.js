@@ -1,9 +1,11 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import { useEffect, useMemo, useState } from "react";
 import { difference } from "lodash";
 import Backdrop from "../Layout/Backdrop";
 import { noninertiaPostRequest, postRequest } from "../Utils";
+import { faAnglesLeft, faAnglesRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const STEP = {
     ERROR: 500,
@@ -95,11 +97,11 @@ export default function PrimaryEmailUpdater({ pairs, next }) {
                                 <td className="px-2">{local['name']} {local['surname']}</td>
                                 <td className="px-2">
                                     {local.emails.map((email, idx) => <p className={idx == 0 ? "font-bold" : ""} key={idx}>{email.address}</p>)}
-                                    {first_onportal_is_ongoogle > -1 && <div className="button justify-self-center" onClick={() => priorOnGoogle(local.emails[0].address, google['id'], setProcessing, () => setDifferences(differences.toSpliced(index, 1)))} ><FontAwesomeIcon icon={solid('angles-right')} /></div>}
+                                    {first_onportal_is_ongoogle > -1 && <div className="button justify-self-center" onClick={() => priorOnGoogle(local.emails[0].address, google['id'], setProcessing, () => setDifferences(differences.toSpliced(index, 1)))} ><FontAwesomeIcon icon={faAnglesRight} /></div>}
                                 </td>
                                 <td className="px-2">
                                     {google.emails.map((email, idx) => <p className={idx == 0 ? "font-bold" : ""} key={email}>{email}</p>)}
-                                    {first_ongoogle_is_onportal > -1 && <div className="button justify-self-center" onClick={() => priorOnPortal(google.emails[0], setProcessing, () => setDifferences(differences.toSpliced(index, 1)))} ><FontAwesomeIcon icon={solid('angles-left')} /></div>}
+                                    {first_ongoogle_is_onportal > -1 && <div className="button justify-self-center" onClick={() => priorOnPortal(google.emails[0], setProcessing, () => setDifferences(differences.toSpliced(index, 1)))} ><FontAwesomeIcon icon={faAnglesLeft} /></div>}
                                 </td>
                             </tr>
                         )

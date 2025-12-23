@@ -1,5 +1,5 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+
+
 import Backdrop from "../Layout/Backdrop";
 import { postRequest } from "../Utils";
 import { Fragment, useState } from "react";
@@ -8,6 +8,8 @@ import { useStopwatch, useTime } from "react-timer-hook";
 import { totalCount, twoDigits, withQuartersAndHours, withQuartersGT0, withQuarters, daysInMonth, hhmm } from "./TimeUtils";
 import EmptyDialog from "../Layout/EmptyDialog";
 import TextareaAutosize from 'react-textarea-autosize';
+import { faChevronLeft, faChevronRight, faComment, faHourglassHalf, faScrewdriverWrench } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function Cell({ children, bold, left, color }) {
     return <div className={"justify-self-stretch flex border-r "
@@ -66,24 +68,24 @@ function FullList({ dateString }) {
                                 {stamp.clockout ? " - Totale: " + withQuartersAndHours(stamp.hours) : ""}
                                 {stamp.acpttickets.map((t) =>
                                     <Link className="icon-button-gray" href={route('ticket.view', { ticket: t.id })} key={t.id}>
-                                        <FontAwesomeIcon icon={solid('screwdriver-wrench')} />
+                                        <FontAwesomeIcon icon={faScrewdriverWrench} />
                                     </Link>
                                 )}
                                 {stamp.opentickets.map((t) =>
                                     <Link className="icon-button-gray" href={route('ticket.view', { ticket: t.id })} key={t.id}>
-                                        <FontAwesomeIcon icon={solid('hourglass-half')} />
+                                        <FontAwesomeIcon icon={faHourglassHalf} />
                                     </Link>
                                 )}
                                 {
                                     (stamp.clockin || stamp.clockout) && (d.mayOpenTicket) &&
                                     <Link className="icon-button" href={route('ticket.add', { type: 'EditStamp', stampId: stamp.id })} key={'edit' + stamp.id}>
-                                        <FontAwesomeIcon icon={solid('screwdriver-wrench')} />
+                                        <FontAwesomeIcon icon={faScrewdriverWrench} />
                                     </Link>
                                 }
                                 {
                                     (stamp.clockin || stamp.clockout) && (d.mayOpenTicket) &&
                                     <span className="icon-button" onClick={() => openDialog(stamp)} key={'comment' + stamp.id}>
-                                        <FontAwesomeIcon icon={solid('comment')} />
+                                        <FontAwesomeIcon icon={faComment} />
                                     </span>
                                 }
                                 {stamp.note && <div className="italic text-sm">Nota: {stamp.note}</div>}
@@ -130,11 +132,11 @@ export default function Monthly() {
         <h3>Registro timbrature</h3>
         <div className="flex flex-row gap-2 items-center">
             <Link as="button" className="button" href={route('clockings.monthly', month == 1 ? { year: year - 1, month: 12 } : { year: year, month: month - 1 })}>
-                <FontAwesomeIcon icon={solid('chevron-left')} />
+                <FontAwesomeIcon icon={faChevronLeft} />
             </Link>
             <h3>{capFirst(date.toLocaleDateString('it-IT', { 'month': 'long', 'year': 'numeric' }))}</h3>
             <Link as="button" className="button" href={route('clockings.monthly', month == 12 ? { year: year + 1, month: 1 } : { year: year, month: month + 1 })} disabled={!nextAvailable}>
-                <FontAwesomeIcon icon={solid('chevron-right')} />
+                <FontAwesomeIcon icon={faChevronRight} />
             </Link>
         </div>
         <Table daysCount={daysInMonth(month, year)} />

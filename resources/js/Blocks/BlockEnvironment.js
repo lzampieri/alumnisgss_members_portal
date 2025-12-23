@@ -1,8 +1,10 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import { useEffect, useRef, useState } from "react";
 import AddBlock from "./AddBlock";
 import { enqueueSnackbar } from "notistack";
+import { faChevronDown, faChevronUp, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function BlockEnvironment({ children, index, addBlockAt, updateOrder, deleteItem }) {
     const [isTrash, setIsTrash] = useState(false)
@@ -33,13 +35,13 @@ export default function BlockEnvironment({ children, index, addBlockAt, updateOr
     return <div className="w-full flex flex-row gap-2 group">
         <div className="self-start w-6">
             <div className="button !p-0 aspect-square flex justify-center items-center invisible group-hover:visible" onClick={() => updateOrder(index, index - 1)}>
-                <FontAwesomeIcon icon={solid('chevron-up')} className="!pr-0" />
+                <FontAwesomeIcon icon={faChevronUp} className="!pr-0" />
             </div>
             <div className={"button !p-0 aspect-square flex justify-center items-center group-hover:visible" + (isTrash ? " visible button-active" : " invisible")} onClick={clickTrash} ref={trashRef}>
-                <FontAwesomeIcon icon={solid('trash')} className="!pr-0" />
+                <FontAwesomeIcon icon={faTrash} className="!pr-0" />
             </div>
             <div className="button !p-0 aspect-square flex justify-center items-center invisible group-hover:visible" onClick={() => updateOrder(index, index + 1)}>
-                <FontAwesomeIcon icon={solid('chevron-down')} className="!pr-0" />
+                <FontAwesomeIcon icon={faChevronDown} className="!pr-0" />
             </div>
         </div>
         <div className="grow min-w-0">{children}</div>

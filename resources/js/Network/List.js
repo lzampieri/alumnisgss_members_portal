@@ -1,5 +1,5 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import { Head, Link, usePage } from "@inertiajs/react";
 import { AlumnusStatus, bgAndContrast, bgAndContrastPastel, romanize } from "../Utils";
 import { useMemo, useState } from "react";
@@ -9,6 +9,8 @@ import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
 import { themeQuartz } from "ag-grid-community";
 import { ModuleRegistry, ClientSideRowModelModule, RowAutoHeightModule, QuickFilterModule } from 'ag-grid-community';
 import ADetailsType from "./ADetailsType";
+import { faGear, faPen } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 ModuleRegistry.registerModules([ClientSideRowModelModule, RowAutoHeightModule, QuickFilterModule]);
 
 function AlumnusContent({ data }) {
@@ -20,18 +22,18 @@ function AlumnusContent({ data }) {
             </div>
             {data.can_be_network_edited &&
                 <div className="grow text-end mx-1">
-                    <Link className="icon-button" href={route('network.edit', { alumnus: data.id })}><FontAwesomeIcon icon={solid('pen')} /></Link>
+                    <Link className="icon-button" href={route('network.edit', { alumnus: data.id })}><FontAwesomeIcon icon={faPen} /></Link>
                 </div>
             }
         </div>
         <div className="w-full flex flex-row justify-start flex-wrap">
             <SmartChip style={bgAndContrast(AlumnusStatus.status[data.status].color)} key='status' content={AlumnusStatus.status[data.status].label} />
             <SmartChip style={bgAndContrastPastel(-1)} key='coorte' content={(data.coorte > 0) ? (romanize(data.coorte) + " coorte") : "Onorario"} />
-            { data.filtered_details?.length > 0 && !data.consent_to_network_share && <SmartChip content="Dettagli visibili solo allo staff, nascosti ai soci" style={bgAndContrastPastel(2)} /> }
+            {data.filtered_details?.length > 0 && !data.consent_to_network_share && <SmartChip content="Dettagli visibili solo allo staff, nascosti ai soci" style={bgAndContrastPastel(2)} />}
         </div>
         <div className="w-full flex flex-row justify-start flex-wrap">
-            { data.visible_emails?.map((email) => <SmartChip style={bgAndContrastPastel(1)} content={email.address} key={email.id} />) }
-            { data.visible_emails?.length > 0 && !data.consent_to_email_share && <SmartChip content="Indirizzi mail visibili solo allo staff, nascosti ai soci" style={bgAndContrastPastel(2)} /> }
+            {data.visible_emails?.map((email) => <SmartChip style={bgAndContrastPastel(1)} content={email.address} key={email.id} />)}
+            {data.visible_emails?.length > 0 && !data.consent_to_email_share && <SmartChip content="Indirizzi mail visibili solo allo staff, nascosti ai soci" style={bgAndContrastPastel(2)} />}
         </div>
         <div className="w-full flex flex-row justify-start flex-wrap gap-y-2">
             {data.filtered_details?.map((adt, i) => {
@@ -52,8 +54,8 @@ function AlumnusContent({ data }) {
 }
 
 function stringifyData({ data }) {
-    return data.id + " " + data.name + " " + data.surname + 
-        " " + data.status + " " + AlumnusStatus.status[data.status]?.label + 
+    return data.id + " " + data.name + " " + data.surname +
+        " " + data.status + " " + AlumnusStatus.status[data.status]?.label +
         " " + data.coorte + " " + romanize(data.coorte) + " coorte" +
         " " + data.filtered_details?.map((adt, i) => adt.value.map((entry, j) => entry).join(" ")).join(" ")
 }
@@ -101,7 +103,7 @@ export default function List() {
             <input className="w-full md:w-1/2" type='text' value={quickFilter} onChange={(e) => setQuickFilter(e.target.value)} placeholder='Cerca...' />
             {usePage().props.canEditView &&
                 <Link className="button flex flex-row items-baseline" href={route('network.settings')}>
-                    <FontAwesomeIcon icon={solid('gear')} />
+                    <FontAwesomeIcon icon={faGear} />
                     Impostazioni
                 </Link>
             }

@@ -1,7 +1,9 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import { useEffect, useState } from "react";
 import SlowerDown from "./SlowerDown";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const STEP = {
     ERROR: 500,
@@ -87,7 +89,7 @@ export default function AutoCombiner({ localData, googleData, setPairs, setLocal
         <div className="flex flex-col items-center">
             <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
                 {status < STEP.COMBDONE ? "Sto analizzando " : "Ho analizzato "} {localData.length} soci dal portale e {googleData.length} contatti da Gmail. <br />
-                {status < STEP.COMBDONE && <>È in corso l'abbinamento automatico... <br /></> }
+                {status < STEP.COMBDONE && <>È in corso l'abbinamento automatico... <br /></>}
                 {status >= STEP.COMBDONE && "Sono stati riabbinati " + prevComb.length + " contatti già abbinati in precedenza."}  <br />
                 {status >= STEP.COMBDONE && "Sono stati automaticamente abbinati " + autoComb.length + " contatti."}  <br />
                 {status < STEP.COMBDONE &&
@@ -109,11 +111,11 @@ export default function AutoCombiner({ localData, googleData, setPairs, setLocal
                             <tr className={index % 2 == 0 ? "bg-gray-100" : ""} key={index}>
                                 <td className="px-2">{local['name']} {local['surname']}</td>
                                 <td className="px-2">{google['name']}</td>
-                                <td><FontAwesomeIcon icon={solid('trash')} className="icon-button" onClick={() => {
+                                <td><FontAwesomeIcon icon={faTrash} className="icon-button" onClick={() => {
                                     let autocombnew = autoComb.toSpliced();
-                                    let toAdd = autoCombNew.splice(index,1);
+                                    let toAdd = autoCombNew.splice(index, 1);
                                     setAutoComb(autoCombNew);
-                                    setLocalUnpaired([...localUnpaired,...toAdd]);
+                                    setLocalUnpaired([...localUnpaired, ...toAdd]);
                                 }} /></td>
                             </tr>
                         )
@@ -137,7 +139,7 @@ export default function AutoCombiner({ localData, googleData, setPairs, setLocal
                             <tr className={index % 2 == 0 ? "bg-gray-100" : ""} key={index}>
                                 <td className="px-2">{local['name']} {local['surname']}</td>
                                 <td className="px-2">{google['name']}</td>
-                                <td><FontAwesomeIcon icon={solid('trash')} className="icon-button" onClick={() => {
+                                <td><FontAwesomeIcon icon={faTrash} className="icon-button" onClick={() => {
                                     setPrevToRemove([...prevToRemove, google['id']]);
                                     setPrevComb(delFromArray(prevComb, index));
                                 }} /></td>
@@ -155,7 +157,7 @@ export default function AutoCombiner({ localData, googleData, setPairs, setLocal
             {(status == STEP.REMOVING || status == STEP.ADDING) && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
                 Sto salvando...<br />
                 {status == STEP.REMOVING && <SlowerDown route={'contacts.deassociate'} list={prevToRemove} setFinish={() => setStatus(STEP.ADDING)} />}
-                {status == STEP.ADDING && <SlowerDown route={'contacts.associate'} list={autoComb.map(({local,google}) => { return { 'local_id': local['id'], 'google_id': google['id'] } })} setFinish={() => setStatus(STEP.SAVED)} />}
+                {status == STEP.ADDING && <SlowerDown route={'contacts.associate'} list={autoComb.map(({ local, google }) => { return { 'local_id': local['id'], 'google_id': google['id'] } })} setFinish={() => setStatus(STEP.SAVED)} />}
             </div>}
 
             {status == STEP.ERROR && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">

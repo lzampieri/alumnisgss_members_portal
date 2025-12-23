@@ -5,12 +5,14 @@ import CreatableSelect from 'react-select/creatable';
 import { AlumnusStatus } from "../Utils";
 import Dialog from '../Layout/Dialog';
 import { router } from "@inertiajs/react";
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import { enqueueSnackbar } from "notistack";
 import TokenizableInput from "../Libs/react-tokenizable-inputs/TokenizableInput";
 import ADetailsType from "../Network/ADetailsType";
 import ReactSwitch from "react-switch";
+import { faHourglass, faHourglassHalf, faLock, faSave } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Edit() {
     const prev = usePage().props.alumnus;
@@ -25,9 +27,9 @@ export default function Edit() {
         status: prev?.status || 'not_reached',
         tags: prev?.tags || [],
         emails: prev?.emails?.map((e) => e.address) || [],
-        consent_to_email_share: Boolean( prev?.consent_to_email_share ),
-        consent_to_network_share: Boolean( prev?.consent_to_network_share ),
-        enabled: prev ? Boolean( prev?.enabled ) : true,
+        consent_to_email_share: Boolean(prev?.consent_to_email_share),
+        consent_to_network_share: Boolean(prev?.consent_to_network_share),
+        enabled: prev ? Boolean(prev?.enabled) : true,
         adts: adts.map((adt) => {
             return {
                 id: adt.id,
@@ -60,7 +62,7 @@ export default function Edit() {
     }).sort((a, b) => ((a.noRat ? 'A' : 'B') + a.label).localeCompare((b.noRat ? 'A' : 'B') + b.label))
     const formatOptionLabel = (data) => (
         <div className="flex flex-row items-center gap-2">
-            {!data.noRat && <FontAwesomeIcon icon={solid('lock')} />}
+            {!data.noRat && <FontAwesomeIcon icon={faLock} />}
             <div>{data.label}</div>
         </div>
     );
@@ -77,7 +79,7 @@ export default function Edit() {
             <div className="w-full justify-between flex flex-row">
                 <h3>{prev ? "Aggiorna" : "Crea nuovo"} alumno</h3>
                 <div className="button flex flex-row items-center" onClick={submit}>
-                    <FontAwesomeIcon icon={solid('save')} />
+                    <FontAwesomeIcon icon={faSave} />
                     Salva
                 </div>
             </div>
@@ -112,7 +114,7 @@ export default function Edit() {
 
             <label>Stato</label>
             {pending_rats && pending_rats?.map(pr => <div className="w-full info" key={pr.id}>
-                <FontAwesomeIcon icon={solid('hourglass-half')} className="mr-2" />
+                <FontAwesomeIcon icon={faHourglassHalf} className="mr-2" />
                 È presente una richiesta in attesa di ratifica per il passaggio allo stato di {AlumnusStatus.status[pr.required_state].label}
             </div>)}
             <Select
@@ -123,7 +125,7 @@ export default function Edit() {
                 formatOptionLabel={formatOptionLabel} />
             {
                 !status_options.find(i => i.value == data.status)?.noRat && <div className="w-full alert">
-                    <FontAwesomeIcon icon={solid('lock')} className="mr-2" />
+                    <FontAwesomeIcon icon={faLock} className="mr-2" />
                     Per il passaggio allo stato di {AlumnusStatus.status[data.status].label} è richiesta la ratifica al consiglio di amministrazione. Il passaggio non sarà immediato, ma al salvataggio verrà creata una richiesta di ratifica.
                 </div>
             }
@@ -152,7 +154,7 @@ export default function Edit() {
 
 
             <div className="button flex flex-row items-center self-end my-4" onClick={submit}>
-                <FontAwesomeIcon icon={solid('save')} />
+                <FontAwesomeIcon icon={faSave} />
                 Salva
             </div>
 
@@ -176,7 +178,7 @@ export default function Edit() {
             }
 
             <div className="button flex flex-row items-center self-end my-4" onClick={submit}>
-                <FontAwesomeIcon icon={solid('save')} />
+                <FontAwesomeIcon icon={faSave} />
                 Salva
             </div>
 

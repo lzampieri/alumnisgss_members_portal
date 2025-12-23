@@ -1,10 +1,12 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import { Head, Link, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import Backdrop from "../Layout/Backdrop";
 import { AlumnusStatus, postRequest, romanize } from "../Utils";
 import Dialog from "../Layout/Dialog";
+import { faCirclePlus, faDownload, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function ratDelete(rat, setProcessing) {
     postRequest(
@@ -27,11 +29,11 @@ export default function List() {
             <Head title="Ratifiche" />
             <div className="w-full flex flex-row justify-end gap-2">
                 {usePage().props.canAdd && <Link className="button" href={route('ratifications.add')}>
-                    <FontAwesomeIcon icon={solid('circle-plus')} />
+                    <FontAwesomeIcon icon={faCirclePlus} />
                     Aggiungi
                 </Link>}
                 <Link className="button" href={route('reports')}>
-                    <FontAwesomeIcon icon={solid('download')} />
+                    <FontAwesomeIcon icon={faDownload} />
                     Esporta
                 </Link>
             </div>
@@ -45,7 +47,7 @@ export default function List() {
                                 <li key={a.id}>
                                     {a.alumnus.surname} {a.alumnus.name} <span className="text-gray-400">{romanize(a.alumnus.coorte)}{a.alumnus.coorte != 0 && " coorte"}</span>
                                     <span className="icon-button-gray mx-2" onClick={() => setToDelete(a)}>
-                                        <FontAwesomeIcon icon={solid('trash')} />
+                                        <FontAwesomeIcon icon={faTrash} />
                                     </span>
                                 </li>
                             )}

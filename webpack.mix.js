@@ -34,7 +34,7 @@ console.log("=================================")
 mix.setResourceRoot(process.env.MIX_ASSET_URL)
     .js('resources/js/app.js', 'public/js')
     .postCss('resources/css/app.css', 'public/css', [
-        //
+        require("@tailwindcss/postcss"),
     ])
     .react();
 

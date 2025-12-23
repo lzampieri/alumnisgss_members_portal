@@ -1,7 +1,9 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+
+
 import { Head, Link, usePage } from "@inertiajs/react";
 import { Documents } from "../Utils";
+import { faCirclePlus, faFilePdf, faPen } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function DocumentItem(document, isAttachment = false) {
     let date = new Date(document.date);
@@ -28,14 +30,14 @@ function DocumentItem(document, isAttachment = false) {
                     {!isAttachment && <span className="text-sm">Visibilità:
                         {" " + document.dynamic_permissions.map(dp => dp.role.common_name).join(", ")}
                         {document.note && " - Nota: " + document.note}
-                    </span> }
+                    </span>}
                     <span className="text-gray-500 text-sm">Caricato il {new Date(document.created_at).toLocaleDateString('it-IT', { 'dateStyle': 'long' })} da {document.author.name} {document.author.surname}</span>
                 </div>
                 {document.canView && document.canEdit && <Link href={route('board.edit', { document: document.id })} className="">
-                    <FontAwesomeIcon icon={solid('pen')} className="text-4xl !p-4 icon-button" />
+                    <FontAwesomeIcon icon={faPen} className="text-4xl !p-4 icon-button" />
                 </Link>}
                 {document.canView && <a href={route('board.view_document', { protocol: document.protocol })} className="">
-                    <FontAwesomeIcon icon={solid('file-pdf')} className="text-4xl !p-4 icon-button" />
+                    <FontAwesomeIcon icon={faFilePdf} className="text-4xl !p-4 icon-button" />
                 </a>}
             </div>
             {document.attachments && document.attachments.map(document => DocumentItem(document, true))}
@@ -51,7 +53,7 @@ export default function List() {
             <Head title="Albo" />
             {usePage().props.canUpload && <div className="w-full flex flex-row justify-end">
                 <Link className="button" href={route('board.add')}>
-                    <FontAwesomeIcon icon={solid('circle-plus')} />
+                    <FontAwesomeIcon icon={faCirclePlus} />
                     Aggiungi
                 </Link>
             </div>}

@@ -25,7 +25,7 @@ class AuthController extends Controller
     }
 
     // Callback
-    function callback()
+    function callback(Request $request)
     {
         if (Auth::check())
             return redirect()->route('home');
@@ -43,6 +43,10 @@ class AuthController extends Controller
                 $em->token = null;
                 $em->last_login = Carbon::now();
                 $em->save();
+
+                // For any reason there is a looping problem with this route, prevent it
+                if( str_contains( $request->session()->get('url.intended', ""), "contacts" ) )
+                    return redirect()->to(route('home'));
 
                 return redirect()->intended(route('home'));
             }

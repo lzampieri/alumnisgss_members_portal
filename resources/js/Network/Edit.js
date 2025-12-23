@@ -5,13 +5,15 @@ import CreatableSelect from 'react-select/creatable';
 import { AlumnusStatus, bgAndContrast, bgAndContrastPastel, romanize } from "../Utils";
 import Dialog from '../Layout/Dialog';
 import { router } from "@inertiajs/react";
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import { enqueueSnackbar } from "notistack";
 import TokenizableInput from "../Libs/react-tokenizable-inputs/TokenizableInput";
 import Backdrop from "../Layout/Backdrop";
 import ADetailsType from "./ADetailsType";
 import SmartChip from "./SmartChip";
+import { faChevronLeft, faSave } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Edit() {
     const alumnus = usePage().props.alumnus;
@@ -39,11 +41,11 @@ export default function Edit() {
             <Head title={alumnus.name + " " + alumnus.surname} />
             <div className="flex flex-row justify-between w-full">
                 <Link className="button flex flex-row items-center self-start mb-4" href={route('network')}>
-                    <FontAwesomeIcon icon={solid('chevron-left')} />
+                    <FontAwesomeIcon icon={faChevronLeft} />
                     Indietro
                 </Link>
                 <div className="button flex flex-row items-center self-start mb-4" onClick={submit}>
-                    <FontAwesomeIcon icon={solid('save')} />
+                    <FontAwesomeIcon icon={faSave} />
                     Salva
                 </div>
             </div>
@@ -63,7 +65,7 @@ export default function Edit() {
                     </div>)}
 
             </div>
-            
+
             {alumnus.consent_to_network_share ?
                 <SmartChip content="Dettagli visibili a tutti i soci registrati" style={bgAndContrastPastel(4)} /> :
                 <SmartChip content="Dettagli visibili solo allo staff" style={bgAndContrastPastel(2)} />
@@ -72,7 +74,7 @@ export default function Edit() {
             <div className="flex flex-row w-full flex-wrap">
                 {alumnus.visible_emails?.map((email) => <SmartChip style={bgAndContrastPastel(1)} content={email.address} key={email.id} />)}
             </div>
-            
+
             {alumnus.consent_to_email_share ?
                 <SmartChip content="Indirizzi mail visibili a tutti i soci registrati" style={bgAndContrastPastel(4)} /> :
                 <SmartChip content="Indirizzi mail visibili solo allo staff" style={bgAndContrastPastel(2)} />
@@ -99,7 +101,7 @@ export default function Edit() {
 
             <div className="flex flex-row w-full justify-end">
                 <div className="button flex flex-row items-center self-start mb-4" onClick={submit}>
-                    <FontAwesomeIcon icon={solid('save')} />
+                    <FontAwesomeIcon icon={faSave} />
                     Salva
                 </div>
             </div>

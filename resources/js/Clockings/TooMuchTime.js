@@ -1,11 +1,13 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import { Head, Link, router, useForm, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import { hhmm, totalCount, twoDigits, withQuartersAndHours } from "./TimeUtils";
 import EmptyDialog from "../Layout/EmptyDialog";
 import TextareaAutosize from 'react-textarea-autosize';
 import Backdrop from "../Layout/Backdrop";
+import { faComment, faHourglass, faHourglassHalf, faScrewdriverWrench, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
 export default function TooMuchTime() {
@@ -27,7 +29,7 @@ export default function TooMuchTime() {
         <div className="main-container gap-4">
             <Head title="Timbratore" />
             <div className="unlclickable-button flex flex-col text-xl md:text-4xl font-bold aspect-square items-center justify-center gap-4">
-                <FontAwesomeIcon icon={solid('triangle-exclamation')} className="text-5xl" />
+                <FontAwesomeIcon icon={faTriangleExclamation} className="text-5xl" />
                 Attenzione
             </div>
             <div className="w-full">È stato rilevato per la data odierna un eccesso di ore lavorative. In particolare risultano lavorate <b>{withQuartersAndHours(totalCount(stamps))}</b> a fronte delle <b>{withQuartersAndHours(expectedHours)}</b> attese.</div>
@@ -41,18 +43,18 @@ export default function TooMuchTime() {
                             {stamp.clockout ? " - Totale: " + withQuartersAndHours(stamp.hours) : ""}
                             {stamp.acpttickets.map((t) =>
                                 <Link className="icon-button-gray" href={route('ticket.view', { ticket: t.id })} key={t.id}>
-                                    <FontAwesomeIcon icon={solid('screwdriver-wrench')} />
+                                    <FontAwesomeIcon icon={faScrewdriverWrench} />
                                 </Link>
                             )}
                             {stamp.opentickets.map((t) =>
                                 <Link className="icon-button-gray" href={route('ticket.view', { ticket: t.id })} key={t.id}>
-                                    <FontAwesomeIcon icon={solid('hourglass-half')} />
+                                    <FontAwesomeIcon icon={faHourglassHalf} />
                                 </Link>
                             )}
                             {
                                 (stamp.clockin || stamp.clockout) &&
                                 <Link className="icon-button" href={route('ticket.add', { type: 'EditStamp', stampId: stamp.id })} key={'edit' + stamp.id}>
-                                    <FontAwesomeIcon icon={solid('screwdriver-wrench')} />
+                                    <FontAwesomeIcon icon={faScrewdriverWrench} />
                                 </Link>
                             }
                         </li>)}
@@ -60,12 +62,12 @@ export default function TooMuchTime() {
             </div>
 
             <Link className="button" href={route('ticket.add', { type: 'EditStamp', stampId: lastStamp.id })}>
-                <FontAwesomeIcon icon={solid('screwdriver-wrench')} className="mr-2" />
+                <FontAwesomeIcon icon={faScrewdriverWrench} className="mr-2" />
                 Apri una richiesta per la modifica dell'ultima timbratura
             </Link>
 
             <div className="button" onClick={() => setAddComment(true)}>
-                <FontAwesomeIcon icon={solid('comment')} className="mr-2" />
+                <FontAwesomeIcon icon={faComment} className="mr-2" />
                 Aggiungi un commento all'ultima timbratura
             </div>
 

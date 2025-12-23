@@ -1,5 +1,5 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import React, { useState } from "react";
 import TextareaAutosize from 'react-textarea-autosize';
@@ -7,6 +7,8 @@ import Backdrop from "../Layout/Backdrop";
 import { getStatusColor, getStatusLabel } from "./TktUtils";
 import { bgAndContrastPastel, postRequest } from "../Utils";
 import Dialog from "../Layout/Dialog";
+import { faComment, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function parseDate(value) {
     return new Date(value)?.toLocaleString('it-IT', { year: 'numeric', month: '2-digit', day: '2-digit' })
@@ -28,7 +30,7 @@ function getNameAndSurname(guy) {
 
 function Comment({ comment }) {
     return <div className="mb-2 whitespace-pre-wrap">
-        <span className="text-gray-700 text-sm"><FontAwesomeIcon icon={solid('comment')} /> {getNameAndSurname(comment.author)} - {parseDate(comment.created_at)}</span><br />
+        <span className="text-gray-700 text-sm"><FontAwesomeIcon icon={faComment} /> {getNameAndSurname(comment.author)} - {parseDate(comment.created_at)}</span><br />
         {comment.content}
     </div>;
 }
@@ -114,7 +116,7 @@ export default function View() {
                     onChange={(e) => setData('content', e.target.value)} />
                 <label className="error">{errors['content']}</label>
                 <button className="button self-end" onClick={submit} disabled={processing}>
-                    <FontAwesomeIcon icon={solid('paper-plane')} className="pr-2" />
+                    <FontAwesomeIcon icon={faPaperPlane} className="pr-2" />
                     Commenta
                 </button>
             </>}

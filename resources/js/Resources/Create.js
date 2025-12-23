@@ -1,10 +1,12 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import EmptyDialog from "../Layout/EmptyDialog";
 import { useState } from "react";
 import { useForm, usePage } from "@inertiajs/react";
 import RolesChips from "../Permissions/RolesChips";
 import ParentSelector from "./ParentSelector";
+import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
 export default function Create() {
@@ -50,7 +52,7 @@ export default function Create() {
             </form>
         </EmptyDialog>
         <div className="drawer-item" onClick={() => setIsCreating(true)}>
-            <FontAwesomeIcon icon={solid('add')} /> Crea nuova
+            <FontAwesomeIcon icon={faAdd} /> Crea nuova
         </div>
     </>
 }

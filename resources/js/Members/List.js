@@ -1,9 +1,11 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import { Head, Link, usePage } from "@inertiajs/react";
 import { AlumnusStatus, bgAndContrast, romanize } from "../Utils";
 import { useMemo, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import RegistryHeader from "./RegistryHeader";
 
 function AlumnusContent({ data }) {
@@ -79,10 +81,10 @@ export default function List() {
             <Counters {...counts} />
             <div className="w-full md:w-3/5 relative mb-4">
                 <input type="text" className="w-full text-center" placeholder="Cerca..." value={quickFilter} onChange={(e) => setQuickFilter(e.target.value)} />
-                <FontAwesomeIcon icon={solid('magnifying-glass')} className="input-icon" />
+                <FontAwesomeIcon icon={faMagnifyingGlass} className="input-icon" />
             </div>
             <div className="w-full grow overflow-x-scroll flex flex-row">
-                {Object.keys(data).map( coorte => <CoorteColumns key={coorte} coorte={coorte} data={data[coorte]} quickFilter={quickFilter} />)}
+                {Object.keys(data).map(coorte => <CoorteColumns key={coorte} coorte={coorte} data={data[coorte]} quickFilter={quickFilter} />)}
             </div>
         </div>
     );

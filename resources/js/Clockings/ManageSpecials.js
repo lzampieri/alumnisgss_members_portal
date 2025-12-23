@@ -1,12 +1,13 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+
+
 import Backdrop from "../Layout/Backdrop";
 import { bgAndContrast, postRequest } from "../Utils";
 import { useState } from "react";
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { Collapse } from 'react-collapse';
 import Select from 'react-select';
-import { faL } from "@fortawesome/free-solid-svg-icons";
+import { faL, faPlus, faSave, faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function twoDigits(num) {
     return ("" + num).padStart(2, '0');
@@ -48,7 +49,7 @@ function Month({ m, selectable, selected, toggle }) {
             return <div className={
                 "px-1 rounded " +
                 ((zeroDay + d) % 7 > 4 ? "font-bold " : "") +
-                (thisSelectable ? "cursor-pointer hover:outline hover:outline-black " : "") + 
+                (thisSelectable ? "cursor-pointer hover:outline hover:outline-black " : "") +
                 (thisSelectable && selected.includes(getKey(m, d)) ? "outline outline-primary-main " : "")
             } key={d} style={style} onClick={() => thisSelectable && toggle(getKey(m, d))}>
                 {d + 1}
@@ -59,7 +60,7 @@ function Month({ m, selectable, selected, toggle }) {
 
 function SpecialsList({ isOpened }) {
     const specials = usePage().props.specials;
-    const [deleting,setDeleting] = useState(false);
+    const [deleting, setDeleting] = useState(false);
 
     return <Collapse theme={{ collapse: "w-full md:w-3/5 gap-1 cpm" }} isOpened={isOpened}>
         <div className="w-full border-2 border-primary-main rounded px-2 py-1 text-center mb-1">
@@ -74,7 +75,7 @@ function SpecialsList({ isOpened }) {
                     { id: s.id },
                     setDeleting
                 )}>
-                    <FontAwesomeIcon icon={solid('trash')} />
+                    <FontAwesomeIcon icon={faTrash} />
                 </button>
             </div>
         ))}
@@ -94,7 +95,7 @@ function AddPanel({ isOpened, typesOptions, data, setData, post }) {
                 onChange={(sel) => setData('type', sel.value)}
                 options={typesOptions} />
             <button className="button" disabled={!data.type || !typesOptions.map(i => i.value).includes(data.type) || data.days.length == 0} onClick={post}>
-                <FontAwesomeIcon icon={solid('save')} className="mr-2" />
+                <FontAwesomeIcon icon={faSave} className="mr-2" />
                 Salva
             </button>
         </div>
@@ -138,7 +139,7 @@ export default function ManageSpecials() {
         <SpecialsList isOpened={!adding} />
 
         <div className="button" onClick={() => setAdding(!adding)}>
-            <FontAwesomeIcon icon={adding ? solid('xmark') : solid('plus')} className="mr-2" />
+            <FontAwesomeIcon icon={adding ? faXmark : faPlus} className="mr-2" />
             {adding ? "Annulla" : "Aggiungi"}
         </div>
 

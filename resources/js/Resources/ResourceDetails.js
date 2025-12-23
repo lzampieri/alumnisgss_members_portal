@@ -2,8 +2,8 @@ import { useState } from "react";
 import BlocksEditor from "../Blocks/BlocksEditor";
 import BlocksViewer from "../Blocks/BlocksViewer";
 import { Link, useForm, usePage } from '@inertiajs/react';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+
+
 import EmptyDialog from "../Layout/EmptyDialog";
 import RolesChips from "../Permissions/RolesChips";
 import { postRequest } from "../Utils";
@@ -12,6 +12,8 @@ import Select from 'react-select';
 import ParentSelector from "./ParentSelector";
 import MagicLink from "./MagicLink";
 import computeResourceLink from "./computeResourceLink";
+import { faAdd, faBoxArchive, faBoxOpen, faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function EditRoles({ type, initialList, resourceId, setProcessing }) {
     if (!(type == 'view' || type == 'edit'))
@@ -36,7 +38,7 @@ function EditRoles({ type, initialList, resourceId, setProcessing }) {
     }
 
     return <>
-        <FontAwesomeIcon icon={solid('pencil')} className="icon-button mx-3" onClick={() => openDialog(true)} />
+        <FontAwesomeIcon icon={faPencil} className="icon-button mx-3" onClick={() => openDialog(true)} />
         <EmptyDialog open={dialog} onClose={() => openDialog(false)}>
             <label className="mb-3">
                 {type == 'view' && "Visibile da:"}
@@ -67,12 +69,12 @@ function EditTitle({ resource, setProcessing }) {
     }
 
     return <>
-        <FontAwesomeIcon icon={solid('pencil')} className="icon-button mx-3" onClick={() => openDialog(true)} />
+        <FontAwesomeIcon icon={faPencil} className="icon-button mx-3" onClick={() => openDialog(true)} />
         <EmptyDialog open={dialog} onClose={() => openDialog(false)}>
             <label>Titolo:</label>
             <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
             <label>All'interno di:</label>
-            <ParentSelector value={parent} setValue={setParent}  />
+            <ParentSelector value={parent} setValue={setParent} />
             <div className='button items-end self-end mt-2' onClick={save}>Salva</div>
         </EmptyDialog>
     </>
@@ -95,7 +97,7 @@ function AddPermalink({ resourceId }) {
     }
 
     return <>
-        <FontAwesomeIcon icon={solid('ADD')} className="icon-button mx-3" onClick={() => openDialog(true)} />
+        <FontAwesomeIcon icon={faAdd} className="icon-button mx-3" onClick={() => openDialog(true)} />
         <EmptyDialog open={dialog} onClose={() => openDialog(false)}>
             <form onSubmit={submit} className="flex flex-col w-full items-start">
                 <h3 className="mb-3">
@@ -125,9 +127,9 @@ function Content({ resource, setProcessing }) {
     }
 
     return <>
-        {resource.canEdit && !isEditing && 
+        {resource.canEdit && !isEditing &&
             <div className="flex flex-col md:flex-row w-full justify-end items-end">
-                <div className='button' onClick={() => setIsEditing(true)}><FontAwesomeIcon icon={solid('pencil')} className="" />Modifica</div>
+                <div className='button' onClick={() => setIsEditing(true)}><FontAwesomeIcon icon={faPencil} className="" />Modifica</div>
                 <Archive resource={resource} setProcessing={setProcessing} />
                 <Delete resource={resource} setProcessing={setProcessing} />
             </div>}
@@ -154,13 +156,13 @@ function Archive({ resource, setProcessing }) {
     }
 
     return <>
-        <div className='button ml-2' onClick={() => setIsArchiving(true)}><FontAwesomeIcon icon={resource.archived ? solid('box-open') : solid('box-archive')} />{ resource.archived ? "Ripristina" : "Archivia"}</div>
+        <div className='button ml-2' onClick={() => setIsArchiving(true)}><FontAwesomeIcon icon={resource.archived ? faBoxOpen : faBoxArchive} />{resource.archived ? "Ripristina" : "Archivia"}</div>
         <EmptyDialog open={archiving && resource.archived} onClose={() => setIsArchiving(false)}>
             <h3 className="mb-3">
                 Ripristino
             </h3>
             <span>La risorsa verrà ripristinata, e tornerà ad essere visibile nel menù. I link diretti alla risorsa continueranno a funzionare.</span>
-            { resource.visibleAncestors.map( (va) => va.archived && <div className="w-full bg-error bg-opacity-10">
+            {resource.visibleAncestors.map((va) => va.archived && <div className="w-full bg-error bg-opacity-10">
                 Attenzione: la risorsa non sarà comunque visibile, perché è all'interno della risorsa archivata <i>{va.title}</i>. Per rendere questa risorsa visibile, alternativamente ripristinare anche la risorsa genitore o modificare la gerarchia.
             </div>)}
             <div className="w-full flex flex-row justify-end my-2 gap-2">
@@ -197,7 +199,7 @@ function Delete({ resource, setProcessing }) {
     }
 
     return <>
-        <div className='button ml-2' onClick={() => setIsDeleting(true)}><FontAwesomeIcon icon={solid('trash')} />Elimina</div>
+        <div className='button ml-2' onClick={() => setIsDeleting(true)}><FontAwesomeIcon icon={faTrash} />Elimina</div>
         <EmptyDialog open={deleting} onClose={() => setIsDeleting(false)}>
             <h3 className="mb-3">
                 Attenzione!
@@ -223,11 +225,11 @@ export default function ResourceDetails({ resource }) {
         {resource.canEdit && <div className="text-sm text-gray-400">
             Visibile da {canView.map(r => r.common_name).join(", ")}
             <EditRoles type="view" initialList={canView.map(r => r.id)} resourceId={resource.id} setProcessing={setProcessing} />
-        </div> }
+        </div>}
         {resource.canEdit && <div className="text-sm text-gray-400">
             Modificabile da {canEdit.map(r => r.common_name).join(", ")}
             <EditRoles type="edit" initialList={canEdit.map(r => r.id)} resourceId={resource.id} setProcessing={setProcessing} />
-        </div> }
+        </div>}
         <div className="text-sm text-gray-400">
             {hasPermalinks ? <>
                 Permalinks: {resource.permalinks.map(i => <Link href={route('permalink', { 'permalink': i.id })} key={i.id}>{i.id}</Link>).reduce((prev, curr) => [prev, ', ', curr])}
@@ -236,9 +238,9 @@ export default function ResourceDetails({ resource }) {
             </>}
             {resource.canEdit && <AddPermalink resourceId={resource.id} setProcessing={setProcessing} />}
         </div>
-        { resource.canEdit && <MagicLink resource={resource} setProcessing={setProcessing} /> }
-        { resource.visibleAncestors?.length > 0 && <div className="text-sm text-gray-400">
-            All'interno di { resource.visibleAncestors.slice().reverse().map((r) => <Link href={computeResourceLink(r)} key={r.id}>{r.title}</Link>).reduce((prev, curr) => [prev, ' > ', curr]) }
+        {resource.canEdit && <MagicLink resource={resource} setProcessing={setProcessing} />}
+        {resource.visibleAncestors?.length > 0 && <div className="text-sm text-gray-400">
+            All'interno di {resource.visibleAncestors.slice().reverse().map((r) => <Link href={computeResourceLink(r)} key={r.id}>{r.title}</Link>).reduce((prev, curr) => [prev, ' > ', curr])}
         </div>}
         <Content resource={resource} setProcessing={setProcessing} />
         <Backdrop open={processing} />

@@ -1,5 +1,5 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { AlumnusStatus, bgAndContrast, postRequest, romanize } from "../Utils";
 import { useMemo, useState } from "react";
@@ -9,6 +9,8 @@ import ReactSwitch from "react-switch";
 import { enqueueSnackbar } from "notistack";
 import ADetailsType from "./ADetailsType";
 import Select from 'react-select';
+import { faChevronLeft, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function ADlist() {
     const { data, setData, post, processing, errors, isDirty } = useForm({
@@ -26,7 +28,7 @@ function ADlist() {
     const [toDelete, setToDelete] = useState(null);
     const [delProcessing, setDelProcessing] = useState(false);
 
-    
+
     const openForm = (prev) => {
         setOpen(true);
         setData({
@@ -35,7 +37,7 @@ function ADlist() {
             type: prev?.type || '',
             param: prev?.param || '',
             order: prev?.order || 0,
-            visible: Boolean( prev ? prev.visible : true ),
+            visible: Boolean(prev ? prev.visible : true),
         })
     }
 
@@ -78,10 +80,10 @@ function ADlist() {
         {adtypes.map((adtype) =>
             <div key={adtype.id} className="w-full flex flex-row gap-2 my-1">
                 <div className="button" onClick={() => openForm(adtype)} >
-                    <FontAwesomeIcon icon={solid('pen')} className="!p-0" />
+                    <FontAwesomeIcon icon={faPen} className="!p-0" />
                 </div>
                 <div className="button" onClick={() => openDeleteForm(adtype)} >
-                    <FontAwesomeIcon icon={solid('trash')} className="!p-0" />
+                    <FontAwesomeIcon icon={faTrash} className="!p-0" />
                 </div>
                 <div className="grow flex flex-col">
                     {adtype.name} <br />
@@ -96,7 +98,7 @@ function ADlist() {
             </div>
         )}
         <div className="button flex flex-row items-baseline self-end" onClick={() => openForm(null)} >
-            <FontAwesomeIcon icon={solid('plus')} />
+            <FontAwesomeIcon icon={faPlus} />
             Aggiungi
         </div>
         <Dialog
@@ -153,7 +155,7 @@ export default function Settings() {
     return <div className="main-container gap-1">
         <Head title="Impostazioni rete" />
         <Link className="button flex flex-row items-baseline self-start" href={route('network')}>
-            <FontAwesomeIcon icon={solid('chevron-left')} />
+            <FontAwesomeIcon icon={faChevronLeft} />
             Indietro
         </Link>
         <h3>Campi in forma di lista</h3>

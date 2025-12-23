@@ -1,10 +1,12 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import { useForm, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import Backdrop from "../Layout/Backdrop";
 import EmptyDialog from "../Layout/EmptyDialog";
 import { AlumnusStatus, postRequest, romanize } from "../Utils";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function AddRatification({ document }) {
     const [open, setOpen] = useState(false);
@@ -29,7 +31,7 @@ export default function AddRatification({ document }) {
                     <label className="col-span-3"><i>Per il passaggio allo stato di <b>{AlumnusStatus.status[k].label}</b></i></label>
                     {rats[k].map(r =>
                         <span key={r.id}>
-                            <span className="icon-button" onClick={() => submit(r.id)}><FontAwesomeIcon icon={solid('plus')} /></span>
+                            <span className="icon-button" onClick={() => submit(r.id)}><FontAwesomeIcon icon={faPlus} /></span>
                             {r.alumnus.surname} {r.alumnus.name} <span className="text-gray-400"> {romanize(r.alumnus.coorte)}{r.alumnus.coorte != 0 && " coorte"}</span>
                         </span>
                     )}

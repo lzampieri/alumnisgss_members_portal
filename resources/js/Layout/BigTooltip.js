@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import usePortal from 'react-useportal';
+import usePortal from "./usePortal";
 // import { useTooltip } from "../Libs/UseTooltip";
 
 export default function BigTooltip({ content, children }) {

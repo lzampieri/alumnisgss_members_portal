@@ -2,8 +2,8 @@ import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import Backdrop from "../Layout/Backdrop";
 import TokenizableInput from "../Libs/react-tokenizable-inputs/TokenizableInput";
 import { enqueueSnackbar } from "notistack";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+
+
 import { useCallback, useMemo, useState } from "react";
 import EmptyDialog from "../Layout/EmptyDialog";
 import sanitizeHtml from "sanitize-html";
@@ -15,6 +15,8 @@ import { ModuleRegistry, ClientSideRowModelModule, ColumnAutoSizeModule, QuickFi
 import { AlumnusStatus, asyncPostWithResult, bgAndContrast, noninertiaPostRequest, postRequest } from "../Utils";
 import DefaultEditor, { BtnBold, BtnBulletList, BtnItalic, BtnLink, BtnNumberedList, BtnRedo, BtnStrikeThrough, BtnUnderline, BtnUndo, Editor, EditorProvider, Separator, Toolbar } from "react-simple-wysiwyg";
 import { to } from "@react-spring/web";
+import { faAddressBook, faCheck, faCirclePlus, faFileArrowUp, faPlus, faStar, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnAutoSizeModule, QuickFilterModule]);
 
 function delFromArray(arr, idx) {
@@ -34,8 +36,8 @@ function StatusTooltip({ status }) {
 }
 
 function AddButton({ address, to, setTo }) {
-    if (to.includes(address)) return <FontAwesomeIcon icon={solid('check')} className="text-[#00CC00]" />;
-    return <FontAwesomeIcon icon={solid('plus')} className="icon-button" onClick={() => setTo([...to, address])} />
+    if (to.includes(address)) return <FontAwesomeIcon icon={faCheck} className="text-[#00CC00]" />;
+    return <FontAwesomeIcon icon={faPlus} className="icon-button" onClick={() => setTo([...to, address])} />
 }
 
 function Rubrica({ to, setTo }) {
@@ -51,7 +53,7 @@ function Rubrica({ to, setTo }) {
         },
         {
             field: 'address', headerName: 'address', valueGetter: ({ data }) => data?.address, filter: 'agTextColumnFilter',
-            cellRenderer: ({ value, data }) => <span>{data.isPrimary && <FontAwesomeIcon icon={solid('star')} className="mr-2 text-[#f5b700]" />}{value}</span>
+            cellRenderer: ({ value, data }) => <span>{data.isPrimary && <FontAwesomeIcon icon={faStar} className="mr-2 text-[#f5b700]" />}{value}</span>
         },
         {
             field: 'add', headerName: 'add', valueGetter: ({ data }) => data.isPrimary, filter: 'agTextColumnFilter',
@@ -67,7 +69,7 @@ function Rubrica({ to, setTo }) {
     })
 
     return <>
-        <div className="button" onClick={() => setOpen(true)}><FontAwesomeIcon icon={solid('address-book')} className="mr-2" />Aggiungi da rubrica</div>
+        <div className="button" onClick={() => setOpen(true)}><FontAwesomeIcon icon={faAddressBook} className="mr-2" />Aggiungi da rubrica</div>
         <EmptyDialog
             open={open}
             onClose={() => setOpen(false)}
@@ -107,14 +109,14 @@ function Groups({ to, setTo, setNotFound }) {
     }
 
     return <>
-        <div className="button" onClick={() => setOpen(true)}><FontAwesomeIcon icon={solid('address-book')} className="mr-2" />Aggiungi da gruppo</div>
+        <div className="button" onClick={() => setOpen(true)}><FontAwesomeIcon icon={faAddressBook} className="mr-2" />Aggiungi da gruppo</div>
         <EmptyDialog
             open={open}
             onClose={() => setOpen(false)}
         >
             <div className="w-full flex flex-row flex-wrap gap-4 gap-y-4 items-center justify-center">
                 {groups.map((g) => <div className="button" key={g.id} onClick={() => addGroup(g)}>
-                    <FontAwesomeIcon icon={solid('circle-plus')} className="mr-2" />
+                    <FontAwesomeIcon icon={faCirclePlus} className="mr-2" />
                     {g.common_name}
                 </div>)}
                 {groups.length == 0 && "Nessun gruppo disponibile"}
@@ -152,16 +154,16 @@ function AttachmentSelector({ attachments, setAttachments, newsletterId }) {
     return <>
         <div {...getRootProps()} className="border-2 border-dashed rounded-md my-4 flex flex-col items-center p-4">
             <input {...getInputProps()} />
-            <FontAwesomeIcon icon={solid('file-arrow-up')} className="text-4xl" />
+            <FontAwesomeIcon icon={faFileArrowUp} className="text-4xl" />
             <div className="text-center">Trascina qui il file da caricare, o clicca per selezionarlo dal pc.</div>
             <small>Formati accettati: {usePage().props.allowedFormats.join(", ")}</small>
             <label className="error whitespace-pre-wrap">{errors}</label>
         </div>
         {attachments?.length > 0 && <label>Attualmente caricati:</label>}
         {
-            attachments?.map((f,idx) =>
+            attachments?.map((f, idx) =>
                 <div className="w-full flex flex-row items-center" key={f.id}>
-                    <div className="button mr-2" onClick={() => setAttachments(delFromArray(attachments, idx))}><FontAwesomeIcon icon={solid('trash-can')} /></div>
+                    <div className="button mr-2" onClick={() => setAttachments(delFromArray(attachments, idx))}><FontAwesomeIcon icon={faTrashCan} /></div>
                     <a target="_blank" href={route('newsletter.attachment', { id: f.id })}>{f.handle}</a>
                 </div>
             )

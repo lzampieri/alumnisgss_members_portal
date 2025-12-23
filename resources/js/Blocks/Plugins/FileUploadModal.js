@@ -2,11 +2,13 @@ import { useDropzone } from "react-dropzone";
 import EmptyDialog from "../../Layout/EmptyDialog";
 import { useCallback } from "react";
 import { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+
+
 import { enqueueSnackbar } from "notistack";
 import { useForm, usePage } from '@inertiajs/react';
 import Backdrop from "../../Layout/Backdrop";
+import { faFileArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
 export default function FileUploadModal({ fileHandle, setFileHandle, setFileExt }) {
@@ -56,7 +58,7 @@ export default function FileUploadModal({ fileHandle, setFileHandle, setFileExt 
             <h3>Seleziona file</h3>
             <div {...getRootProps()} className="border-2 border-dashed rounded-md my-4 flex flex-col items-center p-4">
                 <input {...getInputProps()} />
-                <FontAwesomeIcon icon={solid('file-arrow-up')} className="text-4xl" />
+                <FontAwesomeIcon icon={faFileArrowUp} className="text-4xl" />
                 <div className="text-center">Trascina qui il file da caricare, o clicca per selezionarlo dal pc.</div>
                 <label className="error">{errors.file}</label>
                 <small>Formati accettati: {allowed_formats.join(", ")}</small>

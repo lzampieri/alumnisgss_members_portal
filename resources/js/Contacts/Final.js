@@ -1,5 +1,5 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import { useEffect, useMemo, useState } from "react";
 import { asyncPostWithResult } from "../Utils";
 
@@ -16,7 +16,7 @@ async function saveData(toAdd, toRemove, groups, setStep) {
 
     try {
 
-        Object.keys(groups).forEach( async key => {
+        Object.keys(groups).forEach(async key => {
             if (toAdd[key].length + toRemove[key].length == 0) return 0;
 
             await asyncPostWithResult('contacts.modifyGroup', {
@@ -53,9 +53,9 @@ function elabContacts(members, combs, contacts, groups, setUnpairedMembers, setE
     Object.values(groups).forEach(group => {
 
         group['members'].forEach(resid => {
-            if( !resIdList.some( id => id == resid ) ) {
-                let contact = contacts.find( c => c['id'] == resid );
-                extraContacts.push({group: group, contact: contact});
+            if (!resIdList.some(id => id == resid)) {
+                let contact = contacts.find(c => c['id'] == resid);
+                extraContacts.push({ group: group, contact: contact });
             }
         });
 
@@ -84,7 +84,7 @@ export default function Final({ members, combs, contacts, groups }) {
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
             </div>}
-            
+
             {step == STEP.LIST && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
                 Procedura completata! Puoi chiudere questa finestra.<br />
             </div>}
@@ -96,7 +96,7 @@ export default function Final({ members, combs, contacts, groups }) {
                     <tr>
                         <th className="px-2">Nome</th>
                     </tr>
-                    {unpairedMembers.map(( member , index) => {
+                    {unpairedMembers.map((member, index) => {
                         return (
                             <tr className={index % 2 == 0 ? "bg-gray-100" : ""} key={index}>
                                 <td className="px-2">{member['name']} {member['surname']}</td>
@@ -113,7 +113,7 @@ export default function Final({ members, combs, contacts, groups }) {
                         <th className="px-2">Nome</th>
                         <th className="px-2">Gruppo</th>
                     </tr>
-                    {extraContacts.map(({group, contact}, index) => {
+                    {extraContacts.map(({ group, contact }, index) => {
                         return (
                             <tr className={index % 2 == 0 ? "bg-gray-100" : ""} key={index}>
                                 <td className="px-2">{group['name']}</td>

@@ -1,10 +1,12 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGlobe, faLink } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+
+
 
 
 export default class Link {
     static title = "Link"
-    static icon = solid('link')
+    static icon = faLink
 
     static getDefaultData() {
         return {
@@ -16,32 +18,32 @@ export default class Link {
     static mainElementEditable = ({ item, setItemValue }) => {
         return <div
             className="w-full div-highlighted flex flex-row items-center gap-4 my-2 p-4">
-            <FontAwesomeIcon icon={solid('globe')} className="text-6xl" />
+            <FontAwesomeIcon icon={faGlobe} className="text-6xl" />
             <div className="flex flex-col grow gap-2">
                 <input
                     type="text"
                     className="w-full"
                     value={item.title}
-                    onChange={(e)=> setItemValue('title',e.target.value)}
+                    onChange={(e) => setItemValue('title', e.target.value)}
                     placeholder="Titolo"
                 />
                 <input
                     type="text"
                     className="w-full"
                     value={item.href}
-                    onChange={(e)=> setItemValue('href',e.target.value)}
+                    onChange={(e) => setItemValue('href', e.target.value)}
                     placeholder="Indirizzo web"
                 />
             </div>
         </div>
     }
 
-    static mainElementReadOnly = ({item}) => {
+    static mainElementReadOnly = ({ item }) => {
         console
         return <a
             className="w-full div-highlighted flex flex-row items-center gap-4 my-2 p-4 no-underline"
-            href={ item.href }>
-            <FontAwesomeIcon icon={solid('globe')} className="text-6xl" />
+            href={item.href}>
+            <FontAwesomeIcon icon={faGlobe} className="text-6xl" />
             <div className="flex flex-col grow gap-2">
                 <div className="text-lg">{item.title}</div>
             </div>

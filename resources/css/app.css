@@ -1,6 +1,28 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@layer theme, base, vendor, components, utilities;
+@import "@fortawesome/fontawesome-svg-core/styles.css" layer(vendor);
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+
+@theme {
+    --color-primary-main: #cb0014;
+    --color-primary-contrast: #ffffff;
+    --color-header-bg: #111111;
+    --color-error: #ff3333;
+    --color-header-tx: #ffffff;
+    --color-halfblack: #000000A0;
+    --color-transparent: transparent;
+    --color-current: currentColor;
+}
+
+@source "../../resources/**/*.blade.php";
+@source "../../resources/**/*.js";
+@source "../../resources/**/*.vue";
+@source "../../node_modules/tailwind-datepicker-react/dist/**/*.js";
 
 @layer components {
     body {
@@ -231,10 +253,10 @@
         @apply p-2 w-full;
     }
     .info {
-        @apply rounded-md bg-gray-300 bg-opacity-10 my-2 p-2
+        @apply rounded-md bg-gray-300/10 my-2 p-2
     }
     .alert {
-        @apply rounded-md bg-primary-main bg-opacity-10 my-2 p-2
+        @apply rounded-md bg-primary-main/10 my-2 p-2
     }
     .card {
         @apply w-full border-2 border-primary-main rounded px-2 py-1
@@ -248,16 +270,16 @@
         @apply first:rounded-t-xl last:rounded-b-xl
     }
     .drawer-item {
-        @apply border border-black rounded-first-last p-2 cursor-pointer;
+        @apply border border-black first:rounded-t-xl last:rounded-b-xl p-2 cursor-pointer;
         @apply bg-white text-black hover:text-primary-contrast hover:bg-primary-main;
         @apply aria-selected:bg-primary-main aria-selected:text-primary-contrast;
     }
     .drawer-item-passive {
-        @apply border border-black rounded-first-last p-2;
+        @apply border border-black first:rounded-t-xl last:rounded-b-xl p-2;
         @apply bg-white text-gray-400 text-sm;
     }
     .drawer-item-noborder {
-        @apply rounded-first-last p-2 cursor-pointer;
+        @apply first:rounded-t-xl last:rounded-b-xl p-2 cursor-pointer;
         @apply bg-white text-black hover:text-primary-contrast hover:bg-primary-main;
     }
 

@@ -2,8 +2,10 @@ import { useForm, usePage } from "@inertiajs/react";
 import EmptyDialog from "../Layout/EmptyDialog";
 import Backdrop from "../Layout/Backdrop";
 import { useState } from "react";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+
+
 
 // This guy is inserted into Myself.js
 export default function ManuallyAddEmail() {
@@ -19,8 +21,8 @@ export default function ManuallyAddEmail() {
     }
 
     return <>
-        <FontAwesomeIcon icon={solid('plus')} className="icon-button ml-2" onClick={() => setOpen(true)} />
-        <EmptyDialog open={open} onClose={()=>setOpen(false)}>
+        <FontAwesomeIcon icon={faPlus} className="icon-button ml-2" onClick={() => setOpen(true)} />
+        <EmptyDialog open={open} onClose={() => setOpen(false)}>
             <form className="flex flex-col w-full" onSubmit={submit}>
                 <h3>Inserisci nuovo indirizzo mail</h3>
                 <label>Indirizzo</label>

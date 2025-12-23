@@ -1,5 +1,5 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import { Head, Link, usePage } from "@inertiajs/react";
 // import { AlumnusStatus, bgAndContrast, bgAndContrastPastel, romanize } from "../Utils";
 import { useMemo, useState } from "react";
@@ -14,6 +14,8 @@ import Dialog from "../Layout/Dialog";
 import ManuallyAdd from "./ManuallyAdd";
 import { identity } from "lodash";
 import NewExternal from "./NewExternal";
+import { faAt, faCheck, faPerson, faPersonDigging, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 ModuleRegistry.registerModules([ClientSideRowModelModule, RowAutoHeightModule, QuickFilterModule]);
 
 const TYPE_ALUMNUS = 0;
@@ -26,7 +28,7 @@ function whichType(item) {
 
 function EmailDiv({ e }) {
     return <div>
-        <FontAwesomeIcon icon={solid('at')} className="mr-2" />
+        <FontAwesomeIcon icon={faAt} className="mr-2" />
         {e.address}
         {e.last_login && <span className="text-gray-400 ml-2">Last seen {new Date(e.last_login).toLocaleDateString('it-IT', { year: 'numeric', month: '2-digit', day: '2-digit' })}</span>}
     </div>
@@ -38,14 +40,14 @@ function IdentityContent({ data, associateAddress }) {
     return <div className={
         "w-full border-2 rounded  flex flex-row p-2 min-h-[3rem] justify-center gap-2 leading-normal	" +
         (whichType(data) == TYPE_ALUMNUS ? ' border-primary-main' : ' border-[#00FF00]')}  >
-        <FontAwesomeIcon icon={whichType(data) == TYPE_ALUMNUS ? solid('person') : solid('person-digging')} className="text-4xl" />
+        <FontAwesomeIcon icon={whichType(data) == TYPE_ALUMNUS ? faPerson : faPersonDigging} className="text-4xl" />
         <div className="grow flex flex-col">
             <b>{data.name} {data.surname}</b>
             {whichType(data) == TYPE_ALUMNUS && romanize(data.coorte)}
             {data.notes}
             {data.emails.map((e) => <EmailDiv key={e.id} e={e} />)}
         </div>
-        <FontAwesomeIcon icon={solid('check')} className="text-4xl button icon-button" onClick={() => associateAddress(data)} />
+        <FontAwesomeIcon icon={faCheck} className="text-4xl button icon-button" onClick={() => associateAddress(data)} />
     </div>
 }
 
@@ -133,10 +135,10 @@ export default function List() {
         <div className="w-full md:w-3/5 flex flex-row justify-center gap-2">
             <input className="grow" type='text' value={quickFilter} onChange={(e) => setQuickFilter(e.target.value)} placeholder='Cerca...' />
             <div className="button text-2xl" onClick={() => setAdding(true)}>
-                <FontAwesomeIcon icon={solid('plus')} className="pr-1" />
+                <FontAwesomeIcon icon={faPlus} className="pr-1" />
             </div>
             <div className="button text-2xl" onClick={() => setDel(true)}>
-                <FontAwesomeIcon icon={solid('trash')} className="pr-1" />
+                <FontAwesomeIcon icon={faTrash} className="pr-1" />
             </div>
         </div>
 

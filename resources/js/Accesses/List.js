@@ -1,5 +1,3 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Head, Link, usePage } from "@inertiajs/react";
 // import { AlumnusStatus, bgAndContrast, bgAndContrastPastel, romanize } from "../Utils";
 import { useMemo, useState } from "react";
@@ -13,6 +11,8 @@ import Backdrop from "../Layout/Backdrop";
 import Dialog from "../Layout/Dialog";
 import ManuallyAdd from "./ManuallyAdd";
 import ReactSwitch from "react-switch";
+import { faAnglesRight, faAt, faCirclePlus, faPerson, faPersonCircleQuestion, faPersonDigging, faPlus, faStar, faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 ModuleRegistry.registerModules([ClientSideRowModelModule, RowAutoHeightModule, QuickFilterModule]);
 
 const TYPE_ALUMNUS = 0;
@@ -27,12 +27,12 @@ function whichType(item) {
 
 function EmailDiv({ e, isFirst, setPrimary, deleteAddress }) {
     return <div>
-        <FontAwesomeIcon icon={solid('at')} className="mr-2" />
-        {isFirst ? <FontAwesomeIcon icon={solid('star')} className="mr-2 text-[#f5b700]" />
-            : <FontAwesomeIcon icon={solid('star')} className="mr-2 text-gray-200 hover:text-[#f5b700] cursor-pointer" onClick={() => setPrimary(e.id)} />}
+        <FontAwesomeIcon icon={faAt} className="mr-2" />
+        {isFirst ? <FontAwesomeIcon icon={faStar} className="mr-2 text-[#f5b700]" />
+            : <FontAwesomeIcon icon={faStar} className="mr-2 text-gray-200 hover:text-[#f5b700] cursor-pointer" onClick={() => setPrimary(e.id)} />}
         {e.address}
         {e.last_login && <span className="text-gray-400 ml-2">Last seen {new Date(e.last_login).toLocaleDateString('it-IT', { year: 'numeric', month: '2-digit', day: '2-digit' })}</span>}
-        {e.can_delete && <FontAwesomeIcon icon={solid('trash')} className="icon-button ml-2" onClick={() => deleteAddress(e)} />}
+        {e.can_delete && <FontAwesomeIcon icon={faTrash} className="icon-button ml-2" onClick={() => deleteAddress(e)} />}
     </div>
 }
 
@@ -49,13 +49,13 @@ function IdentityRoles({ identity, removeRole, addRole }) {
                 <div className="rounded flex flex-row !no-underline items-center" style={bgAndContrastPastel(9)} key={role.name}>
                     <span className="px-2">{role.common_name}</span>
                     {editableRolesNames.indexOf(role.name) > -1 ?
-                        <FontAwesomeIcon icon={solid('xmark')} className="hover:bg-gray-100 hover:text-black cursor-pointer p-1 aspect-square rounded" onClick={() => removeRole(identity, role)} />
+                        <FontAwesomeIcon icon={faXmark} className="hover:bg-gray-100 hover:text-black cursor-pointer p-1 aspect-square rounded" onClick={() => removeRole(identity, role)} />
                         : ""}
                 </div>
             )
         }
         <div className="icon-button" onClick={() => setAddDrawer(!addDrawer)}>
-            <FontAwesomeIcon icon={addDrawer ? solid('xmark') : solid('plus')} />
+            <FontAwesomeIcon icon={addDrawer ? faXmark : faPlus} />
         </div>
         {addDrawer &&
             <div className="flex flex-row w-full items-start mt-2 flex-wrap gap-2">
@@ -66,7 +66,7 @@ function IdentityRoles({ identity, removeRole, addRole }) {
                             style={bgAndContrastPastel(6)}
                             key={role.name}
                             onClick={() => addRole(identity, role)} >
-                            <FontAwesomeIcon icon={solid('plus')} className="p-1 aspect-square rounded" />
+                            <FontAwesomeIcon icon={faPlus} className="p-1 aspect-square rounded" />
                             <span className="px-2">{role.common_name}</span>
                         </div>
                 ))}
@@ -78,10 +78,10 @@ function IdentityRoles({ identity, removeRole, addRole }) {
 function IdentityContent({ data, setPrimary, deleteAddress, removeRole, addRole, setEnabled }) {
     if (whichType(data) == TYPE_REQUEST) {
         return <div className="w-full border-2 border-black rounded border-dashed flex flex-row p-2 min-h-[3rem] justify-center gap-2 leading-normal	">
-            <FontAwesomeIcon icon={solid('person-circle-question')} className="text-4xl" />
+            <FontAwesomeIcon icon={faPersonCircleQuestion} className="text-4xl" />
             <div className="grow flex flex-col items-start">
                 <div>
-                    <FontAwesomeIcon icon={solid('at')} className="mr-2" />
+                    <FontAwesomeIcon icon={faAt} className="mr-2" />
                     {data.address}
                 </div>
                 <span className='whitespace-pre-line'>{data.comment}</span>
@@ -91,7 +91,7 @@ function IdentityContent({ data, setPrimary, deleteAddress, removeRole, addRole,
             </div>
             {usePage().props.canAssociate &&
                 <Link className="text-4xl button icon-button" href={route('emails.associate', { id: data.id })}>
-                    <FontAwesomeIcon icon={solid('angles-right')} />
+                    <FontAwesomeIcon icon={faAnglesRight} />
                 </Link>
 
             }
@@ -101,10 +101,10 @@ function IdentityContent({ data, setPrimary, deleteAddress, removeRole, addRole,
 
     // TYPE_ALUMNUS or TYPE_EXTERNAL
     return <div className={
-        "w-full border-2 rounded  flex flex-row p-2 min-h-[3rem] justify-center gap-2 leading-normal	" +
+        "w-full border-2 rounded  flex flex-row p-2 min-h-12 justify-center gap-2 leading-normal	" +
         (whichType(data) == TYPE_ALUMNUS ? ' border-primary-main' : ' border-[#00FF00]')}  >
         <div className="flex flex-col">
-            <FontAwesomeIcon icon={whichType(data) == TYPE_ALUMNUS ? solid('person') : solid('person-digging')} className="text-4xl" style={{ color: pastelColors[data.enabled ? 4 : 2] }} />
+            <FontAwesomeIcon icon={whichType(data) == TYPE_ALUMNUS ? faPerson : faPersonDigging} className="text-4xl" style={{ color: pastelColors[data.enabled ? 4 : 2] }} />
             <ReactSwitch
                 height={14} width={28} className="m-2"
                 checked={data.enabled} onChange={(newState) => setEnabled(data, newState)}
@@ -226,7 +226,7 @@ export default function List() {
             <input className="w-full md:w-1/2" type='text' value={quickFilter} onChange={(e) => setQuickFilter(e.target.value)} placeholder='Cerca...' />
             {usePage().props.canAdd &&
                 <div className="button flex flex-row items-baseline" onClick={() => setAddOpen(true)}>
-                    <FontAwesomeIcon icon={solid('circle-plus')} className="pr-1" />
+                    <FontAwesomeIcon icon={faCirclePlus} className="pr-1" />
                     Aggiungi
                 </div>
             }

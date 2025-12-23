@@ -1,22 +1,24 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import React from "react";
 import TextareaAutosize from 'react-textarea-autosize';
 import Backdrop from "../Layout/Backdrop";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-function GenerateInput({type, value, setValue}) {
+function GenerateInput({ type, value, setValue }) {
     if (type == 'shortText') return <input type="text" value={value} onChange={(e) => setValue(e.target.value)} />
-    if (type == 'longText') return <TextareaAutosize className="w-full pretendToBeInput" minRows={10} value={value} onChange={e => setValue(e.target.value)}/>
+    if (type == 'longText') return <TextareaAutosize className="w-full pretendToBeInput" minRows={10} value={value} onChange={e => setValue(e.target.value)} />
     if (type == 'fixed') return <div className="w-full p-2">{value}</div>
-    if (type == 'time') return <input type="time" value={value} onChange={(e) => setValue(e.target.value) } />
+    if (type == 'time') return <input type="time" value={value} onChange={(e) => setValue(e.target.value)} />
 }
 
 export default function Add() {
     const fieldList = usePage().props.fieldList;
     const type = usePage().props.type;
 
-    const { data, setData, processing, errors, post } = useForm( Object.fromEntries( Object.keys(fieldList).map( k => [k, fieldList[k].currentValue] ) ) )
+    const { data, setData, processing, errors, post } = useForm(Object.fromEntries(Object.keys(fieldList).map(k => [k, fieldList[k].currentValue])))
 
     const submit = (e) => {
         e.preventDefault();
@@ -42,7 +44,7 @@ export default function Add() {
             </React.Fragment>)}
 
             <button className="button self-center mt-3" onClick={submit} disabled={processing}>
-                <FontAwesomeIcon icon={solid('paper-plane')} className="pr-2" />
+                <FontAwesomeIcon icon={faPaperPlane} className="pr-2" />
                 Invia
             </button>
 

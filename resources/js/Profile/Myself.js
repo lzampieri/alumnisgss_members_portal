@@ -1,7 +1,7 @@
 import { Head, Link, usePage } from "@inertiajs/react";
 import { AlumnusStatus, bgAndContrast, bgAndContrastPastel, postRequest, romanize } from "../Utils";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+
+
 import { Fragment, useState } from "react";
 import ADetailsType from "../Network/ADetailsType";
 import SmartChip from "../Network/SmartChip";
@@ -9,6 +9,8 @@ import EmptyDialog from "../Layout/EmptyDialog";
 import ManuallyAddEmail from "./ManuallyAddEmail";
 import Backdrop from "../Layout/Backdrop";
 import { Collapse } from "react-collapse";
+import { faAt, faCircleInfo, faCircleQuestion, faPenToSquare, faStar } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function adtRenderer(ad, adt, i) {
 
@@ -26,9 +28,9 @@ function adtRenderer(ad, adt, i) {
 
 function EmailDiv({ e, isFirst, setPrimary, deleteAddress }) {
     return <div>
-        <FontAwesomeIcon icon={solid('at')} className="mr-2" />
-        {isFirst ? <FontAwesomeIcon icon={solid('star')} className="mr-2 text-[#f5b700]" />
-            : <FontAwesomeIcon icon={solid('star')} className="mr-2 text-gray-200 hover:text-[#f5b700] cursor-pointer" onClick={() => setPrimary(e.id)} />}
+        <FontAwesomeIcon icon={faAt} className="mr-2" />
+        {isFirst ? <FontAwesomeIcon icon={faStar} className="mr-2 text-[#f5b700]" />
+            : <FontAwesomeIcon icon={faStar} className="mr-2 text-gray-200 hover:text-[#f5b700] cursor-pointer" onClick={() => setPrimary(e.id)} />}
         {e.address}
         {e.last_login && <span className="text-gray-400 ml-2">Ultimo accesso {new Date(e.last_login).toLocaleDateString('it-IT', { year: 'numeric', month: '2-digit', day: '2-digit' })}</span>}
     </div>
@@ -47,11 +49,11 @@ function emailPrimary(emailId, setProcessing) {
 function InfoBtn({ children }) {
     const [open, setOpen] = useState(false);
     return <>
-        <button className={( open ? "text-gray-800" : "text-gray-400" ) + " hover:text-primary-main"} onClick={() => setOpen(!open)}>
-            <FontAwesomeIcon icon={solid('circle-question')} className="ml-2" />
+        <button className={(open ? "text-gray-800" : "text-gray-400") + " hover:text-primary-main"} onClick={() => setOpen(!open)}>
+            <FontAwesomeIcon icon={faCircleQuestion} className="ml-2" />
         </button>
         <Collapse theme={{ collapse: "w-full cpm font-light text-gray-400 text-sm text-justify" }} isOpened={open}>
-            <FontAwesomeIcon icon={solid('circle-info')} className="ml-2 mr-1" />
+            <FontAwesomeIcon icon={faCircleInfo} className="ml-2 mr-1" />
             {children}
         </Collapse>
     </>
@@ -86,7 +88,7 @@ export default function Myself() {
                 <div className="w-full flex flex-row mt-2">
                     <Link className="chip-button" href={route('ticket.add', { type: 'ProfileEdit' })}>
                         Segnala errore
-                        <FontAwesomeIcon icon={solid('pen-to-square')} className="ml-2" />
+                        <FontAwesomeIcon icon={faPenToSquare} className="ml-2" />
                     </Link>
                 </div>
             </div>
@@ -113,7 +115,7 @@ export default function Myself() {
                 }
                 <Link className="chip-button" href={route('profile.email_consent')}>
                     Cambia
-                    <FontAwesomeIcon icon={solid('pen-to-square')} className="ml-2" />
+                    <FontAwesomeIcon icon={faPenToSquare} className="ml-2" />
                 </Link>
             </div>
 
@@ -131,7 +133,7 @@ export default function Myself() {
             </InfoBtn></div>
             <Link className="chip-button" href={route('profile.edit')}>
                 Aggiorna dati
-                <FontAwesomeIcon icon={solid('pen-to-square')} className="ml-2" />
+                <FontAwesomeIcon icon={faPenToSquare} className="ml-2" />
             </Link>
 
 
@@ -142,12 +144,12 @@ export default function Myself() {
                 </Fragment>)
             }
             <div className="text-gray-400 text-sm mt-4">
-                <FontAwesomeIcon icon={solid('circle-info')} className="ml-2 mr-1" />
+                <FontAwesomeIcon icon={faCircleInfo} className="ml-2 mr-1" />
                 <b>Perché aggiornare i dati? </b>La più grande ricchezza della nostra associazione è la possibilità di rimanere in contatto, di fare networking, orientamento verso i più giovani e chiedere consigli ai più esperti. Tenere questi dati aggiornati è fondamentale per una associazione efficace ed efficiente!
             </div>
             <Link className="chip-button" href={route('profile.edit')}>
                 Aggiorna dati
-                <FontAwesomeIcon icon={solid('pen-to-square')} className="ml-2" />
+                <FontAwesomeIcon icon={faPenToSquare} className="ml-2" />
             </Link>
 
             <label>Consenso alla condivisione dei dati<InfoBtn>
@@ -160,7 +162,7 @@ export default function Myself() {
                 }
                 <Link className="chip-button" href={route('profile.data_consent')}>
                     Cambia
-                    <FontAwesomeIcon icon={solid('pen-to-square')} className="ml-2" />
+                    <FontAwesomeIcon icon={faPenToSquare} className="ml-2" />
                 </Link>
             </div>
 

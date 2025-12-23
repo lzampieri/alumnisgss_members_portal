@@ -43,7 +43,7 @@ export default function Access() {
                 hover:text-primary-contrast hover:bg-primary-main
                 min-w-[35vh]
                 flex flex-col items-center justify-center text-3xl gap-4
-                no-underline
+                no-underline cursor-pointer
                 p-4
                 "
                 onClick={() => setOpen(true)}

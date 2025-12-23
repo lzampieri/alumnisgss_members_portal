@@ -3,13 +3,15 @@ import { AlumnusStatus } from "../Utils";
 import Select from 'react-select';
 import { useMemo, useState } from "react";
 import Backdrop from "../Layout/Backdrop";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+
+
 
 import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
 import { themeQuartz } from "ag-grid-community";
 import { ModuleRegistry, ClientSideRowModelModule, NumberEditorModule, TextEditorModule, ValidationModule } from 'ag-grid-community';
 import { enqueueSnackbar } from "notistack";
+import { faLock, faSave } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 ModuleRegistry.registerModules([ClientSideRowModelModule, NumberEditorModule, TextEditorModule, ValidationModule]);
 
 export default function Bulk() {
@@ -29,7 +31,7 @@ export default function Bulk() {
     })
     const formatOptionLabel = (data) => (
         <div className="flex flex-row items-center gap-2">
-            {!data.noRat && <FontAwesomeIcon icon={solid('lock')} />}
+            {!data.noRat && <FontAwesomeIcon icon={faLock} />}
             <div>{data.label}</div>
         </div>
     );
@@ -44,10 +46,10 @@ export default function Bulk() {
     //     { name: '', surname: '', coorte: 0 },
     // ])
 
-    transform(( data ) => {
+    transform((data) => {
         return {
             status: data.status,
-            rows: data.rows.slice(0,-1)
+            rows: data.rows.slice(0, -1)
         }
     })
 
@@ -59,7 +61,7 @@ export default function Bulk() {
     }
 
 
-    const saveData = ({rowIndex,api}) => {
+    const saveData = ({ rowIndex, api }) => {
         if (rowIndex == data.rows.length - 1) {
             let storingFocusedCell = api.getFocusedCell();
             let storingEditingCell = api.getEditingCells();
@@ -79,9 +81,9 @@ export default function Bulk() {
         <form className="flex flex-col w-full md:w-3/5" onSubmit={submit}>
             <Head title="Inserimento di massa" />
             <div className="w-full justify-between flex flex-row">
-                <h3>Inserimento in massa di {data.rows.length-1} alumni</h3>
+                <h3>Inserimento in massa di {data.rows.length - 1} alumni</h3>
                 <div className="button flex flex-row items-center" onClick={submit}>
-                    <FontAwesomeIcon icon={solid('save')} />
+                    <FontAwesomeIcon icon={faSave} />
                     Salva
                 </div>
             </div>
@@ -95,14 +97,14 @@ export default function Bulk() {
                 formatOptionLabel={formatOptionLabel} />
             {
                 !status_options.find(i => i.value == data.status)?.noRat && <div className="w-full alert">
-                    <FontAwesomeIcon icon={solid('lock')} className="mr-2" />
+                    <FontAwesomeIcon icon={faLock} className="mr-2" />
                     Per il passaggio allo stato di {AlumnusStatus.status[data.status].label} è richiesta la ratifica al consiglio di amministrazione. Il passaggio non sarà immediato, ma al salvataggio verrà temporaneamente assegnato lo stato di <i>Non raggiunto</i> e creata una richiesta di ratifica.
                 </div>
             }
             <label className="error">{errors.status}</label>
 
             <label>Dati da aggiungere</label>
-            <label className="error">{Object.keys(errors).reduce((acc, key) => acc + ( key.startsWith('rows') ? errors[key] : '' ), '')}</label>
+            <label className="error">{Object.keys(errors).reduce((acc, key) => acc + (key.startsWith('rows') ? errors[key] : ''), '')}</label>
             <div className="h-[70vh]">
                 <AgGridReact
                     theme={themeQuartz}
@@ -113,7 +115,7 @@ export default function Bulk() {
             </div>
 
             <div className="button flex flex-row items-center self-end my-4" onClick={submit}>
-                <FontAwesomeIcon icon={solid('save')} />
+                <FontAwesomeIcon icon={faSave} />
                 Salva
             </div>
 

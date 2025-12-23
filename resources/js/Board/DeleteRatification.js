@@ -1,11 +1,13 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import { useForm, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import Backdrop from "../Layout/Backdrop";
 import EmptyDialog from "../Layout/EmptyDialog";
 import { AlumnusStatus, postRequest, romanize } from "../Utils";
 import Dialog from "../Layout/Dialog";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function DeleteRatification({ ratifications }) {
     const [selected, setSelected] = useState(null);
@@ -26,7 +28,7 @@ export default function DeleteRatification({ ratifications }) {
             <label className="col-span-3"><i>Per il passaggio allo stato di <b>{AlumnusStatus.status[k].label}</b></i></label>
             {ratifications[k].map(r =>
                 <span key={r.id}>
-                    <span className="icon-button" onClick={() => setSelected(r)}><FontAwesomeIcon icon={solid('trash')} /></span>
+                    <span className="icon-button" onClick={() => setSelected(r)}><FontAwesomeIcon icon={faTrash} /></span>
                     {r.alumnus.surname} {r.alumnus.name}<span className="text-gray-400"> {romanize(r.alumnus.coorte)}{r.alumnus.coorte != 0 && " coorte"}</span>
                 </span>
             )}

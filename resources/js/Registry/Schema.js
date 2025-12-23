@@ -1,16 +1,18 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import { Head, Link, usePage } from "@inertiajs/react";
 import { AlumnusStatus, bgAndContrast, romanize } from "../Utils";
 import { useMemo, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import RegistryHeader from "./RegistryHeader";
+import { faHourglassHalf, faPen } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function AlumnusContent({ data, tagsDict }) {
     return <div className="w-full h-full border border-primary-main flex flex-row items-center">
         <div className="chip mx-1 group relative z-auto" style={bgAndContrast(AlumnusStatus.status[data.status].color)}>
             {AlumnusStatus.status[data.status].acronym}
-            {data.pending_ratifications_count > 0 && <FontAwesomeIcon icon={solid('hourglass-half')} />}
+            {data.pending_ratifications_count > 0 && <FontAwesomeIcon icon={faHourglassHalf} />}
             <span className="tooltip-right" style={bgAndContrast(AlumnusStatus.status[data.status].color)}>
                 {AlumnusStatus.status[data.status].label}
                 {data.pending_ratifications_count > 0 && " - in attesa di ratifica"}
@@ -27,7 +29,7 @@ function AlumnusContent({ data, tagsDict }) {
                 </span>
             </div>)}
         <div className="grow text-end mx-1">
-            <Link className="icon-button" href={route('registry.edit', { alumnus: data.id })}><FontAwesomeIcon icon={solid('pen')} /></Link>
+            <Link className="icon-button" href={route('registry.edit', { alumnus: data.id })}><FontAwesomeIcon icon={faPen} /></Link>
         </div>
     </div>
 }
@@ -74,7 +76,7 @@ export default function Schema() {
     const data = usePage().props.data;
 
     const tagsDict = useMemo(() => {
-        const tagsList = [...new Set(flatten( Object.entries(data), ([_, cl]) => flatten(cl, (al) => al.tags)))];
+        const tagsList = [...new Set(flatten(Object.entries(data), ([_, cl]) => flatten(cl, (al) => al.tags)))];
         const tagsDict = {}
         tagsList.forEach(i => {
             let letters = 1;
@@ -91,7 +93,7 @@ export default function Schema() {
             <Head title="Anagrafe" />
             <RegistryHeader where='schema' quickFilter={quickFilter} setQuickFilter={setQuickFilter} />
             <div className="w-full grow overflow-scroll flex flex-row">
-                {Object.entries(data).map(([coorte,content]) => <CoorteColumns key={coorte} coorte={coorte} data={content} tagsDict={tagsDict} quickFilter={quickFilter} />)}
+                {Object.entries(data).map(([coorte, content]) => <CoorteColumns key={coorte} coorte={coorte} data={content} tagsDict={tagsDict} quickFilter={quickFilter} />)}
             </div>
         </div>
     );

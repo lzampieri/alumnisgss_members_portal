@@ -1,4 +1,6 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+
+
+import { faMap, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { APIProvider, useMapsLibrary, Map as GoogleMap, Marker, AdvancedMarker, Pin, useMap } from "@vis.gl/react-google-maps";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -6,7 +8,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 export default class Map {
     static title = "Mappa"
-    static icon = solid('map')
+    static icon = faMap
 
     static getDefaultData() {
         return {
@@ -91,7 +93,7 @@ function MapMarkers({ places }) {
                 }));
                 let bounds = new google.maps.LatLngBounds();
                 placesDet.forEach((p) => p.location && bounds.extend(p.location));
-                if( placesDet.length == 0 ) 
+                if (placesDet.length == 0)
                     bounds.extend({ lat: 45.407197, lng: 11.880255 });
                 setPlacesDets(placesDet)
                 map.fitBounds(bounds);
@@ -127,7 +129,7 @@ function KnownLocations({ places, setPlaces }) {
     return <>
         {placesDets.map((p, idx) =>
             <div className="w-full" key={p.id}>
-                <FontAwesomeIcon icon={solid('trash')} className="icon-button mr-2" onClick={() => setPlaces(places.toSpliced(idx, 1))} />
+                <FontAwesomeIcon icon={faTrash} className="icon-button mr-2" onClick={() => setPlaces(places.toSpliced(idx, 1))} />
                 {p.displayName}
             </div>
         )}

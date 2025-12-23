@@ -1,11 +1,13 @@
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { AlumnusStatus, bgAndContrast, bgAndContrastPastel, romanize } from "../Utils";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+
+
 import { Fragment } from "react";
 import ADetailsType from "../Network/ADetailsType";
 import SmartChip from "../Network/SmartChip";
 import Backdrop from "../Layout/Backdrop";
+import { faChevronLeft, faSave } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Edit() {
     const alumnus = usePage().props.alumnus;
@@ -33,11 +35,11 @@ export default function Edit() {
             <Head title="Modifica profilo" />
             <div className="flex flex-row justify-between w-full">
                 <Link className="button flex flex-row items-center self-start mb-4" href={route('profile')}>
-                    <FontAwesomeIcon icon={solid('chevron-left')} />
+                    <FontAwesomeIcon icon={faChevronLeft} />
                     Indietro
                 </Link>
                 <div className="button flex flex-row items-center self-start mb-4" onClick={submit}>
-                    <FontAwesomeIcon icon={solid('save')} />
+                    <FontAwesomeIcon icon={faSave} />
                     Salva
                 </div>
             </div>
@@ -79,7 +81,7 @@ export default function Edit() {
 
             <div className="flex flex-row w-full justify-end">
                 <div className="button flex flex-row items-center self-start mb-4" onClick={submit}>
-                    <FontAwesomeIcon icon={solid('save')} />
+                    <FontAwesomeIcon icon={faSave} />
                     Salva
                 </div>
             </div>

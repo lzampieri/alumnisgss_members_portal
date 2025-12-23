@@ -1,5 +1,7 @@
+
+
+import { faRightLong } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { Head, Link, usePage } from "@inertiajs/react";
 
 export default function Reports() {
@@ -12,8 +14,8 @@ export default function Reports() {
                 {options.map(opt => (
                     <div className="flex flex-row-reverse items-center bg-gray-100 border-gray-400 border py-2 px-4 rounded-first-last" key={opt.name}>
                         {opt.inertia ?
-                            <Link href={opt.url}><FontAwesomeIcon icon={solid('right-long')} className="text-4xl !p-4 icon-button" /></Link> :
-                            <a href={opt.url}><FontAwesomeIcon icon={solid('right-long')} className="text-4xl !p-4 icon-button" /></a>
+                            <Link href={opt.url}><FontAwesomeIcon icon={faRightLong} className="text-4xl !p-4 icon-button" /></Link> :
+                            <a href={opt.url}><FontAwesomeIcon icon={faRightLong} className="text-4xl !p-4 icon-button" /></a>
                         }
                         <span className="text-xl font-bold grow">{opt.name}</span>
                     </div>

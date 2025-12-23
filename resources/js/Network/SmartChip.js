@@ -1,6 +1,7 @@
-import { solid, brands } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLinkedin } from "@fortawesome/free-brands-svg-icons";
 import { bgAndContrast } from "../Utils";
+import { faEnvelope, faLink } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function isEmail(val) {
     if (typeof val === 'string' || val instanceof String)
@@ -16,8 +17,8 @@ function isUrl(val) {
 
 function getIcon(val) {
     if (val.includes("linkedin.com"))
-        return <FontAwesomeIcon icon={brands('linkedin')} /> //<FontAwesomeIcon icon={brands('linkedin')} />
-    return <FontAwesomeIcon icon={solid('link')} />
+        return <FontAwesomeIcon icon={faLinkedin} /> //<FontAwesomeIcon icon={brands('linkedin')} />
+    return <FontAwesomeIcon icon={faLink} />
 }
 
 export default function SmartChip({ content, style }) {
@@ -28,7 +29,7 @@ export default function SmartChip({ content, style }) {
                     { backgroundColor: style.color, color: style.backgroundColor } :
                     bgAndContrastPastel(-1)
             }>
-                <FontAwesomeIcon icon={solid('envelope')} />
+                <FontAwesomeIcon icon={faEnvelope} />
             </div>
             <div className="rounded-lg px-2">
                 {content}
@@ -59,13 +60,13 @@ export default function SmartChip({ content, style }) {
 
 export function SmartChipWithTitle({ content, title, style }) {
     if (isEmail(content)) {
-        return <a className="smart-chip" style={style} href={"mailto:" +content}>
+        return <a className="smart-chip" style={style} href={"mailto:" + content}>
             <div className="rounded-lg px-1 border" style={
                 (('backgroundColor' in style) && ('color' in style)) ?
                     { backgroundColor: style.color, color: style.backgroundColor } :
                     bgAndContrastPastel(-1)
             }>
-                <FontAwesomeIcon icon={solid('envelope')} />
+                <FontAwesomeIcon icon={faEnvelope} />
             </div>
             <span className="pl-2 pr-2">{title}:</span>
             <div className="rounded-lg px-2 outline outline-white outline-1">

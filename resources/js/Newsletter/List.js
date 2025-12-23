@@ -1,5 +1,5 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import { Head, Link, usePage } from "@inertiajs/react";
 
 import { useMemo, useState } from 'react';
@@ -8,6 +8,8 @@ import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
 import { themeQuartz } from "ag-grid-community";
 import { ModuleRegistry, ClientSideRowModelModule, ColumnAutoSizeModule, QuickFilterModule } from 'ag-grid-community';
 import { AlumnusStatus, bgAndContrast, bgAndContrastPastel } from "../Utils";
+import { faEnvelopeOpen, faEye, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnAutoSizeModule, QuickFilterModule]);
 
 
@@ -34,8 +36,8 @@ export default function List() {
         {
             field: 'go', headerName: '', valueGetter: ({ data }) => data.id, cellRenderer: ({ value, data }) => <>
                 {data.sent_at ? ""
-                    : <Link className="button" href={route('newsletter.edit', { id: value })}><FontAwesomeIcon icon={solid('pen-to-square')} /></Link>}
-                <Link className="button" href={route('newsletter.view', { id: value })}><FontAwesomeIcon icon={solid('eye')} /></Link>
+                    : <Link className="button" href={route('newsletter.edit', { id: value })}><FontAwesomeIcon icon={faPenToSquare} /></Link>}
+                <Link className="button" href={route('newsletter.view', { id: value })}><FontAwesomeIcon icon={faEye} /></Link>
             </>
         },
         {
@@ -44,13 +46,13 @@ export default function List() {
     ]
 
     const [quickFilter, setQuickFilter] = useState('')
-    
+
     return <div className="main-container-large">
         <Head title="Newsletter" />
         <div className="w-full flex flex-row gap-2 mb-1 items-start">
             <input type="text" className="grow" value={quickFilter} onChange={(e) => setQuickFilter(e.target.value)} placeholder="Filtra.../ Ancora non implementato" />
             {usePage().props.canCreate && <Link className="button mb-2 grow-0" href={route('newsletter.create')}>
-                <FontAwesomeIcon icon={solid('envelope-open')} className="pr-2" />
+                <FontAwesomeIcon icon={faEnvelopeOpen} className="pr-2" />
                 Nuova email
             </Link>}
         </div>

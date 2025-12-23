@@ -1,5 +1,5 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import { useEffect, useMemo, useState } from "react";
 import { asyncPostWithResult } from "../Utils";
 
@@ -16,7 +16,7 @@ async function saveData(toAdd, toRemove, groups, setStep) {
 
     try {
 
-        Object.keys(groups).forEach( async key => {
+        Object.keys(groups).forEach(async key => {
             if (toAdd[key].length + toRemove[key].length == 0) return 0;
 
             await asyncPostWithResult('contacts.modifyGroup', {
@@ -82,7 +82,7 @@ export default function GroupsUpdater({ members, combs, groups, next }) {
     useEffect(() => elabContacts(members, combs, groups, setToAdd, setToRemove, setStep), []);
 
     useEffect(() => {
-        if( step == STEP.SAVED ) {
+        if (step == STEP.SAVED) {
             next();
         }
     }, [step]);

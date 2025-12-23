@@ -1,9 +1,11 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import { useEffect, useRef, useState } from "react";
 import { disappearing } from "../Utils";
 import RegisteredTools from "./RegisteredTools";
 import Title from "./Plugins/Title";
+import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function AddBlock({ alwaysVisible = false, addBlock }) {
     const [menuOpen, setMenuOpen] = useState(false)
@@ -30,7 +32,7 @@ export default function AddBlock({ alwaysVisible = false, addBlock }) {
 
     return <div ref={addRef} className="relative">
         <div className={"button !p-0 aspect-square flex justify-center items-center " + (alwaysVisible ? "" : "invisible group-hover:visible")} onClick={() => setMenuOpen(!menuOpen)}>
-            <FontAwesomeIcon icon={solid('add')} className="!pr-0" />
+            <FontAwesomeIcon icon={faAdd} className="!pr-0" />
         </div>
         <div className={"absolute right-0 border border-black rounded-xl my-2 flex flex-col z-10 " + (menuOpen ? "visible" : "invisible")}>
             {Object.entries(RegisteredTools).map(([k, v]) =>

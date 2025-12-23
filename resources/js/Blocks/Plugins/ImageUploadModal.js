@@ -2,12 +2,14 @@ import { useDropzone } from "react-dropzone";
 import EmptyDialog from "../../Layout/EmptyDialog";
 import { useCallback } from "react";
 import { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+
+
 import { enqueueSnackbar } from "notistack";
 import { useForm, usePage } from '@inertiajs/react';
 import Backdrop from "../../Layout/Backdrop";
 import { flushSync } from "react-dom";
+import { faFileImage } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
 export default function ImageUploadModal({ imageHandle, imageSizeClass, setImageHandle }) {
@@ -31,7 +33,7 @@ export default function ImageUploadModal({ imageHandle, imageSizeClass, setImage
                     setIsEditing(false)
                     setTimeout(() => {
                         setImageHandle(ih);
-                    },1000); // Retry to load the image after 1 sec
+                    }, 1000); // Retry to load the image after 1 sec
                 }
             }
         })
@@ -50,7 +52,7 @@ export default function ImageUploadModal({ imageHandle, imageSizeClass, setImage
             <h3>Seleziona immagine</h3>
             <div {...getRootProps()} className="border-2 border-dashed rounded-md my-4 flex flex-col items-center p-4">
                 <input {...getInputProps()} />
-                <FontAwesomeIcon icon={solid('file-image')} className="text-4xl" />
+                <FontAwesomeIcon icon={faFileImage} className="text-4xl" />
                 <div className="text-center">Trascina qui l'immagine da caricare, o clicca per selezionarlo dal pc.</div>
                 <label className="error">{errors.file}</label>
                 <small>Formati accettati: {allowed_formats.join(", ")}</small>

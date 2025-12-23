@@ -1,11 +1,10 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ImageUploadModal from "./ImageUploadModal";
+import { faImage } from "@fortawesome/free-solid-svg-icons";
 
 
 export default class Image {
     static title = "Immagine"
-    static icon = solid('image')
+    static icon = faImage
     static sizes = [
         { value: 'small', label: 'Piccola', class: 'w-[30%]' },
         { value: 'medium', label: 'Media', class: 'w-[50%]' },

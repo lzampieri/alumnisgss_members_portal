@@ -1,9 +1,10 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+import { faHeading } from "@fortawesome/free-solid-svg-icons"
+
 
 
 export default class Title {
     static title = "Titolo"
-    static icon = solid('heading')
+    static icon = faHeading
 
     static getDefaultData() {
         return {
@@ -16,7 +17,7 @@ export default class Title {
             type="text"
             className="w-full text-2xl mt-4"
             value={item.content}
-            onChange={(e)=>setItemValue('content',e.target.value)}
+            onChange={(e) => setItemValue('content', e.target.value)}
             placeholder="Titolo"
         />
     }

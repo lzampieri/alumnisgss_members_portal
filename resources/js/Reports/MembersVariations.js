@@ -1,16 +1,18 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+
+
 import Datepicker from "tailwind-datepicker-react"
 import { useState } from "react";
 import { Head, usePage } from "@inertiajs/react";
 import { AlumnusStatus } from "../Utils";
+import { faArrowsLeftRightToLine, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function YearPicker({ year, setYear }) {
     return (
         <div className="flex flex-row items-center">
-            <FontAwesomeIcon icon={solid('chevron-left')} className="w-full discrete-button" onClick={() => setYear(year - 1)} />
+            <FontAwesomeIcon icon={faChevronLeft} className="w-full discrete-button" onClick={() => setYear(year - 1)} />
             <div className="text-xl font-bold px-2">{year}</div>
-            <FontAwesomeIcon icon={solid('chevron-right')} className="w-full discrete-button" onClick={() => setYear(year + 1)} />
+            <FontAwesomeIcon icon={faChevronRight} className="w-full discrete-button" onClick={() => setYear(year + 1)} />
         </div>
     )
 }
@@ -37,8 +39,8 @@ function SelectByYear({ sendPostRequest }) {
     return <>
         <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
             <YearPicker year={from} setYear={(newYear) => updateFrom(newYear)} />
-            <FontAwesomeIcon icon={solid('arrows-left-right-to-line')} className="block rotate-90 md:hidden" />
-            <FontAwesomeIcon icon={solid('arrows-left-right-to-line')} className="hidden md:block" />
+            <FontAwesomeIcon icon={faArrowsLeftRightToLine} className="block rotate-90 md:hidden" />
+            <FontAwesomeIcon icon={faArrowsLeftRightToLine} className="hidden md:block" />
             <YearPicker year={to} setYear={(newYear) => updateTo(newYear)} />
         </div>
         <div className="button w-fit" onClick={send}>Genera</div>
@@ -59,8 +61,8 @@ function SelectByDate({ sendPostRequest }) {
     return <>
         <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
             <Datepicker classNames='w-full' options={{ defaultDate: from, language: 'it', theme: { input: '!text-black' } }} onChange={(date) => setFrom(date)} show={datePickerOpenFrom} setShow={setDatePickerOpenFrom} />
-            <FontAwesomeIcon icon={solid('arrows-left-right-to-line')} className="block rotate-90 md:hidden" />
-            <FontAwesomeIcon icon={solid('arrows-left-right-to-line')} className="hidden md:block" />
+            <FontAwesomeIcon icon={faArrowsLeftRightToLine} className="block rotate-90 md:hidden" />
+            <FontAwesomeIcon icon={faArrowsLeftRightToLine} className="hidden md:block" />
             <Datepicker classNames='w-full' options={{ defaultDate: to, language: 'it', theme: { input: '!text-black' } }} onChange={(date) => setToRealigner(date)} show={datePickerOpenTo} setShow={setDatePickerOpenTo} />
         </div>
         <div className="button w-fit" onClick={() => sendPostRequest(from, to)}>Genera</div>

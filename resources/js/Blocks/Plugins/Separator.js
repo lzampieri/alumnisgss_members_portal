@@ -1,8 +1,9 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+import { faGripLines } from "@fortawesome/free-solid-svg-icons"
+
 
 export default class Separator {
     static title = "Separatore"
-    static icon = solid('grip-lines')
+    static icon = faGripLines
 
     static getDefaultData() {
         return {}

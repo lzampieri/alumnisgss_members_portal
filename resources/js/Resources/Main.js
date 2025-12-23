@@ -6,8 +6,8 @@ import BlocksEditor from "../Blocks/BlocksEditor";
 import ResourceDetails from "./ResourceDetails";
 import Create from "./Create";
 import computeResourceLink from "./computeResourceLink";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+
+
 import Drawer from "./Drawer";
 
 export default function Main() {

@@ -1,7 +1,9 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import { useEffect, useMemo, useState } from "react";
 import SlowerDown from "./SlowerDown";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const STEP = {
     ERROR: 500,
@@ -75,7 +77,7 @@ export default function EmailUpdater({ pairs, setPairs, next }) {
     });
     const toAddOnPortal_response = (output) => {
         let newPairs = pairs.slice();
-        output.forEach(({pair_id,local}) => newPairs[pair_id].local = local );
+        output.forEach(({ pair_id, local }) => newPairs[pair_id].local = local);
         setPairs(newPairs);
         setStep(STEP.ADDING_GOOGLE);
     }
@@ -88,7 +90,7 @@ export default function EmailUpdater({ pairs, setPairs, next }) {
     });
     const toAddOnGoogle_response = (output) => {
         let newPairs = pairs.slice();
-        output.forEach(({pair_id,google}) => newPairs[pair_id].google = google );
+        output.forEach(({ pair_id, google }) => newPairs[pair_id].google = google);
         setPairs(newPairs);
         setStep(STEP.SAVED);
     }
@@ -103,7 +105,7 @@ export default function EmailUpdater({ pairs, setPairs, next }) {
             {/* {step == STEP.LIST && <div className="button" onClick={() => { setToAddOnGoogle([toAddOnGoogle[0]]); setToAddOnPortal([toAddOnPortal[0]])}}>
                 {"Test"}
             </div>} */}
-        
+
             {step == STEP.COMPARING && <div className="w-full border flex flex-col items-center gap-2 m-2 p-2">
                 Sto verificando gli indirizzi mail<br />
                 <svg className="animate-spin -ml-1 mr-3 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -126,12 +128,12 @@ export default function EmailUpdater({ pairs, setPairs, next }) {
                             <tr className={index % 2 == 0 ? "bg-gray-100" : ""} key={index}>
                                 <td className="px-2">{local['name']} {local['surname']}</td>
                                 <td className="px-2">
-                                    {local.emails.map((email,idx) => <p className={email.address == address ? "font-bold" : ""} key={idx}>{email.address}</p>)}
+                                    {local.emails.map((email, idx) => <p className={email.address == address ? "font-bold" : ""} key={idx}>{email.address}</p>)}
                                 </td>
                                 <td className="px-2">
-                                    {google.emails.map((email,idx) => <p key={idx}>{email}</p>)}
+                                    {google.emails.map((email, idx) => <p key={idx}>{email}</p>)}
                                 </td>
-                                <td><FontAwesomeIcon icon={solid('trash')} className="icon-button" onClick={() => { setToAddOnGoogle(delFromArray(toAddOnGoogle, index)); }} /></td>
+                                <td><FontAwesomeIcon icon={faTrash} className="icon-button" onClick={() => { setToAddOnGoogle(delFromArray(toAddOnGoogle, index)); }} /></td>
                             </tr>
                         )
                     })}
@@ -152,12 +154,12 @@ export default function EmailUpdater({ pairs, setPairs, next }) {
                             <tr className={index % 2 == 0 ? "bg-gray-100" : ""} key={index}>
                                 <td className="px-2">{local['name']} {local['surname']}</td>
                                 <td className="px-2">
-                                    {local.emails.map((email,idx) => <p key={idx}>{email.address}</p>)}
+                                    {local.emails.map((email, idx) => <p key={idx}>{email.address}</p>)}
                                 </td>
                                 <td className="px-2">
-                                    {google.emails.map((email,idx) => <p className={email == address ? "font-bold" : ""} key={idx}>{email}</p>)}
+                                    {google.emails.map((email, idx) => <p className={email == address ? "font-bold" : ""} key={idx}>{email}</p>)}
                                 </td>
-                                <td><FontAwesomeIcon icon={solid('trash')} className="icon-button" onClick={() => { setToAddOnPortal(delFromArray(toAddOnPortal, index)); }} /></td>
+                                <td><FontAwesomeIcon icon={faTrash} className="icon-button" onClick={() => { setToAddOnPortal(delFromArray(toAddOnPortal, index)); }} /></td>
                             </tr>
                         )
                     })}

@@ -1,14 +1,16 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+
 import { useState } from "react";
 import Timesheet from "../../Libs/Timesheet/Timesheet";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import DatePicker from "tailwind-datepicker-react";
 import ReactSwitch from "react-switch";
+import { faChartGantt, faCirclePlus, faCircleUser } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
 export default class Timeline {
     static title = "Linea temporale"
-    static icon = solid('chart-gantt')
+    static icon = faChartGantt
     static dateOptions = { year: 'numeric', month: '2-digit', day: '2-digit' }
     static stillAlive = new Date("3000/01/01")
 
@@ -55,21 +57,23 @@ export default class Timeline {
                 />
             )}
             <div className="w-full flex flex-row justify-center">
-                <FontAwesomeIcon icon={solid('circle-plus')} className="icon-button" onClick={addRow} />
+                <FontAwesomeIcon icon={faCirclePlus} className="icon-button" onClick={addRow} />
             </div>
         </div>
     }
 
     static formLine({ content, onlyYears, id, update }) {
         return <div className="w-full flex flex-row" key={id}>
-            { Timeline.yearOrDatePicker({
+            {Timeline.yearOrDatePicker({
                 defaultDate: content.from,
                 onChange: (date) => update('from', date),
-                onlyYear: onlyYears }) }
-            { Timeline.yearOrDatePicker({
+                onlyYear: onlyYears
+            })}
+            {Timeline.yearOrDatePicker({
                 defaultDate: content.to,
                 onChange: (date) => update('to', date),
-                onlyYear: onlyYears }) }
+                onlyYear: onlyYears
+            })}
             <input
                 type="text"
                 className="grow"
@@ -105,8 +109,8 @@ export default class Timeline {
         return <input
             type="number"
             className="grow"
-            value={ defaultDate.getFullYear() }
-            onChange={(e) => onChange( new Date( e.target.value, 1, 15) )}
+            value={defaultDate.getFullYear()}
+            onChange={(e) => onChange(new Date(e.target.value, 1, 15))}
             placeholder="Anno"
         />
     }
@@ -116,7 +120,7 @@ export default class Timeline {
             <Timesheet data={item.data} limitToToday={true} />
             <div className="m-3 p-1 border-l-2 border-primary-main">
                 {item.data.map((i, id) => <div key={id}>
-                    <FontAwesomeIcon icon={solid('circle-user')} className="icon" />
+                    <FontAwesomeIcon icon={faCircleUser} className="icon" />
                     {this.parseDate(i.from, item.onlyYears)} - {this.parseDate(i.to, item.onlyYears)}: <b>{i.label}</b>
                 </div>)}
             </div>

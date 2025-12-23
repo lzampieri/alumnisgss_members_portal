@@ -1,5 +1,5 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import { Head, Link } from "@inertiajs/react";
 
 import { useMemo, useState } from 'react';
@@ -9,6 +9,8 @@ import { themeQuartz } from "ag-grid-community";
 import { ModuleRegistry, InfiniteRowModelModule, ColumnAutoSizeModule, QuickFilterModule } from 'ag-grid-community';
 import { bgAndContrast, bgAndContrastPastel } from "../Utils";
 import { getStatusColor, getStatusLabel } from "./TktUtils";
+import { faComment, faEye, faSuitcaseMedical } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 ModuleRegistry.registerModules([InfiniteRowModelModule, ColumnAutoSizeModule, QuickFilterModule]);
 
 function getNameAndSurname(guy) {
@@ -23,7 +25,7 @@ function StatusChip({ value, commentsCount }) {
             {getStatusLabel(value)}
         </div>
         {commentsCount > 0 &&
-            <span className="text-gray-500 ml-1"><FontAwesomeIcon icon={solid('comment')} />{commentsCount}</span>
+            <span className="text-gray-500 ml-1"><FontAwesomeIcon icon={faComment} />{commentsCount}</span>
         }
     </div>
 }
@@ -31,7 +33,7 @@ function StatusChip({ value, commentsCount }) {
 function ViewLink({ id }) {
     return id && <div className="flex flex-row items-center justify-start text-sm h-full">
         <Link href={route('ticket.view', { ticket: id })}>
-            <FontAwesomeIcon icon={solid('eye')} className="icon-button p-2" />
+            <FontAwesomeIcon icon={faEye} className="icon-button p-2" />
         </Link>
     </div>
 }
@@ -77,7 +79,7 @@ export default function Home() {
         <div className="w-full flex flex-row gap-2 mb-1 items-start">
             <input type="text" className="grow" value={quickFilter} onChange={(e) => setQuickFilter(e.target.value)} placeholder="Filtra.../ Ancora non implementato" />
             <Link className="button mb-2 grow-0" href={route('ticket.addList')}>
-                <FontAwesomeIcon icon={solid('suitcase-medical')} className="pr-2" />
+                <FontAwesomeIcon icon={faSuitcaseMedical} className="pr-2" />
                 Nuova richiesta
             </Link>
         </div>
