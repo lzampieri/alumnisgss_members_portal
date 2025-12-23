@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -60,6 +61,20 @@ class AuthController extends Controller
         return redirect()->route('home');
     }
 
+    // Set OTP
+    function sendOtp(Request $request)
+    {
+        $validated = $request->validate([
+            'address' => 'required|email'
+        ]);
+
+        $em = Email::where('address', $validated['address'])->first();
+        if( !$em )
+            throw ValidationException::withMessages(['address' => 'unknown']);
+
+
+    }
+
     // Level 2 login
     function redirect_lv2()
     {
@@ -99,13 +114,16 @@ class AuthController extends Controller
         return redirect()->route('home')->with('notistack', ['error', 'Non hai il permesso di accedere a questo livello.']);
     }
 
-    function askaccess()
+    function askaccess(Request $request)
     {
         if (Auth::check())
             return redirect()->route('home');
 
         if (session()->has('email'))
             return Inertia::render('Accesses/AskAccess', ['email' => session('email')]);
+
+        if (request()->input('email'))
+            return Inertia::render('Accesses/AskAccess', ['email' => request()->input('email')]);
 
         return redirect()->route('home');
     }

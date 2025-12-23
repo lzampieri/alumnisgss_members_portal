@@ -1,5 +1,7 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import EmptyDialog from "../Layout/EmptyDialog";
 import { usePage } from '@inertiajs/react'
+import { useState } from 'react';
+import LoginOptions from "./LoginOptions";
 
 export default function Access() {
 
@@ -31,9 +33,11 @@ export default function Access() {
             </div>
         )
 
+    const [open, setOpen] = useState(false);
+
     return (
         <div className="w-full flex flex-col flex-wrap justify-center items-center gap-14 px-14 py-8">
-            <a className="
+            <button className="
                 border-4 border-primary-main rounded-3xl
                 text-primary-main bg-primary-contrast
                 hover:text-primary-contrast hover:bg-primary-main
@@ -42,10 +46,18 @@ export default function Access() {
                 no-underline
                 p-4
                 "
-                href={route('auth.login.google')}
-                key={'login'}>
+                onClick={() => setOpen(true)}
+            // href={route('auth.login.google')}
+            // key={'login'}
+            >
                 Accesso
-            </a>
+            </button>
+            <EmptyDialog
+                open={open}
+                onClose={() => setOpen(false)}
+            >
+                <LoginOptions />
+            </EmptyDialog>
         </div>
     )
 }

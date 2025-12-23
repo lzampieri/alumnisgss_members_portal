@@ -81,6 +81,9 @@
     input[type="text"] {
         @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0
     }
+    input[type="email"] {
+        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0
+    }
     .pretendToBeInput {
         @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0
     }
