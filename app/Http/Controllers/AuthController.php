@@ -15,6 +15,17 @@ use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
+    
+    // Login
+    function login(Request $request)
+    {
+        if (Auth::check())
+            return redirect()->route('home');
+        
+        return Inertia::render("General/Login");
+    }
+
+
     // Redirect to google
     function redirect()
     {
@@ -37,7 +48,8 @@ class AuthController extends Controller
         if ($em) {
             if ($em->can('login', Email::class)) {
                 Auth::login($em);
-
+                $request->session()->regenerate();
+                
                 LogController::log(LogEvents::LOGIN, $em);
 
                 $em->token = null;
@@ -57,10 +69,13 @@ class AuthController extends Controller
     }
 
     // Logout
-    function logout()
+    function logout(Request $request)
     {
         if (Auth::check())
             Auth::logout();
+        
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return redirect()->route('home');
     }
@@ -75,8 +90,52 @@ class AuthController extends Controller
         $em = Email::where('address', $validated['address'])->first();
         if( !$em )
             throw ValidationException::withMessages(['address' => 'unknown']);
+        
+        if (!$em->can('login', Email::class))
+            throw ValidationException::withMessages(['address' => 'not_enabled']);
 
+        $em->otp = rand(100000, 999999);
+        $em->otp_expiration = Carbon::now()->addMinutes(2);
+        $em->otp_session = $request->session()->getId();
+        $em->save();
 
+        MailerController::sendEmail(
+            [$em],
+            "Il tuo OTP è {$em->otp}",
+            "Il tuo OTP per accedere a soci.alumniscuolagalileiana.it è {$em->otp}."
+        );
+
+        return redirect()->back();
+    }
+
+    // Validate OTP
+    function validateOtp(Request $request)
+    {
+        $validated = $request->validate([
+            'otp' => 'required|string|min:6'
+        ]);
+
+        $em = Email::where('otp', $validated['otp'])
+            ->where('otp_session', $request->session()->getId())
+            ->first();
+
+        if( !$em )
+            throw ValidationException::withMessages(['otp' => 'unknown']);
+
+        if( !$em->otp_expiration->isFuture() )
+            throw ValidationException::withMessages(['otp' => 'expired']);
+        
+        if (!$em->can('login', Email::class))
+            throw ValidationException::withMessages(['otp' => 'not_enabled']);
+
+        Auth::login($em);
+        $request->session()->regenerate();
+
+        LogController::log(LogEvents::LOGIN_OTP, $em);
+
+        $goto = $request->session()->get('url.intended', route('home') );
+        $request->session()->forget('url.intended');
+        return Inertia::location( $goto );
     }
 
     // Level 2 login
@@ -88,7 +147,7 @@ class AuthController extends Controller
     }
 
     // Level 2 callback
-    function callback_lv2()
+    function callback_lv2(Request $request)
     {
         $user = Socialite::driver('google')->with(['redirect_uri' => route('auth.callback_lv2.google')])->user();
 
@@ -103,6 +162,7 @@ class AuthController extends Controller
         if ($em) {
             if ($em->can('login', Email::class) && $em->can('login_lv2', Email::class)) {
                 Auth::login($em);
+                $request->session()->regenerate();
 
                 LogController::log(LogEvents::LOGIN_LV2, $em, 'scopes', '', $user->approvedScopes);
 

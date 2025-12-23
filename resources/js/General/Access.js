@@ -47,8 +47,6 @@ export default function Access() {
                 p-4
                 "
                 onClick={() => setOpen(true)}
-            // href={route('auth.login.google')}
-            // key={'login'}
             >
                 Accesso
             </button>

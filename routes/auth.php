@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group( function () {
     // General
-    Route::redirect('login','google/login')->name('login');
+    Route::get('login', [ AuthController::class, 'login' ])->name('login');
     Route::get('logout', [ AuthController::class, 'logout' ])->name('auth.logout');
 
 
@@ -19,6 +19,7 @@ Route::prefix('auth')->group( function () {
     // OTP
     Route::prefix('otp')->group( function () {
         Route::post('send_otp', [ AuthController::class, 'sendOtp' ] )->name('auth.otp.send_otp');
+        Route::post('validate_otp', [ AuthController::class, 'validateOtp' ] )->name('auth.otp.validate_otp');
         // Route::get('callback', [ AuthController::class, 'callback' ] );
     });
 
@@ -27,6 +28,7 @@ Route::prefix('auth')->group( function () {
     Route::get('askaccess', [ AuthController::class, 'askaccess' ] )->name('auth.askaccess');
     Route::post('askaccess', [ AuthController::class, 'askaccess_post' ] );
     Route::post('askaccess_otp', [ AuthController::class, 'askaccess' ] )->name('auth.askaccess_otp');
+    Route::get('askaccess_otp', [ AuthController::class, 'login' ]); // Fallback in case of F5
 
     // Level 2
     Route::prefix('google_lv2')->group( function () {

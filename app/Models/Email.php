@@ -20,7 +20,8 @@ class Email extends Authenticatable
 
     protected $casts = [
         'last_login' => 'datetime',
-        'token_expdate' => 'datetime'
+        'token_expdate' => 'datetime',
+        'otp_expiration' => 'datetime'
     ];
 
     public function identity()

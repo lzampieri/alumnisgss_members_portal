@@ -22,6 +22,7 @@ class LogEvents {
     const BACKUP_DONE = 'backup_done';
 
     const LOGIN = 'login';
+    const LOGIN_OTP = 'login via OTP';
     const LOGIN_LV2 = 'level 2 login';
     const MAIL_SENT = 'mail_sent';
 

@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Collapse } from "react-collapse";
 import Spinner from "../Layout/Spinner";
 import { asyncPostWithResult } from "../Utils";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 
 const STEPS = {
     LOGIN_OPTIONS: 0,
@@ -10,36 +10,63 @@ const STEPS = {
     LOGIN_GETOTP: 2
 }
 
-function errorLabel(error, email) {
-    
-}
-
 export default function LoginOptions() {
     const [step, setStep] = useState(STEPS.LOGIN_OPTIONS);
     const [email, setEmail] = useState('');
+    const [otp, setOtp] = useState('');
     const [loading,setLoading] = useState(false);
     const [error,setError] = useState('');
 
+    const emailRef = useRef(null);
+    const otpRef = useRef(null);
+
     const askOtp = async () => {
         setLoading(true);
+
+        router.post(
+            route('auth.otp.send_otp'),
+            { address: email },
+            {
+                onError: (errors) => {
+                    if( errors.address ) {
+                        setError(errors.address);
+                    } else {
+                        setError('C\'è stato un errore inaspettato, accidenti.')
+                    }
+                },
+                onFinish: () => {
+                    setLoading(false);
+                },
+                onSuccess: () => {
+                    setError("");
+                    setStep(STEPS.LOGIN_GETOTP);
+                    otpRef.current.focus();
+                }
+            }
+        )
+
+    }
+
+    const sendOtp = async () => {
+        setLoading(true);
+
+        router.post(
+            route('auth.otp.validate_otp'),
+            { otp: otp },
+            {
+                onError: (errors) => {
+                    if( errors.otp ) {
+                        setError(errors.otp);
+                    } else {
+                        setError('C\'è stato un errore inaspettato, accidenti.')
+                    }
+                },
+                onFinish: () => {
+                    setLoading(false);
+                }
+            }
+        )
         
-        const data = await asyncPostWithResult(
-            'auth.otp.send_otp',
-            { address: email }
-        ).catch( e => e.response.data );
-
-        console.log(data)
-
-        if( data.errors ) {
-            if( data.errors.address ) {
-                setError(data.errors.address);
-            }
-            else {
-                setError("Errore sconosciuto, riprova.");
-            }
-        }
-
-        setLoading(false);
     }
 
     return <div className="flex flex-col justify-center">
@@ -49,19 +76,34 @@ export default function LoginOptions() {
                     Login con google<br />
                     <small>(consigliato)</small>
                 </a>
-                <button onClick={() => setStep(STEPS.LOGIN_SETEMAIL)} className="button">
+                <button onClick={() => { setStep(STEPS.LOGIN_SETEMAIL); emailRef.current.focus(); }} className="button">
                     Login con indirizzo email
                 </button>
             </div>
         </Collapse>
         <Collapse theme={{ collapse: "w-full cpm" }} isOpened={step == STEPS.LOGIN_SETEMAIL}>
             <div className="flex flex-col justify-center items-center gap-4">
-                <input type="email" placeholder="Indirizzo email" className="w-full text-center" value={email} onChange={(e) => setEmail(e.target.value)} name="email" />
-                { error && (error[0] == "unknown" ? 
-                    <label className="error">Indirizzo email sconosciuto. <Link href={route('auth.askaccess_otp')} method="post" as="button" data={{ email: email }}>Registrati</Link></label> :
-                    <label className="error">{error}</label> )}
+                <input ref={emailRef} type="email" placeholder="Indirizzo email" className="w-full text-center" value={email} onChange={(e) => setEmail(e.target.value)} name="email" onKeyDown={(e) => e.key == 'Enter' && askOtp()} />
+                { error && (error == "unknown" ? 
+                    <label className="error">Indirizzo email sconosciuto. <Link className="underline cursor-pointer" href={route('auth.askaccess_otp')} method="post" as="button" data={{ email: email }}>Registrati</Link></label> :
+                    ( error == "not_enabled" ? <label className="error">Questo account non è ancora abilitato al login. Se pensi sia un errore, contattaci.</label> :
+                    <label className="error">{error}</label> ))}
                 <button onClick={() => askOtp()} className="button" disabled={loading}>
                     {loading ? <Spinner /> : "Invia OTP" }
+                </button>
+            </div>
+        </Collapse>
+        <Collapse theme={{ collapse: "w-full cpm" }} isOpened={step == STEPS.LOGIN_GETOTP}>
+            <div className="flex flex-col justify-center items-center gap-4">
+                <label>Un codice OTP è stato inviato all'indirizzo {email}</label>
+                <input ref={otpRef} type="number" placeholder="Codice OTP" className="w-full text-center" value={otp} onChange={(e) => setOtp(e.target.value)} name="OTP"  onKeyDown={(e) => e.key == 'Enter' && sendOtp()} />
+                { error && (error == "unknown" ? 
+                    <label className="error">Codice OTP non valido</label> :
+                    ( error == "expired" ? <label className="error">Codice OTP scaduto, ricarica la pagina per richiederne uno nuovo</label> :
+                    ( error == "not_enabled" ? <label className="error">Questo account non è ancora abilitato al login. Se pensi sia un errore, contattaci.</label> :
+                    <label className="error">{error}</label> ))) }
+                <button onClick={() => sendOtp()} className="button" disabled={loading}>
+                    {loading ? <Spinner /> : "Accedi" }
                 </button>
             </div>
         </Collapse>
