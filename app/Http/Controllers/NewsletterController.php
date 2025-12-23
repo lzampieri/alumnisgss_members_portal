@@ -57,7 +57,7 @@ class NewsletterController extends Controller
 
         $emails = Email::whereHas('identity')->with('identity')->get();
         $emails = $emails->sortBy([['identity.surname', 'asc'], ['identity.name', 'asc'], ['primary', 'desc']]);
-        $emails = array_values( $emails->append('canView')->filter->canView->toArray() );
+        $emails = array_values($emails->append('canView')->filter->canView->toArray());
 
         for ($i = 0; $i < count($emails); $i++) {
             if ($i == 0 || ($emails[$i]['identity']['id'] != $emails[$i - 1]['identity']['id'])) {
@@ -84,18 +84,18 @@ class NewsletterController extends Controller
             else if (in_array($role->name, Alumnus::public_status)) $role->identities = Alumnus::where('status', $role->name)->with('emails')->get();
             else $role->identities = Alumnus::role($role)->with('emails')->get()->concat(External::role($role)->with('emails')->get());
 
-            if( in_array( $role->name, Alumnus::require_ratification ) ) $aspirant_toappend[] = $role->name;
+            if (in_array($role->name, Alumnus::require_ratification)) $aspirant_toappend[] = $role->name;
         }
 
-        $roles = array_values( $roles->toArray() );
+        $roles = array_values($roles->toArray());
 
         // Aspirant
-        foreach ($aspirant_toappend as $i=>$status) {
+        foreach ($aspirant_toappend as $i => $status) {
             $roles[] = [
-                'id' => -$i-1,
+                'id' => -$i - 1,
                 'name' => 'aspirant_' . $status,
-                'common_name' => 'Candidati ' . Alumnus::AlumnusStatusLabels[ $status ],
-                'identities' => Alumnus::where('status','!=',$status)->whereHas('ratifications', function ($query) use ($status) {
+                'common_name' => 'Candidati ' . Alumnus::AlumnusStatusLabels[$status],
+                'identities' => Alumnus::where('status', '!=', $status)->whereHas('ratifications', function ($query) use ($status) {
                     $query->where('required_state', $status)->whereNull('document_id');
                 })->with('emails')->get()
             ];
@@ -135,7 +135,7 @@ class NewsletterController extends Controller
         // Illegal to associate attachments to daughter newsletter
         if ($newsletter->parent_id == null) {
             $toRemove = $newsletter->attch_mine()->whereNotIn('id', $validated['attachments'])->get();
-            foreach( $toRemove as $att ) {
+            foreach ($toRemove as $att) {
                 $att->parent()->dissociate()->save();
             }
 
@@ -143,7 +143,7 @@ class NewsletterController extends Controller
             // associated to the newsletter. But who knows, bug can happen, so this is
             // redundancy
             $toAdd = File::whereIn('id', $validated['attachments'])->whereNull('parent_id')->get();
-            foreach( $toAdd as $att ) {
+            foreach ($toAdd as $att) {
                 $att->parent()->associate($newsletter)->save();
             }
         }
@@ -191,7 +191,7 @@ class NewsletterController extends Controller
 
         $newsletter->append('attachments');
 
-        $user = Auth::user()->identity->load('emails','emails.identity');
+        $user = Auth::user()->identity->load('emails', 'emails.identity');
         $email = null;
 
         if (count($user->emails) > 0) {
@@ -203,7 +203,7 @@ class NewsletterController extends Controller
                 $msg->from("info@alumniscuolagalileiana.it");
                 $msg->subject("Test | " . $newsletter->subject);
                 $msg->html($newsletter->body);
-                foreach( $newsletter->attachments as $att ) {
+                foreach ($newsletter->attachments as $att) {
                     $msg->attach($att->path());
                 }
             });
@@ -242,7 +242,7 @@ class NewsletterController extends Controller
 
         // TODO add check for multiple emails on the same day
         $used_from = Newsletter::whereDate('sent_at', '>=', now()->subDays(1))->select('from')->distinct()->pluck('from')->toArray();
-        $froms = array_values( array_diff($froms_all, $used_from) );
+        $froms = array_values(array_diff($froms_all, $used_from));
 
         if (count($newsletter->to) > $emails_per_page * $pages_per_address * count($froms)) {
             return redirect()->back()->with('notistack', ['error', 'Troppi indirizzi email. Max ' . ($emails_per_page * $pages_per_address * count($froms)) . ' rimanenti oggi, richiesti ' . count($newsletter->to)]);
@@ -257,7 +257,7 @@ class NewsletterController extends Controller
         $attachments = [];
 
         foreach ($newsletter->attachments as $att) {
-            $attachments[] =  DataPart::fromPath( $att->path() );
+            $attachments[] =  DataPart::fromPath($att->path());
         }
 
         while (count($newsletter->to) > $emails_per_page) {
@@ -291,7 +291,7 @@ class NewsletterController extends Controller
             if ($reuseaddress != $nl->from) {
                 $transport = new EsmtpTransport(
                     env('MAIL_HOST', 'localhost'),
-                    env('MAIL_PORT', 587),
+                    env('MAIL_PORT', 465),
                     env('MAIL_ENCRYPTION', 'tls') == 'tls'
                 );
                 $transport->setUsername($nl->from);
@@ -307,12 +307,12 @@ class NewsletterController extends Controller
             $message->subject($nl->subject);
             $message->html($nl->body);
             $message->bcc($debug_addr);
-            foreach( $nl->to as $t )
+            foreach ($nl->to as $t)
                 $message->addBcc($t);
             $message->replyTo("info@alumniscuolagalileiana.it");
             $message->from(new Address("info@alumniscuolagalileiana.it", "Associazione Alumni Scuola Galileiana"));
 
-            foreach( $attachments as $att ) {
+            foreach ($attachments as $att) {
                 $message->addPart($att);
             }
 
@@ -342,12 +342,12 @@ class NewsletterController extends Controller
         $newsletter->append('attachments');
 
         $parent = $newsletter;
-        if( $newsletter->parent ) $parent = $newsletter->parent;
+        if ($newsletter->parent) $parent = $newsletter->parent;
 
         $alladdresses_sent    =  $parent->childrens()->whereNotNull('sent_at')->pluck('to')->flatten();
-        $alladdresses_waiting =  $parent->childrens()->whereNull('sent_at')   ->pluck('to')->flatten();
+        $alladdresses_waiting =  $parent->childrens()->whereNull('sent_at')->pluck('to')->flatten();
 
-        if( $parent->sent_at ) $alladdresses_sent = $alladdresses_sent->concat($parent['to']);
+        if ($parent->sent_at) $alladdresses_sent = $alladdresses_sent->concat($parent['to']);
         else $alladdresses_waiting = $alladdresses_waiting->concat($parent['to']);
 
         return Inertia::render(
