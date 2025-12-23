@@ -25,8 +25,8 @@ Route::prefix('auth')->group( function () {
 
     // New user
     Route::get('askaccess', [ AuthController::class, 'askaccess' ] )->name('auth.askaccess');
-    Route::post('askaccess', [ AuthController::class, 'askaccess' ] )->name('auth.askaccess');
     Route::post('askaccess', [ AuthController::class, 'askaccess_post' ] );
+    Route::post('askaccess_otp', [ AuthController::class, 'askaccess' ] )->name('auth.askaccess_otp');
 
     // Level 2
     Route::prefix('google_lv2')->group( function () {

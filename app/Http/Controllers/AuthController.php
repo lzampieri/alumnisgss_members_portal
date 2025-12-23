@@ -120,15 +120,19 @@ class AuthController extends Controller
 
     function askaccess(Request $request)
     {
+        Log::debug("askaccess",[]);
         if (Auth::check())
             return redirect()->route('home');
-
+        
+        Log::debug("no already auth",[]);
         if (session()->has('email'))
             return Inertia::render('Accesses/AskAccess', ['email' => session('email')]);
-
-        if (request()->input('email'))
+        
+        Log::debug("no session",[]);
+        if ($request->has('email'))
             return Inertia::render('Accesses/AskAccess', ['email' => request()->input('email')]);
-
+        
+        Log::debug("no request",[]);
         return redirect()->route('home');
     }
 

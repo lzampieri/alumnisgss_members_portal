@@ -58,7 +58,7 @@ export default function LoginOptions() {
             <div className="flex flex-col justify-center items-center gap-4">
                 <input type="email" placeholder="Indirizzo email" className="w-full text-center" value={email} onChange={(e) => setEmail(e.target.value)} name="email" />
                 { error && (error[0] == "unknown" ? 
-                    <label className="error">Indirizzo email sconosciuto. <Link href={route('auth.askaccess')} method="post" as="button" data={{ email: email }}>Registrati</Link></label> :
+                    <label className="error">Indirizzo email sconosciuto. <Link href={route('auth.askaccess_otp')} method="post" as="button" data={{ email: email }}>Registrati</Link></label> :
                     <label className="error">{error}</label> )}
                 <button onClick={() => askOtp()} className="button" disabled={loading}>
                     {loading ? <Spinner /> : "Invia OTP" }

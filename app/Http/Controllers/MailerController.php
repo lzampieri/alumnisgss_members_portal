@@ -34,7 +34,7 @@ class MailerController extends Controller
             $msg->to($emails);
             $msg->replyTo( $replyTo );
             $msg->subject( $subject);
-            $msg->setBody( nl2br( $message ), 'text/html');
+            $msg->html( nl2br( $message ) );
         });
         LogController::log( LogEvents::MAIL_SENT, NULL, $subject, [$emails, $message]);
     }

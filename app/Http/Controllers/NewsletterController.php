@@ -9,16 +9,15 @@ use App\Models\File;
 use App\Models\Newsletter;
 use App\Models\Role;
 use Illuminate\Http\Request;
-use Illuminate\Mail\Mailer;
-use Illuminate\Mail\MailServiceProvider;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use Swift_Attachment;
-use Swift_Mailer;
-use Swift_Message;
-use Swift_Preferences;
-use Swift_SmtpTransport;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email as MimeEmail;
+use Symfony\Component\Mime\Message;
+use Symfony\Component\Mime\Part\DataPart;
 
 class NewsletterController extends Controller
 {
@@ -195,12 +194,6 @@ class NewsletterController extends Controller
         $user = Auth::user()->identity->load('emails','emails.identity');
         $email = null;
 
-        if( env('APP_ENV', 'local') == 'local' ) {
-            Swift_Preferences::getInstance()->setCacheType('null');
-            // Local development is done on windows, which does not
-            // like swiftmailer's cache system
-        }
-
         if (count($user->emails) > 0) {
             $email = $user->emails[0]->address;
 
@@ -209,7 +202,7 @@ class NewsletterController extends Controller
                 $msg->replyTo("info@alumniscuolagalileiana.it");
                 $msg->from("info@alumniscuolagalileiana.it");
                 $msg->subject("Test | " . $newsletter->subject);
-                $msg->setBody($newsletter->body, 'text/html');
+                $msg->html($newsletter->body);
                 foreach( $newsletter->attachments as $att ) {
                     $msg->attach($att->path());
                 }
@@ -263,14 +256,8 @@ class NewsletterController extends Controller
 
         $attachments = [];
 
-        if( env('APP_ENV', 'local') == 'local' ) {
-            Swift_Preferences::getInstance()->setCacheType('null');
-            // Local development is done on windows, which does not
-            // like swiftmailer's cache system
-        }
-            
         foreach ($newsletter->attachments as $att) {
-            $attachments[] = Swift_Attachment::fromPath( $att->path());
+            $attachments[] =  DataPart::fromPath( $att->path() );
         }
 
         while (count($newsletter->to) > $emails_per_page) {
@@ -296,34 +283,37 @@ class NewsletterController extends Controller
         $newsletters[] = $newsletter;
 
         $reuseaddress = "";
-        $swift_mailer = null;
+        $symfony_mailer = null;
 
         $count = 1;
 
         foreach ($newsletters as &$nl) {
             if ($reuseaddress != $nl->from) {
-                $transport = new Swift_SmtpTransport(
+                $transport = new EsmtpTransport(
                     env('MAIL_HOST', 'localhost'),
-                    env('MAIL_PORT', 587)
+                    env('MAIL_PORT', 587),
+                    env('MAIL_ENCRYPTION', 'tls') == 'tls'
                 );
-                $transport->setEncryption(env('MAIL_ENCRYPTION', 'tls'));
                 $transport->setUsername($nl->from);
                 $reuseaddress = $nl->from;
                 $transport->setPassword($froms_pw);
 
-                $swift_mailer = new Swift_Mailer($transport);
+                $symfony_mailer = new Mailer($transport);
             }
 
             LogController::log(LogEvents::MAIL_SENT, NULL, $nl->subject, [...$nl->to, $debug_addr]);
 
-            $message = new Swift_Message($nl->subject);
-            $message->setBody($nl->body, 'text/html');
-            $message->setBcc([...$nl->to, $debug_addr]);
-            $message->setReplyTo("info@alumniscuolagalileiana.it");
-            $message->setFrom(["info@alumniscuolagalileiana.it" => "Associazione Alumni Scuola Galileiana"]);
+            $message = new MimeEmail();
+            $message->subject($nl->subject);
+            $message->html($nl->body);
+            $message->bcc($debug_addr);
+            foreach( $nl->to as $t )
+                $message->addBcc($t);
+            $message->replyTo("info@alumniscuolagalileiana.it");
+            $message->from(new Address("info@alumniscuolagalileiana.it", "Associazione Alumni Scuola Galileiana"));
 
             foreach( $attachments as $att ) {
-                $message->attach($att);
+                $message->addPart($att);
             }
 
             // Add reference to the newsletter
@@ -331,7 +321,7 @@ class NewsletterController extends Controller
             $headers->addTextHeader('X-Newsletter-ID', $nl->id . " daughter of " . $newsletter->id);
             $headers->addTextHeader('X-Newsletter-progress', $count . "/" . count($newsletters));
 
-            $swift_mailer->send($message);
+            $symfony_mailer->send($message);
 
             // TODO distinguish MAIL_SENT, NEWSLETTER_SENT, NEWSLETEER_DEBUG_SENT
             LogController::log(LogEvents::MAIL_SENT, NULL, $newsletter->subject, [$nl]);

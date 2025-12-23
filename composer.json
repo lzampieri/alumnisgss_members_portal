@@ -20,6 +20,7 @@
         "setasign/fpdi": "^2.6.4",
         "spatie/laravel-permission": "^6.24",
         "staudenmeir/laravel-adjacency-list": "^1.25",
+        "symfony/mailer": "^7.4",
         "tecnickcom/tcpdf": "^6.10",
         "tightenco/ziggy": "^2.6"
     },
