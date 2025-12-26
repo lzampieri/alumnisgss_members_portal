@@ -40,7 +40,12 @@ export default function Edit() {
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('registry.edit', { alumnus: prev?.id }), { preserveState: "errors", onError: () => enqueueSnackbar('C\'è stato un errore, verifica tutti i campi', { variant: 'error' }) });
+        post(
+            route('registry.edit', { alumnus: prev?.id }), {
+            preserveState: "errors",
+            onError: () => enqueueSnackbar('C\'è stato un errore, verifica tutti i campi', { variant: 'error' }),
+            onSuccess: () => window.history.back()
+        });
     }
 
     const checkIfDirty = (e) => {

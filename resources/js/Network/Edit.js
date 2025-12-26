@@ -32,7 +32,11 @@ export default function Edit() {
     const submit = (e) => {
         e.preventDefault();
         post(route('network.edit', { alumnus: alumnus.id }),
-            { preserveState: "errors", onError: () => enqueueSnackbar('C\'è stato un errore, verifica tutti i campi', { variant: 'error' }) }
+            {
+                preserveState: "errors",
+                onError: () => enqueueSnackbar('C\'è stato un errore, verifica tutti i campi', { variant: 'error' }),
+                onSuccess: () => window.history.back()
+            }
         );
     }
 
@@ -40,10 +44,10 @@ export default function Edit() {
         <form className="flex flex-col w-full md:w-3/5 items-start gap-2" onSubmit={submit}>
             <Head title={alumnus.name + " " + alumnus.surname} />
             <div className="flex flex-row justify-between w-full">
-                <Link className="button flex flex-row items-center self-start mb-4" href={route('network')}>
+                <div className="button flex flex-row items-center self-start mb-4" onClick={() => window.history.back()} >
                     <FontAwesomeIcon icon={faChevronLeft} />
                     Indietro
-                </Link>
+                </div>
                 <div className="button flex flex-row items-center self-start mb-4" onClick={submit}>
                     <FontAwesomeIcon icon={faSave} />
                     Salva

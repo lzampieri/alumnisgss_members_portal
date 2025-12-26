@@ -9,7 +9,7 @@ import ReactSwitch from "react-switch";
 import { enqueueSnackbar } from "notistack";
 import ADetailsType from "./ADetailsType";
 import Select from 'react-select';
-import { faChevronLeft, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faChevronLeft, faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function ADlist() {

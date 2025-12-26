@@ -176,6 +176,6 @@ class NetworkController extends Controller
             );
         }
 
-        return redirect()->route('network')->with(['notistack' => ['success', 'Salvato!']]);
+        return redirect()->back()->with(['notistack' => ['success', 'Salvato!']]);
     }
 }

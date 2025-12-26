@@ -1,6 +1,6 @@
 
 
-import { Head, Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage, useRemember } from "@inertiajs/react";
 import { AlumnusStatus, bgAndContrast, romanize } from "../Utils";
 import { useMemo, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
@@ -86,7 +86,7 @@ export default function Schema() {
         return tagsDict
     }, [data])
 
-    const [quickFilter, setQuickFilter] = useState('')
+    const [quickFilter, setQuickFilter] = useRemember('')
 
     return (
         <div className="main-container-large h-[80vh] gap-1">

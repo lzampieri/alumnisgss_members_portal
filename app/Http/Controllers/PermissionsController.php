@@ -104,6 +104,8 @@ class PermissionsController extends Controller
             'network-edit-view',
             'network-edit-consenting-alumnus',
             'network-edit-alumnus',
+            // Cities
+            'cities-edit',
             // Registry
             'alumnus-view',
             'alumnus-edit',

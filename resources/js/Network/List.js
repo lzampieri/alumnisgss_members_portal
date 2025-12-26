@@ -1,6 +1,6 @@
 
 
-import { Head, Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage, useRemember } from "@inertiajs/react";
 import { AlumnusStatus, bgAndContrast, bgAndContrastPastel, romanize } from "../Utils";
 import { useMemo, useState } from "react";
 import SmartChip from "./SmartChip";
@@ -95,7 +95,7 @@ function ListAsATable({ alumni, quickFilter }) {
 
 export default function List() {
     const alumni = usePage().props.alumni;
-    const [quickFilter, setQuickFilter] = useState('')
+    const [quickFilter, setQuickFilter] = useRemember('')
 
     return <div className="main-container-large h-[80vh] gap-1">
         <Head title="Rete sociale" />

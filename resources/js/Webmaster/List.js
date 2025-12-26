@@ -33,6 +33,7 @@ export default function List() {
                 <li><a href={route('webmaster.sendTestMail')}>Invia mail di test</a></li>
                 <li><RequireConfirmLink href={route('webmaster.enableAllPublic')}>Abilita al login tutti gli alumni con stato pubblico (membri, studenti, preiscritti).</RequireConfirmLink></li>
                 <li><a href={route('auth.login_lv2.google')}>Forza accesso con autorizzazioni elevate</a></li>
+                <li><a href={route('webmaster.verify_cities')}>Verifica lista città</a></li>
             </ul>
         </div>
     );

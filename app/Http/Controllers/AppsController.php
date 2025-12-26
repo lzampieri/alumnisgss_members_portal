@@ -23,6 +23,7 @@ class AppsController extends Controller
 
         if (Auth::user() && Auth::user()->can('viewNetwork', Alumnus::class)) {
             $apps[] = 'network';
+            $apps[] = 'map';
         }
 
         if (Auth::user() && Auth::user()->can('viewAny', Alumnus::class)) {

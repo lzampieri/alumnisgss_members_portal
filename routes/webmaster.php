@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CityController;
 use App\Http\Controllers\ContactsSyncController;
 use App\Http\Controllers\Log;
 use App\Http\Controllers\WebmasterController;
@@ -36,4 +37,9 @@ Route::prefix('/webmaster')->group( function () {
     // test
     Route::get('/sendTestMail', [ WebmasterController::class, 'sendTestMail' ])->name('webmaster.sendTestMail');
     Route::get('/enableAllPublic', [ WebmasterController::class, 'enableAllPublic' ])->name('webmaster.enableAllPublic');
+
+    // citites
+    Route::get('/verify_cities', [ CityController::class, 'verify_cities'])->name('webmaster.verify_cities');
+    Route::post('/delete_cities', [ CityController::class, 'delete_city'])->name('webmaster.delete_city');
+    Route::post('/regenerate_cities', [ CityController::class, 'renegerate_cities'])->name('webmaster.renegerate_cities');
 });

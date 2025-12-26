@@ -1,9 +1,10 @@
-import { faAddressBook, faBookOpen, faBoxArchive, faBug, faBusinessTime, faCircleNodes, faEnvelopeOpenText, faFilePen, faIdBadge, faIdCard, faSignature, faStapler, faTruckMedical, faUser, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faAddressBook, faBookOpen, faBoxArchive, faBug, faBusinessTime, faCircleNodes, faEnvelopeOpenText, faFilePen, faIdBadge, faIdCard, faMap, faSignature, faStapler, faTruckMedical, faUser, faUsers } from "@fortawesome/free-solid-svg-icons";
 
 export default [
     { id: 'profile', name: 'Profilo', url: route('profile'), icon: faUser },
     { id: 'members', name: 'Soci', url: route('members'), icon: faUsers },
     { id: 'network', name: 'Rete', url: route('network'), icon: faCircleNodes },
+    { id: 'map', name: 'Mappa', url: route('network.map'), icon: faMap },
     { id: 'registry', name: 'Anagrafe', url: route('registry'), icon: faStapler },
     { id: 'ratifications', name: 'Ratifiche', url: route('ratifications'), icon: faSignature },
     { id: 'board', name: 'Albo', url: route('board'), icon: faBookOpen },
