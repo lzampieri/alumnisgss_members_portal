@@ -25,9 +25,6 @@ class NetworkController extends Controller
             ->orderBy('surname')->orderBy('name')
             ->get();
 
-        $alumni->load('emails');
-        $alumni->load('emails.identity');
-
         foreach ($alumni as $alumnus) {
             if (Auth::user()->can('viewNetworkDetails', $alumnus)) {
                 $alumnus->load(['aDetails' => function ($query) {
@@ -40,12 +37,53 @@ class NetworkController extends Controller
                 $alumnus['filtered_details'] = [];
             }
             
-            $alumnus['visible_emails'] = $alumnus->emails->filter->canView;
         }
 
         $alumni->append('can_be_network_edited');
 
         $alumni_cleaned = $alumni->map->only([
+            'id',
+            'name',
+            'surname',
+            'coorte',
+            'status',
+
+            'filtered_details',
+
+            'can_be_network_edited',
+            'consent_to_network_share',
+        ]);
+
+        return Inertia::render('Network/List', [
+            'alumni' => $alumni_cleaned,
+            'canEditView' => Auth::user()->can('editNetworkView', Alumnus::class)
+        ]);
+    }
+
+    public function view(Request $request, Alumnus $alumnus)
+    {
+        $this->authorize('view', $alumnus);
+
+        $itsme = Auth::user()->identity->id == $alumnus->id;
+        
+        if (Auth::user()->can('viewNetworkDetails', $alumnus)) {
+            $alumnus->load(['aDetails' => function ($query) {
+                $query->whereHas('aDetailsType', function ($query) {
+                    $query->where('visible', true);
+                })->orderBy(ADetailsType::select('order')->whereColumn('a_details_types.id', 'a_details.a_details_type_id'));
+            }, 'aDetails.aDetailsType']);
+            $alumnus['filtered_details'] = $alumnus->aDetails;
+        } else {
+            $alumnus['filtered_details'] = [];
+        }
+
+        $alumnus->load('emails');
+        $alumnus->load('emails.identity');
+        $alumnus['visible_emails'] = $alumnus->emails->filter->canView;
+
+        $alumnus->append('can_be_network_edited');
+
+        $alumnus = $alumnus->only([
             'id',
             'name',
             'surname',
@@ -60,11 +98,12 @@ class NetworkController extends Controller
             'consent_to_network_share',
         ]);
 
-        return Inertia::render('Network/List', [
-            'alumni' => $alumni_cleaned,
-            'canEditView' => Auth::user()->can('editNetworkView', Alumnus::class)
+        return Inertia::render('Network/View', [
+            'alumnus' => $alumnus,
+            'itsme' => $itsme
         ]);
     }
+
 
     public function settings()
     {

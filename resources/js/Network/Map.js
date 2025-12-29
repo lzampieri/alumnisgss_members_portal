@@ -1,25 +1,21 @@
-import { usePage } from "@inertiajs/react";
-import { JSONTree } from "react-json-tree";
+import { Head, Link, usePage, useRemember } from "@inertiajs/react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet"
 
-// import {  } from "leaflet";
-// import pinCircle from "leaflet-extra-markers/dist/svgs/pin-circle.svg";
-// import markerIconPng from "leaflet/dist/images/marker-icon.png"
-// import {Icon} from 'leaflet'
 import { Icon, PinCircle } from "leaflet-extra-markers";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faRightLong, faUser, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { romanize } from "../Utils";
 
 
 export default function Map() {
     const cities = usePage().props.cities
-    const [city, setCity] = useState()
+    const [city, setCity] = useRemember()
 
     let hidden = city ? city['alumni'].filter( a => a.id < 0 ).length : 0
 
     return <div className="w-full h-[80vh] flex flex-row">
+        <Head title="AluMappa" />
         <MapContainer center={[45, -11]} zoom={3} className='w-full md:w-3/4 h-full z-0'>
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -53,6 +49,7 @@ export default function Map() {
                 { city && city['alumni'].map( a => a.id < 0 ? "" : 
                     <div className="w-full" key={a.id}>
                         <FontAwesomeIcon icon={faUser} className="pr-2"/>{a.name} {a.surname} <span className="text-gray-400">{romanize(a.coorte)}</span>
+                        <Link className="ml-2 icon-button" href={route('network.view', { alumnus: a.id })}><FontAwesomeIcon icon={faRightLong} /></Link>
                     </div>
                 )}
                 {

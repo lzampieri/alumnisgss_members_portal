@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('/network')->group(function () {
     Route::get('/', [NetworkController::class, 'list'])->name('network');
     
+    Route::get('/view/{alumnus}', [NetworkController::class, 'view'])->name('network.view');
+
     Route::get('/edit/{alumnus}', [NetworkController::class, 'edit'])->name('network.edit');
     Route::post('/edit/{alumnus}', [NetworkController::class, 'edit_post']);
 

@@ -18,6 +18,13 @@ class Email extends Authenticatable
         'comment'
     ];
 
+    protected $visible = [
+        'id',
+        'address',
+        'primary',
+        'comment'
+    ];
+
     protected $casts = [
         'last_login' => 'datetime',
         'token_expdate' => 'datetime',

@@ -9,7 +9,7 @@ import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
 import { themeQuartz } from "ag-grid-community";
 import { ModuleRegistry, ClientSideRowModelModule, RowAutoHeightModule, QuickFilterModule } from 'ag-grid-community';
 import ADetailsType from "./ADetailsType";
-import { faGear, faPen } from "@fortawesome/free-solid-svg-icons";
+import { faGear, faPen, faRightLong } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 ModuleRegistry.registerModules([ClientSideRowModelModule, RowAutoHeightModule, QuickFilterModule]);
 
@@ -17,11 +17,14 @@ function AlumnusContent({ data }) {
 
     return <div className="w-full border border-primary-main flex flex-col p-2 min-h-[3rem] justify-center gap-2 leading-normal	">
         <div className="w-full flex flex-row items-center">
-            <div className="ml-2 font-bold">
+            <div className="ml-2 font-bold grow">
                 {data.name} {data.surname}
             </div>
+            <div className="text-end mx-1">
+                <Link className="icon-button" href={route('network.view', { alumnus: data.id })}><FontAwesomeIcon icon={faRightLong} /></Link>
+            </div>
             {data.can_be_network_edited &&
-                <div className="grow text-end mx-1">
+                <div className="text-end mx-1">
                     <Link className="icon-button" href={route('network.edit', { alumnus: data.id })}><FontAwesomeIcon icon={faPen} /></Link>
                 </div>
             }
@@ -30,10 +33,6 @@ function AlumnusContent({ data }) {
             <SmartChip style={bgAndContrast(AlumnusStatus.status[data.status].color)} key='status' content={AlumnusStatus.status[data.status].label} />
             <SmartChip style={bgAndContrastPastel(-1)} key='coorte' content={(data.coorte > 0) ? (romanize(data.coorte) + " coorte") : "Onorario"} />
             {data.filtered_details?.length > 0 && !data.consent_to_network_share && <SmartChip content="Dettagli visibili solo allo staff, nascosti ai soci" style={bgAndContrastPastel(2)} />}
-        </div>
-        <div className="w-full flex flex-row justify-start flex-wrap">
-            {data.visible_emails?.map((email) => <SmartChip style={bgAndContrastPastel(1)} content={email.address} key={email.id} />)}
-            {data.visible_emails?.length > 0 && !data.consent_to_email_share && <SmartChip content="Indirizzi mail visibili solo allo staff, nascosti ai soci" style={bgAndContrastPastel(2)} />}
         </div>
         <div className="w-full flex flex-row justify-start flex-wrap gap-y-2">
             {data.filtered_details?.map((adt, i) => {

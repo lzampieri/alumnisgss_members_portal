@@ -33,6 +33,20 @@ class AlumnusPolicy
     }
 
     /**
+     * Determine whether the user can view an alumnus with BASIC DETAILS
+     * Warning: this permission is rewritten with more efficiency in NetworkController::list
+     *
+     * @param  \Illuminate\Foundation\Auth\User  $user optional
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function view(User $user, Alumnus $alumnus)
+    {
+        if( in_array($alumnus->status, Alumnus::public_status) ) return true;
+
+        return $this->viewAny($user);
+    }
+
+    /**
      * Determine whether the user can view himself, and its details.
      *
      * @param  \Illuminate\Foundation\Auth\User  $user
