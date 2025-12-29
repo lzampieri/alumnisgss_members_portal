@@ -29,6 +29,10 @@ class ResourceController extends Controller
                 ->load(['dynamicPermissions', 'dynamicPermissions.role', 'files', 'permalinks']);
 
             $params['resource']->makeHidden('children');
+
+            if($params['resource']->canView) {
+                $params['resource']->makeVisible('access_token');
+            }
         }
 
         $params['possibleParents'] = $this->getPossibleParentsList($resource);

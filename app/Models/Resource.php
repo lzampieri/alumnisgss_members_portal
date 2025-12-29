@@ -20,6 +20,9 @@ class Resource extends Model
         'type',
         'archive'
     ];
+    protected $hidden = [
+        'access_token'
+    ];
 
     public function dynamicPermissions()
     {
