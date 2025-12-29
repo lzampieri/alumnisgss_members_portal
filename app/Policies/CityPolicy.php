@@ -17,7 +17,7 @@ class CityPolicy
      */
     public function viewAll(User $user)
     {
-        return true;
+        return $user->hasPermissionTo('network-view');
     }
 
     /**

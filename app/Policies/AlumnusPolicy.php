@@ -41,7 +41,7 @@ class AlumnusPolicy
      */
     public function view(User $user, Alumnus $alumnus)
     {
-        if( in_array($alumnus->status, Alumnus::public_status) ) return true;
+        if( in_array($alumnus->status, Alumnus::public_status) ) return $user->hasPermissionTo('network-view');
 
         return $this->viewAny($user);
     }
