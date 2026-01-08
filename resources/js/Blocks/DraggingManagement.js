@@ -1,32 +1,71 @@
-// import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd"; TODO REIMPLEMENT
-import BlockEnvironment from "./BlockEnvironment";
+import { DndContext, PointerSensor, useDraggable, useDroppable, useSensor, useSensors, closestCenter } from "@dnd-kit/core";
+import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { CSS as CSS_DND } from '@dnd-kit/utilities';
+
+// function handleDragEnd(event) {
+//     const { active, over } = event;
+
+//     if (active.id !== over.id) {
+//         setItems((items) => {
+//             const oldIndex = items.indexOf(active.id);
+//             const newIndex = items.indexOf(over.id);
+
+//             return arrayMove(items, oldIndex, newIndex);
+//         });
+//     }
+// }
+
+function SortableItem({ id, children }) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+    } = useSortable({ id: id });
+
+    const style = {
+        transform: CSS_DND.Transform.toString(transform),
+        transition,
+    };
+
+    return (
+        <li ref={setNodeRef} style={style} {...attributes} {...listeners} className="w-full">
+            { children }
+        </li>
+    );
+}
 
 
 export default function DraggingManagement({ list, updateOrder, renderItem }) {
 
-    let savedApi;
+    const sensor = useSensor(PointerSensor, {
+        activationConstraint: {
+            distance: 5
+        }
+    });
 
-    const onDragEnd = (result) => {
-        if (!result.destination) return
-        updateOrder(result.source.index, result.destination.index)
+
+    const onDragEnd = (event) => {
+        const { active, over } = event;
+        if (active.data.current.sortable.index == over.data.current.sortable.index) return
+        updateOrder(active.data.current.sortable.index, over.data.current.sortable.index)
     }
 
-    return <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="droppable_area">
-            {(provided) =>
-                <ul {...provided.droppableProps} ref={provided.innerRef} className="w-full flex flex-col gap-2">
-                    {list?.map((item, index) =>
-                        <Draggable key={item.id} draggableId={"" + item.id} index={index}>
-                            {(provided) =>
-                                <li ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} className="w-full">
-                                    {renderItem(item, index, provided.dragHandleProps?.["data-rbd-drag-handle-context-id"])}
-                                </li>
-                            }
-                        </Draggable>
-                    )}
-                    {provided.placeholder}
-                </ul>
-            }
-        </Droppable>
-    </DragDropContext>
+    const { setNodeRef } = useDroppable({
+        id: 'droppable_area',
+    });
+
+
+    return <DndContext onDragEnd={onDragEnd} collisionDetection={closestCenter} sensors={useSensors(sensor)}>
+        <ul ref={setNodeRef} className="w-full flex flex-col gap-2">
+            <SortableContext items={list} strategy={verticalListSortingStrategy}>
+                {list?.map((item, index) =>
+                    <SortableItem key={item.id} id={"" + item.id}>
+                        {renderItem(item, index)}
+                    </SortableItem>
+                )}
+            </SortableContext>
+        </ul>
+    </DndContext>
 }

@@ -96,7 +96,7 @@ export default function Upload() {
                 <label>Visibilità</label>
                 <div className="w-full flex flex-row flex-wrap justify-start gap-y-2">
                     {roles.map(r =>
-                        <div key={r.id} className="chip px-4 py-2 cursor-pointer aria-disabled:disabled" aria-disabled={!data.roles.includes(r.id)} onClick={() => changeRole(r.id)}>
+                        <div key={r.id} className="chip px-4 py-2 cursor-pointer aria-disabled:opacity-40" aria-disabled={!data.roles.includes(r.id)} onClick={() => changeRole(r.id)}>
                             {r.common_name}
                         </div>)}
                 </div>

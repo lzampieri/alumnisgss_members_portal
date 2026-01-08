@@ -7,6 +7,7 @@ import Link from './Plugins/Link';
 import Timeline from './Plugins/Timeline';
 import Map from './Plugins/Map';
 import SubContent from './Plugins/SubContent';
+import BarChart from './Plugins/BarChart';
 
 export default {
     text: Text,
@@ -17,5 +18,6 @@ export default {
     separator: Separator,
     map: Map,
     subcontent: SubContent,
-    timeline: Timeline
+    timeline: Timeline,
+    barChart: BarChart
 }
