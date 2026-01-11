@@ -19,6 +19,7 @@
         "rap2hpoutre/laravel-log-viewer": "^2.5",
         "setasign/fpdi": "^2.6.4",
         "spatie/geocoder": "^3.16",
+        "spatie/laravel-ignition": "^2.9",
         "spatie/laravel-permission": "^6.24",
         "staudenmeir/laravel-adjacency-list": "^1.25",
         "symfony/mailer": "^7.4",

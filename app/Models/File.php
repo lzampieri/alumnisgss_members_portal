@@ -14,7 +14,7 @@ class File extends Model
     ];
 
     const ALLOWED_IMAGES_FORMATS = [
-        'jpg', 'jpeg', 'png'
+        'jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'
     ];
 
     protected $fillable = [

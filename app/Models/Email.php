@@ -61,4 +61,8 @@ class Email extends Authenticatable
     public function getCanViewAttribute() {
         return Auth::check() && Auth::user()->can('view', $this);
     }
+
+    public function getIdentityForced() {
+        return $this->load('identity')->makeVisible('identity')->identity;
+    }
 }

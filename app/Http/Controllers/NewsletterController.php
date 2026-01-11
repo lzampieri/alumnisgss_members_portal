@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
 use Symfony\Component\Mime\Address;
@@ -55,7 +56,7 @@ class NewsletterController extends Controller
 
         $newsletter->append('attachments');
 
-        $emails = Email::whereHas('identity')->with('identity')->get();
+        $emails = Email::whereHas('identity')->with('identity')->get()->makeVisible('identity');
         $emails = $emails->sortBy([['identity.surname', 'asc'], ['identity.name', 'asc'], ['primary', 'desc']]);
         $emails = array_values($emails->append('canView')->filter->canView->toArray());
 
@@ -185,6 +186,26 @@ class NewsletterController extends Controller
         return response()->json($outputs);
     }
 
+    public function upload_img(Request $request, Newsletter $newsletter) {
+        $this->authorize('edit', $newsletter);
+
+        
+        $validated = $request->validate([
+            'image' => 'required|mimes:' . implode(",", File::ALLOWED_IMAGES_FORMATS)
+        ]);
+
+        $filename = $validated['image']->getClientOriginalName();
+        $extension = pathinfo($filename)['extension'];
+        $filename = Str::uuid7() . '.' . $extension;
+        $validated['image']->storeAs('newsimgs',$filename);
+
+        return response()->json(['handle' => $filename]);
+    }
+
+    public function media(String $handle) {
+        return response()->file(storage_path('app/newsimgs/' . $handle));
+    }
+
     public function preview(Newsletter $newsletter)
     {
         $this->authorize('edit', $newsletter);
@@ -218,6 +239,32 @@ class NewsletterController extends Controller
                 'canSend' => Auth::user()->can('send', $newsletter)
             ]
         );
+    }
+
+    public function preview_post(Request $request, Newsletter $newsletter)
+    {
+        $this->authorize('edit', $newsletter);
+
+        $newsletter->append('attachments');
+
+        $validated = $request->validate([
+            'sendTo' => 'required|email',
+        ]);
+        $email = $validated['sendTo'];
+
+        Mail::send([], [], function (\Illuminate\Mail\Message $msg) use ($email, $newsletter) {
+            $msg->to($email);
+            $msg->replyTo("info@alumniscuolagalileiana.it");
+            $msg->from("info@alumniscuolagalileiana.it");
+            $msg->subject("Test | " . $newsletter->subject);
+            $msg->html($newsletter->body);
+            foreach ($newsletter->attachments as $att) {
+                $msg->attach($att->path());
+            }
+        });
+        LogController::log(LogEvents::MAIL_SENT, NULL, $newsletter->subject, [$email, $newsletter]);
+
+        return response()->json(['sentTo' => $email]);
     }
 
     public function send(Newsletter $newsletter)

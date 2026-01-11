@@ -13,10 +13,11 @@ import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
 import { themeQuartz } from "ag-grid-community";
 import { ModuleRegistry, ClientSideRowModelModule, ColumnAutoSizeModule, QuickFilterModule } from 'ag-grid-community';
 import { AlumnusStatus, asyncPostWithResult, bgAndContrast, noninertiaPostRequest, postRequest } from "../Utils";
-import DefaultEditor, { BtnBold, BtnBulletList, BtnItalic, BtnLink, BtnNumberedList, BtnRedo, BtnStrikeThrough, BtnUnderline, BtnUndo, Editor, EditorProvider, Separator, Toolbar } from "react-simple-wysiwyg";
+// import DefaultEditor, { BtnBold, BtnBulletList, BtnItalic, BtnLink, BtnNumberedList, BtnRedo, BtnStrikeThrough, BtnUnderline, BtnUndo, Editor, EditorProvider, Separator, Toolbar } from "react-simple-wysiwyg";
 import { to } from "@react-spring/web";
 import { faAddressBook, faCheck, faCirclePlus, faFileArrowUp, faPlus, faStar, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import NewsletterEditor from "./Editor";
 ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnAutoSizeModule, QuickFilterModule]);
 
 function delFromArray(arr, idx) {
@@ -194,7 +195,11 @@ export default function Edit() {
 
     transform((data) => ({
         ...data,
-        body: sanitizeHtml(data.body),
+        body: sanitizeHtml(data.body, {
+            allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img','span','a']),
+            allowedAttributes: { 'img': ['src','width','height'], 'span': ['style'], 'a': ['target','rel','href'] },
+            allowedSchemes: ['http', 'https']
+        }),
         attachments: data.attachments.map((a) => a.id)
     }));
 
@@ -212,7 +217,7 @@ export default function Edit() {
                 <label className="error">{errors.subject}</label>
 
                 <label>Contenuto</label>
-                <EditorProvider>
+                {/* <EditorProvider>
                     <Editor value={data.body} onChange={(e) => setData('body', e.target.value)} className="pretendToBeInput">
                         <Toolbar>
                             <BtnUndo />
@@ -229,7 +234,8 @@ export default function Edit() {
                             <BtnLink />
                         </Toolbar>
                     </Editor>
-                </EditorProvider>
+                </EditorProvider> */}
+                <NewsletterEditor value={data.body} setValue={(v) => setData('body', v)} newsletter_id={prevDraft.id} />
                 <label className="error">{errors.body}</label>
 
                 <label>Allegati</label>
