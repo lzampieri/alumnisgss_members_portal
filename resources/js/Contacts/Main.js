@@ -1,7 +1,6 @@
 
 
 import { Head, Link, usePage } from "@inertiajs/react";
-import { AlumnusStatus, bgAndContrast, romanize } from "../Utils";
 import { useEffect, useMemo, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import DataDownloader from "./DataDownloader";
@@ -9,9 +8,7 @@ import AutoCombiner from "./AutoCombiner";
 import ContactsCreator from "./ContactsCreator";
 import EmailUpdater from "./EmailUpdater";
 import PrimaryEmailUpdater from "./PrimaryEmailUpdater";
-import GroupsUpdater from "./GroupsUpdater";
 import Final from "./Final";
-// import RegistryHeader from "./RegistryHeader";
 
 const STEP = {
     NONE: -1,
@@ -30,10 +27,6 @@ export default function Main() {
     const [localData, setLocalData] = useState([]);
     const [pairs, setPairs] = useState([]);
     const [localOrphans, setLocalOrphans] = useState([]);
-    // const [members,setMembers] = useState([]);
-    // const [groups,setGroups] = useState([]);
-    // const [combs, setCombs] = useState({});
-    // const [contacts,setContacts] = useState([]);
 
     useEffect(() => step == STEP.NONE && setStep(STEP.DOWNLOAD), []);
 
@@ -45,8 +38,7 @@ export default function Main() {
             {step == STEP.NEWCONTACTS && <ContactsCreator localOrphans={localOrphans} appendToPairs={(newP) => setPairs([...pairs, ...newP])} next={() => setStep(STEP.EMAILUPDATE)} />}
             {step == STEP.EMAILUPDATE && <EmailUpdater pairs={pairs} setPairs={setPairs} next={() => setStep(STEP.PRIMARYEMAILUPDATE)} />}
             {step == STEP.PRIMARYEMAILUPDATE && <PrimaryEmailUpdater pairs={pairs} next={() => setStep(STEP.FINAL)} />}
-            {/* { step == STEP.GROUPSUPDATE && <GroupsUpdater members={members} combs={combs} groups={groups} next={() => setStep(STEP.FINAL)} /> } */}
-            {step == STEP.FINAL && <Final members={members} combs={combs} contacts={contacts} groups={groups} />}
+            {step == STEP.FINAL && <Final />}
         </div>
     );
 }
