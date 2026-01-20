@@ -1,22 +1,45 @@
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import ReactSwitch from "react-switch";
-import { Roles } from "../Utils";
+import Dialog from "../Layout/Dialog";
+import EmptyDialog from "../Layout/EmptyDialog";
 import Backdrop from "../Layout/Backdrop";
 import { router } from "@inertiajs/react";
 import ResponsiveDrawer from "../Layout/ResponsiveDrawer";
-import EmptyDialog from "../Layout/EmptyDialog";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faUsers, faUsersGear } from "@fortawesome/free-solid-svg-icons";
+import { postRequest } from "../Utils";
 
-function RoleCard(role, perms, setProcessing) {
+function RoleCard({role, perms, setProcessing}) {
+    const [isDeleting,setIsDeleting] = useState(false);
+
+    const submitDelete = async () => {
+        postRequest('roles.delete',
+            { name: role.name },
+            setProcessing
+        )
+    }
+
     return <div className="w-full bg-gray-200 rounded-xl p-4" key={role.name}>
         <label>{role.name}</label>
-        <h3>{role.common_name}</h3>
+        <div className="flex flex-row items-start">
+            <h3>{role.common_name}</h3>
+            <h4>{!role.is_automatic && <div className="icon-button" onClick={() => setIsDeleting(true)}><FontAwesomeIcon icon={faTrash} /></div>}</h4>
+        </div>
         <div className="md:columns-2">
             {perms.map(pm => PermissionSwitch(pm, role.permissions_names.includes(pm), role.name, setProcessing))}
         </div>
         <div className="flex flex-row flex-wrap justify-center mt-4 gap-2">
             {role.identities.map(identity => IdentityChip(identity, setProcessing))}
         </div>
+        <Dialog
+            open={isDeleting}
+            onClose={() => setIsDeleting(false)}
+            confirmLabel={"Cancella questo ruolo"}
+            undoLabel={"Annulla"}
+            onConfirm={submitDelete}>
+            Sei sicuro di voler cancellare questo ruolo? Al momento vi sono {role.identities.length} persone con questo ruolo.
+        </Dialog>
     </div>
 }
 
@@ -110,12 +133,13 @@ export default function List() {
                         onClick={() => setSelectedIdx(idx)}
                         key={role.name}
                     >
+                        <FontAwesomeIcon icon={role.is_automatic ? faUsersGear : faUsers } className="mr-2" />
                         {role.common_name}
                     </div>
                 )}
                 {roleAdd(setProcessing)}
             </ResponsiveDrawer.Drawer>
-            {selectedIdx >= 0 && RoleCard(roles[selectedIdx], perms, setProcessing)}
+            {selectedIdx >= 0 && <RoleCard role={roles[selectedIdx]} perms={perms} setProcessing={setProcessing} />}
             {permissionAdd(setProcessing)}
             {permissionVerify(setProcessing)}
         </ResponsiveDrawer>

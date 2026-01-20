@@ -35,6 +35,7 @@ Route::prefix('/permissions')->group( function () {
 // Roles
 Route::prefix('/roles')->group( function () {
     Route::post('/create', [ RolesController::class, 'create' ] )->name('roles.create');
+    Route::post('/delete', [ RolesController::class, 'delete' ] )->name('roles.delete');
 
     Route::post('/add', [ RolesController::class, 'add' ] )->name('roles.add');
     Route::post('/remove', [ RolesController::class, 'remove' ] )->name('roles.remove');

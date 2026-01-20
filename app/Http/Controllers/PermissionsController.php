@@ -27,7 +27,7 @@ class PermissionsController extends Controller
         }
 
         $this->authorize('permissions-view');
-        $roles = Role::with('permissions')->get();
+        $roles = Role::with('permissions')->get()->append('is_automatic');
         $perms = Permission::orderBy('name')->get()->pluck('name');
 
         foreach ($roles as &$role) {
@@ -38,6 +38,14 @@ class PermissionsController extends Controller
         return Inertia::render('Permissions/List', ['roles' => $roles, 'perms' => $perms]);
     }
 
+    public static function getAutomaticRoles()
+    {
+        return [
+            [ 'webmaster', ...Alumnus::public_status, 'everyone' ],
+            [ 'WebMaster', ...array_map(fn ($s) => Alumnus::AlumnusStatusLabels[$s], Alumnus::public_status),'Tutti']
+        ];
+    }
+
     public static function verify()
     {
 
@@ -45,19 +53,17 @@ class PermissionsController extends Controller
 
         $count_r_prev = Role::count();
 
+        $autoRoles = PermissionsController::getAutomaticRoles();
+
         $roles_to_assert = [
-            'webmaster',
             'secretariat',
             'cda',
-            ...Alumnus::public_status,
-            'everyone'
+            ...$autoRoles[0]
         ];
         $roles_to_assert_names = [
-            'WebMaster',
             'Segreteria',
             'Consiglio di Amministrazione',
-            ...array_map(fn ($s) => Alumnus::AlumnusStatusLabels[$s], Alumnus::public_status),
-            'Tutti'
+            ...$autoRoles[1]
         ];
 
         // Find or create!

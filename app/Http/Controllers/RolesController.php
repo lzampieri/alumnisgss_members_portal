@@ -19,7 +19,7 @@ class RolesController extends Controller
     public function create(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|unique:permissions,name',
+            'name' => 'required|unique:roles,name',
             'common_name' => 'required|min:3'
         ]);
 
@@ -33,6 +33,26 @@ class RolesController extends Controller
 
         return redirect()->back();
     }
+
+    public function delete(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|exists:roles,name',
+        ]);
+
+        $this->authorize('roles-edit');
+
+        $role = Role::findByName($validated['name']);
+
+        if( $role->isAutomatic ) {
+            return redirect()->back()->with(['notistack' => ['error', 'Non puoi eliminare un ruolo automatico']]);
+        }
+
+        $role->delete();
+
+        return redirect()->back()->with(['notistack' => ['success', 'Ruolo eliminato']]);
+    }
+
 
     
     public function add(Request $request)

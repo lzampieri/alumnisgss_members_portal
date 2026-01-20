@@ -3,7 +3,9 @@ namespace App\Models;
 
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\LogEvents;
+use App\Http\Controllers\PermissionsController;
 use App\Traits\EditsAreLogged;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Spatie\Permission\Exceptions\RoleDoesNotExist;
 use Spatie\Permission\Models\Role as SpatieRole;
 
@@ -27,5 +29,9 @@ class Role extends SpatieRole {
         } catch (RoleDoesNotExist $e) {
             return null;
         }
+    }
+
+    protected function isAutomatic(): Attribute {
+        return Attribute::make( get: fn (mixed $_, array $attributes) => in_array( $attributes['name'], PermissionsController::getAutomaticRoles()[0] ) );
     }
 }
