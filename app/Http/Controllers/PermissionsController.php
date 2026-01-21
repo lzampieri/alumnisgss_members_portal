@@ -12,6 +12,7 @@ use Inertia\Inertia;
 use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 use Spatie\Permission\Exceptions\RoleDoesNotExist;
 use App\Models\Permission;
+use App\Models\Position;
 use App\Models\Role;
 
 class PermissionsController extends Controller
@@ -40,9 +41,10 @@ class PermissionsController extends Controller
 
     public static function getAutomaticRoles()
     {
+        $position_defined_roles = Position::select('type')->distinct()->get()->pluck('type')->toArray();
         return [
-            [ 'webmaster', ...Alumnus::public_status, 'everyone' ],
-            [ 'WebMaster', ...array_map(fn ($s) => Alumnus::AlumnusStatusLabels[$s], Alumnus::public_status),'Tutti']
+            ['webmaster', ...Alumnus::public_status, 'everyone', ...$position_defined_roles],
+            ['WebMaster', ...array_map(fn($s) => Alumnus::AlumnusStatusLabels[$s], Alumnus::public_status), 'Tutti', ...$position_defined_roles]
         ];
     }
 
@@ -104,6 +106,10 @@ class PermissionsController extends Controller
             'permissions-view',
             'permissions-edit',
             'roles-edit',
+            // Positions
+            'positions-view-active',
+            'positions-view-all',
+            'positions-edit',
             // Network
             'network-view',
             'network-view-alldetails',
@@ -113,9 +119,11 @@ class PermissionsController extends Controller
             // Cities
             'cities-edit',
             // Registry
-            'alumnus-view',
+            'alumnus-view-public',
+            'alumnus-view-all',
             'alumnus-edit',
             'alumnus-import',
+            'externals-view',
             // Ratifications
             'ratifications-view',
             'ratifications-edit',
@@ -149,7 +157,7 @@ class PermissionsController extends Controller
         // Roles edit
         foreach (Role::all()->pluck('name') as $role) {
             // never for Alumnus::public_status and everyone
-            if ( in_array($role, Alumnus::public_status) || $role == 'everyone') continue;
+            if (in_array($role, Alumnus::public_status) || $role == 'everyone') continue;
             $permissions_to_assert[] = 'user-edit-' . $role;
         }
 
@@ -157,11 +165,10 @@ class PermissionsController extends Controller
         foreach ($permissions_to_assert as $permission) {
             try {
                 Permission::findOrCreate($permission);
-            } catch(\Illuminate\Database\QueryException $ex){
-                if( $ex->getCode() == 23000 ) {
-                    Log::debug("Error 23000 in adding permission " . $permission . ", ignored", $ex->getCode() );
-                }
-                else return redirect()->back()->with(['notistack' => ['error', "C'è stato un errore."]]);
+            } catch (\Illuminate\Database\QueryException $ex) {
+                if ($ex->getCode() == 23000) {
+                    Log::debug("Error 23000 in adding permission " . $permission . ", ignored", $ex->getCode());
+                } else return redirect()->back()->with(['notistack' => ['error', "C'è stato un errore."]]);
             }
         }
 
@@ -169,8 +176,8 @@ class PermissionsController extends Controller
         $count_p_deleted = 0;
 
         // Remove permissions
-        foreach(Permission::where('guard_name','web')->get() as $permission) {
-            if( !in_array( $permission->name, $permissions_to_assert ) ) {
+        foreach (Permission::where('guard_name', 'web')->get() as $permission) {
+            if (!in_array($permission->name, $permissions_to_assert)) {
                 $permission->delete();
                 $count_p_deleted++;
             }

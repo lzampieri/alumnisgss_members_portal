@@ -29,7 +29,7 @@ class AlumnusPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasPermissionTo('alumnus-view');
+        return $user->hasPermissionTo('alumnus-view-all');
     }
 
     /**

@@ -7,6 +7,7 @@ use App\Models\Email;
 use App\Models\Newsletters;
 use App\Models\Stamp;
 use App\Policies\AlumnusPolicy;
+use App\Policies\PositionPolicy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -58,6 +59,10 @@ class AppsController extends Controller
 
         if (Auth::user() && Auth::user()->hasPermissionTo('permissions-view')) {
             $apps[] = 'permissions';
+        }
+
+        if (Auth::user() && (new PositionPolicy)->viewActive(Auth::user())) {
+            $apps[] = 'positions';
         }
 
         if (Auth::user() && (Auth::user()->can('clockin', Stamp::class) || Auth::user()->can('viewAny', Stamp::class))) {

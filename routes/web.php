@@ -34,6 +34,7 @@ include( 'ratifications.php' );
 include( 'reports.php' );
 
 include( 'accesses.php' );
+include( 'positions.php' );
 
 include( 'clockings.php' );
 

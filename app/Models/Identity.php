@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Nette\NotImplementedException;
+
 abstract class Identity extends Model
 {
     // This is a fake model, cannot be instantiated,
@@ -137,5 +140,10 @@ abstract class Identity extends Model
             Alumnus::permission($permissionName)->get()->all(),
             External::permission($permissionName)->get()->all()
         );
+    }
+    
+    protected function canView(): Attribute {
+
+        return Attribute::make( get: fn (mixed $_, array $attributes) => throw new NotImplementedException() );
     }
 }

@@ -4,11 +4,22 @@ namespace App\Models;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\LogEvents;
+use App\Policies\AlumnusPolicy;
 use App\Traits\EditsAreLogged;
+
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Alumnus extends Identity
 {
     use EditsAreLogged;
+
+    protected $visible = [
+        'id',
+        'surname',
+        'name',
+        'coorte',
+        'status'
+    ];
     
     // Available status
     const status = [
@@ -158,5 +169,9 @@ class Alumnus extends Identity
     public function getCanBeNetworkEditedAttribute()
     {
         return Auth::check() && Auth::user()->can('editNetworkAlumnus', $this);
+    }
+    
+    protected function canView(): Attribute {
+        return Attribute::make( get: fn (mixed $_, array $attributes) => Auth::check() && (new AlumnusPolicy)->view(Auth::user(), $this) );
     }
 }
