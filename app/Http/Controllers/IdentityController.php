@@ -16,8 +16,8 @@ class IdentityController extends Controller
         $this->authorize('viewAny', Email::class);
 
         $ems = [
-            'alumni' => Alumnus::has('emails')->with('emails')->orderBy('surname')->orderBy('name')->get(),
-            'externals' => External::has('emails')->with('emails')->orderBy('surname')->orderBy('name')->get(),
+            'alumni' => Alumnus::has('emails')->with('emails')->orderBy('surname')->orderBy('name')->get()->makeVisible('emails'),
+            'externals' => External::has('emails')->with('emails')->orderBy('surname')->orderBy('name')->get()->makeVisible('emails'),
             'requests' => Email::whereNull('identity_id')->orderBy('created_at', 'desc')->get(),
         ];
 
@@ -27,6 +27,7 @@ class IdentityController extends Controller
                 foreach( $identity->emails as $em ) {
                     $em->append('can_delete');
                 }
+                $identity->makeVisible('roles');
             }
         }
 

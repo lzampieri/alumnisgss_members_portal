@@ -21,6 +21,7 @@ class ProfileController extends Controller
             return abort(404);
 
         $alumnus->load(['ratifications', 'ratifications.document', 'emails', 'roles']);
+        $alumnus->makeVisible(['ratifications', 'ratifications.document', 'emails', 'roles']);
 
         $adtlist = ADetailsType::allOrdered();
         $adtlist->load(['aDetails' => function ($query) use ($alumnus) {

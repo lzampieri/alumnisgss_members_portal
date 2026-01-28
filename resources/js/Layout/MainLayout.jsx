@@ -21,13 +21,13 @@ export default function MainLayout(page) {
             <span className="separator"></span>
             <span className="grow"></span>
             <Link href={route('home')} className="grow-0 w-full md:w-1/3 self-stretch bg-no-repeat bg-contain bg-right flex flex-row-reverse items-center gap-4">
-                <img src={process.env.MIX_ASSET_URL + "/assets/logo_contrast.svg"} className="h-full max-h-[3rem]" />
+                <img src={import.meta.env.VITE_ASSET_URL + "/assets/logo_contrast.svg"} className="h-full max-h-[3rem]" />
                 <h6 className="text-lg md:text-xl underline italic">Portale soci</h6>
             </Link>
         </div>
         <div className="flex flex-col items-center w-full p-8">
             {page}
         </div>
-        { page.props.errorsDialogs && page.props.errorsDialogs.map( inside => <ErrorDialog inside={inside} key={Math.random()} /> ) }
+        {page.props.errorsDialogs && page.props.errorsDialogs.map(inside => <ErrorDialog inside={inside} key={Math.random()} />)}
     </SnackbarProvider>
 }

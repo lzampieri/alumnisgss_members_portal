@@ -100,8 +100,9 @@ class AlumnusController extends Controller
         $adtlist = ADetailsType::allOrdered();
 
         if ($alumnus) {
-            $alumnus->load(['ratifications', 'ratifications.document']);
-            $alumnus->load('emails');
+            $alumnus->load(['ratifications', 'ratifications.document','emails']);
+            $alumnus->makeVisible(['ratifications', 'ratifications.document','emails']);
+            $alumnus->makeVisible(['ratifications', 'ratifications.document','emails']);
             $adtlist->load(['aDetails' => function ($query) use ($alumnus) {
                 $query->where('identity_type', Alumnus::class)->where('identity_id', $alumnus->id);
             }]);

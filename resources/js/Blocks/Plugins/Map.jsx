@@ -24,7 +24,7 @@ export default class Map {
             data-rbd-drag-handle-context-id={dndContextId}
             data-rbd-drag-handle-draggable-id="gibberish"
         >
-            <APIProvider apiKey={process.env.MIX_PUBLIC_MAPS_API_KEY}
+            <APIProvider apiKey={process.env.VITE_PUBLIC_MAPS_API_KEY}
                 version={'beta'}>
                 <GoogleMap
                     mapId={'fadojnfkasdnlk'}
@@ -45,7 +45,7 @@ export default class Map {
         return <div
             className="w-full flex flex-col items-center gap-4 my-2 p-4"
         >
-            <APIProvider apiKey={process.env.MIX_PUBLIC_MAPS_API_KEY}
+            <APIProvider apiKey={process.env.VITE_PUBLIC_MAPS_API_KEY}
                 version={'beta'}>
                 <GoogleMap
                     mapId={'fadojnfkasdnlk'}

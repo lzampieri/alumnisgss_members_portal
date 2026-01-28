@@ -38,7 +38,8 @@ class ContactsSyncController extends Controller
             ->orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
             ->with('emails')
-            ->get();
+            ->get()
+            ->makeVisible('emails');
 
         return response()->json($data);
     }
@@ -238,7 +239,8 @@ class ContactsSyncController extends Controller
 
         $newProfile = Alumnus::where('id',$item['local_id'])
             ->with('emails')
-            ->get();
+            ->get()
+            ->makeVisible('emails');
 
         return response()->json(['pair_id' => $item['pair_id'], 'local' =>  $newProfile]);
     }

@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function DocumentItem(document, isAttachment = false) {
     let date = new Date(document.date);
+    console.log(document)
 
     return (
         <div key={document.id}
@@ -28,7 +29,7 @@ function DocumentItem(document, isAttachment = false) {
                     <span className="text-gray-500 text-sm">Protocollo web {document.protocol}</span>
                     <span className="text-xl font-bold">{document.identifier}</span>
                     {!isAttachment && <span className="text-sm">Visibilità:
-                        {" " + document.dynamic_permissions.map(dp => dp.role.common_name).join(", ")}
+                        {" " + document.dynamic_permissions.filter(dp => dp.role).map(dp => dp.role.common_name).join(", ")}
                         {document.note && " - Nota: " + document.note}
                     </span>}
                     <span className="text-gray-500 text-sm">Caricato il {new Date(document.created_at).toLocaleDateString('it-IT', { 'dateStyle': 'long' })} da {document.author.name} {document.author.surname}</span>

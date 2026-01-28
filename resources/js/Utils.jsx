@@ -47,7 +47,7 @@ export class Documents {
 export function bgAndContrast(bgColor) {
     return {
         backgroundColor: bgColor,
-        color: contrastColor({ bgColor: bgColor })
+        color: contrastColor.call({}, { bgColor: bgColor })
     }
 }
 
@@ -89,25 +89,25 @@ export function asyncPostWithResult(route_name, data = {}, routeParams = {}) {
         axios.post(
             route(route_name, routeParams),
             data)
-            .then( response => resolve( response.data ) )
-            .catch( e => reject(e) )
-        )
+            .then(response => resolve(response.data))
+            .catch(e => reject(e))
+    )
 }
 
-export function noninertiaPostRequest(route_name, data, setProcessing, routeParams = {}, onFinish = ( data ) => { }, allowFiles = false, onFail = ( data ) => { }) {
+export function noninertiaPostRequest(route_name, data, setProcessing, routeParams = {}, onFinish = (data) => { }, allowFiles = false, onFail = (data) => { }) {
     setProcessing(true);
     return new Promise((resolve, reject) =>
         axios.post(
             route(route_name, routeParams),
             data,
-            ( allowFiles ?  { headers: { 'Content-Type': 'multipart/form-data' } } : {} ))
-            .then( response => { resolve( response.data ); setProcessing(false); onFinish( response.data ); } )
-            .catch( e => { reject(e); setProcessing(false); onFail( e?.response?.data );  } )
-        )
+            (allowFiles ? { headers: { 'Content-Type': 'multipart/form-data' } } : {}))
+            .then(response => { resolve(response.data); setProcessing(false); onFinish(response.data); })
+            .catch(e => { reject(e); setProcessing(false); onFail(e?.response?.data); })
+    )
 }
 
 export async function sleep(milliseconds) { // To use with await
-  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+    return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
 

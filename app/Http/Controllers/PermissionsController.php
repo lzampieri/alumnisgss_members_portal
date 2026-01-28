@@ -33,7 +33,7 @@ class PermissionsController extends Controller
 
         foreach ($roles as &$role) {
             $role->permissions_names = $role->permissions->pluck('name');
-            $role->identities = Alumnus::role($role)->with('emails')->get()->concat(External::role($role)->with('emails')->get());
+            $role->identities = Alumnus::role($role)->with('emails')->get()->concat(External::role($role)->with('emails')->makeVisible('emails')->get());
         }
 
         return Inertia::render('Permissions/List', ['roles' => $roles, 'perms' => $perms]);

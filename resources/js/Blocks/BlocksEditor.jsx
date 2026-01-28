@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import DraggingManagement from './DraggingManagement';
-import BlockParser, { postProcess } from './BlockParser';
+import BlockParser from './BlockParser';
 import BlockEnvironment from './BlockEnvironment';
 import AddBlock from './AddBlock';
 import { randomHex } from '../Utils';
