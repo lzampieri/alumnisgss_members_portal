@@ -6,6 +6,7 @@ use App\Models\Alumnus;
 use App\Models\External;
 use App\Models\Position;
 use App\Models\Role;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -40,6 +41,31 @@ class PositionController extends Controller
                 'canEdit' => Auth::user()->can('edit', Position::class)
             ]
         );
+    }
+
+    public function api(Request $request)
+    {
+        if( !$request->has('API_KEY') )
+            throw new AuthorizationException('Api key not provided');
+        if( $request->input('API_KEY') !== env('API_KEY') )
+            throw new AuthorizationException('Wrong api key');
+
+        $positions = Position::whereNowOrPast('from')->whereNowOrFuture('to')->with('owner')->get()->toArray();
+
+        foreach ($positions as &$position) {
+            $position['points'] = 0;
+            $haystack = strtolower( "" . $position['type'] . $position['note'] );
+            if( str_contains( $haystack, 'president' ) ) $position['points'] += 5;
+            if( str_contains( $haystack, 'vic' ) ) $position['points'] -= 1;
+            if( str_contains( $haystack, 'consiglier' ) ) $position['points'] += 1;
+        }
+
+        usort($positions, function ($a, $b) {
+            if( $b['points'] == $a['points'] ) return strcmp($a['owner']['surname'].$a['owner']['name'], $b['owner']['surname'].$b['owner']['name']);
+            return $b['points'] - $a['points'];
+        });
+
+        return response()->json($positions);
     }
 
     public function create(Request $request)

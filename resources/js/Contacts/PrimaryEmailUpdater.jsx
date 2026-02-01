@@ -1,7 +1,4 @@
-
-
 import { useEffect, useMemo, useState } from "react";
-import { difference } from "lodash";
 import Backdrop from "../Layout/Backdrop";
 import { noninertiaPostRequest, postRequest } from "../Utils";
 import { faAnglesLeft, faAnglesRight } from "@fortawesome/free-solid-svg-icons";
