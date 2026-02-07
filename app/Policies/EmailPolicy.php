@@ -22,7 +22,7 @@ class EmailPolicy
     {
         return $user->hasPermissionTo('login');
     }
-    
+
     /**
      * Determine whether the user can login at level 2.
      *
@@ -51,25 +51,26 @@ class EmailPolicy
      * @param  \Illuminate\Foundation\Auth\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view (User $user, Email $email)
+    public function view(User $user, Email $email)
     {
-        if( $email->identity && $email->identity->is($user->identity) )
+        if ($email->identity && $email->identity->is($user->identity))
             return true;
-        if( $user->hasPermissionTo('emails-view-all') )
+        if ($user->hasPermissionTo('emails-view-all'))
             return true;
-        if( $email->identity ) {
-            if( $email->identity_type == External::class )
-                if( $user->hasPermissionTo('emails-view-external') )
+        if ($email->identity) {
+            if ($email->identity_type == External::class)
+                if ($user->hasPermissionTo('emails-view-external'))
                     return true;
 
-            if( $email->identity_type == Alumnus::class )
-                if( in_array( $email->identity->status, Alumnus::public_status ) )
-                    if( $user->hasPermissionTo('emails-view-public-alumnus') )
+            if ($email->identity_type == Alumnus::class)
+                if (in_array($email->identity->status, Alumnus::public_status)) {
+                    if ($user->hasPermissionTo('emails-view-public-alumnus'))
                         return true;
+                    if ((new AlumnusPolicy())->viewNetworkDetails($user, $email->identity))
+                        if ($email->identity->consent_to_email_share)
+                            return true;
+                }
         }
-        if( ( new AlumnusPolicy() )->viewNetworkDetails($user, $email->identity) )
-            if( $email->identity->consent_to_email_share )
-                return true;
 
         return false;
     }
