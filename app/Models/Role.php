@@ -31,6 +31,11 @@ class Role extends SpatieRole {
         }
     }
 
+    public function dynamicPermissions()
+    {
+        return $this->hasMany(DynamicPermission::class);
+    }
+
     protected function isAutomatic(): Attribute {
         return Attribute::make( get: fn (mixed $_, array $attributes) => in_array( $attributes['name'], PermissionsController::getAutomaticRoles()[0] ) );
     }

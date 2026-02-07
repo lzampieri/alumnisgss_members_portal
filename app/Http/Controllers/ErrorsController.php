@@ -11,7 +11,7 @@ class ErrorsController extends Controller
     // Forbidden
     public static function e403(Request $request)
     {
-        if( !Auth::check() ) {
+        if( $request->hasSession() && !Auth::check() ) {
             $request->session()->put('url.intended', url()->full());
             return redirect()->route('login');
         }

@@ -42,7 +42,11 @@ class RolesController extends Controller
 
         $this->authorize('roles-edit');
 
-        $role = Role::findByName($validated['name']);
+        $role = Role::findByName($validated['name'])->load('dynamicPermissions');
+
+        $dynpers = $role->dynamicPermissions;
+        foreach( $dynpers as $dynper )
+            $dynper->delete();
 
         if( $role->isAutomatic ) {
             return redirect()->back()->with(['notistack' => ['error', 'Non puoi eliminare un ruolo automatico']]);
