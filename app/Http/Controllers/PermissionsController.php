@@ -58,13 +58,9 @@ class PermissionsController extends Controller
         $autoRoles = PermissionsController::getAutomaticRoles();
 
         $roles_to_assert = [
-            'secretariat',
-            'cda',
             ...$autoRoles[0]
         ];
         $roles_to_assert_names = [
-            'Segreteria',
-            'Consiglio di Amministrazione',
             ...$autoRoles[1]
         ];
 
@@ -78,7 +74,6 @@ class PermissionsController extends Controller
         }
 
         $count_r_added = Role::count() - $count_r_prev;
-
 
         // PERMISSIONS
 
@@ -154,12 +149,14 @@ class PermissionsController extends Controller
             'db-reset'
         ];
 
+
         // Roles edit
         foreach (Role::all()->pluck('name') as $role) {
             // never for Alumnus::public_status and everyone
-            if (in_array($role, Alumnus::public_status) || $role == 'everyone') continue;
+            if (in_array($role, $autoRoles[0])) continue;
             $permissions_to_assert[] = 'user-edit-' . $role;
         }
+        $permissions_to_assert[] = 'user-edit-webmaster';
 
         // Add permissions
         foreach ($permissions_to_assert as $permission) {
@@ -171,6 +168,7 @@ class PermissionsController extends Controller
                 } else return redirect()->back()->with(['notistack' => ['error', "C'è stato un errore."]]);
             }
         }
+
 
         $count_p_added = Permission::count() - $count_p_prev;
         $count_p_deleted = 0;
