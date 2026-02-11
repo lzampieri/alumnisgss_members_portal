@@ -7,7 +7,9 @@ use App\Models\Email;
 use App\Models\External;
 use App\Models\File;
 use App\Models\Newsletter;
+use App\Models\Position;
 use App\Models\Role;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
@@ -75,15 +77,27 @@ class NewsletterController extends Controller
             if (in_array($role->name, Alumnus::public_status))
                 return $user->hasPermissionTo('emails-view-public-alumnus');
 
+            // If it is an automatic role, it should be available to everyone
+            if ($role->isAutomatic) return true;
+
             return $user->hasPermissionTo('user-edit-' . $role->name);
         });
 
         $aspirant_toappend = [];
 
+        $position_defined_roles = Position::select('type')->distinct()->get()->pluck('type')->toArray();
+
         foreach ($roles as &$role) {
             if ($role->name == 'everyone') $role->identities = Alumnus::with('emails')->get()->concat(External::with('emails')->get());
             else if (in_array($role->name, Alumnus::public_status)) $role->identities = Alumnus::where('status', $role->name)->with('emails')->get();
+            else if (in_array($role->name, $position_defined_roles)) $role->identities = Alumnus::whereHas('positions', function (Builder $query) use ($role) {
+                $query->where('type', $role->name)->whereNowOrPast('from')->whereNowOrFuture('to');
+            })->with('emails')->get()->concat(External::whereHas('positions', function (Builder $query) use ($role) {
+                $query->where('type', $role->name)->whereNowOrPast('from')->whereNowOrFuture('to');
+            })->with('emails')->get());
             else $role->identities = Alumnus::role($role)->with('emails')->get()->concat(External::role($role)->with('emails')->get());
+
+            $role->identities->makeVisible('emails');
 
             if (in_array($role->name, Alumnus::require_ratification)) $aspirant_toappend[] = $role->name;
         }
@@ -186,10 +200,11 @@ class NewsletterController extends Controller
         return response()->json($outputs);
     }
 
-    public function upload_img(Request $request, Newsletter $newsletter) {
+    public function upload_img(Request $request, Newsletter $newsletter)
+    {
         $this->authorize('edit', $newsletter);
 
-        
+
         $validated = $request->validate([
             'image' => 'required|mimes:' . implode(",", File::ALLOWED_IMAGES_FORMATS)
         ]);
@@ -197,12 +212,13 @@ class NewsletterController extends Controller
         $filename = $validated['image']->getClientOriginalName();
         $extension = pathinfo($filename)['extension'];
         $filename = Str::uuid7() . '.' . $extension;
-        $validated['image']->storeAs('newsimgs',$filename);
+        $validated['image']->storeAs('newsimgs', $filename);
 
         return response()->json(['handle' => $filename]);
     }
 
-    public function media(String $handle) {
+    public function media(String $handle)
+    {
         return response()->file(storage_path('app/newsimgs/' . $handle));
     }
 

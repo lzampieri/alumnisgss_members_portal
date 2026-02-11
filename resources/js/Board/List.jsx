@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function DocumentItem(document, isAttachment = false) {
     let date = new Date(document.date);
-    console.log(document)
 
     return (
         <div key={document.id}

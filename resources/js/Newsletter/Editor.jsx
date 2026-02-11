@@ -8,6 +8,7 @@ import { useState } from "react"
 import axios from "axios"
 import { enqueueSnackbar } from "notistack"
 import Backdrop from "../Layout/Backdrop"
+import { MenuBar } from "./MenuBar"
 
 
 export default function NewsletterEditor({ value, setValue, newsletter_id }) {
@@ -15,7 +16,15 @@ export default function NewsletterEditor({ value, setValue, newsletter_id }) {
 
     const editor = useEditor({
         extensions: [
-            StarterKit, TextStyle, Color, TableKit,
+            StarterKit.configure({
+                link: {
+                    autolink: true,
+                    openOnClick: true,
+                    linkOnPaste: true,
+                    defaultProtocol: 'https',
+                    
+                }
+            }), TextStyle, Color, TableKit,
             Image.configure({
                 inline: true,
                 resize: {
@@ -107,6 +116,7 @@ export default function NewsletterEditor({ value, setValue, newsletter_id }) {
 
     return (
         <>
+            <MenuBar editor={editor} />
             <EditorContent editor={editor} />
             <Backdrop open={isLoading} />
         </>

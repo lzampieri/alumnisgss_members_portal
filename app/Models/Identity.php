@@ -98,6 +98,11 @@ abstract class Identity extends Model
         return $this->morphMany(Newsletter::class, 'owner');
     }
 
+    public function positions()
+    {
+        return $this->morphMany(Position::class, 'owner');
+    }
+
     public function documents()
     {
         return $this->morphMany(Document::class, 'author');

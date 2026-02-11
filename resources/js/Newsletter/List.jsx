@@ -5,12 +5,12 @@ import { Head, Link, usePage } from "@inertiajs/react";
 import { useMemo, useState } from 'react';
 
 import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
-import { themeQuartz } from "ag-grid-community";
+import { TextFilterModule, themeQuartz } from "ag-grid-community";
 import { ModuleRegistry, ClientSideRowModelModule, ColumnAutoSizeModule, QuickFilterModule } from 'ag-grid-community';
 import { AlumnusStatus, bgAndContrast, bgAndContrastPastel } from "../Utils";
 import { faEnvelopeOpen, faEye, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnAutoSizeModule, QuickFilterModule]);
+ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnAutoSizeModule, QuickFilterModule,TextFilterModule]);
 
 
 export default function List() {

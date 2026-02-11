@@ -6,10 +6,6 @@ import tailwindcss from '@tailwindcss/vite'
 console.log("=================================")
 console.log("Compiling using as environment:")
 console.log(process.env.NODE_ENV);
-// console.log("and as file:")
-// console.log(process.env.ENV_FILE);
-// console.log("Compiling using as mix asset url:")
-// console.log(import.meta.env);
 console.log("=================================")
 
 /*
@@ -32,4 +28,11 @@ export default defineConfig({
         react(),
         tailwindcss()
     ],
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: () => 'everything.js',
+            },
+        },
+    },
 });
