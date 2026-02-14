@@ -4,7 +4,7 @@ import { TableKit } from '@tiptap/extension-table'
 import { Image } from '@tiptap/extension-image'
 import FileHandler from "@tiptap/extension-file-handler"
 import { Color, TextStyle } from '@tiptap/extension-text-style'
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import axios from "axios"
 import { enqueueSnackbar } from "notistack"
 import Backdrop from "../Layout/Backdrop"
@@ -14,6 +14,28 @@ import { MenuBar } from "./MenuBar"
 export default function NewsletterEditor({ value, setValue, newsletter_id }) {
     const [isLoading, setIsLoading] = useState(false);
 
+    const uploadFile = useCallback(async (currentEditor, files, pos) => {
+        setIsLoading(true);
+        for (const file of files) {
+            const res = await axios.post(
+                route('newsletter.upload_img', { newsletter: newsletter_id }),
+                { image: file },
+                { headers: { 'Content-Type': 'multipart/form-data' } })
+                .catch(e => { enqueueSnackbar('Impossibile caricare una o più immagini', { variant: 'error' }); });
+            currentEditor
+                .chain()
+                .insertContentAt(pos, {
+                    type: 'image',
+                    attrs: {
+                        src: route('newsletter.media', { handle: res.data.handle }),
+                    },
+                })
+                .focus()
+                .run()
+        }
+        setIsLoading(false);
+    })
+
     const editor = useEditor({
         extensions: [
             StarterKit.configure({
@@ -22,7 +44,7 @@ export default function NewsletterEditor({ value, setValue, newsletter_id }) {
                     openOnClick: true,
                     linkOnPaste: true,
                     defaultProtocol: 'https',
-                    
+
                 }
             }), TextStyle, Color, TableKit,
             Image.configure({
@@ -36,48 +58,8 @@ export default function NewsletterEditor({ value, setValue, newsletter_id }) {
             }),
             FileHandler.configure({
                 allowedMimeTypes: ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp', 'image/svg'],
-                onDrop: async (currentEditor, files, pos) => {
-                    setIsLoading(true);
-                    for (const file of files) {
-                        const res = await axios.post(
-                            route('newsletter.upload_img', { newsletter: newsletter_id }),
-                            { image: file },
-                            { headers: { 'Content-Type': 'multipart/form-data' } })
-                            .catch(e => { enqueueSnackbar('Impossibile caricare una o più immagini', { variant: 'error' }); });
-                        currentEditor
-                            .chain()
-                            .insertContentAt(pos, {
-                                type: 'image',
-                                attrs: {
-                                    src: route('newsletter.media', { handle: res.data.handle }),
-                                },
-                            })
-                            .focus()
-                            .run()
-                    }
-                    setIsLoading(false);
-                },
-                onPaste: async (currentEditor, files, htmlContent) => {
-                    setIsLoading(true);
-                    for (const file of files) {
-                        const res = await axios.post(
-                            route('newsletter.upload_img', { newsletter: newsletter_id }),
-                            { image: file },
-                            { headers: { 'Content-Type': 'multipart/form-data' } })
-                            .catch(e => { enqueueSnackbar('Impossibile caricare una o più immagini', { variant: 'error' }); });
-                        currentEditor
-                            .chain()
-                            .insertContentAt(currentEditor.state.selection.anchor, {
-                                type: 'image',
-                                attrs: {
-                                    src: route('newsletter.media', { handle: res.data.handle }),
-                                },
-                            })
-                            .focus()
-                            .run()
-                    }
-                    setIsLoading(false);
-                },
+                onDrop: async (currentEditor, files, pos) => uploadFile(currentEditor, files, pos),
+                onPaste: async (currentEditor, files, htmlContent) => uploadFile(currentEditor, files, currentEditor.state.selection.anchor),
             }),
         ],
         content: value,
@@ -116,7 +98,7 @@ export default function NewsletterEditor({ value, setValue, newsletter_id }) {
 
     return (
         <>
-            <MenuBar editor={editor} />
+            <MenuBar editor={editor} imgCallback={uploadFile} />
             <EditorContent editor={editor} />
             <Backdrop open={isLoading} />
         </>

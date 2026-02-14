@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBold, faCode, faGripLines, faImage, faItalic, faLink, faLinkSlash, faListOl, faListUl, faParagraph, faQuoteLeft, faRotateLeft, faRotateRight, faStrikethrough, faTerminal } from '@fortawesome/free-solid-svg-icons'
 import { useCallback } from 'react'
 
-export const MenuBar = ({ editor }) => {
+export const MenuBar = ({ editor, imgCallback }) => {
   const editorState = useEditorState({
     editor,
     selector: menuBarStateSelector,
@@ -148,7 +148,16 @@ export const MenuBar = ({ editor }) => {
         <div onClick={() => editor.chain().focus().unsetLink().run()} disabled={!editorState.isLink}>
           <FontAwesomeIcon icon={faLinkSlash} />
         </div>
-        <div onClick={() => alert("L'inserimento di immagini da qui non è ancora stato implementato. Usa copia-incolla da un altro documento")}>
+        <div onClick={() => window.showOpenFilePicker({
+          types: [
+            {
+              description: "Images",
+              accept: {
+                "image/*": [".png", ".gif", ".jpeg", ".jpg", ".webp", ".svg"],
+              },
+            },
+          ],
+        }).then((value) => value[0].getFile().then((f) => imgCallback(editor,[f],editor.state.selection.anchor)))}>
           <FontAwesomeIcon icon={faImage} />
         </div>
       </div>
