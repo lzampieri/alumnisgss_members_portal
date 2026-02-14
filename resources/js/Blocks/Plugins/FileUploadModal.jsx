@@ -11,8 +11,8 @@ import { faFileArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
-export default function FileUploadModal({ fileHandle, setFileHandle, setFileExt }) {
-    const allowed_formats = usePage().props.allowedFormats
+export default function FileUploadModal({ fileHandle, setFileHandle, setFileExt, restrictFormats }) {
+    const allowed_formats = restrictFormats || usePage().props.allowedFormats
     const files = usePage().props.resource.files.sort((a, b) => b.id - a.id)
     const selectedFile = files.find(f => f.handle == fileHandle)
     const [isEditing, setIsEditing] = useState(false)

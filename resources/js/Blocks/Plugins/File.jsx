@@ -35,6 +35,7 @@ export default class File {
                     setFileHandle={(newHandle) => setItemValue('fileHandle', newHandle)}
                     setFileExt={(newExt) => setItemValue('fileExt', newExt)}
                 />
+                <div className="italic">Il file selezionato verrà incluso come allegato. Per integrare invece il file nella pagina, usa invece il componente "Pdf integrato".</div>
             </div>
         </div>
     }

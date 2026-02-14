@@ -8,11 +8,13 @@ import Timeline from './Plugins/Timeline';
 import Map from './Plugins/Map';
 import SubContent from './Plugins/SubContent';
 import BarChart from './Plugins/BarChart';
+import PdfDisplay from './Plugins/PdfDisplay';
 
 export default {
     text: Text,
     title: Title,
     file: File,
+    pdf: PdfDisplay,
     image: Image,
     link: Link,
     separator: Separator,
