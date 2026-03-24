@@ -9,6 +9,7 @@ import Map from './Plugins/Map';
 import SubContent from './Plugins/SubContent';
 import BarChart from './Plugins/BarChart';
 import PdfDisplay from './Plugins/PdfDisplay';
+import GoogleDriveFolder from './Plugins/GoogleDriveFolder';
 
 export default {
     text: Text,
@@ -21,5 +22,6 @@ export default {
     map: Map,
     subcontent: SubContent,
     timeline: Timeline,
-    barChart: BarChart
+    barChart: BarChart,
+    googleDriveFolder: GoogleDriveFolder
 }

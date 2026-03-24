@@ -39,7 +39,6 @@ export default class Link {
     }
 
     static mainElementReadOnly = ({ item }) => {
-        console
         return <a
             className="w-full div-highlighted flex flex-row items-center gap-4 my-2 p-4 no-underline"
             href={item.href}>
