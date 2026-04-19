@@ -51,9 +51,71 @@ class Newsletter extends Model
             return $this->parent->attch_mine;
     }
 
+    private static function zin($item) {
+        // Return length or zero if null
+        return $item ? count($item) : 0;
+    }
+
+    public function getCountToAttribute()
+    {
+        return array_reduce( $this->mailingLists->all(), function($carry, $ml) { return $carry + $this->zin($ml->list);}, 0 ) + $this->zin($this->to);
+    }
+
+    public function getTotalCountToAttribute()
+    {
+        $cc = $this->getCountToAttribute();
+        if( $this->has('childrens') ) {
+            $cc += array_reduce( $this->childrens->append('countTo')->pluck('countTo')->toArray(), function ($c,$i) { return $c+$i; }, 0 );
+        }
+        return $cc;
+    }
+
+    public function getSentToAttribute()
+    {
+        if( $this->sent_at ) {
+            return $this->getCountToAttribute();
+        }
+        return 0;
+    }
+
+    public function getTotalSentToAttribute()
+    {
+        $cc = $this->getSentToAttribute();
+        if( $this->has('childrens') ) {
+            $cc += array_reduce( $this->childrens->append('sentTo')->pluck('sentTo')->toArray(), function ($c,$i) { return $c+$i; }, 0 );
+        }
+        return $cc;
+    }
+
+    public function getScheduledAttribute()
+    {
+        if( (!$this->sent_at) && ($this->from == 'SMTP') ) {
+            return $this->getCountToAttribute();
+        }
+        return 0;
+    }
+
+    public function getTotalScheduledAttribute()
+    {
+        $cc = $this->getScheduledAttribute();
+        if( $this->has('childrens') ) {
+            $cc += array_reduce( $this->childrens->append('scheduled')->pluck('scheduled')->toArray(), function ($c,$i) { return $c+$i; }, 0 );
+        }
+        return $cc;
+    }
+
     public function attch_mine()
     {
         return $this->morphMany(File::class, 'parent');
     }
 
+    public function mailingLists()
+    {
+        return $this->belongsToMany(MailingList::class);
+    }
+
+    public function getAllToListAttribute()
+    {
+        return array_merge($this->to,...$this->mailingLists->pluck('list'));
+    }
 }

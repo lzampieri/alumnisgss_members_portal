@@ -15,7 +15,7 @@ import { ModuleRegistry, ClientSideRowModelModule, ColumnAutoSizeModule, QuickFi
 import { AlumnusStatus, asyncPostWithResult, bgAndContrast, noninertiaPostRequest, postRequest } from "../Utils";
 // import DefaultEditor, { BtnBold, BtnBulletList, BtnItalic, BtnLink, BtnNumberedList, BtnRedo, BtnStrikeThrough, BtnUnderline, BtnUndo, Editor, EditorProvider, Separator, Toolbar } from "react-simple-wysiwyg";
 import { to } from "@react-spring/web";
-import { faAddressBook, faCheck, faCirclePlus, faFileArrowUp, faPlus, faStar, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faAddressBook, faCheck, faCirclePlus, faFileArrowUp, faPlus, faStar, faTrashCan, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import NewsletterEditor from "./Editor";
 ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnAutoSizeModule, QuickFilterModule]);
@@ -176,10 +176,13 @@ function AttachmentSelector({ attachments, setAttachments, newsletterId }) {
 export default function Edit() {
     const prevDraft = usePage().props.newsletter;
 
+    const mailingLists = usePage().props.mailingLists;
+
     const { data, setData, post, processing, errors, isDirty, transform } = useForm({
         subject: prevDraft.subject || "",
         body: prevDraft.body || "",
         to: prevDraft.to || [],
+        mailingLists: prevDraft.mailing_lists || [],
         attachments: prevDraft.attachments || []
     })
 
@@ -196,11 +199,12 @@ export default function Edit() {
     transform((data) => ({
         ...data,
         body: sanitizeHtml(data.body, {
-            allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img','span','a']),
-            allowedAttributes: { 'img': ['src','width','height'], 'span': ['style'], 'a': ['target','rel','href'] },
+            allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'span', 'a']),
+            allowedAttributes: { 'img': ['src', 'width', 'height'], 'span': ['style'], 'a': ['target', 'rel', 'href'] },
             allowedSchemes: ['http', 'https']
         }),
-        attachments: data.attachments.map((a) => a.id)
+        attachments: data.attachments.map((a) => a.id),
+        mailingLists: data.mailingLists.map((ml) => ml.id)
     }));
 
     return (
@@ -243,6 +247,7 @@ export default function Edit() {
                 {prevDraft.parent_id ? <span>Questa bozza è copiata da un'altra bozza, da cui eredita gli allegati. Non è possibile modificare gli allegati specifici, prego modificare la bozza originale <Link href={route('newsletter.edit', { newsletter: prevDraft.parent_id })}>qui</Link>.</span> : <AttachmentSelector attachments={data.attachments} setAttachments={(newVal) => setData('attachments', newVal)} newsletterId={prevDraft.id} />}
 
                 <label>Destinatari</label>
+                {notFound.length > 0 && <label className="error">Non sono stati trovati indirizzi email per: {notFound.join(", ")}</label>}
                 <TokenizableInput
                     separatingCharacters=" ,;:"
                     tokensList={data.to}
@@ -254,6 +259,39 @@ export default function Edit() {
                     <Groups to={data.to} setTo={(newVal) => setData('to', newVal)} setNotFound={setNotFound} />
                 </div>
                 {notFound.length > 0 && <label className="error">Non sono stati trovati indirizzi email per: {notFound.join(", ")}</label>}
+
+
+                <label>Mailing list</label>
+                <div
+                    className="rounded-md bg-gray-100 border-transparent flex flex-row flex-wrap w-full items-start gap-1 p-2">
+                    {data.mailingLists.map((ml,i) =>
+                        <div className="flex flex-row rounded bg-gray-200 max-w-full" style={{ overflowWrap: "anywhere" }} key={i}>
+                            <div className="p-1 pl-2">
+                                {ml.name}
+                            </div>
+                            <div role="button" className="flex flex-row items-center hover:bg-[#FFBDAD] hover:text-[#DE350B] px-2"
+                                onClick={() => setData('mailingLists', data.mailingLists.toSpliced(i,1))}>
+                                <FontAwesomeIcon icon={faX} className="text-[0.5rem]" />
+                            </div>
+                        </div>)}
+                    {data.mailingLists.length == 0 && <span className="text-gray-600 select-none">Nessuna selezionata</span>}
+                </div>
+                <label className="error">{errors.mailingLists}</label>
+                <div className="flex flex-row w-full gap-2 justify-start mb-4 my-2">
+                    {mailingLists.map(ml => <div className="flex flex-row rounded bg-gray-200 max-w-full px-2 py-1 cursor-pointer" onClick={() => setData('mailingLists', [...data.mailingLists, ml])} key={ml.id}>
+                        {ml.name} ({ml.list.length})
+                    </div>)}
+                </div>
+                
+                {prevDraft?.childrens?.length > 0 && <label>
+                    Questa newsletter è stata spezzata per l'invio e ha originato le newsletter
+                    {prevDraft.childrens.map(ch => <Link href={route('newsletter.edit', { id: ch.id })} className="ml-2" id={ch.id}>#{ch.id}</Link>)}
+                </label>}
+                {prevDraft?.parent && <label>
+                    Questa newsletter proviene, essento stata spezzata per l'invio, dalla newsletter originale
+                    <Link href={route('newsletter.edit', { id: prevDraft.parent.id })} className="ml-2">#{prevDraft.parent.id}</Link>
+                </label>}
+
                 <div className="flex flex-row self-end gap-2">
                     <button className="button self-end">Salva bozza</button>
                     {!processing && !isDirty && <Link className="button self-end" href={route('newsletter.preview', { newsletter: prevDraft.id })}>Anteprima</Link>}

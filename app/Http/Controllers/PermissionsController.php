@@ -142,6 +142,11 @@ class PermissionsController extends Controller
             'newsletters-create',
             'newsletters-master',
             'newsletters-send',
+            'newsletters-send-server',
+            //mailing list
+            'mailinglists-view-all',
+            'mailinglists-create',
+            'mailinglists-edit-all',
             // Webmaster stuff
             'logfile-view',
             'logdb-view',

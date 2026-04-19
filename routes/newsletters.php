@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\MailingListController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('/newsletters')->group( function () {
     Route::get('/', [ NewsletterController::class, 'list' ] )->name('newsletters');
+    Route::get('/all', [ NewsletterController::class, 'listAll' ] )->name('newsletters.listAll');
 
     Route::get('/create', [ NewsletterController::class, 'create' ] )->name('newsletter.create');
     
@@ -21,6 +23,14 @@ Route::prefix('/newsletters')->group( function () {
     Route::post('/media', [ NewsletterController::class, 'upload_img' ] )->name('newsletter.upload_img');
     
     Route::get('/send/{newsletter}', [ NewsletterController::class, 'send' ] )->name('newsletter.send');
+    Route::get('/sendSMTP/{newsletter}', [ NewsletterController::class, 'sendSMTP' ] )->name('newsletter.sendSMTP');
 
     Route::get('/view/{newsletter}', [ NewsletterController::class, 'view' ] )->name('newsletter.view');
+
+    Route::prefix('/mailinglist')->group( function () {
+        Route::get('/', [ MailingListController::class, 'list' ] )->name('mailinglist');
+        Route::get('/edit/{ml?}', [MailingListController::class, 'edit'])->name('mailinglist.edit');
+        Route::post('/edit/{ml?}', [MailingListController::class, 'edit_post']);
+
+    });
 });

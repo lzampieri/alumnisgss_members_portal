@@ -6,6 +6,7 @@ use App\Models\Alumnus;
 use App\Models\Email;
 use App\Models\External;
 use App\Models\File;
+use App\Models\MailingList;
 use App\Models\Newsletter;
 use App\Models\Position;
 use App\Models\Role;
@@ -13,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Symfony\Component\Mailer\Mailer;
@@ -24,7 +26,29 @@ use Symfony\Component\Mime\Part\DataPart;
 
 class NewsletterController extends Controller
 {
+
     public function list()
+    {
+        if (Auth::user()->can('viewAll', Newsletter::class)) {
+            $prequery = Newsletter::with('owner');
+        } else {
+            $prequery = Auth::user()->identity->newsletters()->with('owner');
+        }
+        $newsletters = $prequery->orderBy('updated_at', 'desc')->doesntHave('parent')->get();
+        $newsletters->load('childrens');
+
+        $newsletters = $newsletters->append(['totalCountTo','totalSentTo','totalScheduled']);
+
+        return Inertia::render(
+            'Newsletter/List',
+            [
+                'list' => $newsletters,
+                'canCreate' => Auth::user()->can('create', Newsletter::class)
+            ]
+        );
+    }
+
+    public function listAll()
     {
         if (Auth::user()->can('viewAll', Newsletter::class)) {
             $newsletters = Newsletter::with('owner')->orderBy('updated_at', 'desc')->get();
@@ -32,8 +56,10 @@ class NewsletterController extends Controller
             $newsletters = Auth::user()->identity->newsletters()->with('owner')->orderBy('updated_at', 'desc')->get();
         }
 
+        $newsletters = $newsletters->append(['countTo']);
+
         return Inertia::render(
-            'Newsletter/List',
+            'Newsletter/ListAll',
             [
                 'list' => $newsletters,
                 'canCreate' => Auth::user()->can('create', Newsletter::class)
@@ -57,6 +83,7 @@ class NewsletterController extends Controller
         $this->authorize('edit', $newsletter);
 
         $newsletter->append('attachments');
+        $newsletter->load(['mailingLists','childrens','parent']);
 
         $emails = Email::whereHas('identity')->with('identity')->get()->makeVisible('identity');
         $emails = $emails->sortBy([['identity.surname', 'asc'], ['identity.name', 'asc'], ['primary', 'desc']]);
@@ -116,6 +143,8 @@ class NewsletterController extends Controller
             ];
         }
 
+        $mailingLists = MailingList::all()->filter->canView->values();
+
 
         return Inertia::render(
             'Newsletter/Edit',
@@ -123,6 +152,7 @@ class NewsletterController extends Controller
                 'newsletter' => $newsletter,
                 'rubrica' => $emails,
                 'groups' => $roles,
+                'mailingLists' => $mailingLists,
                 'allowedFormats' => [...File::ALLOWED_FORMATS, ...File::ALLOWED_IMAGES_FORMATS]
             ]
         );
@@ -138,7 +168,9 @@ class NewsletterController extends Controller
             'to.*' => 'required|email',
             'body' => 'required',
             'attachments' => 'array',
-            'attachments.*' => 'integer|exists:files,id'
+            'attachments.*' => 'integer|exists:files,id',
+            'mailingLists' => 'array',
+            'mailingLists.*' => 'integer|exists:mailing_lists,id',
         ], [
             'to.*.email' => ':input non è un indirizzo email valido '
         ]);
@@ -164,6 +196,17 @@ class NewsletterController extends Controller
         }
 
         $newsletter->save();
+
+        // Mailing lists
+        $current_ids = $newsletter->mailingLists->pluck('id')->toArray();
+        $new_ids = $validated['mailingLists'];
+        foreach( array_diff( $current_ids, $new_ids ) as $toRemove ) {
+            $newsletter->mailingLists()->detach($toRemove);
+        }
+        foreach( array_diff( $new_ids, $current_ids ) as $toAdd ) {
+            $newsletter->mailingLists()->attach($toAdd);
+        }
+
 
         return redirect()->back()->with('notistack', ['success', 'Bozza salvata']);
     }
@@ -247,12 +290,18 @@ class NewsletterController extends Controller
             LogController::log(LogEvents::MAIL_SENT, NULL, $newsletter->subject, [$email, $newsletter]);
         }
 
+        $newsletter->append('allToList');
+
+        $serverETA = count($newsletter->allToList) / env('MAIL_FROM_SERVER_MAXDEST',1) * env('MAIL_FROM_SERVER_INTERVAL',1) / 60;
+
         return Inertia::render(
             'Newsletter/Preview',
             [
                 'newsletter' => $newsletter,
                 'sentTo' => $email,
-                'canSend' => Auth::user()->can('send', $newsletter)
+                'canSend' => Auth::user()->can('send', $newsletter),
+                'canSendServer' => Auth::user()->can('sendServer', $newsletter),
+                'serverETA' => $serverETA
             ]
         );
     }
@@ -299,16 +348,18 @@ class NewsletterController extends Controller
             return redirect()->back()->with('notistack', ['error', 'Nessun indirizzo di invio configurato']);
         }
 
-        if (count($newsletter->to) == 0) {
+        $newsletter->append('allToList');
+        $allTo = $newsletter->allToList;
+
+        if (count($allTo) == 0) {
             return redirect()->back()->with('notistack', ['error', 'Nessun destinatario']);
         }
 
-        // TODO add check for multiple emails on the same day
         $used_from = Newsletter::whereDate('sent_at', '>=', now()->subDays(1))->select('from')->distinct()->pluck('from')->toArray();
         $froms = array_values(array_diff($froms_all, $used_from));
 
-        if (count($newsletter->to) > $emails_per_page * $pages_per_address * count($froms)) {
-            return redirect()->back()->with('notistack', ['error', 'Troppi indirizzi email. Max ' . ($emails_per_page * $pages_per_address * count($froms)) . ' rimanenti oggi, richiesti ' . count($newsletter->to)]);
+        if (count($allTo) > $emails_per_page * $pages_per_address * count($froms)) {
+            return redirect()->back()->with('notistack', ['error', 'Troppi indirizzi email. Max ' . ($emails_per_page * $pages_per_address * count($froms)) . ' rimanenti oggi, richiesti ' . count($allTo)]);
         }
 
         $newsletters = [];
@@ -323,17 +374,17 @@ class NewsletterController extends Controller
             $attachments[] =  DataPart::fromPath($att->path());
         }
 
-        while (count($newsletter->to) > $emails_per_page) {
+        while (count($allTo) > $emails_per_page) {
             $newsletters[] = Newsletter::create([
                 'subject' => $newsletter->subject,
-                'to' => array_slice($newsletter->to, -$emails_per_page),
+                'to' => array_slice($allTo, -$emails_per_page),
                 'body' => $newsletter->body,
                 'owner_id' => $newsletter->owner_id,
                 'owner_type' => $newsletter->owner_type,
                 'from' => $froms[$address],
                 'parent_id' => $newsletter->id
             ]);
-            $newsletter->to = array_slice($newsletter->to, 0, -$emails_per_page);
+            $allTo = array_slice($allTo, 0, -$emails_per_page);
 
             $page++;
             if ($page >= $pages_per_address) {
@@ -342,6 +393,8 @@ class NewsletterController extends Controller
             }
         }
 
+        $newsletter->to = $allTo;
+        $newsletter->mailingLists()->detach();
         $newsletter->save();
         $newsletters[] = $newsletter;
 
@@ -397,21 +450,65 @@ class NewsletterController extends Controller
         return redirect()->route('newsletters')->with('notistack', ['success', 'Invio avvenuto con successo']);
     }
 
+    public function sendSMTP(Newsletter $newsletter)
+    {
+        $this->authorize('sendServer', $newsletter);
+
+        $emails_per_page = env('MAIL_FROM_SERVER_MAXDEST', 45);
+
+        $debug_addr = env('MAIL_FROM_ADDRESS', "");
+
+        $newsletter->append('allToList');
+        $allTo = $newsletter->allToList;
+
+        if (count($allTo) == 0) {
+            return redirect()->back()->with('notistack', ['error', 'Nessun destinatario']);
+        }
+
+        $newsletters = [];
+
+        $attachments = [];
+
+        foreach ($newsletter->attachments as $att) {
+            $attachments[] =  DataPart::fromPath($att->path());
+        }
+
+        while (count($allTo) > $emails_per_page) {
+            $newsletters[] = Newsletter::create([
+                'subject' => $newsletter->subject,
+                'to' => array_slice($allTo, -$emails_per_page),
+                'body' => $newsletter->body,
+                'owner_id' => $newsletter->owner_id,
+                'owner_type' => $newsletter->owner_type,
+                'from' => 'SMTP',
+                'parent_id' => $newsletter->id
+            ]);
+            $allTo = array_slice($allTo, 0, -$emails_per_page);
+        }
+
+        $newsletter->to = $allTo;
+        $newsletter->from = 'SMTP';
+        $newsletter->mailingLists()->detach();
+        $newsletter->save();
+
+        return redirect()->route('newsletters')->with('notistack', ['success', 'Invio programmato con successo']);
+    }
+
     public function view(Newsletter $newsletter)
     {
         $this->authorize('view', $newsletter);
 
-        $newsletter->load('parent');
+        $newsletter->load(['parent','mailingLists','childrens']);
         $newsletter->append('attachments');
 
         $parent = $newsletter;
         if ($newsletter->parent) $parent = $newsletter->parent;
 
-        $alladdresses_sent    =  $parent->childrens()->whereNotNull('sent_at')->pluck('to')->flatten();
-        $alladdresses_waiting =  $parent->childrens()->whereNull('sent_at')->pluck('to')->flatten();
+        $alladdresses_sent    =  $parent->childrens()->whereNotNull('sent_at')->pluck('to')->flatten() ?: [];
+        $alladdresses_waiting =  $parent->childrens()->whereNull('sent_at')->pluck('to')->flatten() ?: [];
 
-        if ($parent->sent_at) $alladdresses_sent = $alladdresses_sent->concat($parent['to']);
-        else $alladdresses_waiting = $alladdresses_waiting->concat($parent['to']);
+        if ($parent->sent_at) $alladdresses_sent = $alladdresses_sent->concat($parent['to'] ?: []);
+        else $alladdresses_waiting = $alladdresses_waiting->concat($parent['to'] ?: [] );
 
         return Inertia::render(
             'Newsletter/View',

@@ -21,9 +21,21 @@ export default function View() {
             <label>Destinatari di questo singolo invio:</label>
             {newsletter.to?.join(", ")}
 
-            <br/>
+            <br />
             <label>Destinatari di tutto il blocco di invii ({usePage().props.alladdresses_sent.length || "0"} già inviate, {usePage().props.alladdresses_waiting.length || "0"} ancora in attesa):</label>
             {usePage().props.alladdresses_sent.join(", ")}<span className="text-gray-300 italic">{usePage().props.alladdresses_waiting.join(", ")}</span>
+
+            <label>Mailing list:</label>
+            {newsletter.mailing_lists.map(ml => <span key={ml.id}>{ml.name} ({ml.list.length})</span>)}
+
+            {newsletter.childrens.length > 0 && <label>
+                Questa newsletter è stata spezzata per l'invio e ha originato le newsletter
+                {newsletter.childrens.map(ch => <Link href={route('newsletter.view', { id: ch.id })} className="ml-2" id={ch.id}>#{ch.id}</Link>)}
+            </label>}
+            {newsletter.parent && <label>
+                Questa newsletter proviene, essento stata spezzata per l'invio, dalla newsletter originale
+                <Link href={route('newsletter.view', { id: newsletter.parent.id })} className="ml-2">#{newsletter.parent.id}</Link>
+            </label>}
         </div>
     );
 }
