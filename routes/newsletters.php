@@ -24,6 +24,7 @@ Route::prefix('/newsletters')->group( function () {
     
     Route::get('/send/{newsletter}', [ NewsletterController::class, 'send' ] )->name('newsletter.send');
     Route::get('/sendSMTP/{newsletter}', [ NewsletterController::class, 'sendSMTP' ] )->name('newsletter.sendSMTP');
+    Route::get('/cronjob', [ NewsletterController::class, 'smtpCallback' ] );
 
     Route::get('/view/{newsletter}', [ NewsletterController::class, 'view' ] )->name('newsletter.view');
 

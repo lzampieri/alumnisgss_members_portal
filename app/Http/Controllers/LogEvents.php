@@ -24,7 +24,11 @@ class LogEvents {
     const LOGIN = 'login';
     const LOGIN_OTP = 'login via OTP';
     const LOGIN_LV2 = 'level 2 login';
+
     const MAIL_SENT = 'mail_sent';
+    const NEWSLETTER_SENT = 'newsletter_sent';
+    const NEWSLETTER_TEST_SENT = 'newsletter_test_sent';
+    const NEWSLETTER_SMTP_SENT = 'newsletter_smtp_sent';
 
     const RESOURCE_VIA_MAGICLINK = 'resource_accessed_via_magiclink';
     const FILE_VIA_MAGICLINK = 'file_accessed_via_magiclink';

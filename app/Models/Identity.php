@@ -6,7 +6,6 @@ use App\Http\Controllers\LogController;
 use App\Http\Controllers\LogEvents;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -69,7 +68,7 @@ abstract class Identity extends Model
         $editableRoles = [];
 
         foreach ($roles as $role) {
-            if ( in_array($role->name, Alumnus::public_status) || $role->name == 'everyone') continue;
+            if ( in_array($role->name, Alumnus::public_status) || $role->name == 'everyone' || $role->isAutomatic ) continue;
             if ($this->hasPermissionTo('user-edit-' . $role->name)) {
                 $editableRoles[] = $role;
             }

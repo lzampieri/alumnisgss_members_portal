@@ -287,12 +287,12 @@ class NewsletterController extends Controller
                     $msg->attach($att->path());
                 }
             });
-            LogController::log(LogEvents::MAIL_SENT, NULL, $newsletter->subject, [$email, $newsletter]);
+            LogController::log(LogEvents::NEWSLETTER_TEST_SENT, NULL, $newsletter->subject, [$email, $newsletter]);
         }
 
         $newsletter->append('allToList');
 
-        $serverETA = count($newsletter->allToList) / env('MAIL_FROM_SERVER_MAXDEST',1) * env('MAIL_FROM_SERVER_INTERVAL',1) / 60;
+        $serverETA = count($newsletter->allToList) / env('SERVER_MAIL_MAXDEST',1) * env('SERVER_MAIL_INTERVAL',1) / 60;
 
         return Inertia::render(
             'Newsletter/Preview',
@@ -327,7 +327,7 @@ class NewsletterController extends Controller
                 $msg->attach($att->path());
             }
         });
-        LogController::log(LogEvents::MAIL_SENT, NULL, $newsletter->subject, [$email, $newsletter]);
+        LogController::log(LogEvents::NEWSLETTER_TEST_SENT, NULL, $newsletter->subject, [$email, $newsletter]);
 
         return response()->json(['sentTo' => $email]);
     }
@@ -417,8 +417,6 @@ class NewsletterController extends Controller
                 $symfony_mailer = new Mailer($transport);
             }
 
-            LogController::log(LogEvents::MAIL_SENT, NULL, $nl->subject, [...$nl->to, $debug_addr]);
-
             $message = new MimeEmail();
             $message->subject($nl->subject);
             $message->html($nl->body);
@@ -440,9 +438,10 @@ class NewsletterController extends Controller
             $symfony_mailer->send($message);
 
             // TODO distinguish MAIL_SENT, NEWSLETTER_SENT, NEWSLETEER_DEBUG_SENT
-            LogController::log(LogEvents::MAIL_SENT, NULL, $newsletter->subject, [$nl]);
             $nl->sent_at = now();
             $nl->save();
+
+            LogController::log(LogEvents::NEWSLETTER_SENT, NULL, $nl->subject || '', [...$nl->to, $debug_addr]);
 
             $count++;
         }
@@ -454,9 +453,7 @@ class NewsletterController extends Controller
     {
         $this->authorize('sendServer', $newsletter);
 
-        $emails_per_page = env('MAIL_FROM_SERVER_MAXDEST', 45);
-
-        $debug_addr = env('MAIL_FROM_ADDRESS', "");
+        $emails_per_page = env('SERVER_MAIL_MAXDEST', 45);
 
         $newsletter->append('allToList');
         $allTo = $newsletter->allToList;
@@ -492,6 +489,67 @@ class NewsletterController extends Controller
         $newsletter->save();
 
         return redirect()->route('newsletters')->with('notistack', ['success', 'Invio programmato con successo']);
+    }
+
+    public function smtpCallback(Newsletter $newsletter)
+    {
+
+        $delay = env('SERVER_MAIL_INTERVAL',1);
+        $extra = Newsletter::where('from','SMTP')
+            ->whereNotNull('sent_at')
+            ->whereDate('sent_at', '<=', now()->subMinutes($delay))
+            ->first();
+
+        if( $extra )
+            return response("Nothing done, too early");
+
+        $nl = Newsletter::where('from','SMTP')
+            ->whereNull('sent_at')
+            ->orderBy('ID')
+            ->first();
+
+        $parent = $nl->parent ?: $nl;
+
+        if( !$nl )
+            return response("Nothing done, nothing to be done");
+
+        $transport = new EsmtpTransport(
+            env('SERVER_MAIL_HOST', 'localhost'),
+            env('SERVER_MAIL_PORT', 465),
+            env('SERVER_MAIL_ENCRYPTION', 'tls') == 'tls'
+        );
+        $transport->setUsername(env('SERVER_MAIL_USERNAME', ''));
+        $transport->setPassword(env('SERVER_MAIL_PASSWORD', ''));
+
+        $symfony_mailer = new Mailer($transport);
+
+            
+        $message = new MimeEmail();
+        $message->subject($nl->subject);
+        $message->html($nl->body);
+        $message->bcc(env('SERVER_MAIL_DEBUG_ADDRESS', ''));
+        foreach ($nl->to as $t)
+            $message->addBcc($t);
+        $message->replyTo(env('SERVER_MAIL_FROM_ADDRESS', ''));
+        $message->from(new Address(
+            env('SERVER_MAIL_FROM_ADDRESS', ''),
+            env('SERVER_MAIL_FROM_NAME', '')));
+            
+        foreach ($parent->attachments as $att) {
+            $message->addPart( DataPart::fromPath($att->path()) );
+        }
+                
+        // Add reference to the newsletter
+        $headers = $message->getHeaders();
+        $headers->addTextHeader('X-Newsletter-ID', $nl->id . " daughter of " . $parent->id);
+                
+        $symfony_mailer->send($message);
+                
+        LogController::log(LogEvents::NEWSLETTER_SMTP_SENT, NULL, $newsletter->subject, [$nl]);
+        $nl->sent_at = now();
+        $nl->save();
+
+        return response("Done");
     }
 
     public function view(Newsletter $newsletter)

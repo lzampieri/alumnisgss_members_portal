@@ -62,7 +62,11 @@ class LogType {
         LogEvents::LOGIN => True,
         LogEvents::LOGIN_OTP => True,
         LogEvents::LOGIN_LV2 => True,
+
         LogEvents::MAIL_SENT => True,
+        LogEvents::NEWSLETTER_SENT => True,
+        LogEvents::NEWSLETTER_TEST_SENT => True,
+        LogEvents::NEWSLETTER_SMTP_SENT => True,
 
         LogEvents::RESOURCE_VIA_MAGICLINK => True,
         LogEvents::FILE_VIA_MAGICLINK => True,
@@ -79,7 +83,9 @@ class LogController extends Controller
         return in_array( get_class( $item ), LogType::DB[ $event ] );
     }
 
-    public static function log( string $event, Model $item = NULL, string $field = '', $oldValue = NULL, $newValue = NULL ) {
+    public static function log( string $event, Model $item = NULL, ?string $field = '', $oldValue = NULL, $newValue = NULL ) {
+        if( !$field )
+            $field = '';
         if( self::shouldILogToDB( $event, $item ) ) {
             LogControllerDB::echo( $event, $item, $field, $oldValue, $newValue );
         } else {
