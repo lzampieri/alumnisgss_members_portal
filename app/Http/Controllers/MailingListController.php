@@ -16,6 +16,11 @@ use Inertia\Inertia;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Str;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use SplFileObject;
 
 class MailingListController extends Controller
 {
@@ -62,29 +67,30 @@ class MailingListController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|min:3',
-            'list' => 'required|array',
-            'list.*' => 'sometimes|email',
+            'list' => 'sometimes|mimes:xlsx|nullable',
             'canView' => 'required|array|min:1',
             'canView.*' => 'integer|exists:roles,id',
             'canEdit' => 'required|array|min:1',
             'canEdit.*' => 'integer|exists:roles,id',
         ]);
-        if( !array_key_exists('list',$validated) )
-            $validated['list'] = [];
 
-        if( !$ml )
+        $new = false;
+        if (!$ml) {
             $ml = new MailingList();
-
+            $new = true;
+            $ml->count = 0;
+        }
 
         $ml->name = $validated['name'];
-        $ml->list = $validated['list'];
         $ml->save();
 
         $ml->load(['dynamicPermissions', 'dynamicPermissions.role']);
-        
+
         // Check the view roles
         $current_roles = $ml->dynamicPermissions
-            ->filter( function ($dp) { return $dp->type == 'view'; } )
+            ->filter(function ($dp) {
+                return $dp->type == 'view';
+            })
             ->pluck('role_id')->toArray();
         foreach (array_diff($current_roles, $validated['canView']) as $role) {
             // Roles to remove
@@ -96,13 +102,18 @@ class MailingListController extends Controller
         }
         foreach (array_diff($validated['canView'], $current_roles) as $role) {
             // Roles to add
-            $dynamicPermission = DynamicPermission::createFromRelations('view',
-                $ml, Role::findById($role));
+            $dynamicPermission = DynamicPermission::createFromRelations(
+                'view',
+                $ml,
+                Role::findById($role)
+            );
         }
 
         // Check the edit roles
         $current_roles = $ml->dynamicPermissions
-            ->filter( function ($dp) { return $dp->type == 'edit'; } )
+            ->filter(function ($dp) {
+                return $dp->type == 'edit';
+            })
             ->pluck('role_id')->toArray();
         foreach (array_diff($current_roles, $validated['canEdit']) as $role) {
             // Roles to remove
@@ -114,11 +125,80 @@ class MailingListController extends Controller
         }
         foreach (array_diff($validated['canEdit'], $current_roles) as $role) {
             // Roles to add
-            $dynamicPermission = DynamicPermission::createFromRelations('edit',
-                $ml, Role::findById($role));
+            $dynamicPermission = DynamicPermission::createFromRelations(
+                'edit',
+                $ml,
+                Role::findById($role)
+            );
         }
 
+        $count = 0;
+        $errors = "";
+        // Update the list from excel
+        if (array_key_exists('list', $validated) && $validated['list']) {
 
-        return redirect()->route('mailinglist')->with('notistack',['success','Nuova lista creata']);
+            // Load file
+            $spreadsheet = IOFactory::load($validated['list']);
+            $sheet = $spreadsheet->getActiveSheet();
+
+            // Open csv
+            $filename = $ml->getFilename();
+            $outfile = new SplFileObject(storage_path() . $filename, 'w');
+
+            for ($i = 0; $i < $sheet->getHighestRow(); $i++) {
+                $addr = trim($sheet->getCell([1, $i + 1]));
+
+                if (strlen($addr) == 0) continue;
+
+                if (filter_var($addr, FILTER_VALIDATE_EMAIL)) {
+                    $outfile->fwrite($addr . "\n");
+                    $count++;
+                } else {
+                    $errors .= $addr . ",";
+                }
+            }
+
+            $ml->count = $count;
+            $ml->save();
+        }
+
+        $out = redirect()->route('mailinglist')->with('notistack', ['success', $new ? 'Nuova lista creata' : 'Lista aggiornata']);
+        if (strlen($errors) > 0)
+            $out->with('errorsDialogs', ['I seguenti indirizzi sono stati ignorati in quanto non compatibili: ' . $errors]);
+
+        return $out;
+    }
+
+    public function download(Request $request, ?MailingList $ml = null)
+    {
+        if ($ml)
+            $this->authorize('edit', $ml);
+        else
+            $this->authorize('create', MailingList::class);
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        if ($ml) {
+            $filename = $ml->getFilename();
+            if (file_exists(storage_path() . $filename)) {
+
+                $row = 0;
+                foreach (new SplFileObject(storage_path() . $filename) as $line) {
+                    if (strlen(trim($line))) {
+                        $row++;
+                        $sheet->getCell([1, $row])->setValue(trim($line));
+                    }
+                }
+            }
+        }
+
+        // Output
+        $writer = new Xlsx($spreadsheet);
+        $writer->setPreCalculateFormulas(false);
+
+        return response()->streamDownload(function () use ($writer) {
+            $writer->save('php://output');
+        }, 'mailinglist_' . ($ml ? $ml->id : 'new') . "_" . ($ml ? $ml->name : 'unnamed') . "_" . date('Ymd') . '_' . env('APP_ENV', 'debug') .  '.xlsx');
     }
 }

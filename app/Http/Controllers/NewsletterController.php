@@ -21,6 +21,7 @@ use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email as MimeEmail;
+use Symfony\Component\Mime\Exception\RfcComplianceException;
 use Symfony\Component\Mime\Message;
 use Symfony\Component\Mime\Part\DataPart;
 
@@ -37,7 +38,7 @@ class NewsletterController extends Controller
         $newsletters = $prequery->orderBy('updated_at', 'desc')->doesntHave('parent')->get();
         $newsletters->load('childrens');
 
-        $newsletters = $newsletters->append(['totalCountTo','totalSentTo','totalScheduled']);
+        $newsletters = $newsletters->append(['totalCountTo', 'totalSentTo', 'totalScheduled']);
 
         return Inertia::render(
             'Newsletter/List',
@@ -83,7 +84,7 @@ class NewsletterController extends Controller
         $this->authorize('edit', $newsletter);
 
         $newsletter->append('attachments');
-        $newsletter->load(['mailingLists','childrens','parent']);
+        $newsletter->load(['mailingLists', 'childrens', 'parent']);
 
         $emails = Email::whereHas('identity')->with('identity')->get()->makeVisible('identity');
         $emails = $emails->sortBy([['identity.surname', 'asc'], ['identity.name', 'asc'], ['primary', 'desc']]);
@@ -200,10 +201,10 @@ class NewsletterController extends Controller
         // Mailing lists
         $current_ids = $newsletter->mailingLists->pluck('id')->toArray();
         $new_ids = $validated['mailingLists'];
-        foreach( array_diff( $current_ids, $new_ids ) as $toRemove ) {
+        foreach (array_diff($current_ids, $new_ids) as $toRemove) {
             $newsletter->mailingLists()->detach($toRemove);
         }
-        foreach( array_diff( $new_ids, $current_ids ) as $toAdd ) {
+        foreach (array_diff($new_ids, $current_ids) as $toAdd) {
             $newsletter->mailingLists()->attach($toAdd);
         }
 
@@ -290,9 +291,9 @@ class NewsletterController extends Controller
             LogController::log(LogEvents::NEWSLETTER_TEST_SENT, NULL, $newsletter->subject, [$email, $newsletter]);
         }
 
-        $newsletter->append('allToList');
+        $newsletter->append(['allTo', 'countTo']);
 
-        $serverETA = count($newsletter->allToList) / env('SERVER_MAIL_MAXDEST',1) * env('SERVER_MAIL_INTERVAL',1) / 60;
+        $serverETA = $newsletter->countTo / env('SERVER_MAIL_MAXDEST', 1) * env('SERVER_MAIL_INTERVAL', 1) / 60;
 
         return Inertia::render(
             'Newsletter/Preview',
@@ -348,8 +349,10 @@ class NewsletterController extends Controller
             return redirect()->back()->with('notistack', ['error', 'Nessun indirizzo di invio configurato']);
         }
 
-        $newsletter->append('allToList');
-        $allTo = $newsletter->allToList;
+        $allTo = $newsletter->to;
+        foreach ($newsletter->mailingLists as $ml) {
+            $allTo = array_merge($allTo, $ml->getAllTo());
+        }
 
         if (count($allTo) == 0) {
             return redirect()->back()->with('notistack', ['error', 'Nessun destinatario']);
@@ -421,8 +424,13 @@ class NewsletterController extends Controller
             $message->subject($nl->subject);
             $message->html($nl->body);
             $message->bcc($debug_addr);
-            foreach ($nl->to as $t)
-                $message->addBcc($t);
+            foreach ($nl->to as $t) {
+                try {
+                    $message->addBcc($t);
+                } catch (RfcComplianceException $e) {
+                    LogController::error("Unable to send email to " . $t . ", address not compliant", ['newsletter' => $nl]);
+                }
+            }
             $message->replyTo("info@alumniscuolagalileiana.it");
             $message->from(new Address("info@alumniscuolagalileiana.it", "Associazione Alumni Scuola Galileiana"));
 
@@ -437,7 +445,6 @@ class NewsletterController extends Controller
 
             $symfony_mailer->send($message);
 
-            // TODO distinguish MAIL_SENT, NEWSLETTER_SENT, NEWSLETEER_DEBUG_SENT
             $nl->sent_at = now();
             $nl->save();
 
@@ -455,8 +462,10 @@ class NewsletterController extends Controller
 
         $emails_per_page = env('SERVER_MAIL_MAXDEST', 45);
 
-        $newsletter->append('allToList');
-        $allTo = $newsletter->allToList;
+        $allTo = $newsletter->to;
+        foreach ($newsletter->mailingLists as $ml) {
+            $allTo = array_merge($allTo, $ml->getAllTo());
+        }
 
         if (count($allTo) == 0) {
             return redirect()->back()->with('notistack', ['error', 'Nessun destinatario']);
@@ -494,23 +503,23 @@ class NewsletterController extends Controller
     public function smtpCallback(Newsletter $newsletter)
     {
 
-        $delay = env('SERVER_MAIL_INTERVAL',1);
-        $extra = Newsletter::where('from','SMTP')
+        $delay = env('SERVER_MAIL_INTERVAL', 0);
+        $extra = Newsletter::where('from', 'SMTP')
             ->whereNotNull('sent_at')
-            ->whereDate('sent_at', '<=', now()->subMinutes($delay))
+            ->whereTime('sent_at', '>=', now()->subMinutes($delay) )
             ->first();
 
         if( $extra )
-            return response("Nothing done, too early");
+            return response("Nothing done, too early " . $extra->sent_at . " >= " . now()->subMinutes($delay) . " - " . $delay );
 
-        $nl = Newsletter::where('from','SMTP')
+        $nl = Newsletter::where('from', 'SMTP')
             ->whereNull('sent_at')
             ->orderBy('ID')
             ->first();
 
         $parent = $nl->parent ?: $nl;
 
-        if( !$nl )
+        if (!$nl)
             return response("Nothing done, nothing to be done");
 
         $transport = new EsmtpTransport(
@@ -523,28 +532,34 @@ class NewsletterController extends Controller
 
         $symfony_mailer = new Mailer($transport);
 
-            
+
         $message = new MimeEmail();
         $message->subject($nl->subject);
         $message->html($nl->body);
         $message->bcc(env('SERVER_MAIL_DEBUG_ADDRESS', ''));
-        foreach ($nl->to as $t)
-            $message->addBcc($t);
+        foreach ($nl->to as $t) {
+            try {
+                $message->addBcc($t);
+            } catch (RfcComplianceException $e) {
+                LogController::error("Unable to send email to " . $t . ", address not compliant", ['newsletter' => $nl]);
+            }
+        }
         $message->replyTo(env('SERVER_MAIL_FROM_ADDRESS', ''));
         $message->from(new Address(
             env('SERVER_MAIL_FROM_ADDRESS', ''),
-            env('SERVER_MAIL_FROM_NAME', '')));
-            
+            env('SERVER_MAIL_FROM_NAME', '')
+        ));
+
         foreach ($parent->attachments as $att) {
-            $message->addPart( DataPart::fromPath($att->path()) );
+            $message->addPart(DataPart::fromPath($att->path()));
         }
-                
+
         // Add reference to the newsletter
         $headers = $message->getHeaders();
         $headers->addTextHeader('X-Newsletter-ID', $nl->id . " daughter of " . $parent->id);
-                
+
         $symfony_mailer->send($message);
-                
+
         LogController::log(LogEvents::NEWSLETTER_SMTP_SENT, NULL, $newsletter->subject, [$nl]);
         $nl->sent_at = now();
         $nl->save();
@@ -556,7 +571,7 @@ class NewsletterController extends Controller
     {
         $this->authorize('view', $newsletter);
 
-        $newsletter->load(['parent','mailingLists','childrens']);
+        $newsletter->load(['parent', 'mailingLists', 'childrens']);
         $newsletter->append('attachments');
 
         $parent = $newsletter;
@@ -566,7 +581,7 @@ class NewsletterController extends Controller
         $alladdresses_waiting =  $parent->childrens()->whereNull('sent_at')->pluck('to')->flatten() ?: [];
 
         if ($parent->sent_at) $alladdresses_sent = $alladdresses_sent->concat($parent['to'] ?: []);
-        else $alladdresses_waiting = $alladdresses_waiting->concat($parent['to'] ?: [] );
+        else $alladdresses_waiting = $alladdresses_waiting->concat($parent['to'] ?: []);
 
         return Inertia::render(
             'Newsletter/View',

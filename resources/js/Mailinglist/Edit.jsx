@@ -2,7 +2,7 @@ import { Head, useForm, usePage } from "@inertiajs/react";
 
 
 import { enqueueSnackbar } from "notistack";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
+import { faDownload, faFolderPlus, faSave } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Backdrop from "../Layout/Backdrop";
 import TextareaAutosize from 'react-textarea-autosize';
@@ -11,11 +11,9 @@ export default function Edit() {
     const prev = usePage().props.mailinglist;
     const roles = usePage().props.roles;
 
-    console.log(prev)
-
     const { data, setData, post, processing, errors, transform } = useForm({
         name: prev?.name || '',
-        list: prev?.list?.join("\n") || '',
+        list: null,
         canView: prev?.dynamic_permissions?.filter(dp => dp.type == 'view').map(dp => dp.role_id) || [],
         canEdit: prev?.dynamic_permissions?.filter(dp => dp.type == 'edit').map(dp => dp.role_id) || []
     })
@@ -25,15 +23,9 @@ export default function Edit() {
         post(
             route('mailinglist.edit', { ml: prev?.id }), {
             preserveState: "errors",
-            onError: () => enqueueSnackbar('C\'è stato un errore, verifica tutti i campi', { variant: 'error' }),
-            onSuccess: () => window.history.back()
+            onError: () => enqueueSnackbar('C\'è stato un errore, verifica tutti i campi', { variant: 'error' })
         });
     }
-
-    transform((data) => ({
-        ...data,
-        list: data.list.split("\n").filter((i) => i.length )
-    }))
 
     const changeViewRole = (id) => {
         if (data.canView.includes(id)) {
@@ -48,10 +40,6 @@ export default function Edit() {
             setData('canEdit', data.canEdit.slice())
         } else
             setData('canEdit', data.canEdit.concat([id]))
-    }
-
-    const makecleanlist = (list) => {
-        return list.replaceAll(/[^a-zA-Z0-9!#$%&'*+\x2f=?^_`\x7b-\x7d~\x2d@\.]/g,"\n").replaceAll("\n\n","\n");
     }
 
     return (
@@ -93,12 +81,11 @@ export default function Edit() {
             </div>
 
             <label>Indirizzi</label>
+            <a href={route('mailinglist.download', { ml: prev?.id })} target="_blank" className="button my-2 self-start">
+                <FontAwesomeIcon icon={faDownload} /> Scarica lista
+            </a>
+            <input type="file" onChange={e => setData('list', e.target.files[0])} accept=".xlsx" placeholder="Carica nuova lista..."/>
             <label className="error">{errors.list}</label>
-            <TextareaAutosize
-                className="w-full pretendToBeInput"
-                minRows={3}
-                value={data.list}
-                onChange={(e) => setData('list', makecleanlist(e.target.value))} />
 
             <div className="button flex flex-row items-center self-end my-4" onClick={submit}>
                 <FontAwesomeIcon icon={faSave} />

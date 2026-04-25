@@ -49,8 +49,8 @@ export default function Preview() {
                     <a target="_blank" href={route('newsletter.attachment', { id: f.id })}>{f.handle}</a>
                 )
             }
-            <label>Destinatari:</label>
-            {newsletter.allToList?.join(", ")}
+            <label>Destinatari ({newsletter.countTo}):</label>
+            {newsletter.allTo?.join(", ")}
             {usePage().props.canSend ?
                 <Link className="button self-end" href={route('newsletter.send', { newsletter: newsletter.id })}>Conferma invio</Link>
                 : <label className="self-end">Non sei autorizzato a procedere all'invio finale di questa newsletter. Chiedi a qualcuno di autorizzato di confermare l'invio.</label>}

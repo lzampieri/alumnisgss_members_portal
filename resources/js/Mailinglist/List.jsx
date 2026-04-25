@@ -26,7 +26,7 @@ export default function List() {
         },
         {
             field: 'count', headerName: 'Indirizzi',
-            valueGetter: ({ data }) => data?.list.length, filter: 'agTextColumnFilter', flex: 1
+            valueGetter: ({ data }) => data?.count, filter: 'agTextColumnFilter', flex: 1
         },
         {
             field: 'canView', headerName: 'Visibile da', valueGetter: ({data}) => data.dynamic_permissions.filter((dp) => dp.type == 'view').map(dp => dp.role.common_name).join(", "), filter: 'agTextColumnFilter', flex: 1
@@ -56,9 +56,6 @@ export default function List() {
                 suppressCellFocus={true}
                 rowData={usePage().props.list}
             />
-        </div>
-        <div className="w-full flex flex-row justify-end">
-            <Link href={route('newsletters.listAll')}>Mostra tutte</Link>
         </div>
     </div>
 }

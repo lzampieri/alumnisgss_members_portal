@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->string('name');
-            $table->longText('list');
+            $table->integer('count');
         });
     }
 

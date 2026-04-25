@@ -279,7 +279,7 @@ export default function Edit() {
                 <label className="error">{errors.mailingLists}</label>
                 <div className="flex flex-row w-full gap-2 justify-start mb-4 my-2">
                     {mailingLists.map(ml => <div className="flex flex-row rounded bg-gray-200 max-w-full px-2 py-1 cursor-pointer" onClick={() => setData('mailingLists', [...data.mailingLists, ml])} key={ml.id}>
-                        {ml.name} ({ml.list.length})
+                        {ml.name} ({ml.count})
                     </div>)}
                 </div>
                 

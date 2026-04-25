@@ -22,7 +22,7 @@ class MailingListPolicy
     {
         if( $user->hasPermissionTo('mailinglists-view-all') )
             return true;
-        return ( DynamicPermission::UserCanViewPermissable($mailingList, $user) || DynamicPermission::UserCanEditPermissable($mailingList, $user) );
+        return ( DynamicPermission::UserCanViewPermissable($mailingList, $user->identity) || DynamicPermission::UserCanEditPermissable($mailingList, $user->identity) );
     }
 
     /**
@@ -40,6 +40,6 @@ class MailingListPolicy
     {
         if( $user->hasPermissionTo('mailinglists-edit-all') )
             return true;
-        return DynamicPermission::UserCanEditPermissable($mailingList, $user);
+        return DynamicPermission::UserCanEditPermissable($mailingList, $user->identity);
     }
 }
