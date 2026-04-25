@@ -519,7 +519,7 @@ class NewsletterController extends Controller
 
         if (!$nl)
             return response("Nothing done, nothing to be done");
-        
+
         $parent = $nl->parent ?: $nl;
 
         $transport = new EsmtpTransport(
