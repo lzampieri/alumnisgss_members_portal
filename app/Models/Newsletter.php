@@ -58,7 +58,7 @@ class Newsletter extends Model
 
     public function getCountToAttribute()
     {
-        return array_reduce( $this->mailingLists->all(), function($carry, $ml) { return $carry + $this->zin($ml->list);}, 0 ) + $this->zin($this->to);
+        return array_reduce( $this->mailingLists->all(), function($carry, $ml) { return $carry + $ml->count;}, 0 ) + $this->zin($this->to);
     }
 
     public function getTotalCountToAttribute()
@@ -114,8 +114,8 @@ class Newsletter extends Model
         return $this->belongsToMany(MailingList::class);
     }
 
-    public function getAllToListAttribute()
+    public function getAllToAttribute()
     {
-        return array_merge($this->to,...$this->mailingLists->pluck('list'));
+        return array_merge($this->to, $this->mailingLists->pluck('to')->toArray());
     }
 }

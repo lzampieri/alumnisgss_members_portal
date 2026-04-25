@@ -32,6 +32,6 @@ Route::prefix('/newsletters')->group( function () {
         Route::get('/', [ MailingListController::class, 'list' ] )->name('mailinglist');
         Route::get('/edit/{ml?}', [MailingListController::class, 'edit'])->name('mailinglist.edit');
         Route::post('/edit/{ml?}', [MailingListController::class, 'edit_post']);
-
+        Route::get('/download/{ml?}', [ MailingListController::class, 'download' ] )->name('mailinglist.download');
     });
 });

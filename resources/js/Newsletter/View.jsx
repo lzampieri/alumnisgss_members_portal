@@ -26,7 +26,7 @@ export default function View() {
             {usePage().props.alladdresses_sent.join(", ")}<span className="text-gray-300 italic">{usePage().props.alladdresses_waiting.join(", ")}</span>
 
             <label>Mailing list:</label>
-            {newsletter.mailing_lists.map(ml => <span key={ml.id}>{ml.name} ({ml.list.length})</span>)}
+            {newsletter.mailing_lists.map(ml => <span key={ml.id}>{ml.name} ({ml.count})</span>)}
 
             {newsletter.childrens.length > 0 && <label>
                 Questa newsletter è stata spezzata per l'invio e ha originato le newsletter
