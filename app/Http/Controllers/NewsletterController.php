@@ -506,7 +506,7 @@ class NewsletterController extends Controller
         $delay = env('SERVER_MAIL_INTERVAL', 0);
         $extra = Newsletter::where('from', 'SMTP')
             ->whereNotNull('sent_at')
-            ->whereTime('sent_at', '>=', now()->subMinutes($delay) )
+            ->where('sent_at', '>=', now()->subMinutes($delay) )
             ->first();
 
         if( $extra )

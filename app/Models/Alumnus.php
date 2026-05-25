@@ -123,9 +123,13 @@ class Alumnus extends Identity
     public function getAllRoles()
     {
         $roles = parent::getAllRoles();
-        $role = Role::findByNameOrNull($this->status);
-        if( $role )
-            $roles->push($role);
+        
+        $already_there = $roles->map( function ($r){ return $r['name']; } )->toArray();
+        if( !in_array($this->status, $already_there ) ) {
+            $role = Role::findByNameOrNull($this->status);
+            if( $role )
+                $roles->push($role);
+        }
         return $roles;
     }
 

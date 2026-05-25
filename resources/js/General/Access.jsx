@@ -13,6 +13,10 @@ export default function Access() {
                 <span className="text-primary-main">
                     Accesso eseguito come {user.identity ? (user.identity.name || '') + " " + (user.identity.surname || '') : user.credential}
                 </span>
+                {usePage().props.user.identity?.all_roles?.length > 0 && 
+                <span className="text-primary-main">
+                    Utente abilitato ai ruoli di: { usePage().props.user.identity?.all_roles?.map( r => r.common_name ).join(", ") }
+                </span> }
                 {usePage().props.lev2_loggedin &&
                     <span className="text-primary-main">
                         Accesso eseguito con autorizzazioni elevate sull'account

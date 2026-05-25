@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\LogEvents;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
@@ -26,10 +27,15 @@ abstract class Identity extends Model
         removeRole as protected traitRemoveRole;
     }
 
-    // hasPermissionTo is overrided to include the 'everyone' case
+    // hasPermissionTo is overrided to include extra roles, i.e. 'everyone' and 'position' case
     public function hasPermissionTo($permission, $guardName = null): bool
     {
-        return $this->traitHasPermissionTo($permission) || Role::findByName('everyone')->hasPermissionTo($permission);
+        if( $this->traitHasPermissionTo($permission) )
+            return true;
+        foreach( $this->getAllRoles() as $role )
+            if( $role->hasPermissionTo($permission) )
+                return true;
+        return false;
     }
 
     // Some of the trait method are overrided for logging purpose
@@ -102,6 +108,11 @@ abstract class Identity extends Model
         return $this->morphMany(Position::class, 'owner');
     }
 
+    public function validPositions()
+    {
+        return $this->morphMany(Position::class, 'owner')->whereDate('from','<=',Carbon::now())->whereDate('to','>=',Carbon::now());
+    }
+
     public function documents()
     {
         return $this->morphMany(Document::class, 'author');
@@ -135,8 +146,20 @@ abstract class Identity extends Model
     public function getAllRoles()
     {
         $roles = $this->roles;
-        $roles->push(Role::findByName('everyone'));
+        $already_there = $roles->map( function ($r){ return $r['name']; } )->toArray();
+
+        if( !in_array('everyone', $already_there ) )
+            $roles->push(Role::findByName('everyone'));
+        foreach( $this->validPositions as $pos ) {
+            if( !in_array($pos->type, $already_there ) )
+            $roles->push(Role::findByName($pos->type));
+        }
         return $roles;
+    }
+
+    public function getAllRolesAttribute()
+    {
+        return $this->getAllRoles();
     }
 
     public static function allWithPermission(string $permissionName) : array {
