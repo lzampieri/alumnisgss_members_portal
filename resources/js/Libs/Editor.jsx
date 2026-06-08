@@ -8,17 +8,17 @@ import { useCallback, useState } from "react"
 import axios from "axios"
 import { enqueueSnackbar } from "notistack"
 import Backdrop from "../Layout/Backdrop"
-import { MenuBar } from "./MenuBar"
+import { MenuBar } from "../Libs/MenuBar"
 
 
-export default function NewsletterEditor({ value, setValue, newsletter_id }) {
+export default function Editor({ value, setValue, url_for_uploading, route_for_retriving }) {
     const [isLoading, setIsLoading] = useState(false);
 
     const uploadFile = useCallback(async (currentEditor, files, pos) => {
         setIsLoading(true);
         for (const file of files) {
             const res = await axios.post(
-                route('newsletter.upload_img', { newsletter: newsletter_id }),
+                url_for_uploading,
                 { image: file },
                 { headers: { 'Content-Type': 'multipart/form-data' } })
                 .catch(e => { enqueueSnackbar('Impossibile caricare una o più immagini', { variant: 'error' }); });
@@ -27,7 +27,7 @@ export default function NewsletterEditor({ value, setValue, newsletter_id }) {
                 .insertContentAt(pos, {
                     type: 'image',
                     attrs: {
-                        src: route('newsletter.media', { handle: res.data.handle }),
+                        src: route(route_for_retriving, { handle: res.data.handle }),
                     },
                 })
                 .focus()
@@ -77,11 +77,11 @@ export default function NewsletterEditor({ value, setValue, newsletter_id }) {
                                 const blob = await image.blob();
                                 const file = new File([blob], 'image.' + groups[1], { type: groups[1] });
                                 const res = await axios.post(
-                                    route('newsletter.upload_img', { newsletter: newsletter_id }),
+                                    url_for_uploading,
                                     { image: file },
                                     { headers: { 'Content-Type': 'multipart/form-data' } })
                                     .catch(e => { enqueueSnackbar('Impossibile caricare una o più immagini', { variant: 'error' }); });
-                                return route('newsletter.media', { handle: res.data.handle });
+                                return route(route_for_retriving, { handle: res.data.handle });
                             }));
                         let i = 0;
                         const new_html = html.replace(data_regex, () => replacements[i++]);

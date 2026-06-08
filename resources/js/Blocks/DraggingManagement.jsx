@@ -2,19 +2,6 @@ import { DndContext, PointerSensor, useDraggable, useDroppable, useSensor, useSe
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS as CSS_DND } from '@dnd-kit/utilities';
 
-// function handleDragEnd(event) {
-//     const { active, over } = event;
-
-//     if (active.id !== over.id) {
-//         setItems((items) => {
-//             const oldIndex = items.indexOf(active.id);
-//             const newIndex = items.indexOf(over.id);
-
-//             return arrayMove(items, oldIndex, newIndex);
-//         });
-//     }
-// }
-
 function SortableItem({ id, children }) {
     const {
         attributes,

@@ -355,4 +355,44 @@ class ResourceController extends Controller
 
         return redirect()->back()->with(['notistack' => ['success', 'Salvato']]);
     }
+
+    
+    public function upload_img_editor(Request $request, Resource $resource)
+    {
+        $this->authorize('edit', $resource);
+
+        $validated = $request->validate([
+            'image' => 'required|mimes:' . implode(",", File::ALLOWED_IMAGES_FORMATS)
+        ]);
+
+        $filename = $validated['image']->getClientOriginalName();
+        $cleaned_name = preg_replace("([^\w\s\d\_])", "", str_replace(" ", "_", pathinfo($filename)['filename']));
+        $extension = pathinfo($filename)['extension'];
+
+        // Save file
+        $file = File::create();
+        $file->handle =  'f' . $file->id . '_' . $cleaned_name . '.' . $extension;
+        $file->parent()->associate($resource)->save();
+        $file->save();
+        $validated['image']->storeAs('files', $file->handle);
+
+        return response()->json(['handle' => $file->handle]);
+    }
+
+    public function retrive_img_editor(String $handle)
+    {
+        $fallback = storage_path() . '/app/utils/no-image.jpg';
+
+        $file = File::where('handle', $handle)->first();
+        // $file->load('parent');
+        // return response()->json($file);
+        if( !$file )
+            return response()->file($fallback);
+
+        // Check that the file can be seen by the current user
+        if( !(new FilePolicy)->view(Auth::user(), $file) ) // Cannot use Auth::user->can since user can be null!
+            return response()->file( $fallback );
+
+        return response()->file( $file->path() );
+    }
 }

@@ -13,11 +13,10 @@ import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
 import { themeQuartz } from "ag-grid-community";
 import { ModuleRegistry, ClientSideRowModelModule, ColumnAutoSizeModule, QuickFilterModule } from 'ag-grid-community';
 import { AlumnusStatus, asyncPostWithResult, bgAndContrast, noninertiaPostRequest, postRequest } from "../Utils";
-// import DefaultEditor, { BtnBold, BtnBulletList, BtnItalic, BtnLink, BtnNumberedList, BtnRedo, BtnStrikeThrough, BtnUnderline, BtnUndo, Editor, EditorProvider, Separator, Toolbar } from "react-simple-wysiwyg";
 import { to } from "@react-spring/web";
 import { faAddressBook, faCheck, faCirclePlus, faFileArrowUp, faPlus, faStar, faTrashCan, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import NewsletterEditor from "./Editor";
+import Editor from "../Libs/Editor";
 ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnAutoSizeModule, QuickFilterModule]);
 
 function delFromArray(arr, idx) {
@@ -221,25 +220,9 @@ export default function Edit() {
                 <label className="error">{errors.subject}</label>
 
                 <label>Contenuto</label>
-                {/* <EditorProvider>
-                    <Editor value={data.body} onChange={(e) => setData('body', e.target.value)} className="pretendToBeInput">
-                        <Toolbar>
-                            <BtnUndo />
-                            <BtnRedo />
-                            <Separator />
-                            <BtnBold />
-                            <BtnItalic />
-                            <BtnUnderline />
-                            <BtnStrikeThrough />
-                            <Separator />
-                            <BtnNumberedList />
-                            <BtnBulletList />
-                            <Separator />
-                            <BtnLink />
-                        </Toolbar>
-                    </Editor>
-                </EditorProvider> */}
-                <NewsletterEditor value={data.body} setValue={(v) => setData('body', v)} newsletter_id={prevDraft.id} />
+                <Editor value={data.body} setValue={(v) => setData('body', v)}
+                    url_for_uploading={route('newsletter.upload_img', { newsletter: prevDraft.id })}
+                    route_for_retriving={'newsletter.media'} />
                 <label className="error">{errors.body}</label>
 
                 <label>Allegati</label>
@@ -264,13 +247,13 @@ export default function Edit() {
                 <label>Mailing list</label>
                 <div
                     className="rounded-md bg-gray-100 border-transparent flex flex-row flex-wrap w-full items-start gap-1 p-2">
-                    {data.mailingLists.map((ml,i) =>
+                    {data.mailingLists.map((ml, i) =>
                         <div className="flex flex-row rounded bg-gray-200 max-w-full" style={{ overflowWrap: "anywhere" }} key={i}>
                             <div className="p-1 pl-2">
                                 {ml.name}
                             </div>
                             <div role="button" className="flex flex-row items-center hover:bg-[#FFBDAD] hover:text-[#DE350B] px-2"
-                                onClick={() => setData('mailingLists', data.mailingLists.toSpliced(i,1))}>
+                                onClick={() => setData('mailingLists', data.mailingLists.toSpliced(i, 1))}>
                                 <FontAwesomeIcon icon={faX} className="text-[0.5rem]" />
                             </div>
                         </div>)}
@@ -282,7 +265,7 @@ export default function Edit() {
                         {ml.name} ({ml.count})
                     </div>)}
                 </div>
-                
+
                 {prevDraft?.childrens?.length > 0 && <label>
                     Questa newsletter è stata spezzata per l'invio e ha originato le newsletter
                     {prevDraft.childrens.map(ch => <Link href={route('newsletter.edit', { id: ch.id })} className="ml-2" id={ch.id}>#{ch.id}</Link>)}

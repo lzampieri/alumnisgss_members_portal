@@ -22,6 +22,7 @@ class FilePolicy
      */
     public function view(?User $user, File $file)
     {
+        $file->loadMissing('parent');
         $parent_type = $file->parent_type;
 
         // Resource

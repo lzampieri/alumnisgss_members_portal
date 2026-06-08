@@ -1,6 +1,8 @@
 
 import { faFont } from "@fortawesome/free-solid-svg-icons";
 import TextareaAutosize from 'react-textarea-autosize';
+import Editor from "../../Libs/Editor";
+import { usePage } from "@inertiajs/react";
 
 export default class Text {
     static title = "Testo"
@@ -13,22 +15,22 @@ export default class Text {
     }
 
     static mainElementEditable = ({ item, setItemValue }) => {
-        const onChange = (e) => {
-            setItemValue('content', e.target.value)
-        }
 
-        return <TextareaAutosize
-            className="w-full pretendToBeInput"
-            minRows={3}
+
+        return <div
+            className="w-full"
+            onPointerDown={(e) => e.stopPropagation()}>
+            <Editor
             value={item.content}
-            onChange={onChange}
-            placeholder="Testo"
-        />
+            setValue={(v) => setItemValue('content', v)}
+            url_for_uploading={route('resources.upload_img_editor', { resource: usePage().props.resource?.id })}
+            route_for_retriving={'resources.retrive_img_editor'} />
+        </div>
     }
 
     static mainElementReadOnly = ({ item }) => {
-        return <p className="whitespace-pre-wrap">
-            {item.content}
-        </p>
+        return <div
+            className="w-full whitespace-pre-wrap"
+            dangerouslySetInnerHTML={{ __html: item.content }} />
     }
 }
