@@ -16,10 +16,10 @@ use App\Models\Role;
 
 class RolesController extends Controller
 {
-    public function add(Request $request)
+    public function create(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|unique:permissions,name',
+            'name' => 'required|unique:roles,name',
             'common_name' => 'required|min:3'
         ]);
 
@@ -32,5 +32,85 @@ class RolesController extends Controller
         Role::findByName('webmaster')->givePermissionTo(Permission::all());
 
         return redirect()->back();
+    }
+
+    public function delete(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|exists:roles,name',
+        ]);
+
+        $this->authorize('roles-edit');
+
+        $role = Role::findByName($validated['name'])->load('dynamicPermissions');
+
+        $dynpers = $role->dynamicPermissions;
+        foreach( $dynpers as $dynper )
+            $dynper->delete();
+
+        if( $role->isAutomatic ) {
+            return redirect()->back()->with(['notistack' => ['error', 'Non puoi eliminare un ruolo automatico']]);
+        }
+
+        $role->delete();
+
+        return redirect()->back()->with(['notistack' => ['success', 'Ruolo eliminato']]);
+    }
+
+
+    
+    public function add(Request $request)
+    {
+        $validated = $request->validate([
+            'identity' => 'required|numeric',
+            'type' => 'required|in:alumnus,external',
+            'role' => 'required|numeric',
+        ]);
+        
+        $identity = ( $validated['type'] == 'alumnus' ? Alumnus::find($validated['identity']) : External::find($validated['identity']) );
+        if( ! $identity ) {
+            return redirect()->back()->with(['notistack' => ['error', 'Identità non trovata']]);
+        }
+        
+        $role = Role::findById($validated['role']);
+        if( ! $role ) {
+            return redirect()->back()->with(['notistack' => ['error', 'Ruolo non trovato']]);
+        }
+
+        $this->authorize('user-edit-' . $role->name);
+
+        $identity->assignRole($role);
+
+        return redirect()->back()->with(['notistack' => ['success', 'Ruolo assegnato']]);
+    }
+    
+    public function remove(Request $request)
+    {
+        $validated = $request->validate([
+            'identity' => 'required|numeric',
+            'type' => 'required|in:alumnus,external',
+            'role' => 'required|numeric',
+        ]);
+        
+        $identity = ( $validated['type'] == 'alumnus' ? Alumnus::find($validated['identity']) : External::find($validated['identity']) );
+        if( ! $identity ) {
+            return redirect()->back()->with(['notistack' => ['error', 'Identità non trovata']]);
+        }
+        
+        $role = Role::findById($validated['role']);
+        if( ! $role ) {
+            return redirect()->back()->with(['notistack' => ['error', 'Ruolo non trovato']]);
+        }
+
+        $this->authorize('user-edit-' . $role->name);
+
+        // One cannot remove the webmaster role from himself
+        if( $role->name == 'webmaster' && Auth::user()->identity->is( $identity ) ) {
+            return redirect()->back()->with(['notistack' => ['warning', 'Non puoi rimuovere il ruolo di webmaster da te stesso.']]);
+        }
+
+        $identity->removeRole($role);
+
+        return redirect()->back()->with(['notistack' => ['success', 'Ruolo rimosso']]);
     }
 }

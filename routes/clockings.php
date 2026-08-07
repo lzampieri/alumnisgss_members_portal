@@ -6,11 +6,15 @@ use App\Models\Ratification;
 use Illuminate\Support\Facades\Route;
 
 // Documents
-Route::prefix('/clockings')->group(function () {
+Route::prefix('/clockings')->middleware('auth')->group(function () {
     Route::get('/', [StampController::class, 'clocker'])->name('clockings');
-
+    
     Route::post('/clockin', [StampController::class, 'clockin'])->name('clockings.clockin');
     Route::post('/clockout', [StampController::class, 'clockout'])->name('clockings.clockout');
+    Route::post('/clockout_withlunch', [StampController::class, 'clockout_withlunch'])->name('clockings.clockout_withlunch');
+    
+    Route::get('/toomuchtime', [StampController::class, 'toomuchtime'])->name('clockings.toomuchtime');
+    Route::post('/addnote', [StampController::class, 'addnote'])->name('clockings.addnote');
 
     Route::get('/monthly/{year?}/{month?}', [StampController::class, 'monthly'])->whereNumber(['month','year'])->name('clockings.monthly');
 

@@ -12,6 +12,7 @@ use Inertia\Inertia;
 use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 use Spatie\Permission\Exceptions\RoleDoesNotExist;
 use App\Models\Permission;
+use App\Models\Position;
 use App\Models\Role;
 
 class PermissionsController extends Controller
@@ -27,15 +28,24 @@ class PermissionsController extends Controller
         }
 
         $this->authorize('permissions-view');
-        $roles = Role::with('permissions')->get();
-        $perms = Permission::all()->pluck('name');
+        $roles = Role::with('permissions')->get()->append('is_automatic');
+        $perms = Permission::orderBy('name')->get()->pluck('name');
 
         foreach ($roles as &$role) {
             $role->permissions_names = $role->permissions->pluck('name');
-            $role->identities = Alumnus::role($role)->get()->concat(External::role($role)->get());
+            $role->identities = Alumnus::role($role)->with('emails')->get()->concat(External::role($role)->with('emails')->get())->makeVisible('emails');
         }
 
         return Inertia::render('Permissions/List', ['roles' => $roles, 'perms' => $perms]);
+    }
+
+    public static function getAutomaticRoles()
+    {
+        $position_defined_roles = Position::select('type')->distinct()->get()->pluck('type')->toArray();
+        return [
+            ['webmaster', ...Alumnus::public_status, 'everyone', ...$position_defined_roles],
+            ['WebMaster', ...array_map(fn($s) => Alumnus::AlumnusStatusLabels[$s], Alumnus::public_status), 'Tutti', ...$position_defined_roles]
+        ];
     }
 
     public static function verify()
@@ -45,21 +55,13 @@ class PermissionsController extends Controller
 
         $count_r_prev = Role::count();
 
+        $autoRoles = PermissionsController::getAutomaticRoles();
+
         $roles_to_assert = [
-            'webmaster',
-            'secretariat',
-            'cda',
-            'member',
-            'student_member',
-            'everyone'
+            ...$autoRoles[0]
         ];
         $roles_to_assert_names = [
-            'WebMaster',
-            'Segreteria',
-            'Consiglio di Amministrazione',
-            'Socio',
-            'Socio studente',
-            'Tutti'
+            ...$autoRoles[1]
         ];
 
         // Find or create!
@@ -73,7 +75,6 @@ class PermissionsController extends Controller
 
         $count_r_added = Role::count() - $count_r_prev;
 
-
         // PERMISSIONS
 
         $count_p_prev = Permission::count();
@@ -83,25 +84,41 @@ class PermissionsController extends Controller
             'login',
             'identity-alumni-enabling',
             'identity-externals-enabling',
-            // Login methods
-            'logins-view',
-            'logins-add',
-            'logins-delete',
+            // Emails methods
+            'emails-view-all',
+            'emails-view-external',
+            'emails-view-public-alumnus',
+            'emails-add',
+            'emails-edit',
+            'emails-delete',
+            // Contacts (emails sync)
+            'login-lv2',
+            'emails-sync',
             // Associate login methods and identities
-            'accesses-associate',
+            'emails-associate',
             'accesses-receive-request-emails',
             // Edit roles and permissions
             'permissions-view',
             'permissions-edit',
             'roles-edit',
+            // Positions
+            'positions-view-active',
+            'positions-view-all',
+            'positions-edit',
             // Network
             'network-view',
+            'network-view-alldetails',
             'network-edit-view',
+            'network-edit-consenting-alumnus',
             'network-edit-alumnus',
+            // Cities
+            'cities-edit',
             // Registry
-            'alumnus-view',
+            'alumnus-view-public',
+            'alumnus-view-all',
             'alumnus-edit',
             'alumnus-import',
+            'externals-view',
             // Ratifications
             'ratifications-view',
             'ratifications-edit',
@@ -110,11 +127,26 @@ class PermissionsController extends Controller
             'documents-edit',
             // Resources
             'resources-create',
+            'resources-see-archive',
+            'resources-view-all',
+            'resources-edit-all',
             // Clockings
             'clockin',
             'clockin-view-all',
             'clockin-view-online',
             'clockin-edit-all',
+            // Helpdesk
+            'helpdesk-master',
+            'helpdesk-solve-plain',
+            // Newsletter
+            'newsletters-create',
+            'newsletters-master',
+            'newsletters-send',
+            'newsletters-send-server',
+            //mailing list
+            'mailinglists-view-all',
+            'mailinglists-create',
+            'mailinglists-edit-all',
             // Webmaster stuff
             'logfile-view',
             'logdb-view',
@@ -122,31 +154,33 @@ class PermissionsController extends Controller
             'db-reset'
         ];
 
+
         // Roles edit
         foreach (Role::all()->pluck('name') as $role) {
-            // never for members and student members and anyone
-            if ($role == 'member' || $role == 'student_member' || $role == 'everyone') continue;
+            // never for Alumnus::public_status and everyone
+            if (in_array($role, $autoRoles[0])) continue;
             $permissions_to_assert[] = 'user-edit-' . $role;
         }
+        $permissions_to_assert[] = 'user-edit-webmaster';
 
         // Add permissions
         foreach ($permissions_to_assert as $permission) {
             try {
                 Permission::findOrCreate($permission);
-            } catch(\Illuminate\Database\QueryException $ex){
-                if( $ex->getCode() == 23000 ) {
-                    Log::debug("Error 2300 in adding permission " . $permission . ", ignored", $ex->getCode() );
-                }
-                else return redirect()->back()->with(['notistack' => ['error', "C'è stato un errore."]]);
+            } catch (\Illuminate\Database\QueryException $ex) {
+                if ($ex->getCode() == 23000) {
+                    Log::debug("Error 23000 in adding permission " . $permission . ", ignored", $ex->getCode());
+                } else return redirect()->back()->with(['notistack' => ['error', "C'è stato un errore."]]);
             }
         }
+
 
         $count_p_added = Permission::count() - $count_p_prev;
         $count_p_deleted = 0;
 
         // Remove permissions
-        foreach(Permission::where('guard_name','web')->get() as $permission) {
-            if( !in_array( $permission->name, $permissions_to_assert ) ) {
+        foreach (Permission::where('guard_name', 'web')->get() as $permission) {
+            if (!in_array($permission->name, $permissions_to_assert)) {
                 $permission->delete();
                 $count_p_deleted++;
             }

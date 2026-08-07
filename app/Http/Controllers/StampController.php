@@ -13,27 +13,31 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use mcaskill\array_group_by;
 
+const EXPECTED_HOURS = 6; // TODO replace to a user-related field
+
 class StampController extends Controller
 {
 
     public function clocker()
     {
+        // Must be logged in - guaranteed in middleware
+
         $data = ['user' => Auth::user()];
 
-        if( Auth::user()->can('clockin', Stamp::class) ) {
+        if (Auth::user()->can('clockin', Stamp::class)) {
             $data['canClockIn'] = true;
-            
+
             $data['lastClockIn'] = Auth::user()->identity->stamps()
                 ->whereDate('date', Carbon::now())
                 ->whereNull('clockout')->select(['clockin', 'type'])->latest()->first();
-            
+
             $data['canClockToday'] = !$data['lastClockIn'] || $data['lastClockIn']->type->clockable;
         }
 
-        if( Auth::user()->can('viewOnline', Stamp::class) ) {
+        if (Auth::user()->can('viewOnline', Stamp::class)) {
             $data['currentlyOnline'] = Stamp::whereDate('date', Carbon::now())
-            ->whereNull('clockout')->with('employee')->get();
-                // ->only(['employee','type']);
+                ->whereNull('clockout')->with('employee')->get();
+            // ->only(['employee','type']);
         }
 
         return Inertia::render('Clockings/Clocker', $data);
@@ -82,26 +86,111 @@ class StampController extends Controller
         $clockedIn->clockout = Carbon::now();
         $clockedIn->save();
 
+        if( $this->isTodayOutOfTime() )
+            return redirect()->route('clockings.toomuchtime');
+
         return redirect()->back()->with(['notistack' => ['success', 'A presto!']]);
+    }
+
+    public function clockout_withlunch()
+    {
+        $this->authorize('clockin', Stamp::class);
+
+        $clockedIn = Auth::user()->identity->stamps()
+            ->whereDate('date', Carbon::now())
+            ->whereNull('clockout')->latest()->first();
+
+        if (!$clockedIn) {
+            return redirect()->back()->with(['notistack' => ['error', 'Non risulti entrato']]);
+        }
+        if (!$clockedIn->type->clockable) {
+            return redirect()->back()->with(['notistack' => ['error', 'Non è permesso timbrare in un giorno di ' + $clockedIn->type->label]]);
+        }
+
+        $midday = Carbon::now()->setTimeFromTimeString('12:00:00');
+        $twopm = Carbon::now()->setTimeFromTimeString('14:00:00');
+
+        if ($clockedIn->clockin->isBefore($midday) || Carbon::now()->isAfter($twopm)) {
+            $midday_half = Carbon::now()->setTimeFromTimeString('12:30:00');
+            $clockedIn->clockout = $midday_half;
+            $clockedIn->save();
+
+            $one_half = Carbon::now()->setTimeFromTimeString('13:30:00');
+            $clockedIn = Auth::user()->identity->stamps()->create([
+                'date' => Carbon::now(),
+                'clockin' => $one_half,
+                'ip' => request()->ip()
+            ]);
+        }
+
+        $clockedIn->clockout = Carbon::now();
+        $clockedIn->save();
+
+        if( $this->isTodayOutOfTime() )
+            return redirect()->route('clockings.toomuchtime');
+
+        return redirect()->back()->with(['notistack' => ['success', 'A presto!']]);
+    }
+
+    public function addnote(Request $request)
+    {
+        $validated = $request->validate([
+            'note' => 'nullable|string',
+            'id' => 'required|numeric|exists:stamps,id'
+        ]);
+
+        $stamp = Stamp::find($validated['id']);
+        $this->authorize('editNote', $stamp);
+        
+        $stamp->note = $validated['note'];
+        $stamp->save();
+
+        return redirect()->back()->with(['notistack' => ['success', 'Salvato!']]);
+    }
+
+    private function isTodayOutOfTime()
+    {
+        $stamps = Auth::user()->identity->stamps()->whereDate('date', Carbon::now())->where('type','work')->get();
+        $total = array_reduce($stamps->toArray(), function ($carry, $item) {
+            return $carry + $item['hours'];
+        }, 0);
+
+        return $total > EXPECTED_HOURS + 0.6;
+    }
+
+    public function toomuchtime()
+    {
+        $this->authorize('clockin', Stamp::class);
+
+        if( !$this->isTodayOutOfTime() )
+            return redirect()->route('clockings');
+
+        return Inertia::render(
+            'Clockings/TooMuchTime',
+            [
+                'stamps' => Auth::user()->identity->stamps()->whereDate('date', Carbon::now())->whereNotNull('clockout')->where('type','work')->with('acpttickets', 'opentickets')->get(),
+                'expectedHours' => EXPECTED_HOURS
+            ]
+        );
     }
 
     public function manageSpecials()
     {
         $this->authorize('editMine', Stamp::class);
 
-        $from = Carbon::now()->subMonth()->startOfMonth();
-        $to = Carbon::now()->addMonth()->endOfMonth();
+        $from = Carbon::now()->startOfMonth()->subMonth()->startOfMonth();
+        $to = Carbon::now()->startOfMonth()->addMonth()->endOfMonth();
 
         $data = Auth::user()->identity->stamps()
             ->whereBetween('date', [$from, $to])
             ->whereNull('clockin')->get()->groupBy(function ($item, $key) {
-                return $item->date->year . '-' . str_pad( $item->date->month, 2, "0", STR_PAD_LEFT ). '-' . str_pad( $item->date->day, 2, "0", STR_PAD_LEFT );
+                return $item->date->year . '-' . str_pad($item->date->month, 2, "0", STR_PAD_LEFT) . '-' . str_pad($item->date->day, 2, "0", STR_PAD_LEFT);
             });
         $workedDays = Auth::user()->identity->stamps()
             ->whereBetween('date', [$from, $to])
             ->whereNotNull('clockin')
             ->select(['date'])->get()->map(function ($item, $key) {
-                return $item->date->year . '-' . str_pad( $item->date->month, 2, "0", STR_PAD_LEFT ). '-' . str_pad( $item->date->day, 2, "0", STR_PAD_LEFT );
+                return $item->date->year . '-' . str_pad($item->date->month, 2, "0", STR_PAD_LEFT) . '-' . str_pad($item->date->day, 2, "0", STR_PAD_LEFT);
             });
 
         return Inertia::render('Clockings/ManageSpecials', [
@@ -109,63 +198,72 @@ class StampController extends Controller
             'to' => $to,
             'specials' => $data,
             'workedDays' => $workedDays,
-            'allTypes' => array_values( StampTypes::getAllTypes() )
+            'allTypes' => array_values(StampTypes::getAllTypes())
         ]);
     }
 
-    public function addSpecials (Request $request) {
+    public function addSpecials(Request $request)
+    {
         $this->authorize('editMine', Stamp::class);
 
-        $types = implode(',', array_filter( array_keys( StampTypes::getAllTypes() ), function ($item) { return ($item !== 'default') && ($item !== 'work'); } ) );
+        $types = implode(',', array_filter(array_keys(StampTypes::getAllTypes()), function ($item) {
+            return ($item !== 'default') && ($item !== 'work');
+        }));
 
         $validated = $request->validate([
             'type' => 'required|in:' . $types,
             'days' => 'array'
         ]);
 
-        $from = Carbon::now()->subMonth()->startOfMonth();
-        $to = Carbon::now()->addMonth()->endOfMonth();
+        $from = Carbon::now()->startOfMonth()->subMonth()->startOfMonth();
+        $to = Carbon::now()->startOfMonth()->addMonth()->endOfMonth();
 
         $cont = 0;
 
         foreach ($validated['days'] as $day) {
             $date = Carbon::createFromFormat('Y-m-d', $day);
-            if( $date->isBefore($from) || $date->isAfter($to) ) continue;
+            if ($date->isBefore($from) || $date->isAfter($to)) continue;
 
             $occupied = Auth::user()->identity->stamps()->whereDate('date', $date)->first();
-            if ( $occupied ) continue;
+            if ($occupied) continue;
+
+            if (!StampTypes::getFromKey($validated['type'])) continue;
+            if (!StampTypes::getFromKey($validated['type'])->checkDates->call($this, $date)) continue;
 
             Auth::user()->identity->stamps()->create([
                 'date' => $date,
                 'type' => $validated['type'],
                 'ip' => request()->ip()
             ]);
-            
+
             $cont += 1;
         }
 
         return redirect()->back()->with(['notistack' => ['success', $cont . ' eventi aggiunti']]);
     }
 
-    public function delSpecial (Request $request) {
-        
+    public function delSpecial(Request $request)
+    {
+
         $validated = $request->validate([
             'id' => 'required|numeric|exists:stamps,id'
         ]);
-        
+
         $stamp = Stamp::find($validated['id']);
 
-        $this->authorize('edit', $stamp);
+        $this->authorize('delSpecialr', $stamp);
 
-        $types = array_filter( array_keys( StampTypes::getAllTypes() ), function ($item) { return ($item !== 'default') && ($item !== 'work'); } );
+        $types = array_filter(array_keys(StampTypes::getAllTypes()), function ($item) {
+            return ($item !== 'default') && ($item !== 'work');
+        });
 
-        if( !in_array( $stamp->type->tag, $types ) )
-            return redirect()->back()->with(['notistack' => ['error', 'Evento non trovato' ]]);
+        if (!in_array($stamp->type->tag, $types))
+            return redirect()->back()->with(['notistack' => ['error', 'Evento non trovato']]);
 
         $from = Carbon::now()->startOfMonth();
         $to = Carbon::now()->endOfMonth();
 
-        if( $stamp->date->isBefore($from) || $stamp->date->isAfter($to) )
+        if ($stamp->date->isBefore($from) || $stamp->date->isAfter($to))
             return redirect()->back()->with(['notistack' => ['error', 'Evento non più modificabile']]);
 
         $stamp->delete();
@@ -175,6 +273,7 @@ class StampController extends Controller
 
     public function monthly(int $year = -1, int $month = -1)
     {
+        // Must be logged in - guaranteed in middleware
 
         if ($year == -1 || $month == -1) {
             $today = Carbon::now();
@@ -186,14 +285,14 @@ class StampController extends Controller
             $query->whereYear('date', $year)->whereMonth('date', $month);
         };
 
-        if ( Auth::user()->can('viewAny', Stamp::class) ) {
+        if (Auth::user()->can('viewAny', Stamp::class)) {
             $data = array_merge(
-                Alumnus::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter])->get()->all(),
-                External::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter])->get()->all(),
+                Alumnus::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter, 'stamps.acpttickets', 'stamps.opentickets'])->get()->all(),
+                External::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter, 'stamps.acpttickets', 'stamps.opentickets'])->get()->all(),
             );
         } else {
             $data = [
-                Auth::user()->identity->load(['stamps' => $stampsFilter]),
+                Auth::user()->identity->load(['stamps' => $stampsFilter, 'stamps.acpttickets', 'stamps.opentickets']),
             ];
         }
 
@@ -201,7 +300,8 @@ class StampController extends Controller
             $ident->stamps_grouped = $ident->stamps->groupBy(function ($item, $key) {
                 return $item->date->day;
             });
-            $ident = $ident->only(['id', 'surname', 'name', 'stamps_grouped']);
+            $ident->mayOpenTicket = $ident->is(Auth()->user()->identity);
+            $ident = $ident->only(['id', 'surname', 'name', 'stamps_grouped', 'mayOpenTicket']);
         });
 
 

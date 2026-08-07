@@ -9,6 +9,8 @@ class PermalinkController extends Controller
 {
     public function view(Permalink $permalink)
     {
+        // No authorization: visible by anyone
+        
         $toView = $permalink->linkable;
 
         if ($toView instanceof Resource)

@@ -4,12 +4,26 @@ namespace App\Models;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\LogEvents;
+use App\Policies\AlumnusPolicy;
 use App\Traits\EditsAreLogged;
-use Spatie\Permission\Models\Role;
+
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Alumnus extends Identity
 {
     use EditsAreLogged;
+
+    protected $visible = [
+        'id',
+        'surname',
+        'name',
+        'coorte',
+        'status',
+        'tags',
+        'consent_to_network_share',
+        'consent_to_email_share',
+        'enabled'
+    ];
     
     // Available status
     const status = [
@@ -18,13 +32,14 @@ class Alumnus extends Identity
         'pre_enrolled',
         'not_reached', 'student_not_reached', 'student_not_agreed', 'hasnt_right',
         'dead',
-        'not_agreed'
+        'not_agreed',
+        'honorary'
     ];
     // Public visible status
     const public_status = ['member', 'student_member', 'pre_enrolled'];
 
     // Status for which entering or exiting required ratification
-    const require_ratification = ['member'];
+    const require_ratification = ['member', 'student_member', 'honorary'];
 
     // Assignable status without ratification
     public static function availableStatus(Alumnus $alumnus = null)
@@ -62,7 +77,8 @@ class Alumnus extends Identity
         'student_not_agreed' => 'Studente rifiutante',
         'hasnt_right' => 'Non avente diritto',
         'dead' => 'Deceduto',
-        'not_agreed' => 'Rifiutante'
+        'not_agreed' => 'Rifiutante',
+        'honorary' => 'Socio onorario'
     ];
     // Colors ( for export xlsx )
     const AlumnusStatusColors = [
@@ -75,6 +91,7 @@ class Alumnus extends Identity
         'hasnt_right' => 'FF00FF',
         'dead' => '003300',
         'not_agreed' => 'FF0000',
+        'honorary' => '00CC00',
     ];
 
 
@@ -83,7 +100,9 @@ class Alumnus extends Identity
         'surname',
         'coorte',
         'status',
-        'tags'
+        'tags',
+        'consent_to_email_share',
+        'consent_to_network_share'
     ];
     protected $casts = [
         'tags' => 'array'
@@ -96,16 +115,21 @@ class Alumnus extends Identity
 
     public function checkMemberRole($permission)
     {
-        if ($this->status == 'member' && Role::findByName('member')->hasPermissionTo($permission)) return true;
-        if ($this->status == 'student_member' && Role::findByName('student_member')->hasPermissionTo($permission)) return true;
-        return false;
+        $role = Role::findByNameOrNull($this->status);
+        if( $role )
+            return $role->hasPermissionTo($permission);
     }
 
     public function getAllRoles()
     {
         $roles = parent::getAllRoles();
-        if ($this->status == 'member') $roles->push(Role::findByName('member'));
-        if ($this->status == 'student_member') $roles->push(Role::findByName('student_member'));
+        
+        $already_there = $roles->map( function ($r){ return $r['name']; } )->toArray();
+        if( !in_array($this->status, $already_there ) ) {
+            $role = Role::findByNameOrNull($this->status);
+            if( $role )
+                $roles->push($role);
+        }
         return $roles;
     }
 
@@ -150,4 +174,12 @@ class Alumnus extends Identity
         return $this->pendingRatifications()->get();
     }
 
+    public function getCanBeNetworkEditedAttribute()
+    {
+        return Auth::check() && Auth::user()->can('editNetworkAlumnus', $this);
+    }
+    
+    protected function canView(): Attribute {
+        return Attribute::make( get: fn (mixed $_, array $attributes) => Auth::check() && (new AlumnusPolicy)->view(Auth::user(), $this) );
+    }
 }

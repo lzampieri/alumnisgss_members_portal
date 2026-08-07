@@ -1,6 +1,28 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@layer theme, base, vendor, components, utilities;
+@import "@fortawesome/fontawesome-svg-core/styles.css" layer(vendor);
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+
+@theme {
+    --color-primary-main: #cb0014;
+    --color-primary-contrast: #ffffff;
+    --color-header-bg: #111111;
+    --color-error: #ff3333;
+    --color-header-tx: #ffffff;
+    --color-halfblack: #000000A0;
+    --color-transparent: transparent;
+    --color-current: currentColor;
+}
+
+@source "../../resources/**/*.blade.php";
+@source "../../resources/**/*.js";
+@source "../../resources/**/*.vue";
+@source "../../node_modules/tailwind-datepicker-react/dist/**/*.js";
 
 @layer components {
     body {
@@ -35,6 +57,16 @@
         @apply no-underline;
         @apply cursor-pointer;
     }
+    .unlclickable-button {
+        @apply px-4 py-2 rounded border-2 border-primary-main text-primary-main bg-primary-contrast;
+        @apply no-underline;
+    }
+    .chip-button {
+        @apply rounded-3xl ml-2 px-2 border border-primary-main text-primary-main bg-primary-contrast;
+        @apply hover:text-primary-contrast hover:bg-primary-main;
+        @apply no-underline;
+        @apply cursor-pointer;
+    }
     .icon {
         @apply rounded-full text-primary-main aspect-square px-1;
     }
@@ -44,8 +76,13 @@
         @apply no-underline;
         @apply cursor-pointer;
     }
+    .icon-button-group {
+        @apply rounded text-primary-main aspect-square px-1;
+        @apply group-hover:text-primary-contrast group-hover:bg-primary-main;
+        @apply no-underline;
+    }
     .icon-button-gray {
-        @apply rounded-full text-gray-400 aspect-square px-1;
+        @apply rounded text-gray-400 aspect-square px-1;
         @apply hover:text-white hover:bg-gray-400;
         @apply no-underline;
         @apply cursor-pointer;
@@ -66,6 +103,9 @@
     input[type="text"] {
         @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0
     }
+    input[type="email"] {
+        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0
+    }
     .pretendToBeInput {
         @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0
     }
@@ -76,9 +116,16 @@
     input[type="number"] {
         @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0
     }
+    input[type="time"] {
+        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0
+    }
     input[type="checkbox"] {
         @apply rounded-md bg-gray-100 border-gray-500 focus:border-gray-500 focus:ring-0 mr-2 text-primary-main
     }
+    div[role="textbox"] {
+        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0 py-2 px-3
+    }
+    
     .selectDropdown {
         @apply !rounded-md !bg-gray-100 !border-transparent focus-within:!border-gray-500 focus-within:!ring-0
     }
@@ -147,9 +194,6 @@
     .chip {
         @apply bg-gray-600 text-white rounded-3xl ml-2 px-2
     }
-    .chip.disabled {
-        @apply opacity-40
-    }
     .chip-v2 {
         @apply bg-gray-600 text-white;
         @apply rounded-lg flex flex-row !no-underline mx-1 max-w-full flex-wrap whitespace-pre-wrap items-center;
@@ -166,6 +210,10 @@
     }
     .smart-chip {
         @apply rounded-lg flex flex-row !no-underline mx-1 max-w-full flex-wrap whitespace-pre-wrap;
+        overflow-wrap: anywhere
+    }
+    .smart-chip-icon {
+        @apply rounded-lg hover:bg-gray-100 hover:text-black h-full aspect-square;
         overflow-wrap: anywhere
     }
     .div-highlighted {
@@ -206,10 +254,10 @@
         @apply p-2 w-full;
     }
     .info {
-        @apply rounded-md bg-gray-300 bg-opacity-10 my-2 p-2
+        @apply rounded-md bg-gray-300/10 my-2 p-2
     }
     .alert {
-        @apply rounded-md bg-primary-main bg-opacity-10 my-2 p-2
+        @apply rounded-md bg-primary-main/10 my-2 p-2
     }
     .card {
         @apply w-full border-2 border-primary-main rounded px-2 py-1
@@ -223,21 +271,228 @@
         @apply first:rounded-t-xl last:rounded-b-xl
     }
     .drawer-item {
-        @apply border border-black rounded-first-last p-2 cursor-pointer;
+        @apply border border-black first:rounded-t-xl last:rounded-b-xl p-2 cursor-pointer;
         @apply bg-white text-black hover:text-primary-contrast hover:bg-primary-main;
         @apply aria-selected:bg-primary-main aria-selected:text-primary-contrast;
     }
     .drawer-item-passive {
-        @apply border border-black rounded-first-last p-2;
+        @apply border border-black first:rounded-t-xl last:rounded-b-xl p-2;
         @apply bg-white text-gray-400 text-sm;
     }
     .drawer-item-noborder {
-        @apply rounded-first-last p-2 cursor-pointer;
+        @apply first:rounded-t-xl last:rounded-b-xl p-2 cursor-pointer;
         @apply bg-white text-black hover:text-primary-contrast hover:bg-primary-main;
     }
 
     /* COLLAPSE */
     .cpm {
         transition: height 200ms;
+    }
+
+    /* react-simple-wysiwyg */
+    .rsw-ce ul {
+        list-style: disc;
+        padding-left: 2em;
+    }
+
+    .rsw-ce ol {
+        list-style: decimal;
+        padding-left: 2em;
+    }
+
+    /* TIPTAP */
+    .tiptap-menu {
+        @apply flex flex-row flex-wrap gap-2 pt-1
+    }
+    .tiptap-menu div {
+        @apply text-sm rounded bg-gray-300 px-1 py-1 cursor-pointer
+    }
+    .tiptap-menu div.is-active {
+        @apply bg-primary-main text-primary-contrast
+    }
+    .tiptap {
+        :first-child {
+            margin-top: 0;
+        }
+        img {
+            display: block;
+        }
+
+        [data-resize-handle] {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 2px;
+            z-index: 10;
+
+            &:hover {
+            background: rgba(0, 0, 0, 0.8);
+            }
+
+            /* Corner handles */
+            &[data-resize-handle='top-left'],
+            &[data-resize-handle='top-right'],
+            &[data-resize-handle='bottom-left'],
+            &[data-resize-handle='bottom-right'] {
+            width: 8px;
+            height: 8px;
+            }
+
+            &[data-resize-handle='top-left'] {
+            top: -4px;
+            left: -4px;
+            cursor: nwse-resize;
+            }
+
+            &[data-resize-handle='top-right'] {
+            top: -4px;
+            right: -4px;
+            cursor: nesw-resize;
+            }
+
+            &[data-resize-handle='bottom-left'] {
+            bottom: -4px;
+            left: -4px;
+            cursor: nesw-resize;
+            }
+
+            &[data-resize-handle='bottom-right'] {
+            bottom: -4px;
+            right: -4px;
+            cursor: nwse-resize;
+            }
+
+            /* Edge handles */
+            &[data-resize-handle='top'],
+            &[data-resize-handle='bottom'] {
+            height: 6px;
+            left: 8px;
+            right: 8px;
+            }
+
+            &[data-resize-handle='top'] {
+            top: -3px;
+            cursor: ns-resize;
+            }
+
+            &[data-resize-handle='bottom'] {
+            bottom: -3px;
+            cursor: ns-resize;
+            }
+
+            &[data-resize-handle='left'],
+            &[data-resize-handle='right'] {
+            width: 6px;
+            top: 8px;
+            bottom: 8px;
+            }
+
+            &[data-resize-handle='left'] {
+            left: -3px;
+            cursor: ew-resize;
+            }
+
+            &[data-resize-handle='right'] {
+            right: -3px;
+            cursor: ew-resize;
+            }
+        }
+
+        [data-resize-state='true'] [data-resize-wrapper] {
+            outline: 1px solid rgba(0, 0, 0, 0.25);
+            border-radius: 0.125rem;
+        }
+        
+        /* List styles */
+        ul,
+        ol {
+            padding: 0 1rem;
+            margin: 1.25rem 1rem 1.25rem 0.4rem;
+
+            li p {
+                margin-top: 0.25em;
+                margin-bottom: 0.25em;
+            }
+        }
+
+        ul {
+            @apply list-disc
+        }
+        ol {
+            @apply list-decimal
+        }
+
+        /* Heading styles */
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            line-height: 1.1;
+            margin-top: 2.5rem;
+            text-wrap: pretty;
+        }
+
+        h1,
+        h2 {
+            margin-top: 3.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+        }
+
+        h4,
+        h5,
+        h6 {
+            font-size: 1rem;
+        }
+
+        /* Code and preformatted text styles */
+        code {
+            background-color: var(--purple-light);
+            border-radius: 0.4rem;
+            color: var(--black);
+            font-size: 0.85rem;
+            padding: 0.25em 0.3em;
+        }
+
+        pre {
+            background: var(--black);
+            border-radius: 0.5rem;
+            color: var(--white);
+            font-family: 'JetBrainsMono', monospace;
+            margin: 1.5rem 0;
+            padding: 0.75rem 1rem;
+
+            code {
+            background: none;
+            color: inherit;
+            font-size: 0.8rem;
+            padding: 0;
+            }
+        }
+
+        blockquote {
+            border-left: 3px solid var(--gray-3);
+            margin: 1.5rem 0;
+            padding-left: 1rem;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid var(--gray-2);
+            margin: 2rem 0;
+        }
     }
 }

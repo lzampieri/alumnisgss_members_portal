@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
-use App\Models\LoginMethod;
+use App\Models\Email;
+use App\Models\Newsletters;
 use App\Models\Stamp;
 use App\Policies\AlumnusPolicy;
+use App\Policies\PositionPolicy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -22,10 +24,15 @@ class AppsController extends Controller
 
         if (Auth::user() && Auth::user()->can('viewNetwork', Alumnus::class)) {
             $apps[] = 'network';
+            $apps[] = 'map';
         }
 
         if (Auth::user() && Auth::user()->can('viewAny', Alumnus::class)) {
             $apps[] = 'registry';
+        }
+
+        if (Auth::user() && Auth::user()->can('viewHimself', Alumnus::class) ) {
+            $apps[] = 'profile';
         }
 
         if (Auth::user()) {
@@ -46,7 +53,7 @@ class AppsController extends Controller
             $apps[] = 'webmaster';
         }
 
-        if (Auth::user() && Auth::user()->can('viewAny', LoginMethod::class)) {
+        if (Auth::user() && Auth::user()->can('viewAny', Email::class)) {
             $apps[] = 'accesses';
         }
 
@@ -54,8 +61,27 @@ class AppsController extends Controller
             $apps[] = 'permissions';
         }
 
-        if (Auth::user()->can('clockin', Stamp::class) || Auth::user()->can('viewAny', Stamp::class)) { // Should check if is employee or manager
+        if (Auth::user() && (new PositionPolicy)->viewActive(Auth::user())) {
+            $apps[] = 'positions';
+        }
+
+        if (Auth::user() && (Auth::user()->can('clockin', Stamp::class) || Auth::user()->can('viewAny', Stamp::class))) {
             $apps[] = 'clockings';
+        }
+        
+        if (Auth::user()) {
+            $apps[] = 'helpdesk';
+        }
+
+        if (Auth::user()  && Auth::user()->can('sync', Email::class) ) {
+            $apps[] = 'contacts';
+        }
+
+        if (Auth::user()  && (
+            Auth::user()->can('create', Newsletter::class) ||
+            Auth::user()->identity->newsletters()->count() > 0
+        )) {
+            $apps[] = 'newsletters';
         }
 
         return Inertia::render('Home', ['apps' => $apps]);

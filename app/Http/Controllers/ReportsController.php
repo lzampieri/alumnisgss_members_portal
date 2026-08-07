@@ -17,6 +17,8 @@ class ReportsController extends Controller
 {
     public function home()
     {
+        // Must be logged in - guaranteed in middleware
+
         $options = [
             ['name' => 'Ratifiche in attesa', 'url' => route('ratifications.export'), 'inertia' => FALSE, 'enabled' => Auth::user()->can('view', Ratification::class)],
             ['name' => 'Variazioni libri societari', 'url' => route('reports.members_variations'), 'inertia' => TRUE, 'enabled' => Auth::user()->can('view', Ratification::class)],
@@ -32,16 +34,13 @@ class ReportsController extends Controller
 
     public function members_variations()
     {
+        $this->authorize('view', Ratification::class);
+
         // Home page for members book variations
         return Inertia::render('Reports/MembersVariations', [
             'av_statuses' => Alumnus::require_ratification
         ]);
     }
-
-    // public function members_variations_estimate()
-    // {
-
-    // }
 
     public function members_variations_generate(Request $request)
     {

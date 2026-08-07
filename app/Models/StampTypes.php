@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Database\Eloquent\SerializesCastableAttributes;
 
@@ -14,6 +15,7 @@ class StampTypes implements CastsAttributes, SerializesCastableAttributes
         StampTypes::$types = [
             'work' => new StampType('work', 'Lavoro', 'L',true,'#b6e3e7'),
             'ferie' => new StampType('ferie', 'Ferie', 'F',false,'#fab394'),
+            'ill' => new StampType('ill', 'Malattia', 'M',false,'#feaeca', function (Carbon $date) { return $date->isBefore(Carbon::now()->addDay()); } ),
             'default' => new StampType('default', 'Errore', 'E',false,'#d1d1d1')
         ];
     }

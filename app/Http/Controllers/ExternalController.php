@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Alumnus;
 use App\Models\External;
-use App\Models\LoginMethod;
+use App\Models\Email;
 use Illuminate\Http\Request;
 
 class ExternalController extends Controller
 {
 
-    public function add_and_associate_post(Request $request, LoginMethod $lmth)
+    public function create_and_associate_post(Request $request, Email $email)
     {
         $this->authorize('edit', Alumnus::class);
-        $this->authorize('associate', LoginMethod::class);
+        $this->authorize('associate', Email::class);
 
         // External creation
 
@@ -25,7 +26,8 @@ class ExternalController extends Controller
         $external = External::create($validated);
 
         // Association
-        $lmth->identity()->associate($external)->save();
+        if( $email )
+            $email->identity()->associate($external)->save();
 
         // Enable user
         $external->givePermissionTo('login');

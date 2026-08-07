@@ -55,8 +55,9 @@ class DynamicPermission extends Model
             $id = Auth::user()->identity;
         }
 
-        if ($id->hasRole(Role::findByName('webmaster')))
-            return true;
+        if( $permissable instanceof Resource )
+            if( $id->hasPermissionTo('resources-view-all') )
+                return true;
 
         return $permissable
             ->morphMany(DynamicPermission::class, 'permissable')
@@ -82,8 +83,9 @@ class DynamicPermission extends Model
             $id = Auth::user()->identity;
         }
 
-        if ($id->hasRole(Role::findByName('webmaster')))
-            return true;
+        if( $permissable instanceof Resource )
+            if( $id->hasPermissionTo('resources-edit-all') )
+                return true;
 
         return $permissable
             ->morphMany(DynamicPermission::class, 'permissable')

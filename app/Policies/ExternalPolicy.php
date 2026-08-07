@@ -21,4 +21,17 @@ class ExternalPolicy
     {
         return $user->hasPermissionTo('identity-externals-enabling');
     }
+    
+
+    /**
+     * Determine whether the user can view an external
+     *
+     * @param  \Illuminate\Foundation\Auth\User  $user optional
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function view(User $user)
+    {
+        return $user->hasPermissionTo('externals-view'); // This policy is recent and still not implemented everywhere! TODO
+    }
+
 }

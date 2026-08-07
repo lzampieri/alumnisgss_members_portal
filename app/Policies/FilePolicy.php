@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Document;
 use App\Models\File;
+use App\Models\Newsletter;
 use App\Models\Resource;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -21,6 +22,7 @@ class FilePolicy
      */
     public function view(?User $user, File $file)
     {
+        $file->loadMissing('parent');
         $parent_type = $file->parent_type;
 
         // Resource
@@ -29,7 +31,7 @@ class FilePolicy
             /** @var Resource $resource */
 
             // Assert that the resource can be seen
-            if (!(new ResourcePolicy)->view($user, $resource))
+            if (!(new ResourcePolicy())->view($user, $resource, $file)) // Cannot use $user->can since $user can be null!
                 return false;
 
             // Assert that the file is actually present in the resource
@@ -40,6 +42,12 @@ class FilePolicy
                     if ($block['fileHandle'] == $file->handle)
                         return true;
                 }
+                if ($block['type'] == 'image') {
+                    if ($block['imageHandle'] == $file->handle)
+                        return true;
+                }
+                if ($user && $user->can('edit', $resource)) // if the user can edit the resource, but must check $user not to be null!
+                    return true;
             }
         }
 
@@ -49,6 +57,12 @@ class FilePolicy
             // Document cannot be seen from here, but must be seen from the document app
             // which will add the footer and everything else
         }
+
+        // Newsletter
+        if ($parent_type == Newsletter::class) {
+            return (new NewsletterPolicy())->view($user, $file->parent);
+        }
+
 
         return false;
     }

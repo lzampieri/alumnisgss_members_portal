@@ -13,6 +13,10 @@ class File extends Model
         'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', 'txt', 'rtf'
     ];
 
+    const ALLOWED_IMAGES_FORMATS = [
+        'jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'
+    ];
+
     protected $fillable = [
         'handle',
         'parent_type',

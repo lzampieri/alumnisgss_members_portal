@@ -65,4 +65,18 @@ class Stamp extends Model
         if (is_null($value)) $this->attributes['clockout'] = null;
         else $this->attributes['clockout'] = $value->format('H:i:s');
     }
+
+    public function tickets()
+    {
+        return $this->morphMany(Ticket::class, 'reference');
+    }
+
+    public function acpttickets()
+    {
+        return $this->morphMany(Ticket::class, 'reference')->where('status', 'accepted');
+    }
+    public function opentickets()
+    {
+        return $this->morphMany(Ticket::class, 'reference')->where('status', 'open');
+    }
 }

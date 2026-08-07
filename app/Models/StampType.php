@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Closure;
+
 class StampType
 {
     public string $tag;
@@ -9,13 +11,17 @@ class StampType
     public string $acronym;
     public bool $clockable;
     public string $color;
-    public function __construct(string $tag, string $label, string $acronym, bool $clockable, string $color)
+    public Closure $checkDates;
+
+    public function __construct(string $tag, string $label, string $acronym, bool $clockable, string $color, Closure $checkDates = null )
     {
         $this->tag = $tag;
         $this->label = $label;
         $this->acronym = $acronym;
         $this->clockable = $clockable;
         $this->color = $color;
+        if( $checkDates !== null ) $this->checkDates = $checkDates;
+        else $this->checkDates = function ($date) { return true; };
     }
 
     public function serialize() {

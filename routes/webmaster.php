@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CityController;
+use App\Http\Controllers\ContactsSyncController;
 use App\Http\Controllers\Log;
 use App\Http\Controllers\WebmasterController;
 use App\Models\Alumnus;
@@ -24,8 +26,8 @@ Route::prefix('/webmaster')->group( function () {
 
     // backup
     Route::get('/backup', [ WebmasterController::class, 'backup' ])->name('webmaster.backup');
-    Route::get('/decryptUtility', [ WebmasterController::class, 'decryptUtility' ])->name('webmaster.decryptUtility');
-    Route::post('/decryptUtility', [ WebmasterController::class, 'decryptUtilityPost' ])->name('webmaster.decryptUtility');
+    Route::get('/decryptUtility', [ WebmasterController::class, 'decryptUtility' ])->middleware('auth')->name('webmaster.decryptUtility');
+    Route::post('/decryptUtility', [ WebmasterController::class, 'decryptUtilityPost' ])->middleware('auth')->name('webmaster.decryptUtility');
 
     // migrations
     Route::get('/migrate', [ WebmasterController::class, 'migrate' ])->name('webmaster.migrate');
@@ -34,4 +36,10 @@ Route::prefix('/webmaster')->group( function () {
     
     // test
     Route::get('/sendTestMail', [ WebmasterController::class, 'sendTestMail' ])->name('webmaster.sendTestMail');
+    Route::get('/enableAllPublic', [ WebmasterController::class, 'enableAllPublic' ])->name('webmaster.enableAllPublic');
+
+    // citites
+    Route::get('/verify_cities', [ CityController::class, 'verify_cities'])->name('webmaster.verify_cities');
+    Route::post('/delete_cities', [ CityController::class, 'delete_city'])->name('webmaster.delete_city');
+    Route::post('/regenerate_cities', [ CityController::class, 'renegerate_cities'])->name('webmaster.renegerate_cities');
 });

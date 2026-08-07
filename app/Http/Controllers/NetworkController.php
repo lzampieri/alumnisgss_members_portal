@@ -4,18 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\ADetailsType;
 use App\Models\Alumnus;
-use App\Models\ADetail;
-use App\Models\ADetailType;
-use App\Models\Identity;
-use App\Models\Ratification;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class NetworkController extends Controller
 {
@@ -23,23 +14,96 @@ class NetworkController extends Controller
     {
         $this->authorize('viewNetwork', Alumnus::class);
 
-        $alumni = Alumnus::whereIn('status', Alumnus::public_status)
-            ->where('coorte', '>', 0)
-            ->with(['aDetails' => function ($query) {
-                $query->whereHas('aDetailsType', function ($query) {
-                    $query->where('visible', true);
-                })->orderBy( ADetailsType::select('order')->whereColumn('a_details_types.id', 'a_details.a_details_type_id') );
-            }, 'aDetails.aDetailsType'])
+        $prefilt = Alumnus::whereIn('status', Alumnus::public_status);
+
+        if (Auth::check() && Auth::user()->can('viewAny', Alumnus::class)) {
+            $prefilt = Alumnus::where('coorte', '>', 0);
+        }
+
+        $alumni = $prefilt->where('coorte', '>', 0)
             ->orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
             ->get();
 
+        foreach ($alumni as $alumnus) {
+            if (Auth::user()->can('viewNetworkDetails', $alumnus)) {
+                $alumnus->load(['aDetails' => function ($query) {
+                    $query->whereHas('aDetailsType', function ($query) {
+                        $query->where('visible', true);
+                    })->orderBy(ADetailsType::select('order')->whereColumn('a_details_types.id', 'a_details.a_details_type_id'));
+                }, 'aDetails.aDetailsType']);
+                $alumnus['filtered_details'] = $alumnus->aDetails;
+            } else {
+                $alumnus['filtered_details'] = [];
+            }
+            
+        }
+
+        $alumni->append('can_be_network_edited');
+
+        $alumni_cleaned = $alumni->map->only([
+            'id',
+            'name',
+            'surname',
+            'coorte',
+            'status',
+
+            'filtered_details',
+
+            'can_be_network_edited',
+            'consent_to_network_share',
+        ]);
+
         return Inertia::render('Network/List', [
-            'alumni' => $alumni,
-            'canEditView' => Auth::user()->can('editNetworkView', Alumnus::class),
-            'canEditAlumnus' => Auth::user()->can('editNetworkAlumnus', Alumnus::class),
+            'alumni' => $alumni_cleaned,
+            'canEditView' => Auth::user()->can('editNetworkView', Alumnus::class)
         ]);
     }
+
+    public function view(Request $request, Alumnus $alumnus)
+    {
+        $this->authorize('view', $alumnus);
+
+        $itsme = Auth::user()->identity->id == $alumnus->id;
+        
+        if (Auth::user()->can('viewNetworkDetails', $alumnus)) {
+            $alumnus->load(['aDetails' => function ($query) {
+                $query->whereHas('aDetailsType', function ($query) {
+                    $query->where('visible', true);
+                })->orderBy(ADetailsType::select('order')->whereColumn('a_details_types.id', 'a_details.a_details_type_id'));
+            }, 'aDetails.aDetailsType']);
+            $alumnus['filtered_details'] = $alumnus->aDetails;
+        } else {
+            $alumnus['filtered_details'] = [];
+        }
+
+        $alumnus->load('emails');
+        $alumnus->load('emails.identity');
+        $alumnus['visible_emails'] = $alumnus->emails->filter->canView;
+
+        $alumnus->append('can_be_network_edited');
+
+        $alumnus = $alumnus->only([
+            'id',
+            'name',
+            'surname',
+            'coorte',
+            'status',
+
+            'filtered_details',
+            'visible_emails',
+
+            'can_be_network_edited',
+            'consent_to_email_share',
+            'consent_to_network_share',
+        ]);
+
+        return Inertia::render('Network/View', [
+            'alumnus' => $alumnus,
+            'itsme' => $itsme
+        ]);
+    }
+
 
     public function settings()
     {
@@ -100,7 +164,7 @@ class NetworkController extends Controller
 
     public function edit(Request $request, Alumnus $alumnus)
     {
-        $this->authorize('editNetworkAlumnus', Alumnus::class);
+        $this->authorize('editNetworkAlumnus', $alumnus);
 
         $adtlist = ADetailsType::allOrdered();
         $adtlist->load(['aDetails' => function ($query) use ($alumnus) {
@@ -108,8 +172,23 @@ class NetworkController extends Controller
         }]);
         $adtlist->append('usedValues');
 
+        $alumnus['visible_emails'] = $alumnus->emails->filter->canView;
+        $cleaned_alumnus = $alumnus->only([
+            'id',
+            'name',
+            'surname',
+            'coorte',
+            'status',
+
+            'visible_emails',
+
+            'can_be_network_edited',
+            'consent_to_email_share',
+            'consent_to_network_share',
+        ]);
+
         return Inertia::render('Network/Edit', [
-            'alumnus' => $alumnus,
+            'alumnus' => $cleaned_alumnus,
             'adts' => $adtlist
         ]);
     }
@@ -117,7 +196,7 @@ class NetworkController extends Controller
 
     public function edit_post(Request $request, Alumnus $alumnus)
     {
-        $this->authorize('editNetworkAlumnus', Alumnus::class);
+        $this->authorize('editNetworkAlumnus', $alumnus);
 
         $validated = $request->validate([
             'adts' => 'array',
@@ -127,13 +206,15 @@ class NetworkController extends Controller
         ]);
 
         foreach ($validated['adts'] as $adts) {
+            if ((count($adts['value']) == 1) && is_array($adts['value'][0])) // Extra check to prevent array of array
+                $adts['value'] = $adts['value'][0];
+
             $alumnus->aDetails()->updateOrCreate(
                 ['a_details_type_id' => $adts['id']],
                 ['value' => $adts['value']]
             );
         }
 
-        return redirect()->route('network')->with(['notistack' => ['success', 'Salvato!']]);
+        return redirect()->back()->with(['notistack' => ['success', 'Salvato!']]);
     }
-
 }

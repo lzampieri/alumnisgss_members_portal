@@ -19,6 +19,17 @@ class LogEvents {
     const DOWNLOADED_RATIFICATIONSLIST = 'downloaded_ratifications_list';
     const DOWNLOADED_REPORT = 'downloaded_variations_report';
 
+    const BACKUP_DONE = 'backup_done';
+
     const LOGIN = 'login';
+    const LOGIN_OTP = 'login via OTP';
+    const LOGIN_LV2 = 'level 2 login';
+
     const MAIL_SENT = 'mail_sent';
+    const NEWSLETTER_SENT = 'newsletter_sent';
+    const NEWSLETTER_TEST_SENT = 'newsletter_test_sent';
+    const NEWSLETTER_SMTP_SENT = 'newsletter_smtp_sent';
+
+    const RESOURCE_VIA_MAGICLINK = 'resource_accessed_via_magiclink';
+    const FILE_VIA_MAGICLINK = 'file_accessed_via_magiclink';
 }

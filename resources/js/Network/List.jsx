@@ -1,0 +1,112 @@
+
+
+import { Head, Link, usePage, useRemember } from "@inertiajs/react";
+import { AlumnusStatus, bgAndContrast, bgAndContrastPastel, romanize } from "../Utils";
+import { useMemo, useState } from "react";
+import SmartChip from "./SmartChip";
+
+import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
+import { themeQuartz } from "ag-grid-community";
+import { ModuleRegistry, ClientSideRowModelModule, RowAutoHeightModule, QuickFilterModule } from 'ag-grid-community';
+import ADetailsType from "./ADetailsType";
+import { faGear, faPen, faRightLong } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+ModuleRegistry.registerModules([ClientSideRowModelModule, RowAutoHeightModule, QuickFilterModule]);
+
+function AlumnusContent({ data }) {
+
+    return <div className="w-full border border-primary-main flex flex-col p-2 min-h-[3rem] justify-center gap-2 leading-normal	">
+        <div className="w-full flex flex-row items-center">
+            <div className="ml-2 font-bold grow">
+                {data.name} {data.surname}
+            </div>
+            <div className="text-end mx-1">
+                <Link className="icon-button" href={route('network.view', { alumnus: data.id })}><FontAwesomeIcon icon={faRightLong} /></Link>
+            </div>
+            {data.can_be_network_edited &&
+                <div className="text-end mx-1">
+                    <Link className="icon-button" href={route('network.edit', { alumnus: data.id })}><FontAwesomeIcon icon={faPen} /></Link>
+                </div>
+            }
+        </div>
+        <div className="w-full flex flex-row justify-start flex-wrap">
+            <SmartChip style={bgAndContrast(AlumnusStatus.status[data.status].color)} key='status' content={AlumnusStatus.status[data.status].label} />
+            <SmartChip style={bgAndContrastPastel(-1)} key='coorte' content={(data.coorte > 0) ? (romanize(data.coorte) + " coorte") : "Onorario"} />
+            {data.filtered_details?.length > 0 && !data.consent_to_network_share && <SmartChip content="Dettagli visibili solo allo staff, nascosti ai soci" style={bgAndContrastPastel(2)} />}
+        </div>
+        <div className="w-full flex flex-row justify-start flex-wrap gap-y-2">
+            {data.filtered_details?.map((adt, i) => {
+                if (adt.value.length > 0) {
+                    if (adt.a_details_type && adt.a_details_type?.type in ADetailsType.values)
+                        return ADetailsType.values[adt.a_details_type?.type].chip(adt, adt.a_details_type, i)
+                    else
+                        return adt.value.map((entry, j) => <SmartChip
+                            content={entry}
+                            key={adt.id + "|" + j}
+                            style={bgAndContrastPastel(adt.a_details_type_id)} />
+                        )
+                }
+            }
+            )}
+        </div>
+    </div>
+}
+
+function stringifyData({ data }) {
+    return data.id + " " + data.name + " " + data.surname +
+        " " + data.status + " " + AlumnusStatus.status[data.status]?.label +
+        " " + data.coorte + " " + romanize(data.coorte) + " coorte" +
+        " " + data.filtered_details?.map((adt, i) => adt.value.map((entry, j) => entry).join(" ")).join(" ")
+}
+
+function ListAsATable({ alumni, quickFilter }) {
+
+    const theme = themeQuartz.withParams({
+        headerHeight: 0,
+        rowBorder: false,
+        rowHoverColor: "#00000000",
+        borderColor: "#00000000",
+    })
+
+    const columns = useMemo(() => [
+        {
+            field: 'main',
+            cellRenderer: ({ value }) =>
+                <AlumnusContent data={value} />,
+            filter: 'agTextColumnFilter',
+            filterValueGetter: stringifyData,
+            valueGetter: ({ data }) => data,
+            autoHeight: true,
+            flex: 1
+        },
+    ], [])
+
+    return <div className='ag-theme-quartz w-full md:w-3/5 grow'>
+        <AgGridReact
+            rowData={alumni}
+            columnDefs={columns}
+            quickFilterText={quickFilter}
+            theme={theme}
+            suppressCellFocus={true}
+        />
+    </div>
+}
+
+export default function List() {
+    const alumni = usePage().props.alumni;
+    const [quickFilter, setQuickFilter] = useRemember('')
+
+    return <div className="main-container-large h-[80vh] gap-1">
+        <Head title="Rete sociale" />
+        <div className="w-full flex flex-row justify-center gap-2">
+            <input className="w-full md:w-1/2" type='text' value={quickFilter} onChange={(e) => setQuickFilter(e.target.value)} placeholder='Cerca...' />
+            {usePage().props.canEditView &&
+                <Link className="button flex flex-row items-baseline" href={route('network.settings')}>
+                    <FontAwesomeIcon icon={faGear} />
+                    Impostazioni
+                </Link>
+            }
+        </div>
+        <ListAsATable alumni={alumni} quickFilter={quickFilter} />
+    </div>
+}

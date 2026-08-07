@@ -4,10 +4,13 @@ namespace App\Models;
 
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\LogEvents;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
+
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Nette\NotImplementedException;
 
 abstract class Identity extends Model
 {
@@ -24,10 +27,15 @@ abstract class Identity extends Model
         removeRole as protected traitRemoveRole;
     }
 
-    // hasPermissionTo is overrided to include the 'everyone' case
+    // hasPermissionTo is overrided to include extra roles, i.e. 'everyone' and 'position' case
     public function hasPermissionTo($permission, $guardName = null): bool
     {
-        return $this->traitHasPermissionTo($permission) || Role::findByName('everyone')->hasPermissionTo($permission);
+        if( $this->traitHasPermissionTo($permission) )
+            return true;
+        foreach( $this->getAllRoles() as $role )
+            if( $role->hasPermissionTo($permission) )
+                return true;
+        return false;
     }
 
     // Some of the trait method are overrided for logging purpose
@@ -66,7 +74,7 @@ abstract class Identity extends Model
         $editableRoles = [];
 
         foreach ($roles as $role) {
-            if ($role->name == 'member' || $role->name == 'student_member' || $role->name == 'everyone') continue;
+            if ( in_array($role->name, Alumnus::public_status) || $role->name == 'everyone' || $role->isAutomatic ) continue;
             if ($this->hasPermissionTo('user-edit-' . $role->name)) {
                 $editableRoles[] = $role;
             }
@@ -80,9 +88,29 @@ abstract class Identity extends Model
         return $this->surname . " " . $this->name;
     }
 
-    public function loginMethods()
+    public function nameAndSurname()
     {
-        return $this->morphMany(LoginMethod::class, 'identity');
+        return $this->name . " " . $this->surname;
+    }
+
+    public function emails()
+    {
+        return $this->morphMany(Email::class, 'identity')->orderBy('primary','desc');
+    }
+
+    public function newsletters()
+    {
+        return $this->morphMany(Newsletter::class, 'owner');
+    }
+
+    public function positions()
+    {
+        return $this->morphMany(Position::class, 'owner');
+    }
+
+    public function validPositions()
+    {
+        return $this->morphMany(Position::class, 'owner')->whereDate('from','<=',Carbon::now())->whereDate('to','>=',Carbon::now());
     }
 
     public function documents()
@@ -93,6 +121,11 @@ abstract class Identity extends Model
     public function stamps()
     {
         return $this->morphMany(Stamp::class, 'employee');
+    }
+    
+    public function authoredTickets()
+    {
+        return $this->morphMany(Ticket::class, 'author');
     }
 
     public function aDetails()
@@ -113,7 +146,31 @@ abstract class Identity extends Model
     public function getAllRoles()
     {
         $roles = $this->roles;
-        $roles->push(Role::findByName('everyone'));
+        $already_there = $roles->map( function ($r){ return $r['name']; } )->toArray();
+
+        if( !in_array('everyone', $already_there ) )
+            $roles->push(Role::findByName('everyone'));
+        foreach( $this->validPositions as $pos ) {
+            if( !in_array($pos->type, $already_there ) )
+            $roles->push(Role::findByName($pos->type));
+        }
         return $roles;
+    }
+
+    public function getAllRolesAttribute()
+    {
+        return $this->getAllRoles();
+    }
+
+    public static function allWithPermission(string $permissionName) : array {
+        return array_merge(
+            Alumnus::permission($permissionName)->get()->all(),
+            External::permission($permissionName)->get()->all()
+        );
+    }
+    
+    protected function canView(): Attribute {
+
+        return Attribute::make( get: fn (mixed $_, array $attributes) => throw new NotImplementedException() );
     }
 }

@@ -3,19 +3,47 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
+use App\Models\Email;
 use App\Models\External;
-use App\Models\LoginMethod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class IdentityController extends Controller
 {
-    public function enabling(Request $request)
+    public function list()
+    {
+        $this->authorize('viewAny', Email::class);
+
+        $ems = [
+            'alumni' => Alumnus::has('emails')->with('emails')->orderBy('surname')->orderBy('name')->get()->makeVisible('emails'),
+            'externals' => External::has('emails')->with('emails')->orderBy('surname')->orderBy('name')->get()->makeVisible('emails'),
+            'requests' => Email::whereNull('identity_id')->orderBy('created_at', 'desc')->get(),
+        ];
+
+        foreach (['alumni', 'externals'] as $key) {
+            foreach ($ems[$key] as $identity) {
+                $identity->roles = $identity->getAllRoles();
+                foreach( $identity->emails as $em ) {
+                    $em->append('can_delete');
+                }
+                $identity->makeVisible('roles');
+            }
+        }
+
+        return Inertia::render('Accesses/List', [
+            'list' => $ems,
+            'editableRoles' => Auth::user()->identity->editableRoles(),
+            'canAssociate' => Auth::user()->can('associate', Email::class),
+            'canAdd' => Auth::user()->can('add', Email::class)
+        ]);
+    }
+
+    public function enabled(Request $request)
     {
 
         $validated = $request->validate([
-            'id' => 'required|numeric',
+            'identity' => 'required|numeric',
             'type' => 'required|in:alumnus,external',
             'enabled' => 'required|boolean'
         ]);
@@ -24,7 +52,7 @@ class IdentityController extends Controller
 
         $this->authorize('enable', $classType);
 
-        $identity = $validated['type'] == 'alumnus' ? Alumnus::find($validated['id']) : External::find($validated['id']);
+        $identity = $validated['type'] == 'alumnus' ? Alumnus::find($validated['identity']) : External::find($validated['identity']);
 
         if (!$identity) {
             return redirect()->back()->with('notistack', ['error', 'Identità non trovata']);
@@ -45,28 +73,4 @@ class IdentityController extends Controller
         return redirect()->back();
     }
 
-    public function edit_roles(Request $request)
-    {
-
-        $validated = $request->validate([
-            'id' => 'required|numeric',
-            'type' => 'required|in:alumnus,external',
-            'action' => 'required|in:add,remove',
-            'role' => 'required|exists:roles,name'
-        ]);
-
-        $this->authorize('user-edit-' . $validated['role']);
-
-        $identity = $validated['type'] == 'alumnus' ? Alumnus::find($validated['id']) : External::find($validated['id']);
-
-        if ($identity->hasRole($validated['role']) && $validated['action'] == 'remove') {
-            $identity->removeRole($validated['role']);
-        }
-
-        if (!$identity->hasRole($validated['role']) && $validated['action'] == 'add') {
-            $identity->assignRole($validated['role']);
-        }
-
-        return redirect()->back();
-    }
 }

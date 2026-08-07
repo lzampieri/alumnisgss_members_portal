@@ -6,7 +6,7 @@ use App\Models\Alumnus;
 use App\Models\Document;
 use App\Models\DynamicPermission;
 use App\Models\External;
-use App\Models\LoginMethod;
+use App\Models\Email;
 use App\Models\Permalink;
 use App\Models\Ratification;
 use App\Models\Resource;
@@ -41,8 +41,8 @@ class Log extends Controller
             return "(" . $object->id . ") " . $object->surname . " "  . $object->name . " (" . $object->coorte . ") [" . $object->status . "]";
         if ($object instanceof External)
             return "(" . $object->id . ") " . $object->surname . " "  . $object->name . " [" . $object->note . "]";
-        if ($object instanceof LoginMethod)
-            return $object->credential . " (" . $object->driver . ")";
+        if ($object instanceof Email)
+            return $object->address;
         if ($object instanceof Permission)
             return $object->name;
         if ($object instanceof Ratification)

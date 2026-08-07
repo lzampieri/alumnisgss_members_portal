@@ -68,7 +68,7 @@ return [
     |
     */
 
-    'timezone' => 'Europe/Rome',
+    'timezone' => 'UTC', // THIS MUST BE UTC 'CAUSE IT MUST MATCH WITH THE TIMEZONE SET IN THE DATABASE
 
     /*
     |--------------------------------------------------------------------------
@@ -81,7 +81,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'it',
 
     /*
     |--------------------------------------------------------------------------

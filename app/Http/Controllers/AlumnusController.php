@@ -38,6 +38,7 @@ class AlumnusController extends Controller
     public function membersCounters()
     {
         $this->authorize('viewMembers', Alumnus::class);
+
         $members = Alumnus::where('status', 'member')->count();
         $students = Alumnus::where('status', 'student_member')->count();
 
@@ -75,18 +76,14 @@ class AlumnusController extends Controller
     public function table()
     {
         $this->authorize('viewAny', Alumnus::class);
-        $alumni = Alumnus::with(['aDetails' => function ($query) {
-            $query->whereHas('aDetailsType', function ($query) {
-                $query->where('visible', true);
-            })->orderBy(ADetailsType::select('order')->whereColumn('a_details_types.id', 'a_details.a_details_type_id'));
-        }, 'aDetails.aDetailsType'])
-            ->orderBy('coorte')
+
+        $alumni = Alumnus::orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
             ->get()
             ->append('a_details_keyd')
             ->append('pending_ratifications_count');
         $adtlist = ADetailsType::allOrdered();
-
+        
         return Inertia::render(
             'Registry/Table',
             [
@@ -103,7 +100,9 @@ class AlumnusController extends Controller
         $adtlist = ADetailsType::allOrdered();
 
         if ($alumnus) {
-            $alumnus->load(['ratifications', 'ratifications.document']);
+            $alumnus->load(['ratifications', 'ratifications.document','emails']);
+            $alumnus->makeVisible(['ratifications', 'ratifications.document','emails']);
+            $alumnus->makeVisible(['ratifications', 'ratifications.document','emails']);
             $adtlist->load(['aDetails' => function ($query) use ($alumnus) {
                 $query->where('identity_type', Alumnus::class)->where('identity_id', $alumnus->id);
             }]);
@@ -133,6 +132,10 @@ class AlumnusController extends Controller
             'coorte' => 'required|numeric',
             'status' => 'required|in:' . implode(',', Alumnus::status),
             'tags' => 'nullable|array',
+            'emails' => 'nullable|array',
+            'consent_to_email_share' => 'required|boolean',
+            'consent_to_network_share' => 'required|boolean',
+            'enabled' => 'required|boolean',
             'adts' => 'array',
             'adts.*' => 'array',
             'adts.*.id' => 'required|distinct|exists:a_details_types,id',
@@ -150,7 +153,7 @@ class AlumnusController extends Controller
 
         // Create or update alumnus
         if ($alumnus) {
-            foreach (['surname', 'name', 'coorte', 'status', 'tags'] as $key) {
+            foreach (['surname', 'name', 'coorte', 'status', 'tags', 'consent_to_email_share', 'consent_to_network_share'] as $key) {
                 if ($validated[$key] !== $alumnus[$key]) {
                     $alumnus[$key] = $validated[$key];
                     $update = true;
@@ -159,6 +162,17 @@ class AlumnusController extends Controller
             if ($update) $alumnus->save();
         } else {
             $alumnus = Alumnus::create($validated);
+        }
+
+        // Check for consent to login
+        if ($alumnus->enabled && !$validated['enabled']) {
+            // Request to disabled
+            if (!$alumnus->hasRole('webmaster')) {// No effects on webmaster
+                $alumnus->revokePermissionTo('login');
+            }
+        }
+        if (!$alumnus->enabled && $validated['enabled']) {
+            $alumnus->givePermissionTo('login');
         }
 
         // Eventually create ratification
@@ -175,8 +189,24 @@ class AlumnusController extends Controller
             }
         }
 
+        // Update email addresses
+        $emails = $alumnus->emails->map(function ($email) {
+            return $email->address;
+        })->toArray();
+        // Create new addresses
+        foreach( array_diff( $validated['emails'], $emails ) as $email ) {
+            $alumnus->emails()->create(['address' => $email]);
+        }
+        foreach( array_diff( $emails, $validated['emails'] ) as $email ) {
+            $alumnus->emails()->where('address', $email)->delete();
+        }
+
         // Update ADetails
         foreach ($validated['adts'] as $adts) {
+            
+            if( ( count( $adts['value'] ) == 1 ) && is_array( $adts['value'][0] ) ) // Extra check to prevent array of array
+                $adts['value'] = $adts['value'][0];
+
             $alumnus->aDetails()->updateOrCreate(
                 ['a_details_type_id' => $adts['id']],
                 ['value' => $adts['value']]

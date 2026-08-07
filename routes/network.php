@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AlumnusController;
 use App\Http\Controllers\AlumnusExportImportController;
+use App\Http\Controllers\CityController;
 use App\Http\Controllers\NetworkController;
 use Illuminate\Support\Facades\Route;
 
@@ -9,10 +10,14 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('/network')->group(function () {
     Route::get('/', [NetworkController::class, 'list'])->name('network');
     
+    Route::get('/view/{alumnus}', [NetworkController::class, 'view'])->name('network.view');
+
     Route::get('/edit/{alumnus}', [NetworkController::class, 'edit'])->name('network.edit');
     Route::post('/edit/{alumnus}', [NetworkController::class, 'edit_post']);
 
     Route::get('/settings', [NetworkController::class, 'settings'])->name('network.settings');
     Route::post('/settings/adtedit', [NetworkController::class, 'adtedit'])->name('network.settings.adtedit');
     Route::post('/settings/adtdelete', [NetworkController::class, 'adtdelete'])->name('network.settings.adtdelete');
+
+    Route::get('/map', [CityController::class, 'map'])->name('network.map');
 });
