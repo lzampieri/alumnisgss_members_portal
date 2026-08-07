@@ -39,4 +39,8 @@ Route::prefix('/roles')->group( function () {
 
     Route::post('/add', [ RolesController::class, 'add' ] )->name('roles.add');
     Route::post('/remove', [ RolesController::class, 'remove' ] )->name('roles.remove');
+
+    Route::get('/list', [ RolesController::class, 'manage'] )->name('roles.list');
+    Route::get('/role/{role}', [ RolesController::class, 'manage'] )->name('roles.role');
+    Route::post('/updatePermissions', [ RolesController::class, 'update_permissions' ] )->name('roles.updatePermissions');
 });

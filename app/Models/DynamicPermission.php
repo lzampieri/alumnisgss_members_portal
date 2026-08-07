@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Http\Controllers\LogEvents;
+use App\Models\Role as ModelsRole;
 use App\Traits\EditsAreLogged;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -59,6 +60,10 @@ class DynamicPermission extends Model
             if( $id->hasPermissionTo('resources-view-all') )
                 return true;
 
+        if( $permissable instanceof ModelsRole )
+            if( $id->hasPermissionTo('roles-view-all') )
+                return true;
+
         return $permissable
             ->morphMany(DynamicPermission::class, 'permissable')
             ->whereIn('role_id', $id->getAllRoles()->pluck('id'))
@@ -85,6 +90,10 @@ class DynamicPermission extends Model
 
         if( $permissable instanceof Resource )
             if( $id->hasPermissionTo('resources-edit-all') )
+                return true;
+
+        if( $permissable instanceof ModelsRole )
+            if( $id->hasPermissionTo('roles-edit-all') )
                 return true;
 
         return $permissable

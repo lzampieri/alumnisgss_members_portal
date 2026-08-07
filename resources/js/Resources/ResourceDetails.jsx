@@ -26,12 +26,17 @@ function EditRoles({ type, initialList, resourceId, setProcessing }) {
     const save = () => {
         openDialog(false);
 
-        if (initialList.sort() + "" == currentList.sort() + "") {
-            return;
-        }
-
         postRequest(
             'resources.updatePermissions',
+            { type: type, newList: currentList, resourceId: resourceId },
+            setProcessing
+        )
+    }
+    const saveAll = () => {
+        openDialog(false);
+
+        postRequest(
+            'resources.updatePermissionsAll',
             { type: type, newList: currentList, resourceId: resourceId },
             setProcessing
         )
@@ -45,7 +50,8 @@ function EditRoles({ type, initialList, resourceId, setProcessing }) {
                 {type == 'edit' && "Modificabile da:"}
             </label>
             <RolesChips roles={roles} list={currentList} updateList={updateList} />
-            <div className='button items-end self-end mt-2' onClick={save}>Salva</div>
+            <div className='button items-end self-end mt-2' onClick={save}>Salva<br/><small>solo per questa</small></div>
+            <div className='button items-end self-end mt-2' onClick={saveAll}>Salva<br/><small>per questa e per tutte le sottorisorse<br/>a cui hai accesso</small></div>
         </EmptyDialog>
     </>
 }

@@ -8,6 +8,8 @@ use App\Models\External;
 use App\Models\Identity;
 use App\Models\Log;
 use App\Models\Permission;
+use Defuse\Crypto\File as CryptoFile;
+use Defuse\Crypto\Key;
 use Illuminate\Support\Facades\Artisan;
 use Inertia\Inertia;
 use Ifsnop\Mysqldump\Mysqldump;
@@ -45,11 +47,10 @@ class WebmasterController extends Controller
             )
         );
         $dump->start($tempFile);
+        $filename = storage_path() . '/app/backups/database_' . date('Ymd') . '.sql';
 
-        $encrypted = Crypt::encryptString(file_get_contents($tempFile));
+        CryptoFile::encryptFile($tempFile, $filename, Key::loadFromAsciiSafeString(env('APP_KEY_CR')));
 
-        $filename = '/app/backups/database_' . date('Ymd') . '.sql';
-        file_put_contents(storage_path() . $filename, $encrypted);
         File::delete($tempFile);
 
         LogController::log(LogEvents::BACKUP_DONE, NULL, 'filename', NULL, $filename);
@@ -58,6 +59,9 @@ class WebmasterController extends Controller
     public function backup()
     {
         // No authorization: visible by anyone
+        // return response()->streamDownload(function () {
+        //     echo Key::createNewRandomKey()->saveToAsciiSafeString();
+        // }, "key_dec.txt");
 
         try {
             $this->do_backup();
@@ -82,22 +86,37 @@ class WebmasterController extends Controller
         // Must be logged in - guaranteed in middleware
 
         try {
+            // $validated = $request->validate([
+            //     'file' => 'required',
+            //     'key' => 'required',
+            // ]);
+
+            // $key = base64_decode($validated['key']);
+            // $encrypter = new Encrypter($key, 'AES-256-CBC');
+
+            // $content = $validated['file']->get();
+            // $filename = $validated['file']->getClientOriginalName();
+
+            // $output =  $encrypter->decryptString($content);
+
+            // return response()->streamDownload(function () use ($output) {
+            //     echo $output;
+            // }, $filename . "_dec");
+
+
             $validated = $request->validate([
                 'file' => 'required',
                 'key' => 'required',
             ]);
 
-            $key = base64_decode($validated['key']);
-            $encrypter = new Encrypter($key, 'AES-256-CBC');
+            $tempFile = storage_path() . '/app/'. $validated['file']->storeAs('backups','tempd');
 
-            $content = $validated['file']->get();
-            $filename = $validated['file']->getClientOriginalName();
+            $tempFileDownload = storage_path() . '/app/backups/tempd.dec';
+            CryptoFile::decryptFile($tempFile, $tempFileDownload, Key::loadFromAsciiSafeString($validated['key']));
 
-            $output =  $encrypter->decryptString($content);
+            File::delete($tempFile);
 
-            return response()->streamDownload(function () use ($output) {
-                echo $output;
-            }, $filename . "_dec");
+            return response()->download($tempFileDownload, $validated['file']->getClientOriginalName() . '_dec')->deleteFileAfterSend(true);
         } catch (RuntimeException $e) {
             return redirect()->back()->with('notistack', ['error', 'Unable to decrypt. ' . $e->getMessage()]);
         }

@@ -90,32 +90,6 @@ function permissionVerify(setProcessing) {
     </div>
 }
 
-function roleAdd(setProcessing) {
-    const { data, setData, errors, post, reset } = useForm({ name: "", common_name: "" });
-    const [open, setOpen] = useState(false);
-
-    const submit = (e) => {
-        e.preventDefault()
-        setProcessing(true)
-        post(route('roles.create'), { onFinish: () => setProcessing(false), onSuccess: () => { reset(), setOpen(false) }, preserveState: true, preserveScroll: true });
-    }
-
-    return <div className="drawer-item" onClick={() => setOpen(true)} key={-1}>
-        + Aggiungi
-        <EmptyDialog open={open} onClose={() => setOpen(false)}>
-            <form onSubmit={(e) => submit(e)} className="w-full flex flex-col items-stretch mt-4 text-black">
-                <label>Nome software</label>
-                <input type="text" className="w-full" value={data.name} onChange={(e) => setData('name', e.target.value)} />
-                <label className="error">{errors.name}</label>
-                <label>Nome comune</label>
-                <input type="text" className="w-full" value={data.common_name} onChange={(e) => setData('common_name', e.target.value)} />
-                <label className="error">{errors.common_name}</label>
-                <input type="submit" className="button" value="Aggiungi ruolo" />
-            </form >
-        </EmptyDialog>
-    </div>
-}
-
 export default function List() {
     let roles = usePage().props.roles;
     const perms = usePage().props.perms;
@@ -137,7 +111,6 @@ export default function List() {
                         {role.common_name}
                     </div>
                 )}
-                {roleAdd(setProcessing)}
             </ResponsiveDrawer.Drawer>
             {selectedIdx >= 0 && <RoleCard role={roles[selectedIdx]} perms={perms} setProcessing={setProcessing} />}
             {permissionAdd(setProcessing)}

@@ -1,4 +1,4 @@
-import { faAddressBook, faBookOpen, faBoxArchive, faBug, faBusinessTime, faCircleNodes, faEnvelopeOpenText, faFilePen, faIdBadge, faIdCard, faLandmark, faMap, faSignature, faStapler, faTruckMedical, faUser, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faAddressBook, faBookOpen, faBoxArchive, faBug, faBusinessTime, faCircleNodes, faEnvelopeOpenText, faFilePen, faIdBadge, faIdCard, faLandmark, faMap, faPeopleRoof, faSignature, faStapler, faTruckMedical, faUser, faUsers } from "@fortawesome/free-solid-svg-icons";
 
 export default [
     { id: 'profile', name: 'Profilo', url: route('profile'), icon: faUser },
@@ -14,6 +14,7 @@ export default [
     { id: 'clockings', name: 'Timbrature', url: route('clockings'), icon: faBusinessTime },
     { id: 'newsletters', name: 'Newsletters', url: route('newsletters'), icon: faEnvelopeOpenText },
     { id: 'accesses', name: 'Accessi', url: route('accesses'), icon: faIdBadge },
+    { id: 'accesses', name: 'Gruppi', url: route('roles.list'), icon: faPeopleRoof },
     { id: 'permissions', name: 'Ruoli e permessi', url: route('permissions'), icon: faIdCard },
     { id: 'contacts', name: 'Sincronizza rubrica', url: route('contacts'), icon: faAddressBook },
     { id: 'helpdesk', name: 'Helpdesk', url: route('helpdesk'), icon: faTruckMedical },
