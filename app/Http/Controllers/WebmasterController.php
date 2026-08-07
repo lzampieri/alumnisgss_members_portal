@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use RuntimeException;
+use App\Utils\Settings;
 
 class WebmasterController extends Controller
 {
@@ -109,7 +110,7 @@ class WebmasterController extends Controller
                 'key' => 'required',
             ]);
 
-            $tempFile = storage_path() . '/app/'. $validated['file']->storeAs('backups','tempd');
+            $tempFile = storage_path() . '/app/' . $validated['file']->storeAs('backups', 'tempd');
 
             $tempFileDownload = storage_path() . '/app/backups/tempd.dec';
             CryptoFile::decryptFile($tempFile, $tempFileDownload, Key::loadFromAsciiSafeString($validated['key']));
@@ -221,5 +222,45 @@ class WebmasterController extends Controller
 
         return redirect()->back()
             ->with('notistack', ['success', "Mail inviata."]);
+    }
+
+
+    public function settings()
+    {
+        $this->authorizeRole('webmaster'); // Todo add specific authorization
+
+        $keyval = [];
+        foreach (Settings::getAll() as $key => $value) {
+            $keyval[] = [ 'key' => $key, 'value' => $value ];
+        }
+
+        return Inertia::render('Webmaster/Settings', ['settings' => $keyval]);
+    }
+    
+    public function settings_post(Request $request)
+    {
+        $this->authorizeRole('webmaster'); // Todo add specific authorization
+
+        $validated = $request->validate([
+            'settings' => 'required|array',
+            'settings.*.key' => 'sometimes|string|nullable',
+            'settings.*.value' => 'sometimes',
+        ]);
+
+        $previous = Settings::getAll();
+
+        $newdict = [];
+        foreach ($validated['settings'] as $ss) {
+            if( array_key_exists( 'key', $ss ) && strlen( $ss['key'] ) > 0 ) {
+                $newdict[$ss['key']] = array_key_exists( 'value', $ss ) ? $ss['value'] : 0;
+            }
+        }
+        Settings::setAll($newdict);
+        Settings::save();
+
+        LogController::log(LogEvents::SETTINGS_CHANGED,
+            NULL, 'settings', $previous, $newdict);
+
+        return redirect()->back()->with('notistack', ['success', 'Impostazioni salvate!']);
     }
 }

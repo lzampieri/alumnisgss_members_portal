@@ -42,4 +42,8 @@ Route::prefix('/webmaster')->group( function () {
     Route::get('/verify_cities', [ CityController::class, 'verify_cities'])->name('webmaster.verify_cities');
     Route::post('/delete_cities', [ CityController::class, 'delete_city'])->name('webmaster.delete_city');
     Route::post('/regenerate_cities', [ CityController::class, 'renegerate_cities'])->name('webmaster.renegerate_cities');
+
+    // Settings
+    Route::get('/settings', [ WebmasterController::class, 'settings'])->name('webmaster.settings');
+    Route::post('/settings', [ WebmasterController::class, 'settings_post']);
 });

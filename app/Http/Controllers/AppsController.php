@@ -31,14 +31,14 @@ class AppsController extends Controller
             $apps[] = 'registry';
         }
 
-        if (Auth::user() && Auth::user()->can('viewHimself', Alumnus::class) ) {
+        if (Auth::user() && Auth::user()->can('viewHimself', Alumnus::class)) {
             $apps[] = 'profile';
         }
 
         if (Auth::user()) {
             $apps[] = 'reports';
         }
-        
+
         // Anyone can access board
         $apps[] = 'board';
 
@@ -72,12 +72,12 @@ class AppsController extends Controller
         if (Auth::user() && (Auth::user()->can('clockin', Stamp::class) || Auth::user()->can('viewAny', Stamp::class))) {
             $apps[] = 'clockings';
         }
-        
+
         if (Auth::user()) {
             $apps[] = 'helpdesk';
         }
 
-        if (Auth::user()  && Auth::user()->can('sync', Email::class) ) {
+        if (Auth::user()  && Auth::user()->can('sync', Email::class)) {
             $apps[] = 'contacts';
         }
 
@@ -89,5 +89,10 @@ class AppsController extends Controller
         }
 
         return Inertia::render('Home', ['apps' => $apps]);
+    }
+
+    public function maintenance(Request $request)
+    {
+        return Inertia::render('General/Maintenance');
     }
 }

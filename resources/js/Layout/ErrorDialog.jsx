@@ -4,9 +4,6 @@ import { useState } from "react";
 import { faHeartCrack, faLock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-
-
-
 export default function ErrorDialog({ inside }) {
     const [open, setOpen] = useState(true);
 

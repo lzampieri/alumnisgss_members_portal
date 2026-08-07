@@ -10,15 +10,16 @@ export default function MainLayout(page) {
         }
     }, [page.props.notistack])
 
+    const isMaintenance = !!page.props.maintenance;
 
     return <SnackbarProvider>
         <Head title="Associazione Alumni Scuola Galileiana" />
-        <div className="flex flex-col md:flex-row w-full items-center px-8 py-2 bg-header-bg text-header-tx">
+        <div className={"flex flex-col md:flex-row w-full items-center px-8 py-2 text-header-tx " + (isMaintenance ? "bg-red-500" : "bg-header-bg")}>
             <a href={route('main')} className="grow-0 w-full md:w-1/3">
                 <h6 className="text-xl md:text-2xl underline">Associazione Alumni Scuola Galileiana</h6>
             </a>
             <span className="grow"></span>
-            <span className="separator"></span>
+            { isMaintenance ? <h6 className="text-xl md:text-4xl">Manutenzione</h6> : <span className="separator"></span> }
             <span className="grow"></span>
             <Link href={route('home')} className="grow-0 w-full md:w-1/3 self-stretch bg-no-repeat bg-contain bg-right flex flex-row-reverse items-center gap-4">
                 <img src={import.meta.env.VITE_ASSET_URL + "/assets/logo_contrast.svg"} className="h-full max-h-[3rem]" />

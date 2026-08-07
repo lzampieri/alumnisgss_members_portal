@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Utils\Settings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
@@ -59,6 +60,10 @@ class HandleInertiaRequests extends Middleware
 
         if( session()->has( 'inertiaFlash' ) ) {
             $data = array_merge( $data, [ 'flash' => session('inertiaFlash') ] );
+        }
+
+        if( Settings::get('maintenance') ) {
+            $data = array_merge( $data, [ 'maintenance' => true ] );
         }
         
         return $data;

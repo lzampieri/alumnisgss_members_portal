@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [ AppsController::class, 'home' ])->name('home');
+Route::get('/maintenance', [ AppsController::class, 'maintenance'])->name('maintenance');
 
 include( 'auth.php' );
 

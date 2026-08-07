@@ -156,7 +156,8 @@ class PermissionsController extends Controller
             'logfile-view',
             'logdb-view',
             'log-manage',
-            'db-reset'
+            'db-reset',
+            'maintenance-access'
         ];
 
         // Add permissions

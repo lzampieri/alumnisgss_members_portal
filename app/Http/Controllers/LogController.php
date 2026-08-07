@@ -70,6 +70,8 @@ class LogType {
 
         LogEvents::RESOURCE_VIA_MAGICLINK => True,
         LogEvents::FILE_VIA_MAGICLINK => True,
+
+        LogEvents::SETTINGS_CHANGED => True
     ];
 }
 
