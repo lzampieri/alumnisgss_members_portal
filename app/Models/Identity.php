@@ -70,15 +70,7 @@ abstract class Identity extends Model
     {
         if (!Auth::check()) return [];
 
-        $roles = Role::all();
-        $editableRoles = [];
-
-        foreach ($roles as $role) {
-            if ( in_array($role->name, Alumnus::public_status) || $role->name == 'everyone' || $role->isAutomatic ) continue;
-            if ($this->hasPermissionTo('user-edit-' . $role->name)) {
-                $editableRoles[] = $role;
-            }
-        }
+        $editableRoles = array_values( Role::all()->append('can_edit')->filter->can_edit->toArray() );
 
         return $editableRoles;
     }

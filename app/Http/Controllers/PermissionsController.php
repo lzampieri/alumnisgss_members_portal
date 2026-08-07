@@ -43,8 +43,8 @@ class PermissionsController extends Controller
     {
         $position_defined_roles = Position::select('type')->distinct()->get()->pluck('type')->toArray();
         return [
-            ['webmaster', ...Alumnus::public_status, 'everyone', ...$position_defined_roles],
-            ['WebMaster', ...array_map(fn($s) => Alumnus::AlumnusStatusLabels[$s], Alumnus::public_status), 'Tutti', ...$position_defined_roles]
+            [...Alumnus::public_status, 'everyone', ...$position_defined_roles],
+            [...array_map(fn($s) => Alumnus::AlumnusStatusLabels[$s], Alumnus::public_status), 'Tutti', ...$position_defined_roles]
         ];
     }
 
@@ -58,9 +58,11 @@ class PermissionsController extends Controller
         $autoRoles = PermissionsController::getAutomaticRoles();
 
         $roles_to_assert = [
+            'webmaster',
             ...$autoRoles[0]
         ];
         $roles_to_assert_names = [
+            'Webmaster',
             ...$autoRoles[1]
         ];
 
@@ -100,7 +102,10 @@ class PermissionsController extends Controller
             // Edit roles and permissions
             'permissions-view',
             'permissions-edit',
-            'roles-edit',
+            'roles-view-all',
+            'roles-edit-all',
+            'roles-create',
+            'groups-view',
             // Positions
             'positions-view-active',
             'positions-view-all',
@@ -153,15 +158,6 @@ class PermissionsController extends Controller
             'log-manage',
             'db-reset'
         ];
-
-
-        // Roles edit
-        foreach (Role::all()->pluck('name') as $role) {
-            // never for Alumnus::public_status and everyone
-            if (in_array($role, $autoRoles[0])) continue;
-            $permissions_to_assert[] = 'user-edit-' . $role;
-        }
-        $permissions_to_assert[] = 'user-edit-webmaster';
 
         // Add permissions
         foreach ($permissions_to_assert as $permission) {

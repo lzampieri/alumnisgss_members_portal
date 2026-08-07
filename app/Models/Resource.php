@@ -82,11 +82,11 @@ class Resource extends Model
             $children = $this->children()->where('archived', false);
         }
             
-        return $children->with(['permalinks'])->withCount(['children'])->get()->filter->canView->map->only(['id','title','archived','permalinks','children_count']);
+        return $children->with(['permalinks'])->withCount(['children'])->get()->filter->canView->map->only(['id','title','archived','permalinks','children_count'])->values();
     }
     public function getVisibleAncestorsAttribute()
     {
-        return $this->ancestors()->with(['permalinks'])->withCount(['children'])->get()->filter->canView->map->only(['id','title','archived','permalinks','children_count']);
+        return $this->ancestors()->with(['permalinks'])->withCount(['children'])->get()->filter->canView->map->only(['id','title','archived','permalinks','children_count'])->values();
     }
     public function getPluckedParentAttribute()
     {

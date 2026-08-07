@@ -68,8 +68,8 @@ class EmailController extends Controller
         $this->authorize('associate', Email::class);
 
         $ems = [
-            'alumni' => Alumnus::with('emails')->orderBy('surname')->orderBy('name')->get(),
-            'externals' => External::with('emails')->orderBy('surname')->orderBy('name')->get()
+            'alumni' => Alumnus::with('emails')->orderBy('surname')->orderBy('name')->get()->makeVisible('emails'),
+            'externals' => External::with('emails')->orderBy('surname')->orderBy('name')->get()->makeVisible('emails')
         ];
 
         return Inertia::render('Accesses/Associate', [

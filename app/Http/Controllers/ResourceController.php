@@ -30,7 +30,7 @@ class ResourceController extends Controller
 
             $params['resource']->makeHidden('children');
 
-            if($params['resource']->canView) {
+            if ($params['resource']->canView) {
                 $params['resource']->makeVisible('access_token');
             }
         }
@@ -45,24 +45,24 @@ class ResourceController extends Controller
         $this->authorize('see_archive', Resource::class);
 
         $params = [];
-        
+
         $resources = Resource::tree()->depthFirst()->with(['permalinks'])->withCount(['children'])->get();
-        $params['list'] = $resources->filter->canView->map->only(['id','title','path','depth','archived','permalinks','children_count']);
+        $params['list'] = array_values($resources->filter->canView->map->only(['id', 'title', 'path', 'depth', 'archived', 'permalinks', 'children_count'])->toArray());
 
         return Inertia::render('Resources/Archive', $params + $this->getParamsForMenu());
     }
 
-    protected function getParamsForMenu(Resource $resource = null) {
+    protected function getParamsForMenu(Resource $resource = null)
+    {
         $params = [];
 
         // The shown resources are the ones at the same level
         $token = request()->get('tk');
-        if ( $token && $resource && $resource->access_token == $token ) {
+        if ($token && $resource && $resource->access_token == $token) {
             // I am accessing with a magic link relative to this specific resource (and its sons):
             // Only show resources at the same level
             $prequery = Resource::where('id', $resource->id);
-        }
-        else if ( is_null($resource) || $resource->isRoot ) {
+        } else if (is_null($resource) || $resource->isRoot) {
             // I am accessing the root: show all roots
             $prequery = Resource::isRoot();
         } else {
@@ -71,9 +71,9 @@ class ResourceController extends Controller
         }
 
         // If not already in the archive, not show archive.
-        if( is_null($resource) || ( !$resource->archived && !$resource->isChildOfArchived() ) ) $prequery = $prequery->where('archived', false);
+        if (is_null($resource) || (!$resource->archived && !$resource->isChildOfArchived())) $prequery = $prequery->where('archived', false);
 
-        $params['resources'] = array_values( $prequery->with(['permalinks'])->withCount(['children'])->get()->filter->canView->toArray() );
+        $params['resources'] = array_values($prequery->with(['permalinks'])->withCount(['children'])->get()->filter->canView->toArray());
 
 
         $params['roles'] = Role::where('name', '!=', 'webmaster')->orderBy('id')->get();
@@ -88,13 +88,14 @@ class ResourceController extends Controller
         return $params;
     }
 
-    public function getPossibleParentsList(Resource $resource = null) {
+    public function getPossibleParentsList(Resource $resource = null)
+    {
         $resources = Resource::tree()->depthFirst()->get();
         $resources = $resources->filter(function ($res) use ($resource) {
-            return is_null($resource) || !in_array( $resource->id, explode('.', $res->path) );
+            return is_null($resource) || !in_array($resource->id, explode('.', $res->path));
         })->filter(function ($res) {
             return !$res->archived && !$res->isChildOfArchived();
-        })->filter->canView->map->only(['id','title','path','depth']);
+        })->filter->canView->map->only(['id', 'title', 'path', 'depth']);
 
         return array_values($resources->toArray());
     }
@@ -103,7 +104,9 @@ class ResourceController extends Controller
     public function create(Request $request)
     {
         $this->authorize('create', Resource::class);
-        $possibleParents = implode(',', array_map(function ($res) { return $res['id']; }, $this->getPossibleParentsList() ) );
+        $possibleParents = implode(',', array_map(function ($res) {
+            return $res['id'];
+        }, $this->getPossibleParentsList()));
 
         $validated = $request->validate([
             'title' => 'required|min:3',
@@ -126,7 +129,7 @@ class ResourceController extends Controller
         // Create the resource
         $res = Resource::create(['title' => $validated['title']]);
 
-        if(isset($validated['parent'])) {
+        if (isset($validated['parent'])) {
             $res->parent_id = $validated['parent'];
             $res->save();
         }
@@ -178,11 +181,58 @@ class ResourceController extends Controller
         return redirect()->back()->with(['notistack' => ['success', 'Permessi aggiornati']]);
     }
 
+    private function update_permissions_all_recursive(Resource $res, $new_roles, $type ) {
+        $count = 0;
+
+        if(Auth::check() && Auth::user()->can('edit',$res)) {
+            $current_roles = $res->dynamicPermissions()->where('type', $type)->get()->pluck('role_id')->toArray();
+
+            foreach (array_diff($current_roles, $new_roles) as $role) {
+                // Roles to remove
+                $dynamicPermission = $res->dynamicPermissions()->where('role_id', $role)->where('type', $type)->get();
+                foreach ($dynamicPermission as $dp) {
+                    $dp->delete();
+                }
+                $count++;
+            }
+            foreach (array_diff($new_roles, $current_roles) as $role) {
+                // Roles to add
+                $dynamicPermission = DynamicPermission::createFromRelations($type, $res, Role::findById($role));
+                $count++;
+            }
+        }
+        if($count > 0) $count = 1;
+
+        foreach($res->children as $newres) {
+            $count += $this->update_permissions_all_recursive($newres, $new_roles, $type);
+        }
+
+        return $count;
+    }
+    
+    public function update_permissions_all(Request $request)
+    {
+        $validated = $request->validate([
+            'resourceId' => 'required|integer|exists:resources,id',
+            'newList' => 'array',
+            'newList.*' => 'integer|exists:roles,id',
+            'type' => 'required|in:view,edit'
+        ]);
+
+        $res = Resource::find($validated['resourceId']);
+
+        $count = $this->update_permissions_all_recursive($res, $validated['newList'], $validated['type']);
+
+        return redirect()->back()->with(['notistack' => ['success', "Permessi aggiornati in {$count} risorse"]]);
+    }
+
     public function update_title(Resource $resource, Request $request)
     {
         $this->authorize('edit', $resource);
 
-        $possibleParents = implode(',', array_map(function ($res) { return $res['id']; }, $this->getPossibleParentsList($resource) ) );
+        $possibleParents = implode(',', array_map(function ($res) {
+            return $res['id'];
+        }, $this->getPossibleParentsList($resource)));
 
         $validated = $request->validate([
             'title' => 'required|min:3',
@@ -190,7 +240,7 @@ class ResourceController extends Controller
         ]);
 
         $resource->title = $validated['title'];
-        if( array_key_exists('parent', $validated) )
+        if (array_key_exists('parent', $validated))
             $resource->parent_id = $validated['parent'];
         else
             $resource->parent_id = null;
@@ -219,7 +269,7 @@ class ResourceController extends Controller
     public function upload_file(Request $request)
     {
         // No authorization: visible by anyone
-        
+
         $validated = $request->validate([
             'resourceId' => 'required|integer|exists:resources,id',
             'file' => 'required|mimes:' . implode(",", File::ALLOWED_FORMATS),
@@ -249,22 +299,22 @@ class ResourceController extends Controller
     {
         $fallback = storage_path() . '/app/utils/no-image.jpg';
         $image = File::where('handle', $handle)->first();
-        
-        // Check that the image exists
-        if( !$image )
-            return response()->file( $fallback );
-        
-        // Check that the image can be seen by the current user
-        if( !(new FilePolicy)->view(Auth::user(), $image) ) // Cannot use Auth::user->can since user can be null!
-            return response()->file( $fallback );
 
-        return response()->file( $image->path() );
+        // Check that the image exists
+        if (!$image)
+            return response()->file($fallback);
+
+        // Check that the image can be seen by the current user
+        if (!(new FilePolicy)->view(Auth::user(), $image)) // Cannot use Auth::user->can since user can be null!
+            return response()->file($fallback);
+
+        return response()->file($image->path());
     }
 
     public function upload_image(Request $request)
     {
         // No authorization: visible by anyone
-        
+
         $validated = $request->validate([
             'resourceId' => 'required|integer|exists:resources,id',
             'file' => 'required|mimes:' . implode(",", File::ALLOWED_IMAGES_FORMATS),
@@ -343,11 +393,10 @@ class ResourceController extends Controller
 
         $enabled = $request->input('enabled', false);
 
-        if( $enabled ) {
-            if( $resource->access_token == null )
+        if ($enabled) {
+            if ($resource->access_token == null)
                 $resource->access_token = Str::random(16);
-        }
-        else {
+        } else {
             $resource->access_token = null;
         }
 
@@ -356,7 +405,7 @@ class ResourceController extends Controller
         return redirect()->back()->with(['notistack' => ['success', 'Salvato']]);
     }
 
-    
+
     public function upload_img_editor(Request $request, Resource $resource)
     {
         $this->authorize('edit', $resource);
@@ -386,13 +435,13 @@ class ResourceController extends Controller
         $file = File::where('handle', $handle)->first();
         // $file->load('parent');
         // return response()->json($file);
-        if( !$file )
+        if (!$file)
             return response()->file($fallback);
 
         // Check that the file can be seen by the current user
-        if( !(new FilePolicy)->view(Auth::user(), $file) ) // Cannot use Auth::user->can since user can be null!
-            return response()->file( $fallback );
+        if (!(new FilePolicy)->view(Auth::user(), $file)) // Cannot use Auth::user->can since user can be null!
+            return response()->file($fallback);
 
-        return response()->file( $file->path() );
+        return response()->file($file->path());
     }
 }

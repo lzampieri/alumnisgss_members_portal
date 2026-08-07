@@ -28,7 +28,7 @@ export default function AskAccess() {
             È la prima volta che viene rilevato un accesso a questo portale con queste credenziali.<br />
             <br />
             <b>Se hai sbagliato credenziali</b>
-            <a href={route('auth.login')} className="button">Rifai l'accesso</a><br />
+            <a href={route('home')} className="button">Rifai l'accesso</a><br />
             <b>Se vuoi visualizzare solo la parte pubblica del portale</b>
             <Link href={route('home')} className="button">Torna alla home</Link><br />
             <b>Se sei un aspirante socio</b>

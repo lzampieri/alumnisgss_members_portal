@@ -108,7 +108,7 @@ class NewsletterController extends Controller
             // If it is an automatic role, it should be available to everyone
             if ($role->isAutomatic) return true;
 
-            return $user->hasPermissionTo('user-edit-' . $role->name);
+            if ($role->canView) return true;
         });
 
         $aspirant_toappend = [];

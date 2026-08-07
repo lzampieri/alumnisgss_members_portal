@@ -21,7 +21,8 @@ class External extends Identity
         'id',
         'surname',
         'name',
-        'notes'
+        'notes',
+        'enabled'
     ];
     
     protected function canView(): Attribute {

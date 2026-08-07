@@ -61,6 +61,10 @@ class AppsController extends Controller
             $apps[] = 'permissions';
         }
 
+        if (Auth::user() && Auth::user()->hasPermissionTo('groups-view')) {
+            $apps[] = 'groups';
+        }
+
         if (Auth::user() && (new PositionPolicy)->viewActive(Auth::user())) {
             $apps[] = 'positions';
         }
