@@ -100,30 +100,23 @@
     }
 
     /* INPUT AND FORMS */
-    input[type="text"] {
-        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0
-    }
-    input[type="email"] {
+    input {
         @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0
     }
     .pretendToBeInput {
         @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0
     }
     input[type="file"] {
-        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0;
-        @apply file:rounded-none file:border-0 file:bg-gray-300 file:py-2 file:px-4
-    }
-    input[type="number"] {
-        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0
-    }
-    input[type="time"] {
-        @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0
+    @apply file:rounded-none file:border-0 file:bg-gray-300 file:py-2 file:px-4
     }
     input[type="checkbox"] {
-        @apply rounded-md bg-gray-100 border-gray-500 focus:border-gray-500 focus:ring-0 mr-2 text-primary-main
+        @apply border-gray-500 mr-2 text-primary-main
     }
     div[role="textbox"] {
         @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0 py-2 px-3
+    }
+    input[readonly] {
+        @apply bg-transparent focus:border-transparent focus:ring-transparent
     }
     
     .selectDropdown {

@@ -29,7 +29,7 @@ function AlumnusContent({ data, tagsDict }) {
                 </span>
             </div>)}
         <div className="grow text-end mx-1">
-            <Link className="icon-button" href={route('registry.edit', { alumnus: data.id })}><FontAwesomeIcon icon={faPen} /></Link>
+            <Link className="icon-button" href={route('person.edit', { person: data.id })}><FontAwesomeIcon icon={faPen} /></Link>
         </div>
     </div>
 }

@@ -92,7 +92,7 @@ class ReportsController extends Controller
         $pdf = new TemplatedPdfGenerator();
 
         $pdf->SetTitle('Variazione ai libri sociali');
-        $pdf->SetAuthor(Auth::user()->identity->surnameAndName());
+        $pdf->SetAuthor(Auth::user()->surnameAndName());
 
         $pdf->AddPage();
 

@@ -41,8 +41,8 @@ class HandleInertiaRequests extends Middleware
         $data = parent::share($request);
 
         if( Auth::check() ) {
-            $user = Auth::user()->load('identity')->makeVisible('identity');
-            $user['identity']->append('all_roles')->makeVisible('all_roles');
+            $user = Auth::user();
+            $user->append('all_roles')->makeVisible('all_roles');
             $data = array_merge( $data, [ 'user' => $user ] );
 
             if( Auth::user()->lev2_loggedin() ) {

@@ -81,8 +81,7 @@ class DocumentsController extends Controller
         ]);
 
 
-        $validated['author_type'] = Auth::user()->identity_type;
-        $validated['author_id'] = Auth::user()->identity_id;
+        $validated['author_id'] = Auth::user()->id;
         $validated['protocol'] = $validated['prehandle'];
 
         // Create the document

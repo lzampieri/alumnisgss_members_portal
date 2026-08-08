@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AlumnusController;
+use App\Http\Controllers\PersonController;
 use App\Http\Controllers\AlumnusControllerChecks;
 use App\Http\Controllers\AlumnusExportImportController;
 use Illuminate\Support\Facades\Route;
@@ -23,11 +24,6 @@ Route::prefix('/registry')->group(function () {
     Route::get('/checks', [AlumnusControllerChecks::class, 'checks'])->name('registry.checks');
     Route::post('/checks/assdet', [AlumnusControllerChecks::class, 'assdet'])->name('registry.checks.assdet');
     Route::post('/checks/dupcor', [AlumnusControllerChecks::class, 'dupcor'])->name('registry.checks.dupcor');
-
-    Route::get('/add', [AlumnusController::class, 'edit'])->name('registry.add');
-    
-    Route::get('/edit/{alumnus?}', [AlumnusController::class, 'edit'])->name('registry.edit');
-    Route::post('/edit/{alumnus?}', [AlumnusController::class, 'edit_post']);
 });
 
 // Registry impexp
@@ -43,4 +39,12 @@ Route::prefix('/registry/impexp')->group(function () {
     Route::get('/bulk/export/xls_details', [AlumnusExportImportController::class, 'exportExcelDetails'])->name('registry.impexp.export.xls_details');
     Route::get('/bulk/import/xls_details', [AlumnusExportImportController::class, 'importExcelDetails'])->name('registry.impexp.import.xls_details');
     Route::post('/bulk/import/xls_details', [AlumnusExportImportController::class, 'importExcelDetails_post']);
+});
+
+// Person edit
+Route::prefix('/person')->group(function () {
+    Route::get('/add', [PersonController::class, 'edit'])->name('person.add');
+    
+    Route::get('/edit/{person?}', [PersonController::class, 'edit'])->name('person.edit');
+    Route::post('/edit/{person?}', [PersonController::class, 'edit_post']);
 });

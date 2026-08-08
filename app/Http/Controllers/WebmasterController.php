@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use RuntimeException;
 use App\Utils\Settings;
+use Illuminate\Support\Facades\DB;
 
 class WebmasterController extends Controller
 {
@@ -262,5 +263,54 @@ class WebmasterController extends Controller
             NULL, 'settings', $previous, $newdict);
 
         return redirect()->back()->with('notistack', ['success', 'Impostazioni salvate!']);
+    }
+
+    public function fix_rows()
+    {
+        $fields = [
+            ['ticket_comments','author'],
+            ['tickets','author'],
+            ['tickets','assigner'],
+            ['stamps','employee'],
+            ['documents','author'],
+            ['positions','owner'],
+            ['newsletters','owner'],
+            ['a_details','identity'],
+            ['logs','agent'],
+            ['emails','identity']
+        ];
+
+        foreach ($fields as $f) {
+            DB::table($f[0])->where($f[1].'_type', 'App\Models\External')->where($f[1].'_id', '<', 1000)->increment($f[1].'_id',2000);
+            DB::table($f[0])->where($f[1].'_type', 'App\Models\Alumnus')->where($f[1].'_id', '<', 1000)->increment($f[1].'_id',1000);
+        }
+
+        DB::table('ratifications')->where('alumnus_id', '<=', 1000)->increment('alumnus_id',1000);
+
+        DB::table('alumni')->where('id', '<=', 1000)->increment('id',1000);
+        DB::table('externals')->where('id', '<=', 1000)->increment('id',2000);
+
+        $alumni = DB::table('alumni')->select('*')->get()->toArray();
+        foreach ($alumni as $a) {
+            DB::table('people')->insertOrIgnore((array)$a);
+        }
+        $externals = DB::table('externals')->select('*')->get()->toArray();
+        foreach ($externals as $a) {
+            DB::table('people')->insertOrIgnore((array)$a);
+        }
+
+        DB::table('people')->where('id', '>=', 2000)->update(['coorte' => -1]);
+
+        
+        DB::table('model_has_permissions')->where('model_type', 'App\Models\External')->where('model_id', '<', 1000)->increment('model_id',2000);
+        DB::table('model_has_permissions')->where('model_type', 'App\Models\Alumnus')->where('model_id', '<', 1000)->increment('model_id',1000);
+        DB::table('model_has_permissions')->where('model_type', 'App\Models\External')->where('model_id', '>=', 2000)->update(['model_type'=>'App\Models\Person']);
+        DB::table('model_has_permissions')->where('model_type', 'App\Models\Alumnus')->where('model_id', '>=', 1000)->update(['model_type'=>'App\Models\Person']);
+        
+        
+        DB::table('model_has_roles')->where('model_type', 'App\Models\External')->where('model_id', '<', 1000)->increment('model_id',2000);
+        DB::table('model_has_roles')->where('model_type', 'App\Models\Alumnus')->where('model_id', '<', 1000)->increment('model_id',1000);
+        DB::table('model_has_roles')->where('model_type', 'App\Models\External')->where('model_id', '>=', 2000)->update(['model_type'=>'App\Models\Person']);
+        DB::table('model_has_roles')->where('model_type', 'App\Models\Alumnus')->where('model_id', '>=', 1000)->update(['model_type'=>'App\Models\Person']);
     }
 }

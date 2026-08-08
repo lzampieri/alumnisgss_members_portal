@@ -4,7 +4,7 @@ namespace App\Policies;
 
 use App\Models\Permalink;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Foundation\Auth\User;
+use App\Models\Person;
 use Illuminate\Support\Facades\Auth;
 
 class PermalinkPolicy
@@ -12,12 +12,12 @@ class PermalinkPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can create models.
+     * Determine whether the person can create models.
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\Person  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(Person $user)
     {
         return Auth::check();
     }

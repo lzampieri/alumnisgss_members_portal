@@ -1,36 +1,20 @@
 <?php
 
+// This class is kept only for storing constants useful for alumnus
+
 namespace App\Models;
 
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\LogEvents;
-use App\Policies\AlumnusPolicy;
-use App\Traits\EditsAreLogged;
-
-use Illuminate\Database\Eloquent\Casts\Attribute;
-
-class Alumnus extends Identity
+abstract class Alumnus
 {
-    use EditsAreLogged;
-
-    protected $visible = [
-        'id',
-        'surname',
-        'name',
-        'coorte',
-        'status',
-        'tags',
-        'consent_to_network_share',
-        'consent_to_email_share',
-        'enabled'
-    ];
-    
     // Available status
     const status = [
         'member',
         'student_member',
         'pre_enrolled',
-        'not_reached', 'student_not_reached', 'student_not_agreed', 'hasnt_right',
+        'not_reached',
+        'student_not_reached',
+        'student_not_agreed',
+        'hasnt_right',
         'dead',
         'not_agreed',
         'honorary'
@@ -42,7 +26,7 @@ class Alumnus extends Identity
     const require_ratification = ['member', 'student_member', 'honorary'];
 
     // Assignable status without ratification
-    public static function availableStatus(Alumnus $alumnus = null)
+    public static function availableStatus(?Person $person)
     {
         // THE PERMISSION bypassRatification HAS BEEN REMOVED
         // if (Auth::user()->can('bypassRatification', Alumnus::class))
@@ -54,19 +38,14 @@ class Alumnus extends Identity
         // return array_values($availableStatus);
 
         // If the alumnus already exists, and it is stucked in a state that requires ratification, it remains there:
-        if ($alumnus && $alumnus->id && in_array($alumnus->status, Alumnus::require_ratification) )
-            return [ $alumnus->status ]; // If the alumnus is stucked in a state that requires ratification, it remains there
+        if ($person && $person->id && $person->is_alumnus && in_array($person->status, Alumnus::require_ratification))
+            return [$person->status]; // If the alumnus is stucked in a state that requires ratification, it remains there
 
         // Else, return all applicable status
-        return array_values( array_diff(Alumnus::status, Alumnus::require_ratification) );
+        // (externals can also switch to all non-rat-requiring status)
+        return array_values(array_diff(Alumnus::status, Alumnus::require_ratification));
     }
-    // All used tags
-    public static function allTags()
-    {
-        $all_tags = array_filter(Alumnus::all('tags')->pluck('tags')->toArray());
-        if (count($all_tags) == 0) return [];
-        return array_unique(array_merge(...$all_tags));
-    }
+
     // Labels
     const AlumnusStatusLabels = [
         'member' => 'Socio',
@@ -94,67 +73,44 @@ class Alumnus extends Identity
         'honorary' => '00CC00',
     ];
 
-
-    protected $fillable = [
-        'name',
-        'surname',
-        'coorte',
-        'status',
-        'tags',
-        'consent_to_email_share',
-        'consent_to_network_share'
-    ];
-    protected $casts = [
-        'tags' => 'array'
-    ];
-
-    public function hasPermissionTo($permission, $guardName = null): bool
-    {
-        return parent::hasPermissionTo($permission) || $this->checkMemberRole($permission);
-    }
-
-    public function checkMemberRole($permission)
-    {
-        $role = Role::findByNameOrNull($this->status);
-        if( $role )
-            return $role->hasPermissionTo($permission);
-    }
-
-    public function getAllRoles()
-    {
-        $roles = parent::getAllRoles();
-        
-        $already_there = $roles->map( function ($r){ return $r['name']; } )->toArray();
-        if( !in_array($this->status, $already_there ) ) {
-            $role = Role::findByNameOrNull($this->status);
-            if( $role )
-                $roles->push($role);
-        }
-        return $roles;
-    }
-
-    public function ratifications()
-    {
-        return $this->hasMany(Ratification::class);
-    }
-
-    public function pendingRatifications()
-    {
-        return $this->hasMany(Ratification::class)->whereNull('document_id');
-    }
-
-
     // For the ratification export
-    public static function romanize($num)
+    public static function romanize(int $num)
     {
-        if ($num == 0)
+        if ($num == Person::COORTE_HONORARY)
             return "Socio onorario";
         $digits = str_split(str_pad(strval($num), 3, '0', STR_PAD_LEFT));
         $roman = "";
         $key = [
-            "", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM",
-            "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC",
-            "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"
+            "",
+            "C",
+            "CC",
+            "CCC",
+            "CD",
+            "D",
+            "DC",
+            "DCC",
+            "DCCC",
+            "CM",
+            "",
+            "X",
+            "XX",
+            "XXX",
+            "XL",
+            "L",
+            "LX",
+            "LXX",
+            "LXXX",
+            "XC",
+            "",
+            "I",
+            "II",
+            "III",
+            "IV",
+            "V",
+            "VI",
+            "VII",
+            "VIII",
+            "IX"
         ];
 
         $i = count($digits);
@@ -162,24 +118,5 @@ class Alumnus extends Identity
             $roman = $key[intval($digits[$i]) + $i * 10] . $roman;
 
         return $roman . " coorte";
-    }
-
-    public function getPendingRatificationsCountAttribute()
-    {
-        return $this->pendingRatifications()->count();
-    }
-
-    public function getPendingRatificationsListAttribute()
-    {
-        return $this->pendingRatifications()->get();
-    }
-
-    public function getCanBeNetworkEditedAttribute()
-    {
-        return Auth::check() && Auth::user()->can('editNetworkAlumnus', $this);
-    }
-    
-    protected function canView(): Attribute {
-        return Attribute::make( get: fn (mixed $_, array $attributes) => Auth::check() && (new AlumnusPolicy)->view(Auth::user(), $this) );
     }
 }

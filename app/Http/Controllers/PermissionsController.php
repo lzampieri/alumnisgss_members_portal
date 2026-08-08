@@ -84,8 +84,28 @@ class PermissionsController extends Controller
         $permissions_to_assert = [
             // Identities
             'login',
-            'identity-alumni-enabling',
-            'identity-externals-enabling',
+            // - Enable login
+            'people-enabling',
+            // - Edit general details (name, surname, etc) ( this also define create permission )
+            'people-edit-general',
+            // - Change email/details consent
+            'people-edit-consent',
+            // - Edit networking details
+            'people-edit-details',
+            // - View public alumnus
+            'people-alumnus-view-public',
+            // - View all alumnus
+            'people-alumnus-view-all',
+            // - View all externals
+            'people-externals-view-all',
+            // - View details of non-consenting people
+            'people-view-alldetails',
+            // Batch import
+            'people-alumnus-import',
+            // Network
+            // - View network page
+            'network-view',
+            'network-edit-view',
             // Emails methods
             'emails-view-all',
             'emails-view-external',
@@ -110,20 +130,8 @@ class PermissionsController extends Controller
             'positions-view-active',
             'positions-view-all',
             'positions-edit',
-            // Network
-            'network-view',
-            'network-view-alldetails',
-            'network-edit-view',
-            'network-edit-consenting-alumnus',
-            'network-edit-alumnus',
             // Cities
             'cities-edit',
-            // Registry
-            'alumnus-view-public',
-            'alumnus-view-all',
-            'alumnus-edit',
-            'alumnus-import',
-            'externals-view',
             // Ratifications
             'ratifications-view',
             'ratifications-edit',
@@ -205,7 +213,7 @@ class PermissionsController extends Controller
         if ($validated['permission'] == 'login')
             return redirect()->back()->with(['notistack' => ['error', 'Il permesso di login non è assegnabile direttamente ad un ruolo']]);
 
-        if (($validated['role'] == 'webmaster') && !(Auth::user()->identity->hasRole('webmaster'))) {
+        if (($validated['role'] == 'webmaster') && !(Auth::user()->hasRole('webmaster'))) {
             Role::findByName('webmaster')->syncPermissions(Permission::all());
             LogController::log(LogEvents::PERMISSION_GIVEN, Role::findByName('webmaster'), 'permission', Null, Permission::all());
             return redirect()->back()->with(['notistack' => ['success', 'Tutti i permessi assegnati al webmaster']]);

@@ -118,7 +118,7 @@ class ResourceController extends Controller
         ]);
 
         // Check the current user have the permissions to edit the resource
-        $current_user = Auth::user()->identity;
+        $current_user = Auth::user();
         if (!$current_user->hasRole(Role::findByName('webmaster'))) {
             $current_roles = $current_user->getAllRoles()->pluck('id')->toArray();
             if (count(array_intersect($current_roles, $validated['canEdit'])) == 0) {
@@ -181,10 +181,11 @@ class ResourceController extends Controller
         return redirect()->back()->with(['notistack' => ['success', 'Permessi aggiornati']]);
     }
 
-    private function update_permissions_all_recursive(Resource $res, $new_roles, $type ) {
+    private function update_permissions_all_recursive(Resource $res, $new_roles, $type)
+    {
         $count = 0;
 
-        if(Auth::check() && Auth::user()->can('edit',$res)) {
+        if (Auth::check() && Auth::user()->can('edit', $res)) {
             $current_roles = $res->dynamicPermissions()->where('type', $type)->get()->pluck('role_id')->toArray();
 
             foreach (array_diff($current_roles, $new_roles) as $role) {
@@ -201,15 +202,15 @@ class ResourceController extends Controller
                 $count++;
             }
         }
-        if($count > 0) $count = 1;
+        if ($count > 0) $count = 1;
 
-        foreach($res->children as $newres) {
+        foreach ($res->children as $newres) {
             $count += $this->update_permissions_all_recursive($newres, $new_roles, $type);
         }
 
         return $count;
     }
-    
+
     public function update_permissions_all(Request $request)
     {
         $validated = $request->validate([

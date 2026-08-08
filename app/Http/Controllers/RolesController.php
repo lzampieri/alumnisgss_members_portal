@@ -56,7 +56,7 @@ class RolesController extends Controller
         ]);
 
 
-        $role = Role::findByName($validated['name'])->load(['hasDynamicPermissions','permissableViaDynamicPermissions']);
+        $role = Role::findByName($validated['name'])->load(['hasDynamicPermissions', 'permissableViaDynamicPermissions']);
         $this->authorize('edit', $role);
 
         $dynpers = $role->hasDynamicPermissions;
@@ -126,7 +126,7 @@ class RolesController extends Controller
         $this->authorize('edit', $role);
 
         // One cannot remove the webmaster role from himself
-        if ($role->name == 'webmaster' && Auth::user()->identity->is($identity)) {
+        if ($role->name == 'webmaster' && Auth::user()->is($identity)) {
             return redirect()->back()->with(['notistack' => ['warning', 'Non puoi rimuovere il ruolo di webmaster da te stesso.']]);
         }
 

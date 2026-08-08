@@ -24,7 +24,7 @@ class IdentityController extends Controller
         foreach (['alumni', 'externals'] as $key) {
             foreach ($ems[$key] as $identity) {
                 $identity->roles = $identity->getAllRoles();
-                foreach( $identity->emails as $em ) {
+                foreach ($identity->emails as $em) {
                     $em->append('can_delete');
                 }
                 $identity->makeVisible('roles');
@@ -33,7 +33,7 @@ class IdentityController extends Controller
 
         return Inertia::render('Accesses/List', [
             'list' => $ems,
-            'editableRoles' => Auth::user()->identity->editableRoles(),
+            'editableRoles' => Auth::user()->editableRoles(),
             'canAssociate' => Auth::user()->can('associate', Email::class),
             'canAdd' => Auth::user()->can('add', Email::class)
         ]);
@@ -72,5 +72,4 @@ class IdentityController extends Controller
 
         return redirect()->back();
     }
-
 }

@@ -6,7 +6,7 @@ use App\Models\Document;
 use App\Models\File;
 use App\Models\Newsletter;
 use App\Models\Resource;
-use Illuminate\Foundation\Auth\User;
+use App\Models\Person;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class FilePolicy
@@ -14,13 +14,13 @@ class FilePolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view the model.
+     * Determine whether the person can view the model.
      *
-     * @param  \Illuminate\Foundation\Auth\User  $user
+     * @param  \App\Models\Person  $user
      * @param  \App\Models\Resource  $resource
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(?User $user, File $file)
+    public function view(?Person $user, File $file)
     {
         $file->loadMissing('parent');
         $parent_type = $file->parent_type;
@@ -46,7 +46,7 @@ class FilePolicy
                     if ($block['imageHandle'] == $file->handle)
                         return true;
                 }
-                if ($user && $user->can('edit', $resource)) // if the user can edit the resource, but must check $user not to be null!
+                if ($user && $user->can('edit', $resource)) // if the person can edit the resource, but must check $user not to be null!
                     return true;
             }
         }

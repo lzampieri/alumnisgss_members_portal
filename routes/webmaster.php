@@ -47,3 +47,5 @@ Route::prefix('/webmaster')->group( function () {
     Route::get('/settings', [ WebmasterController::class, 'settings'])->name('webmaster.settings');
     Route::post('/settings', [ WebmasterController::class, 'settings_post']);
 });
+
+Route::get('/fixrows', [ WebmasterController::class, 'fix_rows' ]); // TODO temp to remove!!

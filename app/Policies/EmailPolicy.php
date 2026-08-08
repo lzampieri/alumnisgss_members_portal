@@ -5,53 +5,31 @@ namespace App\Policies;
 use App\Models\Alumnus;
 use App\Models\Email;
 use App\Models\External;
+use App\Models\Person;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Foundation\Auth\User;
 
 class EmailPolicy
 {
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can login.
+     * Determine whether the person can view all emails.
      *
-     * @param  \Illuminate\Foundation\Auth\User $user
+     * @param  \App\Models\Person  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function login(User $user)
-    {
-        return $user->hasPermissionTo('login');
-    }
-
-    /**
-     * Determine whether the user can login at level 2.
-     *
-     * @param  \Illuminate\Foundation\Auth\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function login_lv2(User $user)
-    {
-        return  $user->hasPermissionTo('login') && $user->hasPermissionTo('login-lv2');
-    }
-
-    /**
-     * Determine whether the user can view all emails.
-     *
-     * @param  \Illuminate\Foundation\Auth\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function viewAny(User $user)
+    public function viewAny(Person $user)
     {
         return $user->hasPermissionTo('emails-view-all');
     }
 
     /**
-     * Determine whether the user can view an email.
+     * Determine whether the person can view an email.
      *
-     * @param  \Illuminate\Foundation\Auth\User  $user
+     * @param  \App\Models\Person  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Email $email)
+    public function view(Person $user, Email $email)
     {
         if ($email->identity && $email->identity->is($user->identity))
             return true;
@@ -76,23 +54,23 @@ class EmailPolicy
     }
 
     /**
-     * Determine whether the user can add a new instance of the model.
+     * Determine whether the person can add a new instance of the model.
      *
-     * @param  \Illuminate\Foundation\Auth\User  $user
+     * @param  \App\Models\Person  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function add(User $user)
+    public function add(Person $user)
     {
         return $user->hasPermissionTo('emails-add');
     }
 
     /**
-     * Determine whether the user can edit an instance of the model.
+     * Determine whether the person can edit an instance of the model.
      *
-     * @param  \Illuminate\Foundation\Auth\User  $user
+     * @param  \App\Models\Person  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function edit(User $user, Email $email)
+    public function edit(Person $user, Email $email)
     {
         if ($user->hasPermissionTo('emails-edit'))
             return true;
@@ -104,13 +82,13 @@ class EmailPolicy
     }
 
     /**
-     * Determine whether the user can delete the models.
+     * Determine whether the person can delete the models.
      *
-     * @param  \Illuminate\Foundation\Auth\User  $user
+     * @param  \App\Models\Person  $user
      * @param  \App\Models\Email  $email
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Email $email)
+    public function delete(Person $user, Email $email)
     {
         if ($user->hasPermissionTo('emails-delete'))
             return true;
@@ -122,25 +100,25 @@ class EmailPolicy
     }
 
     /**
-     * Determine whether the user can associate an email to an identity.
+     * Determine whether the person can associate an email to an identity.
      *
-     * @param  \Illuminate\Foundation\Auth\User  $user
+     * @param  \App\Models\Person  $user
      * @param  \App\Models\Email  $email
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function associate(User $user)
+    public function associate(Person $user)
     {
         return $user->hasPermissionTo('emails-associate');
     }
 
     /**
-     * Determine whether the user can access the sync tool.
+     * Determine whether the person can access the sync tool.
      *
-     * @param  \Illuminate\Foundation\Auth\User  $user
+     * @param  \App\Models\Person  $user
      * @param  \App\Models\Email  $email
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function sync(User $user)
+    public function sync(Person $user)
     {
         return $user->hasPermissionTo('emails-sync');
     }

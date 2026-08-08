@@ -27,7 +27,7 @@ class StampController extends Controller
         if (Auth::user()->can('clockin', Stamp::class)) {
             $data['canClockIn'] = true;
 
-            $data['lastClockIn'] = Auth::user()->identity->stamps()
+            $data['lastClockIn'] = Auth::user()->stamps()
                 ->whereDate('date', Carbon::now())
                 ->whereNull('clockout')->select(['clockin', 'type'])->latest()->first();
 
@@ -48,7 +48,7 @@ class StampController extends Controller
         $this->authorize('clockin', Stamp::class);
 
         // Check if the user is not already clocked in
-        $clockedIn = Auth::user()->identity->stamps()
+        $clockedIn = Auth::user()->stamps()
             ->whereDate('date', Carbon::now())
             ->whereNull('clockout')->latest()->first();
 
@@ -59,7 +59,7 @@ class StampController extends Controller
             return redirect()->back()->with(['notistack' => ['error', 'Non è permesso timbrare in un giorno di ' + $clockedIn->type->label]]);
         }
 
-        Auth::user()->identity->stamps()->create([
+        Auth::user()->stamps()->create([
             'date' => Carbon::now(),
             'clockin' => Carbon::now(),
             'ip' => request()->ip()
@@ -72,7 +72,7 @@ class StampController extends Controller
     {
         $this->authorize('clockin', Stamp::class);
 
-        $clockedIn = Auth::user()->identity->stamps()
+        $clockedIn = Auth::user()->stamps()
             ->whereDate('date', Carbon::now())
             ->whereNull('clockout')->latest()->first();
 
@@ -86,7 +86,7 @@ class StampController extends Controller
         $clockedIn->clockout = Carbon::now();
         $clockedIn->save();
 
-        if( $this->isTodayOutOfTime() )
+        if ($this->isTodayOutOfTime())
             return redirect()->route('clockings.toomuchtime');
 
         return redirect()->back()->with(['notistack' => ['success', 'A presto!']]);
@@ -96,7 +96,7 @@ class StampController extends Controller
     {
         $this->authorize('clockin', Stamp::class);
 
-        $clockedIn = Auth::user()->identity->stamps()
+        $clockedIn = Auth::user()->stamps()
             ->whereDate('date', Carbon::now())
             ->whereNull('clockout')->latest()->first();
 
@@ -116,7 +116,7 @@ class StampController extends Controller
             $clockedIn->save();
 
             $one_half = Carbon::now()->setTimeFromTimeString('13:30:00');
-            $clockedIn = Auth::user()->identity->stamps()->create([
+            $clockedIn = Auth::user()->stamps()->create([
                 'date' => Carbon::now(),
                 'clockin' => $one_half,
                 'ip' => request()->ip()
@@ -126,7 +126,7 @@ class StampController extends Controller
         $clockedIn->clockout = Carbon::now();
         $clockedIn->save();
 
-        if( $this->isTodayOutOfTime() )
+        if ($this->isTodayOutOfTime())
             return redirect()->route('clockings.toomuchtime');
 
         return redirect()->back()->with(['notistack' => ['success', 'A presto!']]);
@@ -141,7 +141,7 @@ class StampController extends Controller
 
         $stamp = Stamp::find($validated['id']);
         $this->authorize('editNote', $stamp);
-        
+
         $stamp->note = $validated['note'];
         $stamp->save();
 
@@ -150,7 +150,7 @@ class StampController extends Controller
 
     private function isTodayOutOfTime()
     {
-        $stamps = Auth::user()->identity->stamps()->whereDate('date', Carbon::now())->where('type','work')->get();
+        $stamps = Auth::user()->stamps()->whereDate('date', Carbon::now())->where('type', 'work')->get();
         $total = array_reduce($stamps->toArray(), function ($carry, $item) {
             return $carry + $item['hours'];
         }, 0);
@@ -162,13 +162,13 @@ class StampController extends Controller
     {
         $this->authorize('clockin', Stamp::class);
 
-        if( !$this->isTodayOutOfTime() )
+        if (!$this->isTodayOutOfTime())
             return redirect()->route('clockings');
 
         return Inertia::render(
             'Clockings/TooMuchTime',
             [
-                'stamps' => Auth::user()->identity->stamps()->whereDate('date', Carbon::now())->whereNotNull('clockout')->where('type','work')->with('acpttickets', 'opentickets')->get(),
+                'stamps' => Auth::user()->stamps()->whereDate('date', Carbon::now())->whereNotNull('clockout')->where('type', 'work')->with('acpttickets', 'opentickets')->get(),
                 'expectedHours' => EXPECTED_HOURS
             ]
         );
@@ -181,12 +181,12 @@ class StampController extends Controller
         $from = Carbon::now()->startOfMonth()->subMonth()->startOfMonth();
         $to = Carbon::now()->startOfMonth()->addMonth()->endOfMonth();
 
-        $data = Auth::user()->identity->stamps()
+        $data = Auth::user()->stamps()
             ->whereBetween('date', [$from, $to])
             ->whereNull('clockin')->get()->groupBy(function ($item, $key) {
                 return $item->date->year . '-' . str_pad($item->date->month, 2, "0", STR_PAD_LEFT) . '-' . str_pad($item->date->day, 2, "0", STR_PAD_LEFT);
             });
-        $workedDays = Auth::user()->identity->stamps()
+        $workedDays = Auth::user()->stamps()
             ->whereBetween('date', [$from, $to])
             ->whereNotNull('clockin')
             ->select(['date'])->get()->map(function ($item, $key) {
@@ -224,13 +224,13 @@ class StampController extends Controller
             $date = Carbon::createFromFormat('Y-m-d', $day);
             if ($date->isBefore($from) || $date->isAfter($to)) continue;
 
-            $occupied = Auth::user()->identity->stamps()->whereDate('date', $date)->first();
+            $occupied = Auth::user()->stamps()->whereDate('date', $date)->first();
             if ($occupied) continue;
 
             if (!StampTypes::getFromKey($validated['type'])) continue;
             if (!StampTypes::getFromKey($validated['type'])->checkDates->call($this, $date)) continue;
 
-            Auth::user()->identity->stamps()->create([
+            Auth::user()->stamps()->create([
                 'date' => $date,
                 'type' => $validated['type'],
                 'ip' => request()->ip()
@@ -292,7 +292,7 @@ class StampController extends Controller
             );
         } else {
             $data = [
-                Auth::user()->identity->load(['stamps' => $stampsFilter, 'stamps.acpttickets', 'stamps.opentickets']),
+                Auth::user()->load(['stamps' => $stampsFilter, 'stamps.acpttickets', 'stamps.opentickets']),
             ];
         }
 

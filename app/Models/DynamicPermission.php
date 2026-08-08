@@ -12,7 +12,7 @@ use Spatie\Permission\Models\Role;
 class DynamicPermission extends Model
 {
     use EditsAreLogged;
-    
+
     protected $fillable = [
         'type',
         'role_id',
@@ -53,15 +53,15 @@ class DynamicPermission extends Model
             }
 
 
-            $id = Auth::user()->identity;
+            $id = Auth::user();
         }
 
-        if( $permissable instanceof Resource )
-            if( $id->hasPermissionTo('resources-view-all') )
+        if ($permissable instanceof Resource)
+            if ($id->hasPermissionTo('resources-view-all'))
                 return true;
 
-        if( $permissable instanceof ModelsRole )
-            if( $id->hasPermissionTo('roles-view-all') )
+        if ($permissable instanceof ModelsRole)
+            if ($id->hasPermissionTo('roles-view-all'))
                 return true;
 
         return $permissable
@@ -85,15 +85,15 @@ class DynamicPermission extends Model
             }
 
 
-            $id = Auth::user()->identity;
+            $id = Auth::user();
         }
 
-        if( $permissable instanceof Resource )
-            if( $id->hasPermissionTo('resources-edit-all') )
+        if ($permissable instanceof Resource)
+            if ($id->hasPermissionTo('resources-edit-all'))
                 return true;
 
-        if( $permissable instanceof ModelsRole )
-            if( $id->hasPermissionTo('roles-edit-all') )
+        if ($permissable instanceof ModelsRole)
+            if ($id->hasPermissionTo('roles-edit-all'))
                 return true;
 
         return $permissable

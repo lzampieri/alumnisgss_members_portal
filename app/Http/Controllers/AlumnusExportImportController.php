@@ -125,7 +125,7 @@ class AlumnusExportImportController extends Controller
         $sheet->getStyle('B1')->applyFromArray($titleStyle);
         $sheet->getRowDimension(1)->setRowHeight(34);
 
-        $sheet->setCellValue('B2', "Report generato il " . date('d/m/Y') . " da " . Auth::user()->identity->surnameAndName() . " tramite il portale soci.");
+        $sheet->setCellValue('B2', "Report generato il " . date('d/m/Y') . " da " . Auth::user()->surnameAndName() . " tramite il portale soci.");
 
         $sheet->freezePane('B1');
 
@@ -169,7 +169,7 @@ class AlumnusExportImportController extends Controller
         $sheet->getStyle('A1')->applyFromArray(['font' => ['bold' => true, 'size' => 26]]);
         $sheet->getRowDimension(1)->setRowHeight(34);
 
-        $sheet->setCellValue('A2', "Report generato il " . date('d/m/Y') . " da " . Auth::user()->identity->surnameAndName() . " tramite il portale soci.");
+        $sheet->setCellValue('A2', "Report generato il " . date('d/m/Y') . " da " . Auth::user()->surnameAndName() . " tramite il portale soci.");
         $sheet->getStyle('A2')->applyFromArray(['font' => ['bold' => true]]);
 
         $sheet->setCellValue('A3', "Attenzione: il contenuto di questo report è altamente riservato. Si prega di non divulgarlo e conservarlo solo per il tempo necessario.");
@@ -284,7 +284,7 @@ class AlumnusExportImportController extends Controller
         $stdkeys   = ['id', 'surname', 'name', 'coorte', 'status', 'tags', 'consent_to_email_share', 'consent_to_network_share'];
 
         $columnsNumber = Coordinate::columnIndexFromString($sheet->getHighestColumn());
-        if ($columnsNumber < count( $stdkeys ))
+        if ($columnsNumber < count($stdkeys))
             return redirect()->back()->with('notistack', ['error', "File non compatibile."]);
 
         // Compute the adetails dictionary

@@ -34,7 +34,7 @@ export default function RegistryHeader({ where, quickFilter, setQuickFilter }) {
                     <FontAwesomeIcon icon={faFolderTree} />
                     Aggiungi
                 </div>
-                <Link className="button ml-9" href={route('registry.add')}>
+                <Link className="button ml-9" href={route('person.add')}>
                     <FontAwesomeIcon icon={faCirclePlus} />
                     Uno
                 </Link>

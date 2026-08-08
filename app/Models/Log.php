@@ -17,7 +17,7 @@ class Log extends Model
     
     public function agent()
     {
-        return $this->morphTo();
+        return $this->belongsTo(Person::class, 'agent_id');
     }
     public function item()
     {

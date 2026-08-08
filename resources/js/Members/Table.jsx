@@ -44,7 +44,7 @@ export default function Table() {
     const adtlist = usePage().props.adtlist
 
     const columns = useMemo(() => [
-        { field: 'id', headerName: 'ID', width: 100, cellRenderer: ({ value }) => <span className='text-gray-400'><Link className="icon-button" href={route('registry.edit', { alumnus: value })}><FontAwesomeIcon icon={faPen} /></Link> {value}</span> },
+        { field: 'id', headerName: 'ID', width: 100, cellRenderer: ({ value }) => <span className='text-gray-400'><Link className="icon-button" href={route('person.edit', { person: value })}><FontAwesomeIcon icon={faPen} /></Link> {value}</span> },
         { field: 'name', headerName: 'Nome' },
         { field: 'surname', headerName: 'Cognome' },
         { field: 'coorte', headerName: 'Coorte', filter: 'agTextColumnFilter', width: 100 },

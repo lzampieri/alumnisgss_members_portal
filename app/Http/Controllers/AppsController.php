@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
 use App\Models\Email;
+use App\Models\Newsletter;
 use App\Models\Newsletters;
+use App\Models\Person;
 use App\Models\Stamp;
-use App\Policies\AlumnusPolicy;
+use App\Policies\PersonPolicy;
 use App\Policies\PositionPolicy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,20 +20,20 @@ class AppsController extends Controller
     {
         $apps = [];
 
-        if ((new AlumnusPolicy)->viewMembers(Auth::user())) {
+        if ((new PersonPolicy)->viewPublicStatus(Auth::user())) {
             $apps[] = 'members';
         }
 
-        if (Auth::user() && Auth::user()->can('viewNetwork', Alumnus::class)) {
+        if (Auth::user() && Auth::user()->can('viewNetwork', Person::class)) {
             $apps[] = 'network';
             $apps[] = 'map';
         }
 
-        if (Auth::user() && Auth::user()->can('viewAny', Alumnus::class)) {
+        if (Auth::user() && Auth::user()->can('viewAnyAlumnus', Person::class)) {
             $apps[] = 'registry';
         }
 
-        if (Auth::user() && Auth::user()->can('viewHimself', Alumnus::class)) {
+        if (Auth::user() && Auth::user()->can('viewHimself', Person::class)) {
             $apps[] = 'profile';
         }
 
@@ -83,7 +85,7 @@ class AppsController extends Controller
 
         if (Auth::user()  && (
             Auth::user()->can('create', Newsletter::class) ||
-            Auth::user()->identity->newsletters()->count() > 0
+            Auth::user()->newsletters()->count() > 0
         )) {
             $apps[] = 'newsletters';
         }

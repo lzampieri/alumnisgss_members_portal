@@ -33,7 +33,7 @@ class NewsletterController extends Controller
         if (Auth::user()->can('viewAll', Newsletter::class)) {
             $prequery = Newsletter::with('owner');
         } else {
-            $prequery = Auth::user()->identity->newsletters()->with('owner');
+            $prequery = Auth::user()->newsletters()->with('owner');
         }
         $newsletters = $prequery->orderBy('updated_at', 'desc')->doesntHave('parent')->get();
         $newsletters->load('childrens');
@@ -54,7 +54,7 @@ class NewsletterController extends Controller
         if (Auth::user()->can('viewAll', Newsletter::class)) {
             $newsletters = Newsletter::with('owner')->orderBy('updated_at', 'desc')->get();
         } else {
-            $newsletters = Auth::user()->identity->newsletters()->with('owner')->orderBy('updated_at', 'desc')->get();
+            $newsletters = Auth::user()->newsletters()->with('owner')->orderBy('updated_at', 'desc')->get();
         }
 
         $newsletters = $newsletters->append(['countTo']);
@@ -73,7 +73,7 @@ class NewsletterController extends Controller
         $this->authorize('create', Newsletter::class);
 
         $newletter = new Newsletter();
-        $newletter->owner()->associate(Auth::user()->identity);
+        $newletter->owner()->associate(Auth::user());
         $newletter->save();
 
         return redirect()->route('newsletter.edit', ['newsletter' => $newletter->id]);
@@ -272,7 +272,7 @@ class NewsletterController extends Controller
 
         $newsletter->append('attachments');
 
-        $user = Auth::user()->identity->load('emails', 'emails.identity');
+        $user = Auth::user()->load('emails', 'emails.identity');
         $email = null;
 
         if (count($user->emails) > 0) {
@@ -506,11 +506,11 @@ class NewsletterController extends Controller
         $delay = env('SERVER_MAIL_INTERVAL', 0);
         $extra = Newsletter::where('from', 'SMTP')
             ->whereNotNull('sent_at')
-            ->where('sent_at', '>=', now()->subMinutes($delay) )
+            ->where('sent_at', '>=', now()->subMinutes($delay))
             ->first();
 
-        if( $extra )
-            return response("Nothing done, too early " . $extra->sent_at . " >= " . now()->subMinutes($delay) . " - " . $delay );
+        if ($extra)
+            return response("Nothing done, too early " . $extra->sent_at . " >= " . now()->subMinutes($delay) . " - " . $delay);
 
         $nl = Newsletter::where('from', 'SMTP')
             ->whereNull('sent_at')

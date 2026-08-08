@@ -6,7 +6,7 @@ use App\Http\Controllers\LogController;
 use App\Http\Controllers\LogEvents;
 use App\Models\Role;
 use App\Models\DynamicPermission;
-use Illuminate\Foundation\Auth\User;
+use App\Models\Person;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class RolePolicy
@@ -14,58 +14,60 @@ class RolePolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view the model.
+     * Determine whether the person can view the model.
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\Person  $user
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(?User $user, Role $role)
+    public function view(?Person $user, Role $role)
     {
-        if( $role->isAutomatic ) return false;
+        if ($role->isAutomatic) return false;
 
-        if( DynamicPermission::UserCanViewPermissable($role, $user ? $user->identity : NULL)
-            || DynamicPermission::UserCanEditPermissable($role, $user ? $user->identity : NULL) )
+        if (
+            DynamicPermission::PersonCanViewPermissable($role, $user ? $user->identity : NULL)
+            || DynamicPermission::PersonCanEditPermissable($role, $user ? $user->identity : NULL)
+        )
             return true;
 
         return false;
     }
 
     /**
-     * Determine whether the user can create models.
+     * Determine whether the person can create models.
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\Person  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(Person $user)
     {
         return $user->hasPermissionTo('roles-create');
     }
 
 
     /**
-     * Determine whether the user can update the model.
+     * Determine whether the person can update the model.
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\Person  $user
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function edit(User $user, Role $role)
+    public function edit(Person $user, Role $role)
     {
-        if( $role->isAutomatic ) return false;
+        if ($role->isAutomatic) return false;
 
-        return DynamicPermission::UserCanEditPermissable($role, $user ? $user->identity : NULL);
+        return DynamicPermission::PersonCanEditPermissable($role, $user ? $user->identity : NULL);
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Determine whether the person can delete the model.
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\Person  $user
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Role $role)
+    public function delete(Person $user, Role $role)
     {
-        return DynamicPermission::UserCanEditPermissable($role, $user ? $user->identity : NULL);
+        return DynamicPermission::PersonCanEditPermissable($role, $user ? $user->identity : NULL);
     }
 }

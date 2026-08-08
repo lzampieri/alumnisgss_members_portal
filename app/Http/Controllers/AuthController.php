@@ -4,24 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Models\Email;
 use App\Models\Identity;
-use App\Models\User;
+use App\Models\Person;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
-    
+
     // Login
     function login(Request $request)
     {
         if (Auth::check())
             return redirect()->route('home');
-        
+
         return Inertia::render("General/Login");
     }
 
@@ -38,18 +37,19 @@ class AuthController extends Controller
     // Callback
     function callback(Request $request)
     {
-        if (Auth::check())
-            return redirect()->route('home');
+        if (Auth::check()) {
+            Auth::logout();
+        }
 
         $email = Socialite::driver('google')->user()->email;
 
         $em = Email::where('address', $email)->first();
 
-        if ($em) {
-            if ($em->can('login', Email::class)) {
-                Auth::login($em);
+        if ($em && $em->identity) {
+            if ($em->identity->can('login')) {
+                Auth::login($em->identity);
                 $request->session()->regenerate();
-                
+
                 LogController::log(LogEvents::LOGIN, $em);
 
                 $em->token = null;
@@ -57,12 +57,12 @@ class AuthController extends Controller
                 $em->save();
 
                 // For any reason there is a looping problem with this route, prevent it
-                if( str_contains( $request->session()->get('url.intended', ""), "contacts" ) )
+                if (str_contains($request->session()->get('url.intended', ""), "contacts"))
                     return redirect()->to(route('home'));
 
                 return redirect()->intended(route('home'));
             }
-            return redirect()->route('home')->with('notistack', ['error', 'Non hai ancora il permesso di accedere.']);
+            return redirect()->route('home')->with('errorsDialogs', 'Non hai ancora il permesso di accedere.');
         }
 
         return redirect()->route('auth.askaccess')->with('email', $email);
@@ -71,9 +71,18 @@ class AuthController extends Controller
     // Logout
     function logout(Request $request)
     {
-        if (Auth::check())
+        if (Auth::check()) {
+            /**@var Email $em*/
+            foreach (Auth::user()->emails as $em) {
+                if ($em->lev2_loggedin_thisaddress()) {
+                    $em->token = null;
+                    $em->token_expdate = Carbon::now();
+                    $em->save();
+                }
+            }
             Auth::logout();
-        
+        }
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
@@ -88,10 +97,10 @@ class AuthController extends Controller
         ]);
 
         $em = Email::where('address', $validated['address'])->first();
-        if( !$em )
+        if (!$em || !$em->identity)
             throw ValidationException::withMessages(['address' => 'unknown']);
-        
-        if (!$em->can('login', Email::class))
+
+        if (!$em->identity->can('login'))
             throw ValidationException::withMessages(['address' => 'not_enabled']);
 
         $em->otp = rand(100000, 999999);
@@ -119,23 +128,23 @@ class AuthController extends Controller
             ->where('otp_session', $request->session()->getId())
             ->first();
 
-        if( !$em )
+        if (!$em || !$em->identity)
             throw ValidationException::withMessages(['otp' => 'unknown']);
 
-        if( !$em->otp_expiration->isFuture() )
+        if (!$em->otp_expiration->isFuture())
             throw ValidationException::withMessages(['otp' => 'expired']);
-        
-        if (!$em->can('login', Email::class))
+
+        if (!$em->identity->can('login'))
             throw ValidationException::withMessages(['otp' => 'not_enabled']);
 
-        Auth::login($em);
+        Auth::login($em->identity);
         $request->session()->regenerate();
 
         LogController::log(LogEvents::LOGIN_OTP, $em);
 
-        $goto = $request->session()->get('url.intended', route('home') );
+        $goto = $request->session()->get('url.intended', route('home'));
         $request->session()->forget('url.intended');
-        return Inertia::location( $goto );
+        return Inertia::location($goto);
     }
 
     // Level 2 login
@@ -159,9 +168,9 @@ class AuthController extends Controller
 
         $em = Email::where('address', $email)->first();
 
-        if ($em) {
-            if ($em->can('login', Email::class) && $em->can('login_lv2', Email::class)) {
-                Auth::login($em);
+        if ($em && $em->identity) {
+            if ($em->identity->can('login_lv2')) {
+                Auth::login($em->identity);
                 $request->session()->regenerate();
 
                 LogController::log(LogEvents::LOGIN_LV2, $em, 'scopes', '', $user->approvedScopes);
@@ -182,13 +191,13 @@ class AuthController extends Controller
     {
         if (Auth::check())
             return redirect()->route('home');
-        
+
         if (session()->has('email'))
             return Inertia::render('Accesses/AskAccess', ['email' => session('email')]);
-        
+
         if ($request->has('email'))
             return Inertia::render('Accesses/AskAccess', ['email' => request()->input('email')]);
-        
+
         return redirect()->route('home');
     }
 
@@ -209,7 +218,7 @@ class AuthController extends Controller
         $message .= "Messaggio:\n" . $validated['comment'];
 
         MailerController::sendEmail(
-            Identity::allWithPermission('accesses-receive-request-emails'),
+            Person::allWithPermission('accesses-receive-request-emails'),
             'Nuova richiesta di accesso a soci.alumniscuolagalileiana.it',
             $message,
             $validated['address']

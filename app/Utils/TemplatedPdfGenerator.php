@@ -62,7 +62,7 @@ class TemplatedPdfGenerator extends Fpdi
     {
         $this->SetXY(0, -28);
         $this->setFont('Times', '', $this->fontSize * 0.8);
-        $this->SetTextColor( 156, 163, 175);
-        $this->Cell(0, 7, 'Documento prodotto il ' . date('d/m/Y') . ' tramite il Portale Soci da ' . Auth::user()->identity->surnameAndName(), 0, 0, 'C');
+        $this->SetTextColor(156, 163, 175);
+        $this->Cell(0, 7, 'Documento prodotto il ' . date('d/m/Y') . ' tramite il Portale Soci da ' . Auth::user()->surnameAndName(), 0, 0, 'C');
     }
 }

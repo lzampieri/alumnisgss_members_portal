@@ -11,11 +11,11 @@ export default function Access() {
         return (
             <div className="w-full flex flex-col flex-wrap justify-center items-center px-14 py-8 gap-2">
                 <span className="text-primary-main">
-                    Accesso eseguito come {user.identity ? (user.identity.name || '') + " " + (user.identity.surname || '') : user.credential}
+                    Accesso eseguito come {(user.name || '') + " " + (user.surname || '')}
                 </span>
-                {usePage().props.user.identity?.all_roles?.length > 0 && 
+                {usePage().props.user.all_roles?.length > 0 && 
                 <span className="text-primary-main">
-                    Utente abilitato ai ruoli di: { usePage().props.user.identity?.all_roles?.map( r => r.common_name ).join(", ") }
+                    Utente abilitato ai ruoli di: { usePage().props.user.all_roles?.map( r => r.common_name ).join(", ") }
                 </span> }
                 {usePage().props.lev2_loggedin &&
                     <span className="text-primary-main">

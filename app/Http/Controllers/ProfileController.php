@@ -15,7 +15,7 @@ class ProfileController extends Controller
     {
         $this->authorize('viewHimself', Alumnus::class);
 
-        $alumnus = Auth::user()->identity;
+        $alumnus = Auth::user();
 
         if (!$alumnus)
             return abort(404);
@@ -27,7 +27,7 @@ class ProfileController extends Controller
         $adtlist->load(['aDetails' => function ($query) use ($alumnus) {
             $query->where('identity_type', Alumnus::class)->where('identity_id', $alumnus->id);
         }]);
-        
+
         return Inertia::render(
             'Profile/Myself',
             [
@@ -41,11 +41,11 @@ class ProfileController extends Controller
     {
         $this->authorize('viewHimself', Alumnus::class);
 
-        $alumnus = Auth::user()->identity;
+        $alumnus = Auth::user();
 
         if (!$alumnus)
             return abort(404);
-        
+
         return Inertia::render(
             'Profile/EmailConsent',
             [
@@ -58,11 +58,11 @@ class ProfileController extends Controller
     {
         $this->authorize('viewHimself', Alumnus::class);
 
-        $alumnus = Auth::user()->identity;
+        $alumnus = Auth::user();
 
         if (!$alumnus)
             return abort(404);
-        
+
         return Inertia::render(
             'Profile/DataConsent',
             [
@@ -70,12 +70,12 @@ class ProfileController extends Controller
             ]
         );
     }
-    
+
     public function emailConsent_post()
     {
         $this->authorize('viewHimself', Alumnus::class);
 
-        $alumnus = Auth::user()->identity;
+        $alumnus = Auth::user();
 
         if (!$alumnus)
             return abort(404);
@@ -90,7 +90,7 @@ class ProfileController extends Controller
     {
         $this->authorize('viewHimself', Alumnus::class);
 
-        $alumnus = Auth::user()->identity;
+        $alumnus = Auth::user();
 
         if (!$alumnus)
             return abort(404);
@@ -100,11 +100,11 @@ class ProfileController extends Controller
 
         return redirect()->route('profile')->with(['notistack' => ['success', 'Salvato!']]);
     }
-    
+
     function addEmail_post(Request $request)
     {
         $this->authorize('viewHimself', Alumnus::class);
-        
+
         $validated = $request->validate([
             'address' => 'required|email|unique:emails,address'
         ]);
@@ -114,7 +114,7 @@ class ProfileController extends Controller
             'comment' => "Aggiunto dall'utente"
         ]);
 
-        $em->identity()->associate( Auth::user()->identity )->save();
+        $em->identity()->associate(Auth::user())->save();
 
         return redirect()->back()->with(['notistack' => ['success', 'Aggiunto']]);
     }
@@ -122,29 +122,29 @@ class ProfileController extends Controller
     function setPrimary_post(Request $request)
     {
         $this->authorize('viewHimself', Alumnus::class);
-        
+
         $validated = $request->validate([
             'id' => 'required|numeric',
         ]);
-        
+
         $e = Email::find($validated['id']);
-        
-        if( !$e )
+
+        if (!$e)
             return redirect()->back()->with(['notistack' => ['error', 'Indirizzo non trovato']]);
 
-        if( !$e->identity->is(Auth::user()->identity))
+        if (!$e->identity->is(Auth::user()))
             return redirect()->back()->with(['notistack' => ['error', 'Indirizzo non riconosciuto']]);
-        
-        $e->primary = max( $e->identity->emails()->pluck('emails.primary')->toArray() ) + 1;
+
+        $e->primary = max($e->identity->emails()->pluck('emails.primary')->toArray()) + 1;
         $e->save();
         return redirect()->back()->with(['notistack' => ['success', 'Precedenza impostata']]);
     }
-    
+
     public function edit()
     {
         $this->authorize('viewHimself', Alumnus::class);
 
-        $alumnus = Auth::user()->identity;
+        $alumnus = Auth::user();
 
         if (!$alumnus)
             return abort(404);
@@ -166,7 +166,7 @@ class ProfileController extends Controller
     {
         $this->authorize('viewHimself', Alumnus::class);
 
-        $alumnus = Auth::user()->identity;
+        $alumnus = Auth::user();
 
         if (!$alumnus)
             return abort(404);
@@ -179,7 +179,7 @@ class ProfileController extends Controller
         ]);
 
         foreach ($validated['adts'] as $adts) {
-            if( ( count( $adts['value'] ) == 1 ) && is_array( $adts['value'][0] ) ) // Extra check to prevent array of array
+            if ((count($adts['value']) == 1) && is_array($adts['value'][0])) // Extra check to prevent array of array
                 $adts['value'] = $adts['value'][0];
 
             $alumnus->aDetails()->updateOrCreate(
@@ -190,5 +190,4 @@ class ProfileController extends Controller
 
         return redirect()->route('profile')->with(['notistack' => ['success', 'Salvato!']]);
     }
-
 }

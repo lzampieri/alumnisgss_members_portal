@@ -4,100 +4,100 @@ namespace App\Policies;
 
 use App\Models\Stamp;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Foundation\Auth\User;
+use App\Models\Person;
 
 class StampPolicy
 {
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any models.
+     * Determine whether the person can view any models.
      *
-     * @param  \Illuminate\Foundation\Auth\User  $user
+     * @param  \App\Models\Person  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
+    public function viewAny(Person $user)
     {
         return $user->hasPermissionTo('clockin-view-all');
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Determine whether the person can view the model.
      *
-     * @param  \Illuminate\Foundation\Auth\User  $user
+     * @param  \App\Models\Person  $user
      * @param  \App\Models\Stamp  $stamp
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Stamp $stamp)
+    public function view(Person $user, Stamp $stamp)
     {
         return $stamp->employee->is($user->identity) || $user->hasPermissionTo('clockin-view-all');
     }
 
     /**
-     * Determine whether the user can view the people which are currently in service.
+     * Determine whether the person can view the people which are currently in service.
      *
-     * @param  \Illuminate\Foundation\Auth\User  $user
+     * @param  \App\Models\Person  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewOnline(User $user)
+    public function viewOnline(Person $user)
     {
         return  $user->hasPermissionTo('clockin-view-online') || $user->hasPermissionTo('clockin-view-all');
     }
 
     /**
-     * Determine whether the user can clock-in.
+     * Determine whether the person can clock-in.
      *
-     * @param  \Illuminate\Foundation\Auth\User  $user
+     * @param  \App\Models\Person  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function clockin(User $user)
+    public function clockin(Person $user)
     {
         return $user->hasPermissionTo('clockin');
     }
 
     /**
-     * Determine whether the user can edit his stamps.
+     * Determine whether the person can edit his stamps.
      *
-     * @param  \Illuminate\Foundation\Auth\User  $user
+     * @param  \App\Models\Person  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function editMine(User $user)
+    public function editMine(Person $user)
     {
         return $user->hasPermissionTo('clockin');
     }
 
     /**
-     * Determine whether the user can edit his stamps.
+     * Determine whether the person can edit his stamps.
      *
-     * @param  \Illuminate\Foundation\Auth\User  $user
+     * @param  \App\Models\Person  $user
      * @param  \App\Models\Stamp  $stamp
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delSpecial(User $user, Stamp $stamp)
+    public function delSpecial(Person $user, Stamp $stamp)
     {
         return $stamp->employee->is($user->identity) || $user->hasPermissionTo('clockin-edit-all');
     }
 
     /**
-     * Determine whether the user can edit stamps.
+     * Determine whether the person can edit stamps.
      *
-     * @param  \Illuminate\Foundation\Auth\User  $user
+     * @param  \App\Models\Person  $user
      * @param  \App\Models\Stamp  $stamp
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function edit(User $user)
+    public function edit(Person $user)
     {
         return $user->hasPermissionTo('clockin-edit-all');
     }
 
     /**
-     * Determine whether the user can edit the note on stamps.
+     * Determine whether the person can edit the note on stamps.
      *
-     * @param  \Illuminate\Foundation\Auth\User  $user
+     * @param  \App\Models\Person  $user
      * @param  \App\Models\Stamp  $stamp
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function editNote(User $user, Stamp $stamp)
+    public function editNote(Person $user, Stamp $stamp)
     {
         return $stamp->employee->is($user->identity) || $user->hasPermissionTo('clockin-edit-all');
     }

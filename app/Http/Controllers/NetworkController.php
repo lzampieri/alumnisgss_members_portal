@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ADetailsType;
 use App\Models\Alumnus;
+use App\Models\Person;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -14,7 +15,7 @@ class NetworkController extends Controller
     {
         $this->authorize('viewNetwork', Alumnus::class);
 
-        $prefilt = Alumnus::whereIn('status', Alumnus::public_status);
+        $prefilt = Person::where('coorte', '>', 0)->whereIn('status', Alumnus::public_status);
 
         if (Auth::check() && Auth::user()->can('viewAny', Alumnus::class)) {
             $prefilt = Alumnus::where('coorte', '>', 0);
@@ -36,7 +37,6 @@ class NetworkController extends Controller
             } else {
                 $alumnus['filtered_details'] = [];
             }
-            
         }
 
         $alumni->append('can_be_network_edited');
@@ -64,8 +64,8 @@ class NetworkController extends Controller
     {
         $this->authorize('view', $alumnus);
 
-        $itsme = Auth::user()->identity->id == $alumnus->id;
-        
+        $itsme = Auth::user()->id == $alumnus->id;
+
         if (Auth::user()->can('viewNetworkDetails', $alumnus)) {
             $alumnus->load(['aDetails' => function ($query) {
                 $query->whereHas('aDetailsType', function ($query) {

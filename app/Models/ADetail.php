@@ -24,7 +24,7 @@ class ADetail extends Model
 
     public function identity()
     {
-        return $this->morphTo();
+        return $this->begonsTo(Person::class,'identity_id');
     }
 
     public function aDetailsType()

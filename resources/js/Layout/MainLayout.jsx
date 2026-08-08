@@ -19,7 +19,7 @@ export default function MainLayout(page) {
                 <h6 className="text-xl md:text-2xl underline">Associazione Alumni Scuola Galileiana</h6>
             </a>
             <span className="grow"></span>
-            { isMaintenance ? <h6 className="text-xl md:text-4xl">Manutenzione</h6> : <span className="separator"></span> }
+            {isMaintenance ? <h6 className="text-xl md:text-4xl">Manutenzione</h6> : <span className="separator"></span>}
             <span className="grow"></span>
             <Link href={route('home')} className="grow-0 w-full md:w-1/3 self-stretch bg-no-repeat bg-contain bg-right flex flex-row-reverse items-center gap-4">
                 <img src={import.meta.env.VITE_ASSET_URL + "/assets/logo_contrast.svg"} className="h-full max-h-[3rem]" />
@@ -29,6 +29,6 @@ export default function MainLayout(page) {
         <div className="flex flex-col items-center w-full p-8">
             {page}
         </div>
-        {page.props.errorsDialogs && page.props.errorsDialogs.map(inside => <ErrorDialog inside={inside} key={Math.random()} />)}
+        {page.props.errorsDialogs && (Array.isArray( page.props.errorsDialogs ) ? page.props.errorsDialogs.map(inside => <ErrorDialog inside={inside} key={Math.random()} />) : <ErrorDialog inside={page.props.errorsDialogs} key={Math.random()} />)}
     </SnackbarProvider>
 }

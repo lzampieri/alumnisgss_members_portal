@@ -3,12 +3,10 @@
 namespace App\Models;
 
 use App\Traits\EditsAreLogged;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Model;
 
-class Email extends Authenticatable
+class Email extends Model
 {
     use EditsAreLogged;
 
@@ -33,35 +31,19 @@ class Email extends Authenticatable
 
     public function identity()
     {
-        return $this->morphTo();
+        return $this->belongsTo(Person::class, 'identity_id');
     }
 
-    public function hasPermissionTo($permission)
-    {
-        return $this->identity && $this->identity->hasPermissionTo($permission);
-    }
-
-    public function hasRole($role)
-    {
-        return $this->identity && $this->identity->hasRole($role);
-    }
-
-    public function enabled() {
-        return $this->hasPermissionTo('login');
-    }
-
-    public function lev2_loggedin() {
-        return Auth::check() && Auth::user()->is( $this ) && $this->token && $this->token_expdate > now();
+    public function lev2_loggedin_thisaddress() {
+        return $this->token && $this->token_expdate > now();
     }
 
     public function getCanDeleteAttribute() {
         return Auth::check() && Auth::user()->can('delete', $this);
     }
-
     public function getCanViewAttribute() {
         return Auth::check() && Auth::user()->can('view', $this);
     }
-
     public function getIdentityForced() {
         return $this->load('identity')->makeVisible('identity')->identity;
     }

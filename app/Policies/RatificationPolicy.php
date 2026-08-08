@@ -3,30 +3,30 @@
 namespace App\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Foundation\Auth\User;
+use App\Models\Person;
 
 class RatificationPolicy
 {
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any models.
+     * Determine whether the person can view any models.
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\Person  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user)
+    public function view(Person $user)
     {
         return $user->hasPermissionTo('ratifications-view');
     }
 
     /**
-     * Determine whether the user can add any models.
+     * Determine whether the person can add any models.
      *
-     * @param  \Illuminate\Support\Facades\Auth\User  $user
+     * @param  \Illuminate\Support\Facades\Auth\Person  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function edit(User $user)
+    public function edit(Person $user)
     {
         return $user->hasPermissionTo('ratifications-edit');
     }

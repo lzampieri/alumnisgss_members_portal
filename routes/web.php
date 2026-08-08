@@ -21,7 +21,7 @@ Route::get('/maintenance', [ AppsController::class, 'maintenance'])->name('maint
 
 include( 'auth.php' );
 
-include( 'alumni.php' );
+include( 'people.php' );
 include( 'externals.php' );
 include( 'network.php' );
 include( 'profile.php' );

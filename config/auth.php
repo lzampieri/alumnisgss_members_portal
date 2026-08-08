@@ -62,7 +62,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Email::class,
+            'model' => App\Models\Person::class,
         ],
 
         // 'users' => [
@@ -86,14 +86,14 @@ return [
     |
     */
 
-    'passwords' => [
-        'users' => [
-            'provider' => 'users',
-            'table' => 'password_resets',
-            'expire' => 60,
-            'throttle' => 60,
-        ],
-    ],
+    // 'passwords' => [
+    //     'users' => [
+    //         'provider' => 'users',
+    //         'table' => 'password_resets',
+    //         'expire' => 60,
+    //         'throttle' => 60,
+    //     ],
+    // ],
 
     /*
     |--------------------------------------------------------------------------
@@ -106,6 +106,6 @@ return [
     |
     */
 
-    'password_timeout' => 10800,
+    // 'password_timeout' => 10800,
 
 ];
