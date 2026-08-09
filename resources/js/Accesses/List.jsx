@@ -1,7 +1,5 @@
-import { Head, Link, usePage } from "@inertiajs/react";
-// import { AlumnusStatus, bgAndContrast, bgAndContrastPastel, romanize } from "../Utils";
+import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { useMemo, useState } from "react";
-// import SmartChip from "./SmartChip";
 
 import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
 import { themeQuartz } from "ag-grid-community";
@@ -9,20 +7,19 @@ import { ModuleRegistry, ClientSideRowModelModule, RowAutoHeightModule, QuickFil
 import { bgAndContrastPastel, pastelColors, postRequest, romanize } from "../Utils";
 import Backdrop from "../Layout/Backdrop";
 import Dialog from "../Layout/Dialog";
-import ManuallyAdd from "./ManuallyAdd";
+import EmptyDialog from "../Layout/EmptyDialog";
 import ReactSwitch from "react-switch";
 import { faAnglesRight, faAt, faCirclePlus, faPerson, faPersonCircleQuestion, faPersonDigging, faPlus, faStar, faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { enqueueSnackbar } from "notistack";
 ModuleRegistry.registerModules([ClientSideRowModelModule, RowAutoHeightModule, QuickFilterModule]);
 
-const TYPE_ALUMNUS = 0;
-const TYPE_EXTERNAL = 1;
+const TYPE_PERSON = 0;
 const TYPE_REQUEST = 2;
 
 function whichType(item) {
     if (item.address) return TYPE_REQUEST;
-    if (item.status) return TYPE_ALUMNUS;
-    return TYPE_EXTERNAL;
+    return TYPE_PERSON;
 }
 
 function EmailDiv({ e, isFirst, setPrimary, deleteAddress }) {
@@ -75,7 +72,9 @@ function IdentityRoles({ identity, removeRole, addRole }) {
     </div>
 }
 
-function IdentityContent({ data, setPrimary, deleteAddress, removeRole, addRole, setEnabled }) {
+function IdentityContent({ data, setPrimary, deleteAddress, removeRole, addRole, setEnabled, setAddingEmail }) {
+    const canAddEmail = usePage().props.canAddEmails;
+
     if (whichType(data) == TYPE_REQUEST) {
         return <div className="w-full border-2 border-black rounded border-dashed flex flex-row p-2 min-h-[3rem] justify-center gap-2 leading-normal	">
             <FontAwesomeIcon icon={faPersonCircleQuestion} className="text-4xl" />
@@ -99,12 +98,12 @@ function IdentityContent({ data, setPrimary, deleteAddress, removeRole, addRole,
 
     }
 
-    // TYPE_ALUMNUS or TYPE_EXTERNAL
+    // TYPE_PERSON
     return <div className={
         "w-full border-2 rounded  flex flex-row p-2 min-h-12 justify-center gap-2 leading-normal	" +
-        (whichType(data) == TYPE_ALUMNUS ? ' border-primary-main' : ' border-[#00FF00]')}  >
+        (data.coorte > 0 ? ' border-primary-main' : ' border-[#00FF00]')}  >
         <div className="flex flex-col">
-            <FontAwesomeIcon icon={whichType(data) == TYPE_ALUMNUS ? faPerson : faPersonDigging} className="text-4xl" style={{ color: pastelColors[data.enabled ? 4 : 2] }} />
+            <FontAwesomeIcon icon={faPerson} className="text-4xl" style={{ color: pastelColors[data.enabled ? 4 : 2] }} />
             <ReactSwitch
                 height={14} width={28} className="m-2"
                 checked={data.enabled} onChange={(newState) => setEnabled(data, newState)}
@@ -112,9 +111,14 @@ function IdentityContent({ data, setPrimary, deleteAddress, removeRole, addRole,
         </div>
         <div className="grow flex flex-col">
             <b>{data.name} {data.surname}</b>
-            {whichType(data) == TYPE_ALUMNUS && romanize(data.coorte)}
+            {romanize(data.coorte)}
             {data.notes}
             {data.emails.map((e, i) => <EmailDiv key={e.id} isFirst={i == 0} e={e} setPrimary={setPrimary} deleteAddress={deleteAddress} />)}
+            {canAddEmail &&
+                <div className="cursor-pointer hover:text-primary-main text-sm" onClick={() => setAddingEmail(data)}>
+                    <FontAwesomeIcon icon={faPlus} />
+                    Aggiungi indirizzo mail.
+                </div>}
             <IdentityRoles identity={data} removeRole={removeRole} addRole={addRole} />
         </div>
     </div>
@@ -128,7 +132,7 @@ function stringifyData({ data }) {
         " " + data.roles.map((r) => r.name + " " + r.common_name).join(" ")
 }
 
-function ListAsATable({ identities, quickFilter, setPrimary, deleteAddress, removeRole, addRole, setEnabled }) {
+function ListAsATable({ identities, quickFilter, setPrimary, deleteAddress, removeRole, addRole, setEnabled, setAddingEmail }) {
 
     const theme = themeQuartz.withParams({
         headerHeight: 0,
@@ -141,7 +145,7 @@ function ListAsATable({ identities, quickFilter, setPrimary, deleteAddress, remo
         {
             field: 'main',
             cellRenderer: ({ value }) =>
-                <IdentityContent data={value} setPrimary={setPrimary} deleteAddress={deleteAddress} removeRole={removeRole} addRole={addRole} setEnabled={setEnabled} />,
+                <IdentityContent data={value} setPrimary={setPrimary} deleteAddress={deleteAddress} removeRole={removeRole} addRole={addRole} setEnabled={setEnabled} setAddingEmail={setAddingEmail} />,
             filter: 'agTextColumnFilter',
             filterValueGetter: stringifyData,
             valueGetter: ({ data }) => data,
@@ -185,7 +189,7 @@ function setPrimary(emailId, setProcessing) {
 function removeRole(identity, role, setProcessing) {
     postRequest(
         'roles.remove',
-        { identity: identity.id, type: whichType(identity) == TYPE_ALUMNUS ? 'alumnus' : 'external', role: role.id },
+        { identity: identity.id, role: role.id },
         setProcessing,
         {},
         false, false
@@ -195,7 +199,7 @@ function removeRole(identity, role, setProcessing) {
 function addRole(identity, role, setProcessing) {
     postRequest(
         'roles.add',
-        { identity: identity.id, type: whichType(identity) == TYPE_ALUMNUS ? 'alumnus' : 'external', role: role.id },
+        { identity: identity.id, role: role.id },
         setProcessing,
         {},
         false, false
@@ -205,40 +209,75 @@ function addRole(identity, role, setProcessing) {
 function setEnabled(identity, enabled, setProcessing) {
     postRequest(
         'identity.enabled',
-        { identity: identity.id, type: whichType(identity) == TYPE_ALUMNUS ? 'alumnus' : 'external', enabled: enabled },
+        { identity: identity.id, enabled: enabled },
         setProcessing,
         {},
         false, false
     );
 }
 
+
+function ManuallyAddEmail({ open, setClosed, setProcessing }) {
+    const { data, setData, post, processing, errors, transform } = useForm({
+        address: ''
+    })
+
+    transform((data) => ({
+        ...data,
+        identity: open?.id
+    }))
+
+    const submit = (e) => {
+        e.preventDefault();
+        setProcessing(true)
+        post(
+            route('emails.manually_add'), {
+                onSuccess: () => { setClosed(); setProcessing(false); },
+                onError: () => { enqueueSnackbar('Errore, riprova!'); setProcessing(false); }
+            });
+    }
+
+    return <EmptyDialog open={!!open} onClose={setClosed}>
+        <form className="flex flex-col w-full" onSubmit={submit}>
+            <h3>Inserisci nuovo indirizzo mail</h3>
+            <b>{open?.name} {open?.surname}</b>
+            {romanize(open?.coorte)}
+            <label>Indirizzo</label>
+            <input type="text" value={data.address} onChange={(e) => setData('address', e.target.value)} />
+            <label className="error">{errors.address}</label>
+            <input type="button" className="button mt-4" onClick={submit} value="Aggiungi" />
+        </form>
+    </EmptyDialog>
+}
+
 export default function List() {
     const data = usePage().props.list;
-    const list = useMemo(() => data['requests'].concat(data['externals']).concat(data['alumni']), [data]);
+    const list = useMemo(() => data['requests'].concat(data['people']), [data]);
     const [quickFilter, setQuickFilter] = useState('')
     const [processing, setProcessing] = useState(false);
     const [toDelete, setToDelete] = useState(null);
-    const [addOpen, setAddOpen] = useState(false);
+    const [addingEmail, setAddingEmail] = useState(null);
 
     return <div className="main-container-large h-[80vh] gap-1">
         <Head title="Metodi di accesso" />
         <div className="w-full flex flex-row justify-center gap-2">
             <input className="w-full md:w-1/2" type='text' value={quickFilter} onChange={(e) => setQuickFilter(e.target.value)} placeholder='Cerca...' />
-            {usePage().props.canAdd &&
-                <div className="button flex flex-row items-baseline" onClick={() => setAddOpen(true)}>
+            {usePage().props.canAddPeople &&
+                <Link className="button flex flex-row items-baseline" href={route('person.add')}>
                     <FontAwesomeIcon icon={faCirclePlus} className="pr-1" />
-                    Aggiungi
-                </div>
+                    Aggiungi persona
+                </Link>
             }
         </div>
-        <ManuallyAdd open={addOpen} setClosed={() => setAddOpen(false)} />
+        <ManuallyAddEmail open={addingEmail} setClosed={() => setAddingEmail(null)} setProcessing={setProcessing} />
         <ListAsATable
             identities={list} quickFilter={quickFilter}
-            setPrimary={(emailId)=>setPrimary(emailId,setProcessing)}
+            setPrimary={(emailId) => setPrimary(emailId, setProcessing)}
             deleteAddress={(e) => setToDelete(e)}
             removeRole={(identity, role) => removeRole(identity, role, setProcessing)}
             addRole={(identity, role) => addRole(identity, role, setProcessing)}
             setEnabled={(identity, enabled) => setEnabled(identity, enabled, setProcessing)}
+            setAddingEmail={(data) => setAddingEmail(data)}
         />
         <Backdrop open={processing} />
         <Dialog open={!!toDelete} onClose={() => setToDelete(null)} onConfirm={() => emailDelete(toDelete, setProcessing, setToDelete)}>

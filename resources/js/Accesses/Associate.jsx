@@ -1,9 +1,7 @@
 
 
 import { Head, Link, usePage } from "@inertiajs/react";
-// import { AlumnusStatus, bgAndContrast, bgAndContrastPastel, romanize } from "../Utils";
 import { useMemo, useState } from "react";
-// import SmartChip from "./SmartChip";
 
 import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
 import { themeQuartz } from "ag-grid-community";
@@ -11,20 +9,10 @@ import { ModuleRegistry, ClientSideRowModelModule, RowAutoHeightModule, QuickFil
 import { bgAndContrastPastel, postRequest, romanize } from "../Utils";
 import Backdrop from "../Layout/Backdrop";
 import Dialog from "../Layout/Dialog";
-import ManuallyAdd from "./ManuallyAdd";
-import { identity } from "lodash";
-import NewExternal from "./NewExternal";
 import { faAt, faCheck, faPerson, faPersonDigging, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import EmptyDialog from "../Layout/EmptyDialog";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 ModuleRegistry.registerModules([ClientSideRowModelModule, RowAutoHeightModule, QuickFilterModule]);
-
-const TYPE_ALUMNUS = 0;
-const TYPE_EXTERNAL = 1;
-
-function whichType(item) {
-    if (item.status) return TYPE_ALUMNUS;
-    return TYPE_EXTERNAL;
-}
 
 function EmailDiv({ e }) {
     return <div>
@@ -36,14 +24,13 @@ function EmailDiv({ e }) {
 
 
 function IdentityContent({ data, associateAddress }) {
-    // TYPE_ALUMNUS or TYPE_EXTERNAL
     return <div className={
         "w-full border-2 rounded  flex flex-row p-2 min-h-[3rem] justify-center gap-2 leading-normal	" +
-        (whichType(data) == TYPE_ALUMNUS ? ' border-primary-main' : ' border-[#00FF00]')}  >
-        <FontAwesomeIcon icon={whichType(data) == TYPE_ALUMNUS ? faPerson : faPersonDigging} className="text-4xl" />
+        (data.coorte > 0 ? ' border-primary-main' : ' border-[#00FF00]')}  >
+        <FontAwesomeIcon icon={faPerson} className="text-4xl" />
         <div className="grow flex flex-col">
             <b>{data.name} {data.surname}</b>
-            {whichType(data) == TYPE_ALUMNUS && romanize(data.coorte)}
+            {romanize(data.coorte)}
             {data.notes}
             {data.emails.map((e) => <EmailDiv key={e.id} e={e} />)}
         </div>
@@ -92,7 +79,7 @@ function ListAsATable({ identities, quickFilter, associateAddress }) {
 function associate(email, identity, setProcessing, setToAssociate) {
     postRequest(
         'emails.associate',
-        { identity: identity.id, type: whichType(identity) == TYPE_ALUMNUS ? 'alumnus' : 'external' },
+        { identity: identity.id },
         setProcessing,
         { id: email.id },
         false, false,
@@ -112,10 +99,23 @@ function deleteRequest(email, setProcessing) {
     );
 }
 
+
+function NewProfile({ subject, open, setOpen }) {
+
+    return <EmptyDialog open={open} onClose={() => setOpen(false)}>
+        <h3>Crea nuovo profilo</h3>
+        <div className="text-error font-bold p-2">Prima di creare una nuova identità, controllare con attenzione che non sia già presente, per evitare doppioni.</div>
+        <Link
+            href={route('person.add',{associate_to: subject.id})}
+            className="button">
+            Vai alla pagina di creazione
+        </Link>
+    </EmptyDialog>
+}
+
 export default function List() {
-    const data = usePage().props.list;
+    const list = usePage().props.people;
     const subject = usePage().props.subject;
-    const list = useMemo(() => data['externals'].concat(data['alumni']), [data]);
     const [quickFilter, setQuickFilter] = useState('')
     const [processing, setProcessing] = useState(false);
     const [toAssociate, setToAssociate] = useState(null);
@@ -147,7 +147,7 @@ export default function List() {
             associateAddress={(e) => setToAssociate(e)}
         />
 
-        <NewExternal subject={subject} open={adding} setOpen={setAdding} />
+        <NewProfile subject={subject} open={adding} setOpen={setAdding} />
 
         <Backdrop open={processing} />
         <Dialog open={!!toAssociate} onClose={() => setToAssociate(null)} onConfirm={() => associate(subject, toAssociate, setProcessing, setToAssociate)}>

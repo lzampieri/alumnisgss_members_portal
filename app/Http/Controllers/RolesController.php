@@ -13,6 +13,7 @@ use Inertia\Inertia;
 use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 use Spatie\Permission\Exceptions\RoleDoesNotExist;
 use App\Models\Permission;
+use App\Models\Person;
 use App\Models\Role;
 
 class RolesController extends Controller
@@ -81,12 +82,11 @@ class RolesController extends Controller
     public function add(Request $request)
     {
         $validated = $request->validate([
-            'identity' => 'required|numeric',
-            'type' => 'required|in:alumnus,external',
+            'identity' => 'required|numeric|exists:people,id',
             'role' => 'required|numeric',
         ]);
 
-        $identity = ($validated['type'] == 'alumnus' ? Alumnus::find($validated['identity']) : External::find($validated['identity']));
+        $identity = Person::find($validated['identity']);
         if (! $identity) {
             return redirect()->back()->with(['notistack' => ['error', 'Identità non trovata']]);
         }
@@ -95,8 +95,6 @@ class RolesController extends Controller
         if (! $role) {
             return redirect()->back()->with(['notistack' => ['error', 'Ruolo non trovato']]);
         }
-
-
 
         $this->authorize('edit', $role);
 
@@ -108,12 +106,11 @@ class RolesController extends Controller
     public function remove(Request $request)
     {
         $validated = $request->validate([
-            'identity' => 'required|numeric',
-            'type' => 'required|in:alumnus,external',
+            'identity' => 'required|numeric|exists:people,id',
             'role' => 'required|numeric',
         ]);
 
-        $identity = ($validated['type'] == 'alumnus' ? Alumnus::find($validated['identity']) : External::find($validated['identity']));
+        $identity = Person::find($validated['identity']);
         if (! $identity) {
             return redirect()->back()->with(['notistack' => ['error', 'Identità non trovata']]);
         }

@@ -69,7 +69,7 @@ class DynamicPermission extends Model
             ->count() > 0;
     }
 
-    public static function UserCanEditPermissable(Model $permissable, ?Identity $id = NULL)
+    public static function PersonCanEditPermissable(Model $permissable, ?Identity $id = NULL)
     {
         if (is_null($id)) {
 

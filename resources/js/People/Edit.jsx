@@ -96,6 +96,8 @@ export default function Edit() {
 
     const adts = usePage().props.adts;
 
+    const associate_to = usePage().props.associate_to;
+
     const [dirtyDialog, setDirtyDialog] = useState(false);
 
     const { data, setData, post, processing, errors, isDirty } = useForm({
@@ -114,7 +116,8 @@ export default function Edit() {
                 id: adt.id,
                 value: (adt.a_details && (adt.a_details.length == 1)) ? adt.a_details[0].value : []
             }
-        }) : []
+        }) : [],
+        associate_to: associate_to?.id
     })
 
     const submit = (e) => {
@@ -195,6 +198,11 @@ export default function Edit() {
             }
 
             <label>Indirizzi email</label>
+            {
+                associate_to && <>
+                    Associato automaticamente alla richiesta con indirizzo mail {associate_to.address}
+                </>
+            }
             <div className="flex flex-col items-start">
                 {edit_general && data.emails.map((addr, idx) =>
                     <div className="flex flex-row rounded bg-gray-200 self-start" style={{ overflowWrap: "anywhere" }}>

@@ -198,7 +198,7 @@ class PersonPolicy
      * @param  \App\Models\Person  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function enable(Person $user)
+    public function enable(?Person $user = null)
     {
         return $user->hasPermissionTo('people-enabling');
     }

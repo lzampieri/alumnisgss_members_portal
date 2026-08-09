@@ -482,6 +482,7 @@ class AlumnusExportImportController extends Controller
                     ]);
                 }
             }
+            $alumnus->givePermissionTo('login');
             $added[] = $alumnus;
         }
 

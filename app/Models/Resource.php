@@ -37,19 +37,19 @@ class Resource extends Model
     public function getCanViewAttribute()
     {
         $token = request()->get('tk');
-        if( $token ) {
+        if ($token) {
             $res = $this;
-            while( $res ) {
-                if( $res->access_token == $token ) return true;
+            while ($res) {
+                if ($res->access_token == $token) return true;
                 $res = $res->parent;
             }
         }
-        
-        return DynamicPermission::UserCanViewPermissable($this) || DynamicPermission::UserCanEditPermissable($this);
+
+        return DynamicPermission::UserCanViewPermissable($this) || DynamicPermission::PersonCanEditPermissable($this);
     }
     public function getCanEditAttribute()
     {
-        return DynamicPermission::UserCanEditPermissable($this);
+        return DynamicPermission::PersonCanEditPermissable($this);
     }
 
     public function permalinks()
@@ -74,24 +74,24 @@ class Resource extends Model
 
     public function getVisibleChildrenAttribute()
     {
-        if( $this->archived || $this->isChildOfArchived() ) {
+        if ($this->archived || $this->isChildOfArchived()) {
             // It is already child of an archived resource, and therefore archive navigation is active: should show also archived resources
             $children = $this->children();
         } else {
             // Outside of archive, non archived resources should be hidden
             $children = $this->children()->where('archived', false);
         }
-            
-        return $children->with(['permalinks'])->withCount(['children'])->get()->filter->canView->map->only(['id','title','archived','permalinks','children_count'])->values();
+
+        return $children->with(['permalinks'])->withCount(['children'])->get()->filter->canView->map->only(['id', 'title', 'archived', 'permalinks', 'children_count'])->values();
     }
     public function getVisibleAncestorsAttribute()
     {
-        return $this->ancestors()->with(['permalinks'])->withCount(['children'])->get()->filter->canView->map->only(['id','title','archived','permalinks','children_count'])->values();
+        return $this->ancestors()->with(['permalinks'])->withCount(['children'])->get()->filter->canView->map->only(['id', 'title', 'archived', 'permalinks', 'children_count'])->values();
     }
     public function getPluckedParentAttribute()
     {
         $parent = $this->parent()->with(['permalinks'])->withCount(['children'])->first();
-        if( !$parent || !$parent->canView ) return null;
-        return $parent->only(['id','title','archived','permalinks','children_count']);
+        if (!$parent || !$parent->canView) return null;
+        return $parent->only(['id', 'title', 'archived', 'permalinks', 'children_count']);
     }
 }

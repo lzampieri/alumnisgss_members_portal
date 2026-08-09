@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Alumnus;
 use App\Models\Email;
 use App\Models\External;
+use App\Models\Person;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -18,10 +19,16 @@ class EmailController extends Controller
         
         $validated = $request->validate([
             'address' => 'required|email|unique:emails,address',
-            'comment' => 'string|nullable'
+            'identity' => 'required|numeric|exists:people,id'
         ]);
 
-        Email::create($validated);
+        $person = Person::find($validated['identity']);
+
+        if (! $person) {
+            return redirect()->back()->with(['notistack' => ['error', 'Identità non trovata']]);
+        }
+
+        $person->emails()->create(['address' => $validated['address']]);
 
         return redirect()->back()->with(['notistack' => ['success', 'Aggiunto']]);
     } 
@@ -67,14 +74,11 @@ class EmailController extends Controller
     {
         $this->authorize('associate', Email::class);
 
-        $ems = [
-            'alumni' => Alumnus::with('emails')->orderBy('surname')->orderBy('name')->get()->makeVisible('emails'),
-            'externals' => External::with('emails')->orderBy('surname')->orderBy('name')->get()->makeVisible('emails')
-        ];
+        $email->makeVisible('created_at');
 
         return Inertia::render('Accesses/Associate', [
             'subject' => $email,
-            'list' => $ems,
+            'people' => Person::with('emails')->orderBy('surname')->orderBy('name')->get()->setVisible(['id','name','surname','coorte','emails','enabled']),
         ]);
     }
 
@@ -83,15 +87,14 @@ class EmailController extends Controller
         $this->authorize('associate', Email::class);
 
         $validated = $request->validate([
-            'identity' => 'required|numeric',
-            'type' => 'required|in:alumnus,external'
+            'identity' => 'required|numeric|exists:people,id',
         ]);
 
-        $identity = ( $validated['type'] == 'alumnus' ? Alumnus::find($validated['identity']) : External::find($validated['identity']) );
+        $identity = Person::find($validated['identity']);
 
         if( $identity ) {
             $email->identity()->associate($identity)->save();
-            $email->identity()->givePermissionTo('login');
+            $email->identity->givePermissionTo('login');
             return redirect()->route('accesses')->with(['notistack' => ['success', 'Associato e abilitato']]);
         }
 

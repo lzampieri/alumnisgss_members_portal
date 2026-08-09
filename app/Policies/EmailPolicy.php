@@ -54,7 +54,7 @@ class EmailPolicy
     }
 
     /**
-     * Determine whether the person can add a new instance of the model.
+     * Determine whether the person can create a new email address.
      *
      * @param  \App\Models\Person  $user
      * @return \Illuminate\Auth\Access\Response|bool

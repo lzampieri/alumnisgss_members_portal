@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ADetailsType;
 use App\Models\Alumnus;
+use App\Models\Email;
 use App\Models\Person;
 use App\Models\Ratification;
 use Illuminate\Http\Request;
@@ -16,13 +17,22 @@ class PersonController extends Controller
     // Create and edit person
     public function edit(Request $request, ?Person $person = null)
     {
+        $data = [];
+        
         if ($person) {
             $this->authorize('viewGeneral', $person);
         } else {
             $this->authorize('create', Person::class);
+
+            // Auto association of email request
+            if($request->has('associate_to')) {
+                $eq = Email::find(intval($request->input('associate_to')));
+                if($eq) {
+                    $data['associate_to'] = $eq->setVisible(['id','address']);
+                }
+            }
         }
 
-        $data = [];
 
         // Edit general details
         $person_tocheck = $person ? $person : Person::class;
@@ -100,6 +110,11 @@ class PersonController extends Controller
                 'status' => 'required|in:' . implode(',', Alumnus::status),
                 'tags' => 'nullable|array',
                 'emails' => 'nullable|array'
+            ];
+
+        if( !$is_update )
+            $toValidate += [
+                'associate_to' => 'sometimes|numeric|exists:emails,id'
             ];
 
         // Consents
@@ -195,11 +210,19 @@ class PersonController extends Controller
                 }
             }
 
-            // TODO manage externals and honorary!
         }
 
         if (!$person)
             abort(403);
+
+        // Automatic association
+        if( array_key_exists('associate_to',$validated) ) {
+            $em = Email::find($validated['associate_to']);
+            if($em) {
+                $em->identity()->associate($person);
+                $em->save();
+            }
+        }
 
         // Consents
         if ($edit_consent) {
