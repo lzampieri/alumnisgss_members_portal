@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\Http\Controllers\LogEvents;
+use App\Policies\DocumentPolicy;
 use App\Traits\EditsAreLogged;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Document extends Model
 {
@@ -27,7 +29,7 @@ class Document extends Model
 
     public function author()
     {
-        return $this->morphTo();
+        return $this->belongsTo(Person::class, 'author_id');
     }
 
     public function ratifications()
@@ -55,14 +57,13 @@ class Document extends Model
         return $this->hasMany(Document::class, 'attached_to_id');
     }
 
-    protected $appends = ['canView','canEdit'];
-    public function getCanViewAttribute()
+    protected $appends = ['can_view','can_edit'];
+    protected function canView(): Attribute
     {
-        if ($this->attached_to_id) return $this->attached_to->canView;
-        return DynamicPermission::UserCanViewPermissable($this);
+        return Attribute::make(get: fn(mixed $_, array $attributes) =>  (new DocumentPolicy)->view(Auth::user(), $this));
     }
-    public function getCanEditAttribute()
+    protected function canEdit(): Attribute
     {
-        return Auth::check() && Auth::user()->can('edit', $this);
+        return Attribute::make(get: fn(mixed $_, array $attributes) =>  Auth::check() && Auth::user()->can('edit', $this));
     }
 }

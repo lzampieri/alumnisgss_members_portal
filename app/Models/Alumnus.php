@@ -26,7 +26,7 @@ abstract class Alumnus
     const require_ratification = ['member', 'student_member', 'honorary'];
 
     // Assignable status without ratification
-    public static function availableStatus(?Person $person)
+    public static function availableStatus(?Person $person = null)
     {
         // THE PERMISSION bypassRatification HAS BEEN REMOVED
         // if (Auth::user()->can('bypassRatification', Alumnus::class))

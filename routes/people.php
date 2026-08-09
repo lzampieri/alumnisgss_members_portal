@@ -22,7 +22,6 @@ Route::prefix('/registry')->group(function () {
     Route::get('/table', [AlumnusController::class, 'table'])->name('registry.table');
 
     Route::get('/checks', [AlumnusControllerChecks::class, 'checks'])->name('registry.checks');
-    Route::post('/checks/assdet', [AlumnusControllerChecks::class, 'assdet'])->name('registry.checks.assdet');
     Route::post('/checks/dupcor', [AlumnusControllerChecks::class, 'dupcor'])->name('registry.checks.dupcor');
 });
 

@@ -15,7 +15,6 @@ class ADetail extends Model
     protected $fillable = [
         'value',
         'a_details_type_id',
-        'identity_type',
         'identity_id'
     ];
     protected $casts = [
@@ -24,7 +23,7 @@ class ADetail extends Model
 
     public function identity()
     {
-        return $this->begonsTo(Person::class,'identity_id');
+        return $this->belongsTo(Person::class,'identity_id');
     }
 
     public function aDetailsType()

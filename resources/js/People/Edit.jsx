@@ -102,7 +102,7 @@ export default function Edit() {
         surname: prev?.surname || '',
         name: prev?.name || '',
         notes: prev?.notes || '',
-        coorte: prev?.coorte || 1,
+        coorte: prev ? prev.coorte : 1,
         status: prev?.status || 'not_reached',
         tags: prev?.tags || [],
         emails: prev?.emails?.map((e) => e.address) || [],

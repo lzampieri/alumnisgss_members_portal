@@ -19,6 +19,8 @@ export default function Edit() {
     const rats = prevDoc.grouped_ratifications;
     const parentable = usePage().props.parentable.map(p => ({ value: p.id, label: p.identifier }));
 
+    console.log(prevDoc)
+
     const { data, setData, post, processing, errors, isDirty, transform } = useForm({
         identifier: prevDoc.identifier,
         roles: prevDoc.dynamic_permissions.map(dp => dp.role_id),
@@ -33,6 +35,7 @@ export default function Edit() {
 
     const submit = (e) => {
         e.preventDefault();
+        console.log(data)
         post(route('board.edit', { document: prevDoc.id }));
     }
 
@@ -44,6 +47,8 @@ export default function Edit() {
         ...data,
         attached_to_id: ( data.isAttachment && data.attachedTo ) ? data.attachedTo.value : null
     }))
+
+    console.log(errors)
 
     return (
         <div className="flex flex-col w-full md:w-3/5">
@@ -67,6 +72,9 @@ export default function Edit() {
                 {!data.isAttachment && <>
                     <label>Visibilità</label>
                     <RolesChips roles={roles} list={data.roles} updateList={(newList) => setData('roles', newList)} />
+                    {
+                        Object.keys(errors).map(k => k.startsWith('roles') && <label className="error">{k}: {errors[k]}</label>)
+                    }
                 </>
                 }
                 <label className="error">{errors.roles}</label>

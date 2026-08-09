@@ -31,12 +31,12 @@ function DocumentItem(document, isAttachment = false) {
                         {" " + document.dynamic_permissions.filter(dp => dp.role).map(dp => dp.role.common_name).join(", ")}
                         {document.note && " - Nota: " + document.note}
                     </span>}
-                    <span className="text-gray-500 text-sm">Caricato il {new Date(document.created_at).toLocaleDateString('it-IT', { 'dateStyle': 'long' })} da {document.author.name} {document.author.surname}</span>
+                    <span className="text-gray-500 text-sm">Caricato il {new Date(document.created_at).toLocaleDateString('it-IT', { 'dateStyle': 'long' })} da {document.author?.name} {document.author?.surname}</span>
                 </div>
-                {document.canView && document.canEdit && <Link href={route('board.edit', { document: document.id })} className="">
+                {document.can_view && document.can_edit && <Link href={route('board.edit', { document: document.id })} className="">
                     <FontAwesomeIcon icon={faPen} className="text-4xl !p-4 icon-button" />
                 </Link>}
-                {document.canView && <a href={route('board.view_document', { protocol: document.protocol })} className="">
+                {document.can_view && <a href={route('board.view_document', { protocol: document.protocol })} className="">
                     <FontAwesomeIcon icon={faFilePdf} className="text-4xl !p-4 icon-button" />
                 </a>}
             </div>

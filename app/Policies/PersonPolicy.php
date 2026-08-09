@@ -23,6 +23,18 @@ class PersonPolicy
     }
 
     /**
+     * Determine whether the person can view the people which are alumnus
+     * and whose status is in Alumnus::public_status
+     *
+     * @param  \App\Models\Person  $user optional
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function viewNetworkPage(Person $user)
+    {
+        return $user->hasPermissionTo('network-view');
+    }
+
+    /**
      * Determine whether the person can view all the alumnus, with all the details
      *
      * @param  \App\Models\Person  $user
@@ -92,6 +104,19 @@ class PersonPolicy
         return false;
     }
 
+
+    /**
+     * Determine whether the person can view the DETAILS for all ALUMNUS
+     *
+     * @param  \App\Models\Person $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function viewAllDetails(Person $user)
+    {
+        return $this->viewAnyAlumnus($user) && $user->hasPermissionTo('people-view-alldetails');
+    }
+
+
     /**
      * Determine whether the person can edit the settings for the network visualization
      *
@@ -113,7 +138,6 @@ class PersonPolicy
      */
     public function editGeneral(Person $user, ?Person $person = null)
     {
-        return true;
         if (!$person) return $user->hasPermissionTo('people-edit-general');
         return $this->viewGeneral($user, $person) && $user->hasPermissionTo('people-edit-general');
     }

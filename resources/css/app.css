@@ -110,7 +110,7 @@
     @apply file:rounded-none file:border-0 file:bg-gray-300 file:py-2 file:px-4
     }
     input[type="checkbox"] {
-        @apply border-gray-500 mr-2 text-primary-main
+        @apply border-gray-500 mr-2 checked:bg-primary-main
     }
     div[role="textbox"] {
         @apply rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0 py-2 px-3

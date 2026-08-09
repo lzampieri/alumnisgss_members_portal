@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Alumnus;
 use App\Models\Email;
 use App\Models\Newsletter;
-use App\Models\Newsletters;
 use App\Models\Person;
+use App\Models\Ratification;
 use App\Models\Stamp;
 use App\Policies\PersonPolicy;
 use App\Policies\PositionPolicy;
@@ -24,7 +23,7 @@ class AppsController extends Controller
             $apps[] = 'members';
         }
 
-        if (Auth::user() && Auth::user()->can('viewNetwork', Person::class)) {
+        if (Auth::user() && Auth::user()->can('viewNetworkPage', Person::class)) {
             $apps[] = 'network';
             $apps[] = 'map';
         }

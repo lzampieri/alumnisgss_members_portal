@@ -61,7 +61,7 @@ function verifyCounts() {
         <h5>Valori errati:</h5>
         <ul className="list-disc list-inside">
             {errorsInAlumnusData.map((err, i) =>
-                <li key={i}><a href={route('registry.edit', { id: err.id })}>{err.name} {err.surname}</a> - {adtlist[err.det_id].name}: {err.val} instead of {adtlist[err.det_id].expval}</li>)}
+                <li key={i}><a href={route('person.edit', { id: err.id })}>{err.name} {err.surname}</a> - {adtlist[err.det_id].name}: {err.val} instead of {adtlist[err.det_id].expval}</li>)}
             {errorsInAlumnusData.length == 0 && <>Nessun valore errato rilevato! Evviva!</>}
         </ul>
     </>
@@ -89,7 +89,7 @@ function doubledDetails() {
             {list.length == 0 && <>Nessun dettaglio duplicato rilevato! Evviva!</>}
             {list.map((k, i) => <li key={i}>
                 <input type="checkbox" checked={data.selected.includes(k.id)} onChange={() => toggle(k.id)} />
-                {k.a_details_type.name} for <Link href={route('registry.edit', { id: k.identity.id })}>{k.identity.name} {k.identity.surname}</Link>: {JSON.stringify(k.value)}
+                {k.a_details_type.name} for <Link href={route('person.edit', { id: k.identity.id })}>{k.identity.name} {k.identity.surname}</Link>: {JSON.stringify(k.value)}
             </li>)}
             <Backdrop open={processing} />
         </ul>
@@ -104,7 +104,7 @@ function wrongSelect() {
         <ul className="list-disc list-inside">
             {list.length == 0 && <>Nessun valore irregolare rilevato! Evviva!</>}
             {list.map((k, i) => <li key={i}>
-                {k.a_details_type.name} for <Link href={route('registry.edit', { id: k.identity.id })}>{k.identity.name} {k.identity.surname}</Link>: "{k.value}" non è in {k.a_details_type.param}
+                {k.a_details_type.name} for <Link href={route('person.edit', { id: k.identity.id })}>{k.identity.name} {k.identity.surname}</Link>: "{k.value}" non è in {k.a_details_type.param}
             </li>)}
         </ul>
     </>

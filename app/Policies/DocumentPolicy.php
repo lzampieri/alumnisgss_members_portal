@@ -22,6 +22,7 @@ class DocumentPolicy
      */
     public function view(?Person $user, Document $document)
     {
+        if ($user && $user->hasPermissionTo('documents-view-all')) return true;
         if ($document->attached_to_id) return $this->view($user, $document->attached_to);
         return DynamicPermission::PersonCanViewPermissable($document, $user ? $user->identity : null);
     }
@@ -29,7 +30,7 @@ class DocumentPolicy
     /**
      * Determine whether the person can create models.
      *
-     * @param  \Illuminate\Support\Facades\Auth\Person  $user
+     * @param  \App\Models\Person  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function create(Person $user)
@@ -40,7 +41,7 @@ class DocumentPolicy
     /**
      * Determine whether the person can edit the document.
      *
-     * @param  \Illuminate\Support\Facades\Auth\Person  $user
+     * @param  \App\Models\Person  $user
      * @param  \App\Models\Document  $document
      * @return \Illuminate\Auth\Access\Response|bool
      */
@@ -52,7 +53,7 @@ class DocumentPolicy
     /**
      * Determine whether the person can delete the model.
      *
-     * @param  \Illuminate\Support\Facades\Auth\Person  $user
+     * @param  \App\Models\Person  $user
      * @param  \App\Models\Document  $document
      * @return \Illuminate\Auth\Access\Response|bool
      */
@@ -64,7 +65,7 @@ class DocumentPolicy
     /**
      * Determine whether the person can restore the model.
      *
-     * @param  \Illuminate\Support\Facades\Auth\Person  $user
+     * @param  \App\Models\Person  $user
      * @param  \App\Models\Document  $document
      * @return \Illuminate\Auth\Access\Response|bool
      */

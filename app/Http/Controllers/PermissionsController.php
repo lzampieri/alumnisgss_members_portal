@@ -138,6 +138,7 @@ class PermissionsController extends Controller
             // Documents
             'documents-upload',
             'documents-edit',
+            'documents-view-all',
             // Resources
             'resources-create',
             'resources-see-archive',

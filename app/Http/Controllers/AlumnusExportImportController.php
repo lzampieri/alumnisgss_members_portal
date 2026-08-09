@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ADetail;
 use App\Models\ADetailsType;
 use App\Models\Alumnus;
+use App\Models\Email;
+use App\Models\Person;
 use App\Models\Ratification;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -19,11 +19,12 @@ class AlumnusExportImportController extends Controller
 {
     public function exportExcelSchema()
     {
-        $this->authorize('viewAny', Alumnus::class);
+        $this->authorize('viewAnyAlumnus', Person::class);
 
         LogController::log(LogEvents::DOWNLOADED_SCHEMA);
 
-        $alumni = Alumnus::orderBy('surname')->orderBy('name')->get()->groupBy('coorte');
+        $alumni = Person::where('coorte', '>', 0)
+            ->orderBy('surname')->orderBy('name')->get()->groupBy('coorte');
         $coorts = $alumni->keys()->sort()->values();
 
         $spreadsheet = new Spreadsheet();
@@ -147,10 +148,11 @@ class AlumnusExportImportController extends Controller
 
     public function exportExcelDetails()
     {
-        $this->authorize('viewAny', Alumnus::class);
+        $this->authorize('viewAllDetails', Person::class);
         LogController::log(LogEvents::DOWNLOADED_DETAILS);
 
-        $alumni = Alumnus::orderBy('coorte')
+        $alumni = Person::where('coorte', '>', 0)
+            ->orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
             ->with(['aDetails' => function ($query) {
                 $query->whereHas('aDetailsType')
@@ -252,14 +254,16 @@ class AlumnusExportImportController extends Controller
 
     public function importExcelDetails()
     {
-        $this->authorize('import', Alumnus::class);
+        $this->authorize('import', Person::class);
 
-        return Inertia::render('Registry_ImpExp/ImportDetails');
+        return Inertia::render('Members/ImportDetails');
     }
 
     public function importExcelDetails_post(Request $request)
     {
-        $this->authorize('import', Alumnus::class);
+        $this->authorize('viewAllDetails', Person::class);
+        $this->authorize('editDetails', Person::class);
+        $this->authorize('import', Person::class);
         $output = "";
 
         $validated = $request->validate([
@@ -308,7 +312,7 @@ class AlumnusExportImportController extends Controller
             // Load data from standard_cols
             $newPars = array_combine($stdkeys, $sheet->rangeToArray("A$row:$colUpTo$row")[0]);
             if (!$newPars['id']) continue;
-            $alumnus = Alumnus::find($newPars['id']);
+            $alumnus = Person::find($newPars['id']);
 
             if (!$alumnus) {
                 $output .= "Alumnus at row {$row} not found; skipped\n";
@@ -424,9 +428,9 @@ class AlumnusExportImportController extends Controller
 
     public function addBulk()
     {
-        $this->authorize('import', Alumnus::class);
+        $this->authorize('create', Person::class);
 
-        return Inertia::render('Registry_ImpExp/AddBulk', [
+        return Inertia::render('Members/AddBulk', [
             'noRatStatus' => Alumnus::availableStatus(),
             'allStatus' => Alumnus::status,
         ]);
@@ -435,7 +439,7 @@ class AlumnusExportImportController extends Controller
 
     public function addBulk_post(Request $request)
     {
-        $this->authorize('import', Alumnus::class);
+        $this->authorize('create', Person::class);
 
 
         $validated = $request->validate([
@@ -444,7 +448,8 @@ class AlumnusExportImportController extends Controller
             'rows.*' => 'array',
             'rows.*.surname' => 'required|regex:/^[A-zÀ-ú\s\'_]+$/',
             'rows.*.name' => 'required|regex:/^[A-zÀ-ú\s\'_]+$/',
-            'rows.*.coorte' => 'required|numeric'
+            'rows.*.coorte' => 'required|numeric',
+            'rows.*.emails' => 'nullable|string'
         ]);
 
         // Check for new status, if ratification needed
@@ -456,19 +461,33 @@ class AlumnusExportImportController extends Controller
             $validated['status'] = 'not_reached';
         }
 
+        $added = [];
         foreach ($validated['rows'] as $row) {
-            $alumnus = Alumnus::create([
+            $alumnus = Person::create([
                 'surname' => $row['surname'],
                 'name' => $row['name'],
                 'coorte' => $row['coorte'],
-                'status' => $validated['status'],
+                'status' => $row['coorte'] > 0 ? $validated['status'] : '',
                 'tags' => []
             ]);
-            if ($rat_needed) {
+            if ($row['coorte'] > 0 && $rat_needed) {
                 Ratification::create(['alumnus_id' => $alumnus->id, 'required_state' => $rat_newstatus]);
             }
+            $emails = preg_split('/([ ,;])/', $row['emails']);
+            foreach( $emails as $email ) {
+                $email = trim($email);
+                if( strlen( $email ) ) {
+                    $em = $alumnus->emails()->create([
+                        'address' => $email
+                    ]);
+                }
+            }
+            $added[] = $alumnus;
         }
 
-        return redirect()->route('registry.addBulk')->with('notistack', ['success', count($validated['rows']) . ' alumni aggiunti']);
+
+        return redirect()->back()
+            ->with('notistack', ['success', count($validated['rows']) . ' persone aggiunte'])
+            ->with('inertiaFlash', ['justadded' => $added] );
     }
 }

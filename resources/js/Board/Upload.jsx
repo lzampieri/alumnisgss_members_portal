@@ -66,14 +66,14 @@ export default function Upload() {
 
     transform((data) => ({
         ...data,
-        attached_to_id: ( data.isAttachment && data.attachedTo ) ? data.attachedTo.value : null
+        attached_to_id: (data.isAttachment && data.attachedTo) ? data.attachedTo.value : null
     }))
 
     return (
         <form className="flex flex-col w-full md:w-3/5" onSubmit={submit}>
             <Head title="Carica documento" />
             <h3>Carica documento</h3>
-            {!usePage().props.canEdit && <label className="error">Attenzione: possiedi i permessi di caricare documenti, ma non di modificare documenti già caricati. Rivedi con attenzione tutti i campi prima di salvare.</label>}
+            {!usePage().props.can_edit && <label className="error">Attenzione: possiedi i permessi di caricare documenti, ma non di modificare documenti già caricati. Rivedi con attenzione tutti i campi prima di salvare.</label>}
             <label>È un allegato</label>
             <ReactSwitch height={21} width={42} checked={data.isAttachment} onChange={(newState) => setData('isAttachment', newState)} />
             {data.isAttachment &&

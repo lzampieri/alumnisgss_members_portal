@@ -18,7 +18,7 @@ class Ratification extends Model
 
     public function alumnus()
     {
-        return $this->belongsTo(Alumnus::class);
+        return $this->belongsTo(Person::class);
     }
 
     public function document()

@@ -1,4 +1,4 @@
-import { Head, useForm, usePage } from "@inertiajs/react";
+import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { AlumnusStatus } from "../Utils";
 import Select from 'react-select';
 import { useMemo, useState } from "react";
@@ -8,16 +8,16 @@ import Backdrop from "../Layout/Backdrop";
 
 import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
 import { themeQuartz } from "ag-grid-community";
-import { ModuleRegistry, ClientSideRowModelModule, NumberEditorModule, TextEditorModule, ValidationModule } from 'ag-grid-community';
+import { ModuleRegistry, ClientSideRowModelModule, NumberEditorModule, TextEditorModule, ValidationModule, ColumnAutoSizeModule } from 'ag-grid-community';
 import { enqueueSnackbar } from "notistack";
 import { faLock, faSave } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-ModuleRegistry.registerModules([ClientSideRowModelModule, NumberEditorModule, TextEditorModule, ValidationModule]);
+ModuleRegistry.registerModules([ClientSideRowModelModule, NumberEditorModule, TextEditorModule, ValidationModule, ColumnAutoSizeModule]);
 
 export default function Bulk() {
     const { data, setData, post, processing, errors, transform } = useForm({
         status: 'not_reached',
-        rows: [{ name: '', surname: '', coorte: 0 }]
+        rows: [{ name: '', surname: '', coorte: 0, emails: '' }]
     })
 
     // Stato
@@ -37,14 +37,11 @@ export default function Bulk() {
     );
 
     const columns = useMemo(() => [
-        { field: 'name', headerName: 'Nome', cellDataType: 'text', editable: true, sortable: false },
-        { field: 'surname', headerName: 'Cognome', cellDataType: 'text', editable: true, sortable: false },
-        { field: 'coorte', headerName: 'Coorte', cellDataType: 'number', editable: true, sortable: false },
+        { field: 'name', headerName: 'Nome', cellDataType: 'text', editable: true, sortable: false, flex: 1 },
+        { field: 'surname', headerName: 'Cognome', cellDataType: 'text', editable: true, sortable: false, flex: 1 },
+        { field: 'coorte', headerName: 'Coorte', cellDataType: 'number', editable: true, sortable: false, flex: 1 },
+        { field: 'emails', headerName: 'Indirizzi email', cellDataType: 'text', editable: true, sortable: false, flex: 1 },
     ], [])
-
-    // const [rows, setRows] = useState([
-    //     { name: '', surname: '', coorte: 0 },
-    // ])
 
     transform((data) => {
         return {
@@ -53,10 +50,8 @@ export default function Bulk() {
         }
     })
 
-
     const submit = (e) => {
         e.preventDefault();
-        // setData('rows', rows)
         post(route('registry.addBulk'), { preserveState: "errors", onError: () => enqueueSnackbar('C\'è stato un errore, verifica tutti i campi', { variant: 'error' }) });
     }
 
@@ -68,7 +63,7 @@ export default function Bulk() {
             if (storingEditingCell.length > 0)
                 api.stopEditing();
 
-            setData('rows', [...data.rows, { name: '', surname: '', coorte: 0 }])
+            setData('rows', [...data.rows, { name: '', surname: '', coorte: 0, emails: '' }])
 
             api.setFocusedCell(storingFocusedCell.rowIndex, storingFocusedCell.column)
             if (storingEditingCell.length > 0) {
@@ -77,18 +72,27 @@ export default function Bulk() {
         }
     }
 
+    const output = usePage().props.flash?.justadded;
+
     return (
-        <form className="flex flex-col w-full md:w-3/5" onSubmit={submit}>
+        <form className="flex flex-col w-full" onSubmit={submit}>
             <Head title="Inserimento di massa" />
             <div className="w-full justify-between flex flex-row">
-                <h3>Inserimento in massa di {data.rows.length - 1} alumni</h3>
+                <h3>Inserimento in massa di {data.rows.length - 1} persone</h3>
                 <div className="button flex flex-row items-center" onClick={submit}>
                     <FontAwesomeIcon icon={faSave} />
                     Salva
                 </div>
             </div>
 
-            <label>Stato</label>
+            { output && <div className="info">
+                Sono stati appena aggiunti {output.length} profili:
+                {
+                    output.map(p => <Link className="px-1" href={route('person.edit', {person: p.id})}>{p.name} {p.surname}</Link>)
+                } 
+            </div> }
+
+            <label>Stato per gli alumni inseriti</label>
             <Select
                 classNames={{ control: () => 'selectDropdown' }}
                 value={status_options.find(i => i.value == data.status)}
@@ -104,7 +108,8 @@ export default function Bulk() {
             <label className="error">{errors.status}</label>
 
             <label>Dati da aggiungere</label>
-            <label className="error">{Object.keys(errors).reduce((acc, key) => acc + (key.startsWith('rows') ? errors[key] : ''), '')}</label>
+            <small>Usa coorte 0 per i soci onorari, -1 per gli esterni.</small>
+            <label className="error">{Object.keys(errors).reduce((acc, key) => acc + (key.startsWith('rows') ? key + ': ' + errors[key] : ''), '')}</label>
             <div className="h-[70vh]">
                 <AgGridReact
                     theme={themeQuartz}

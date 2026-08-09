@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Alumnus;
 use App\Models\Document;
 use App\Models\DynamicPermission;
 use App\Models\File;
 use App\Models\Ratification;
-use App\Policies\DocumentPolicy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use setasign\Fpdi\Tcpdf\Fpdi;
 use Inertia\Inertia;
-use setasign\Fpdi\PdfParser\CrossReference\CrossReference;
 use setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException;
 use Spatie\Permission\Models\Role;
 
@@ -28,7 +25,7 @@ class DocumentsController extends Controller
             ->with(['author', 'dynamicPermissions', 'dynamicPermissions.role'])
             ->with(['attachments', 'attachments.author'])
             ->orderBy('date', 'desc')->orderBy('protocol', 'desc')->get()
-            ->filter->canView->values();
+            ->filter->can_view->values();
         $params['total'] = Document::count();
 
         $params['canUpload'] = Auth::check() && Auth::user()->can('create', Document::class);
@@ -47,7 +44,8 @@ class DocumentsController extends Controller
                     return str_pad($rat->alumnus->coorte, 4, 0, STR_PAD_LEFT) . " " . $rat->alumnus->surname . " " . $rat->alumnus->name;
                 })
                 ->groupBy('required_state'),
-            'parentable' => Document::whereNull('attached_to_id')->latest()->get()
+            'parentable' => Document::whereNull('attached_to_id')->latest()->get(),
+            'can_edit' => Auth::user()->hasPermissionTo('documents-edit')
         ]);
     }
 
@@ -127,6 +125,12 @@ class DocumentsController extends Controller
     public function edit(Document $document)
     {
         $this->authorize('edit', $document);
+
+        // Clean non-existing dynamic permissions
+        foreach ($document->dynamicPermissions as $dp) {
+            if (!Role::find($dp->role_id))
+                $dp->delete();
+        }
 
         $document->grouped_ratifications = $document->ratifications->load('alumnus')->groupBy('required_state');
         $document->load(['files', 'dynamicPermissions', 'attached_to']);
@@ -273,7 +277,7 @@ class DocumentsController extends Controller
 
         $rat = Ratification::find($validated['ratification']);
 
-        $this->authorize('edit', $rat->document());
+        $this->authorize('edit', $rat->document);
 
         $rat->document()->associate(null)->save();
 

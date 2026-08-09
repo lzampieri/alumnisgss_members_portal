@@ -5,26 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\ADetail;
 use App\Models\ADetailsType;
 use App\Models\Alumnus;
-use App\Models\Identity;
-use App\Models\Ratification;
-use Illuminate\Database\Eloquent\Builder;
+use App\Models\Person;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class AlumnusControllerChecks extends Controller
 {
 
     public function checks()
     {
-        $this->authorize('viewAny', Alumnus::class);
-        $this->authorize('edit', Alumnus::class);
+        $this->authorize('viewAllDetails', Person::class);
+        $this->authorize('editDetails', Person::class);
         
-        $alumnusData = Alumnus::with(['aDetails' => function ($query) {
+        $alumnusData = Person::where('coorte', '>', 0)
+            ->with(['aDetails' => function ($query) {
                 $query->whereHas('aDetailsType', function ($query) {
                     $query->where('visible', true);
                 })->orderBy(ADetailsType::select('order')->whereColumn('a_details_types.id', 'a_details.a_details_type_id'));
@@ -33,16 +27,11 @@ class AlumnusControllerChecks extends Controller
             ->orderBy('surname')->orderBy('name')
             ->get()
             ->append('a_details_keyd')
+            ->makeVisible('a_details_keyd')
+            ->makeHidden(['enabled', 'a_details', 'permissions', 'roles'])
             ->toArray();
 
         array_walk($alumnusData, function (&$alumnus,$key) {
-
-            // Remove irrelevant data
-            unset( $alumnus['enabled'] );
-            unset( $alumnus['a_details'] );
-            unset( $alumnus['permissions'] );
-            unset( $alumnus['roles'] );
-
             // Remove details but keep the count
             array_walk($alumnus['a_details_keyd'], function (&$det,$key) {
                 $det = count($det["value"]);
@@ -51,7 +40,7 @@ class AlumnusControllerChecks extends Controller
 
         $adtlist = ADetailsType::allOrdered()->keyBy('id');
 
-        $doubledDetails = ADetail::with('identity','aDetailsType')->get()->filter(function ($detail) {
+        $doubledDetails = ADetail::with(['identity','aDetailsType'])->get()->filter(function ($detail) {
             return count($detail->value) != count(array_unique($detail->value));
         })->values();
 
@@ -61,7 +50,7 @@ class AlumnusControllerChecks extends Controller
             })->values();
             
         return Inertia::render(
-            'Registry/Checks',
+            'Members/Checks',
             [
                 'alumnusData' => $alumnusData,
                 'adtlist' => $adtlist,
@@ -73,7 +62,8 @@ class AlumnusControllerChecks extends Controller
 
     public function dupcor(Request $request)
     {
-        $this->authorize('edit', Alumnus::class);
+        $this->authorize('viewAllDetails', Person::class);
+        $this->authorize('editDetails', Person::class);
 
         $validated = $request->validate([
             'selected' => 'array',
