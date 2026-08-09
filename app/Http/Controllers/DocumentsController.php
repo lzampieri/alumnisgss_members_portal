@@ -8,9 +8,7 @@ use App\Models\File;
 use App\Models\Ratification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use setasign\Fpdi\Tcpdf\Fpdi;
 use Inertia\Inertia;
-use setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException;
 use Spatie\Permission\Models\Role;
 
 class DocumentsController extends Controller
@@ -100,7 +98,7 @@ class DocumentsController extends Controller
         $file->save();
 
         // Save the visibility
-        if( array_key_exists('roles', $validated) )
+        if (array_key_exists('roles', $validated))
             foreach ($validated['roles'] as $role) {
                 $dynamicPermission = DynamicPermission::createFromRelations('view', $document, Role::findById($role));
             }
@@ -171,7 +169,7 @@ class DocumentsController extends Controller
         $document->update($validated);
 
         // If the document is not attached to other ones, check the roles
-        if( array_key_exists('roles', $validated) ) {
+        if (array_key_exists('roles', $validated)) {
             $current_roles = $document->dynamicPermissions->pluck('role_id')->toArray();
             foreach (array_diff($current_roles, $validated['roles']) as $role) {
                 // Roles to remove
@@ -247,9 +245,9 @@ class DocumentsController extends Controller
             'document' => 'required|exists:documents,id',
             'ratification' => 'required|exists:ratifications,id'
         ]);
-        
+
         $doc = Document::find($validated['document']);
-        
+
         $this->authorize('edit', $doc);
 
         $rat = Ratification::find($validated['ratification']);
@@ -318,53 +316,62 @@ class DocumentsController extends Controller
             return redirect()->back()->with('errorsDialogs', ["Il file richiesto è corrotto. Contatta gli amministratori."]);
         }
 
-        $pdf = new Fpdi();
 
-        try {
-            $pageCount = $pdf->setSourceFile($file->path());
+        $all_versions = $file->parent->files()->oldest()->pluck('id')->toArray();
+        $this_version = array_search($file->id, $all_versions) + 1;
+        $latest = ($this_version == count($all_versions));
 
+        \define('K_PATH_FONTS', substr( app_path(), 0, -3) . "vendor\\tecnickcom\\tc-lib-pdf-font\\target\\fonts");
 
-            $all_versions = $file->parent->files()->oldest()->pluck('id')->toArray();
-            $this_version = array_search($file->id, $all_versions) + 1;
-            $latest = ($this_version == count($all_versions));
+        $pdf = new \Com\Tecnick\Pdf\Tcpdf();
 
-            $pdf->setPrintHeader(false);
-            $pdf->setPrintFooter(false);
+        $sourceId = $pdf->setImportSourceFile($file->path());
+        $pageCount = $pdf->getSourcePageCount($sourceId);
+        $pdf->appendDocument($sourceId);
 
-            $pdf->SetAutoPageBreak(false);
-            $pdf->SetFont('Helvetica');
-            $pdf->SetFontSize('10');
-            $pdf->SetTextColor(255, 0, 0);
+        $bfont = $pdf->font->insert($pdf->pon, 'helvetica', '', 10);
 
-            $header = '=== VERSIONE OBSOLETA! Una nuova versione del documento è presente sul portale ===';
-            $footer = '=== Scaricato dal portale soci il ' . date('d/m/Y') . ' - Protocollo web ' . $file->parent->protocol . ' - Versione ' . $this_version . ' di ' . count($all_versions) . ' ===';
+        $header = '=== VERSIONE OBSOLETA! Una nuova versione del documento é presente sul portale ===';
+        $footer = '=== Scaricato dal portale soci il ' . date('d/m/Y') . ' - Protocollo web ' . $file->parent->protocol . ' - Versione ' . $this_version . ' di ' . count($all_versions) . ' ===';
 
-            for ($i = 1; $i <= $pageCount; $i++) {
-                $id = $pdf->importPage($i);
+        for ($i = 0; $i < $pageCount; $i++) {
 
-                // Add a page
-                $pdf->AddPage();
-                $pdf->useTemplate($id, 0, 0, null, null, true);
+            $pdf->page->addContent($bfont['out'], pid: $i);
+            $pdf->page->addContent($pdf->color->getPdfColor('rgb(255,0,0)'), pid: $i);
 
-                // Add watermark on the bottom
-                $pdf->SetXY(0, -10);
-                $pdf->Cell(0, 7, $footer, 0, 0, 'C');
-
-                // Add watermark on the top for obsolete
-                if (!$latest) {
-                    $pdf->SetXY(0, 10);
-                    $pdf->Cell(0, 7, $header, 0, 0, 'C');
-                }
+            if (!$latest) {
+                $pdf->addTextCellXY(
+                    txt: $header,
+                    pid: $i,
+                    posx: 0,
+                    posy: 3,
+                    width: $pdf->page->getPage($i)['width'],
+                    halign: 'C',
+                    fill: true,
+                    stroke: false,
+                    drawcell: false
+                );
             }
-            $pdf->SetTitle($file->parent->identifier);
 
-            LogController::log(LogEvents::DOWNLOADED_FILE, $file);
-
-            $pdf->Output($file->parent->protocol . '.pdf', 'I');
-            exit;
-
-        } catch (CrossReferenceException $e) {
-            return redirect(null, 415)->back()->with('errorsDialogs', ["Questo file non è supportato dal visualizzatore."]);
+            $pdf->addTextCellXY(
+                txt: $footer,
+                pid: $i,
+                posx: 0,
+                posy: $pdf->page->getPage($i)['height'] - 10,
+                width: $pdf->page->getPage($i)['width'],
+                halign: 'C',
+                fill: true,
+                stroke: false,
+                drawcell: false
+            );
         }
+
+        LogController::log(LogEvents::DOWNLOADED_FILE, $file);
+
+        $pdf->setTitle($file->parent->identifier);
+        $pdf->setPDFFilename($file->parent->protocol . '.pdf');
+
+        $pdf->renderPDF($pdf->getOutPDFString());
+        exit;
     }
 }
