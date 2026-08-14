@@ -79,4 +79,9 @@ class Stamp extends Model
     {
         return $this->morphMany(Ticket::class, 'reference')->where('status', 'open');
     }
+    
+    public function logify()
+    {
+        return "Stamp #{$this->id} of {$this->employee->name} on {$this->date} type {$this->type->label}";
+    }
 }

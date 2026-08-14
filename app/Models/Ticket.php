@@ -82,4 +82,9 @@ class Ticket extends Model
     {
         return $this->hasMany(TicketComment::class)->orderBy('created_at', 'asc');
     }
+    
+    public function logify()
+    {
+        return "Ticket #{$this->id} of {$this->author->name} type {$this->type}";
+    }
 }

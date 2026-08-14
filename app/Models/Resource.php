@@ -94,4 +94,10 @@ class Resource extends Model
         if (!$parent || !$parent->canView) return null;
         return $parent->only(['id', 'title', 'archived', 'permalinks', 'children_count']);
     }
+    
+    
+    public function logify()
+    {
+        return "Resource " . $this->title . ": " . json_encode($this->content);
+    }
 }

@@ -3,21 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\DynamicPermission;
-use App\Models\File;
 use App\Models\MailingList;
-use App\Models\Permalink;
-use App\Models\Resource;
-use App\Policies\FilePolicy;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 use Spatie\Permission\Models\Role;
-use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use SplFileObject;
@@ -48,9 +39,6 @@ class MailingListController extends Controller
             $ml->load(['dynamicPermissions', 'dynamicPermissions.role']);
 
         $roles = Role::orderBy('id')->get();
-
-        // Log::channel('flask')->info($ml);
-        // throw new Exception();
 
         return Inertia::render('Mailinglist/Edit', [
             'mailinglist' => $ml,

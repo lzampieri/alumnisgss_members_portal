@@ -21,4 +21,9 @@ class Permalink extends Model
     {
         return $this->morphTo();
     }
+
+    public function logify()
+    {
+        return "Permalink " . $this->id . " to " . $this->linkable_type . " #" . $this->linkable_id;
+    }
 }

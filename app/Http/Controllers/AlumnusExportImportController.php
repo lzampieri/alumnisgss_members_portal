@@ -77,7 +77,7 @@ class AlumnusExportImportController extends Controller
 
             $column = Coordinate::stringFromColumnIndex($horizontalOffset + $coort_i);
 
-            $sheet->setCellValue($column . $verticalOffset, Alumnus::romanize($coort));
+            $sheet->setCellValue($column . $verticalOffset, Person::romanize($coort));
             $sheet->getStyle($column . $verticalOffset)->applyFromArray($columnHeaderStyle);
             $sheet->getColumnDimension($column)->setWidth(23);
 
@@ -474,9 +474,9 @@ class AlumnusExportImportController extends Controller
                 Ratification::create(['alumnus_id' => $alumnus->id, 'required_state' => $rat_newstatus]);
             }
             $emails = preg_split('/([ ,;])/', $row['emails']);
-            foreach( $emails as $email ) {
+            foreach ($emails as $email) {
                 $email = trim($email);
-                if( strlen( $email ) ) {
+                if (strlen($email)) {
                     $em = $alumnus->emails()->create([
                         'address' => $email
                     ]);
@@ -489,6 +489,6 @@ class AlumnusExportImportController extends Controller
 
         return redirect()->back()
             ->with('notistack', ['success', count($validated['rows']) . ' persone aggiunte'])
-            ->with('inertiaFlash', ['justadded' => $added] );
+            ->with('inertiaFlash', ['justadded' => $added]);
     }
 }

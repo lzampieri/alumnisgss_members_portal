@@ -28,4 +28,9 @@ class TicketComment extends Model
         return $this->belongsTo(Ticket::class);
     }
 
+    
+    public function logify()
+    {
+        return "Comment #{$this->id} of {$this->author->logify()} on {$this->ticket->logify()}";
+    }
 }

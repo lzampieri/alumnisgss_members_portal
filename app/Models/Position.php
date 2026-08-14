@@ -31,4 +31,9 @@ class Position extends Model
     {
         return $this->from < Carbon::now() && $this->to > Carbon::now();
     }
+    
+    public function logify()
+    {
+        return "Position {$this->type} for {$this->owner->logify()}";
+    }
 }

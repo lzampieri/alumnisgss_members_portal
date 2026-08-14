@@ -23,8 +23,8 @@ export default function List() {
         <div className="main-container">
             <Head title="Funzioni webmaster" />
             <ul>
-                <li><a href={route('log')}>Log</a></li>
-                <li><a href={route('webmaster.log.internal')}>Internal log</a></li>
+                <li><a href={route('webmaster.log.files')}>Log to files</a></li>
+                <li><a href={route('webmaster.log.internal')}>Log to database</a></li>
                 <li><RequireConfirmLink href={route('webmaster.backup')}>Backup</RequireConfirmLink></li>
                 <li><Link href={route('webmaster.decryptUtility')}>Utilità per decriptazione</Link></li>
                 <li><RequireConfirmLink href={route('webmaster.migrate')}>Migra</RequireConfirmLink></li>

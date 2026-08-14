@@ -25,4 +25,11 @@ class Ratification extends Model
     {
         return $this->belongsTo(Document::class);
     }
+
+    
+    
+    public function logify()
+    {
+        return "Ratification of " . $this->alumnus->surnameAndName() . " to " . $this->required_state;
+    }
 }

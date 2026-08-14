@@ -118,7 +118,7 @@ class ReportsController extends Controller
 
             $pdf->HTMLenqueue('<ul>');
             foreach ($v as $a) {
-                $pdf->HTMLenqueue("<li>" . $a->alumnus->surname . " " . $a->alumnus->name . " (" . Alumnus::romanize($a->alumnus->coorte) . ") - " . $a->document->date->format('d/m/Y') . "</li>");
+                $pdf->HTMLenqueue("<li>" . $a->alumnus->surname . " " . $a->alumnus->name . " (" . Person::romanize($a->alumnus->coorte) . ") - " . $a->document->date->format('d/m/Y') . "</li>");
             }
             $pdf->HTMLenqueue("</ul>");
             $pdf->HTMLenqueue("<br />");
@@ -133,7 +133,7 @@ class ReportsController extends Controller
 
                 $pdf->HTMLenqueue('<ul>');
                 foreach ($v as $a) {
-                    $pdf->HTMLenqueue("<li>" . $a->alumnus->surname . " " . $a->alumnus->name . " (" . Alumnus::romanize($a->alumnus->coorte) . ") - " . $a->document->date->format('d/m/Y') . "</li>");
+                    $pdf->HTMLenqueue("<li>" . $a->alumnus->surname . " " . $a->alumnus->name . " (" . Person::romanize($a->alumnus->coorte) . ") - " . $a->document->date->format('d/m/Y') . "</li>");
                 }
                 $pdf->HTMLenqueue("</ul>");
                 $pdf->HTMLenqueue("<br />");
@@ -148,7 +148,7 @@ class ReportsController extends Controller
 
             $pdf->HTMLenqueue('<ul>');
             foreach ($v as $a) {
-                $pdf->HTMLenqueue("<li>" . $a->alumnus->surname . " " . $a->alumnus->name . " (" . Alumnus::romanize($a->alumnus->coorte) . ") - " . $a->document->date->format('d/m/Y') . "</li>");
+                $pdf->HTMLenqueue("<li>" . $a->alumnus->surname . " " . $a->alumnus->name . " (" . Person::romanize($a->alumnus->coorte) . ") - " . $a->document->date->format('d/m/Y') . "</li>");
             }
             $pdf->HTMLenqueue("</ul>");
             $pdf->HTMLenqueue("<br />");

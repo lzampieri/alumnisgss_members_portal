@@ -60,4 +60,9 @@ class MailingList extends Model
 
         return $output;
     }
+    
+    public function logify()
+    {
+        return "Mailing list " . $this->name . " (" . $this->count . ")";
+    }
 }

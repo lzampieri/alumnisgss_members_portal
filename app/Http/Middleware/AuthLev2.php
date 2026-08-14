@@ -2,9 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Http\Controllers\Log;
-use App\Http\Controllers\LogController;
-use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

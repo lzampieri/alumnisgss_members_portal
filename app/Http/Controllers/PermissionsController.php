@@ -164,7 +164,6 @@ class PermissionsController extends Controller
             // Webmaster stuff
             'logfile-view',
             'logdb-view',
-            'log-manage',
             'db-reset',
             'maintenance-access'
         ];
@@ -175,7 +174,7 @@ class PermissionsController extends Controller
                 Permission::findOrCreate($permission);
             } catch (\Illuminate\Database\QueryException $ex) {
                 if ($ex->getCode() == 23000) {
-                    Log::debug("Error 23000 in adding permission " . $permission . ", ignored", $ex->getCode());
+                    LogController::debug("Error 23000 in adding permission " . $permission . ", ignored", $ex->getCode());
                 } else return redirect()->back()->with(['notistack' => ['error', "C'è stato un errore."]]);
             }
         }

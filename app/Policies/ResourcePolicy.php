@@ -2,7 +2,6 @@
 
 namespace App\Policies;
 
-use App\Http\Controllers\Log;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\LogEvents;
 use App\Models\Resource;

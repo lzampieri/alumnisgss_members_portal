@@ -162,7 +162,7 @@ class RatificationController extends Controller
 
             $pdf->HTMLenqueue('<ul>');
             foreach ($v as $a) {
-                $pdf->HTMLenqueue("<li>" . $a->alumnus->surname . " " . $a->alumnus->name . " (" . Alumnus::romanize($a->alumnus->coorte) . ")</li>");
+                $pdf->HTMLenqueue("<li>" . $a->alumnus->surname . " " . $a->alumnus->name . " (" . Person::romanize($a->alumnus->coorte) . ")</li>");
             }
             $pdf->HTMLenqueue("</ul>");
             $pdf->HTMLenqueue("<br />");
@@ -177,7 +177,7 @@ class RatificationController extends Controller
 
                 $pdf->HTMLenqueue('<ul>');
                 foreach ($v as $a) {
-                    $pdf->HTMLenqueue("<li>" . $a->alumnus->surname . " " . $a->alumnus->name . " (" . Alumnus::romanize($a->alumnus->coorte) . ")</li>");
+                    $pdf->HTMLenqueue("<li>" . $a->alumnus->surname . " " . $a->alumnus->name . " (" . Person::romanize($a->alumnus->coorte) . ")</li>");
                 }
                 $pdf->HTMLenqueue("</ul>");
                 $pdf->HTMLenqueue("<br />");
@@ -192,7 +192,7 @@ class RatificationController extends Controller
 
             $pdf->HTMLenqueue('<ul>');
             foreach ($v as $a) {
-                $pdf->HTMLenqueue("<li>" . $a->alumnus->surname . " " . $a->alumnus->name . " (" . Alumnus::romanize($a->alumnus->coorte) . ")</li>");
+                $pdf->HTMLenqueue("<li>" . $a->alumnus->surname . " " . $a->alumnus->name . " (" . Person::romanize($a->alumnus->coorte) . ")</li>");
             }
             $pdf->HTMLenqueue("</ul>");
             $pdf->HTMLenqueue("<br />");
@@ -204,7 +204,7 @@ class RatificationController extends Controller
 
             $pdf->HTMLenqueue('<ul>');
             foreach ($rats_extra as $a) {
-                $pdf->HTMLenqueue("<li>" . $a->alumnus->surname . " " . $a->alumnus->name . " (" . Alumnus::romanize($a->alumnus->coorte) . "), dallo stato di <i>" . Alumnus::AlumnusStatusLabels[$a->alumnus->status] . "</i> allo stato di <i>" . Alumnus::AlumnusStatusLabels[$a->required_state]  . "</i></li>");
+                $pdf->HTMLenqueue("<li>" . $a->alumnus->surname . " " . $a->alumnus->name . " (" . Person::romanize($a->alumnus->coorte) . "), dallo stato di <i>" . Alumnus::AlumnusStatusLabels[$a->alumnus->status] . "</i> allo stato di <i>" . Alumnus::AlumnusStatusLabels[$a->required_state]  . "</i></li>");
             }
             $pdf->HTMLenqueue("</ul>");
             $pdf->HTMLenqueue("<br />");

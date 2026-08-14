@@ -43,4 +43,9 @@ class ADetailsType extends Model
         }
         return [];
     }
+
+    public function logify()
+    {
+        return $this->name . " (" . $this->type . ")";
+    }
 }

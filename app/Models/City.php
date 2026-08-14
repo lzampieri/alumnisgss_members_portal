@@ -12,4 +12,9 @@ class City extends Model
         'display_name',
         'lat','lng'
     ];
+    
+    public function logify()
+    {
+        return $this->name . " shown as " . $this->display_name;
+    }
 }

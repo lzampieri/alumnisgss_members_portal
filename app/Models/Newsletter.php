@@ -118,4 +118,9 @@ class Newsletter extends Model
     {
         return array_merge($this->to, $this->mailingLists->pluck('to')->toArray());
     }
+    
+    public function logify()
+    {
+        return "Newsletter " . $this->id . " with subject " . $this->subject;
+    }
 }

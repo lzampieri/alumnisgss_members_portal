@@ -66,4 +66,11 @@ class Document extends Model
     {
         return Attribute::make(get: fn(mixed $_, array $attributes) =>  Auth::check() && Auth::user()->can('edit', $this));
     }
+    
+    public function logify()
+    {
+        if( $this->attached_to )
+            return $this->identifier . ' (' . $this->protocol . ') attached to ' . $this->attached_to->logify();    
+        return $this->identifier . ' (' . $this->protocol . ')';
+    }
 }

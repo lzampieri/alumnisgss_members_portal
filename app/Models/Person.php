@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use App\Http\Controllers\LogController;
@@ -91,9 +92,10 @@ class Person extends User
         return $this->name . " " . $this->surname;
     }
 
-    public function lev2_loggedin() {
+    public function lev2_loggedin()
+    {
         foreach ($this->emails as $email) {
-            if( $email->lev2_loggedin_thisaddress() ) return true;
+            if ($email->lev2_loggedin_thisaddress()) return true;
         }
         return false;
     }
@@ -110,6 +112,12 @@ class Person extends User
     public function emails()
     {
         return $this->hasMany(Email::class, 'identity_id')->orderBy('primary', 'desc');
+    }
+    public function primaryEmails()
+    {
+        $emails = $this->emails;
+        $maxprim = $emails->max('primary');
+        return $emails->filter(function ($email) use ($maxprim) { return $email->primary == $maxprim; })->toArray();
     }
     public function newsletters()
     {
@@ -236,5 +244,61 @@ class Person extends User
             LogController::log(LogEvents::ROLE_REVOKEN, $this, 'role', $role);
             $this->traitRemoveRole($role);
         }
+    }
+
+
+    // For the ratification export
+    public static function romanize(int $num)
+    {
+        if ($num == Person::COORTE_HONORARY)
+            return "Socio onorario";
+        if ($num == Person::COORTE_EXTERNAL)
+            return "Esterno";
+        $digits = str_split(str_pad(strval($num), 3, '0', STR_PAD_LEFT));
+        $roman = "";
+        $key = [
+            "",
+            "C",
+            "CC",
+            "CCC",
+            "CD",
+            "D",
+            "DC",
+            "DCC",
+            "DCCC",
+            "CM",
+            "",
+            "X",
+            "XX",
+            "XXX",
+            "XL",
+            "L",
+            "LX",
+            "LXX",
+            "LXXX",
+            "XC",
+            "",
+            "I",
+            "II",
+            "III",
+            "IV",
+            "V",
+            "VI",
+            "VII",
+            "VIII",
+            "IX"
+        ];
+
+        $i = count($digits);
+        while ($i--)
+            $roman = $key[intval($digits[$i]) + $i * 10] . $roman;
+
+        return $roman . " coorte";
+    }
+
+    public function logify()
+    {
+        $c = Person::romanize($this->coorte);
+        return "Person #{$this->id}: {$this->surname} {$this->name} {$c}";
     }
 }

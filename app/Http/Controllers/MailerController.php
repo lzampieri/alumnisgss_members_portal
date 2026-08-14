@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Alumnus;
 use App\Models\Email;
-use App\Models\External;
 use Illuminate\Support\Facades\Mail;
 
 class MailerController extends Controller
@@ -16,15 +14,7 @@ class MailerController extends Controller
                 if( $identity instanceof Email )
                     $emails[] = $identity->address;
                 else {
-                    $this_id_emails = [];
-                    foreach( $identity->emails as $em) {
-                        if( $em->primary ) {
-                            $this_id_emails = [ $em->address ]; // To the primary if there is a primary, to all elsewhere (implemented in Identity::emails() )
-                            break;
-                        }
-                        $this_id_emails[] = $em->address;
-                    }
-                    $emails = array_merge($emails, $this_id_emails);
+                    $emails = array_merge($emails, $identity->primaryEmails()); # Todo test!!
                 }
             }
         }

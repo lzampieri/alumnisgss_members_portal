@@ -2,10 +2,6 @@
 
 namespace App\Utils;
 
-use App\Http\Controllers\Log;
-use App\Http\Controllers\LogController;
-use App\Http\Controllers\LogEvents;
-
 class Settings
 {
 

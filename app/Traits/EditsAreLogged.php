@@ -2,7 +2,6 @@
 namespace App\Traits;
 
 use App\Http\Controllers\LogController;
-use App\Http\Controllers\LogControllerFile;
 use App\Http\Controllers\LogEvents;
 use Illuminate\Database\Eloquent\Model;
 

@@ -1,8 +1,6 @@
 <?php
 
 use App\Http\Controllers\AppsController;
-use App\Http\Controllers\Log;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 /*

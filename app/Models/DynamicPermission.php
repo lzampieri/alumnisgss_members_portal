@@ -100,4 +100,11 @@ class DynamicPermission extends Model
             ->where('type', 'edit')
             ->count() > 0;
     }
+
+    
+    
+    public function logify()
+    {
+        return $this->type . " of " . $this->role->name . " for " . LogController::stringify($this->permissable);
+    }
 }

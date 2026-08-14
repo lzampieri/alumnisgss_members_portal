@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\ContactsSyncController;
-use App\Http\Controllers\Log;
+use App\Http\Controllers\LogControllerFile;
 use App\Http\Controllers\WebmasterController;
 use App\Models\Alumnus;
 use App\Models\Document;
@@ -17,7 +17,7 @@ Route::prefix('/webmaster')->group( function () {
     Route::get('/', [ WebmasterController::class, 'home' ])->name('webmaster');
 
     // Log
-    Route::get('/logs', [ Log::class, 'index' ] )->name('log');
+    Route::get('/filelogs', [ LogControllerFile::class, 'index' ] )->name('webmaster.log.files');
     Route::prefix('/log')->group( function () {
         Route::get('/internal', [ WebmasterController::class, 'log_internal' ])->name('webmaster.log.internal');
         Route::get('/internal/getrows/{perPage}/{page}', [ WebmasterController::class, 'log_internal_getrows' ])

@@ -30,4 +30,9 @@ class ADetail extends Model
     {
         return $this->belongsTo(ADetailsType::class);
     }
+
+    public function logify()
+    {
+        return "Detail " . $this->value . " as " . $this->aDetailsType->logify() . " for " . $this->identity->logify();
+    }
 }

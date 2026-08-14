@@ -46,5 +46,10 @@ class Email extends Model
     }
     public function getIdentityForced() {
         return $this->load('identity')->makeVisible('identity')->identity;
+    }    
+    
+    public function logify()
+    {
+        return $this->address;
     }
 }

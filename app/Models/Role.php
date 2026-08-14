@@ -52,4 +52,9 @@ class Role extends SpatieRole {
     protected function canEdit(): Attribute {
         return Attribute::make( get: fn () => Auth::check() && Auth::user()->can('edit',$this) );
     }
+    
+    public function logify()
+    {
+        return "Role " . $this->name;
+    }
 }
