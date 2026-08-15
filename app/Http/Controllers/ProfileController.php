@@ -13,20 +13,24 @@ class ProfileController extends Controller
 {
     public function myself()
     {
-        $this->authorize('viewHimself', Alumnus::class);
-
         $alumnus = Auth::user();
 
         if (!$alumnus)
             return abort(404);
 
-        $alumnus->load(['ratifications', 'ratifications.document', 'emails', 'roles']);
-        $alumnus->makeVisible(['ratifications', 'ratifications.document', 'emails', 'roles']);
+        $this->authorize('viewGeneral', $alumnus);
 
-        $adtlist = ADetailsType::allOrdered();
-        $adtlist->load(['aDetails' => function ($query) use ($alumnus) {
-            $query->where('identity_type', Alumnus::class)->where('identity_id', $alumnus->id);
-        }]);
+        $alumnus->load(['roles']);
+        $alumnus->append('visible_emails');
+        $alumnus->makeVisible(['visible_emails', 'roles']);
+
+        $adtlist = [];
+        if(Auth::user()->can('viewDetails', $alumnus)) {
+            $adtlist = ADetailsType::allOrdered();
+            $adtlist->load(['aDetails' => function ($query) use ($alumnus) {
+                $query->where('identity_id', $alumnus->id);
+            }]);
+        }
 
         return Inertia::render(
             'Profile/Myself',
@@ -39,7 +43,7 @@ class ProfileController extends Controller
 
     public function emailConsent()
     {
-        $this->authorize('viewHimself', Alumnus::class);
+        $this->authorize('editConsent', Auth::user());
 
         $alumnus = Auth::user();
 
@@ -56,7 +60,7 @@ class ProfileController extends Controller
 
     public function dataConsent()
     {
-        $this->authorize('viewHimself', Alumnus::class);
+        $this->authorize('editConsent', Auth::user());
 
         $alumnus = Auth::user();
 
@@ -73,7 +77,7 @@ class ProfileController extends Controller
 
     public function emailConsent_post()
     {
-        $this->authorize('viewHimself', Alumnus::class);
+        $this->authorize('editConsent', Auth::user());
 
         $alumnus = Auth::user();
 
@@ -88,7 +92,7 @@ class ProfileController extends Controller
 
     public function dataConsent_post()
     {
-        $this->authorize('viewHimself', Alumnus::class);
+        $this->authorize('editConsent', Auth::user());
 
         $alumnus = Auth::user();
 
@@ -103,7 +107,7 @@ class ProfileController extends Controller
 
     function addEmail_post(Request $request)
     {
-        $this->authorize('viewHimself', Alumnus::class);
+        $this->authorize('editEmails', Auth::user());
 
         $validated = $request->validate([
             'address' => 'required|email|unique:emails,address'
@@ -121,7 +125,7 @@ class ProfileController extends Controller
 
     function setPrimary_post(Request $request)
     {
-        $this->authorize('viewHimself', Alumnus::class);
+        $this->authorize('editEmails', Auth::user());
 
         $validated = $request->validate([
             'id' => 'required|numeric',
@@ -142,7 +146,7 @@ class ProfileController extends Controller
 
     public function edit()
     {
-        $this->authorize('viewHimself', Alumnus::class);
+        $this->authorize('editDetails', Auth::user());
 
         $alumnus = Auth::user();
 
@@ -151,7 +155,7 @@ class ProfileController extends Controller
 
         $adtlist = ADetailsType::allOrdered();
         $adtlist->load(['aDetails' => function ($query) use ($alumnus) {
-            $query->where('identity_type', Alumnus::class)->where('identity_id', $alumnus->id);
+            $query->where('identity_id', $alumnus->id);
         }]);
         $adtlist->append('usedValues');
 
@@ -164,7 +168,7 @@ class ProfileController extends Controller
 
     public function edit_post(Request $request)
     {
-        $this->authorize('viewHimself', Alumnus::class);
+        $this->authorize('editDetails', Auth::user());
 
         $alumnus = Auth::user();
 

@@ -90,6 +90,7 @@ export default function Edit() {
     const prev = usePage().props.person;
 
     const edit_general = usePage().props.edit_general;
+    const edit_emails = usePage().props.edit_emails;
     const edit_consent = usePage().props.edit_consent;
     const edit_login = usePage().props.edit_login;
     const edit_details = usePage().props.edit_details;
@@ -126,6 +127,7 @@ export default function Edit() {
             route('person.edit', { person: prev?.id }), {
             preserveState: "errors",
             onError: () => enqueueSnackbar('C\'è stato un errore, verifica tutti i campi', { variant: 'error' }),
+            onSuccess: () => window.history.back()
         });
     }
 
@@ -203,8 +205,14 @@ export default function Edit() {
                     Associato automaticamente alla richiesta con indirizzo mail {associate_to.address}
                 </>
             }
+            {
+                prev?.emails?.length != prev?.emails_count && <label className="error">
+                    Vi sono un totale di {prev?.emails_count} indirizzi email associati al profilo, non tutti visibili dall'utente corrente.
+                </label>
+            }
+            <label className="unspaced text-xs">Il primo indirizzo della lista sarà considerato quello prioritario.</label>
             <div className="flex flex-col items-start">
-                {edit_general && data.emails.map((addr, idx) =>
+                {edit_emails && data.emails.map((addr, idx) =>
                     <div className="flex flex-row rounded bg-gray-200 self-start" style={{ overflowWrap: "anywhere" }}>
                         <div role="button" className={"flex flex-row items-center px-2 " + (idx > 0 ? "hover:bg-[#FFBDAD] hover:text-[#DE350B]" : "")}
                             onClick={() => {
@@ -226,12 +234,12 @@ export default function Edit() {
 
                 )}
             </div>
-            {edit_general &&
+            {edit_emails &&
                 <TokenizableInput
                     separatingCharacters={",; "}
                     tokensList={[]}
                     updateTokensList={(newList) => setData('emails', [...data.emails, ...newList])} />}
-            {!edit_general && data.emails.map((e, idx) =>
+            {!edit_emails && data.emails.map((e, idx) =>
                 <span className={idx == 0 ? "font-bold" : ""}>{e}</span>
             )}
             <label className="error">{errors.emails}</label>

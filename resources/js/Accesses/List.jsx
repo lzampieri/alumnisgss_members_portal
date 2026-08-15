@@ -73,7 +73,7 @@ function IdentityRoles({ identity, removeRole, addRole }) {
 }
 
 function IdentityContent({ data, setPrimary, deleteAddress, removeRole, addRole, setEnabled, setAddingEmail }) {
-    const canAddEmail = usePage().props.canAddEmails;
+    const canAddEmail = data.canAddEmails;
 
     if (whichType(data) == TYPE_REQUEST) {
         return <div className="w-full border-2 border-black rounded border-dashed flex flex-row p-2 min-h-[3rem] justify-center gap-2 leading-normal	">
@@ -113,6 +113,9 @@ function IdentityContent({ data, setPrimary, deleteAddress, removeRole, addRole,
             <b>{data.name} {data.surname}</b>
             {romanize(data.coorte)}
             {data.notes}
+            {data.emails_count != data.emails.length &&<label className="error">
+                {data.emails_count} indirizzi email associati a questa identità, non visibili all'utente corrente.
+            </label>}
             {data.emails.map((e, i) => <EmailDiv key={e.id} isFirst={i == 0} e={e} setPrimary={setPrimary} deleteAddress={deleteAddress} />)}
             {canAddEmail &&
                 <div className="cursor-pointer hover:text-primary-main text-sm" onClick={() => setAddingEmail(data)}>
@@ -251,8 +254,8 @@ function ManuallyAddEmail({ open, setClosed, setProcessing }) {
 }
 
 export default function List() {
-    const data = usePage().props.list;
-    const list = useMemo(() => data['requests'].concat(data['people']), [data]);
+    const data = usePage().props;
+    const list = useMemo(() => data.requests.concat(data.people), [data]);
     const [quickFilter, setQuickFilter] = useState('')
     const [processing, setProcessing] = useState(false);
     const [toDelete, setToDelete] = useState(null);
@@ -269,6 +272,9 @@ export default function List() {
                 </Link>
             }
         </div>
+        {usePage().props.totpeople != usePage().props.people.length &&<label className="error">
+            Visibili {usePage().props.people.length} di {usePage().props.totpeople} persone totali inserite nel sistema.
+        </label>}
         <ManuallyAddEmail open={addingEmail} setClosed={() => setAddingEmail(null)} setProcessing={setProcessing} />
         <ListAsATable
             identities={list} quickFilter={quickFilter}

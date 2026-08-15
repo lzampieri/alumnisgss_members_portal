@@ -23,9 +23,9 @@ function AlumnusContent({ data }) {
             <div className="text-end mx-1">
                 <Link className="icon-button" href={route('network.view', { alumnus: data.id })}><FontAwesomeIcon icon={faRightLong} /></Link>
             </div>
-            {data.can_be_network_edited &&
+            {data.can_details_be_edited &&
                 <div className="text-end mx-1">
-                    <Link className="icon-button" href={route('network.edit', { alumnus: data.id })}><FontAwesomeIcon icon={faPen} /></Link>
+                    <Link className="icon-button" href={route('person.edit', { person: data.id })}><FontAwesomeIcon icon={faPen} /></Link>
                 </div>
             }
         </div>

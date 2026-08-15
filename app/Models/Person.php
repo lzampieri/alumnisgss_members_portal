@@ -71,7 +71,15 @@ class Person extends User
     }
     protected function canView(): Attribute // If the logged in user can view this person
     {
-        return Attribute::make(get: fn(mixed $_, array $attributes) => Auth::check() && (new PersonPolicy)->view(Auth::user(), $this));
+        return Attribute::make(get: fn(mixed $_, array $attributes) => Auth::check() && (new PersonPolicy)->viewGeneral(Auth::user(), $this));
+    }
+    protected function canDetailsBeEdited(): Attribute // If the logged in user can edit the details of this person
+    {
+        return Attribute::make(get: fn(mixed $_, array $attributes) => Auth::check() && (new PersonPolicy)->editDetails(Auth::user(), $this));
+    }
+    protected function visibleEmails(): Attribute // If the logged in user can edit the details of this person
+    {
+        return Attribute::make(get: fn(mixed $_, array $attributes) => (Auth::check() && Auth::user()->can('viewEmails',$this)) ? $this->emails : []);
     }
 
     protected function isAlumnus(): Attribute

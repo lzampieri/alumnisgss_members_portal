@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\EmailController;
-use App\Http\Controllers\IdentityController;
+use App\Http\Controllers\PersonController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\RolesController;
 use App\Models\Permission;
@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Route;
 
 // Accesses
 Route::prefix('/accesses')->group( function () {
-    Route::get('/', [ IdentityController::class, 'list' ] )->name('accesses');
+    Route::get('/', [ PersonController::class, 'accessesList' ] )->name('accesses');
     
-    Route::post('/enabled', [ IdentityController::class, 'enabled' ] )->name('identity.enabled');
+    Route::post('/enabled', [ PersonController::class, 'enabled' ] )->name('identity.enabled');
 });
 
 Route::prefix('/emails')->group( function () {

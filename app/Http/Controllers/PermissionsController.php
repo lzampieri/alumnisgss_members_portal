@@ -88,6 +88,8 @@ class PermissionsController extends Controller
             'people-enabling',
             // - Edit general details (name, surname, etc) ( this also define create permission )
             'people-edit-general',
+            // - Edit email addresses
+            'people-edit-emails',
             // - Change email/details consent
             'people-edit-consent',
             // - Edit networking details
@@ -110,9 +112,6 @@ class PermissionsController extends Controller
             'emails-view-all',
             'emails-view-external',
             'emails-view-public-alumnus',
-            'emails-add',
-            'emails-edit',
-            'emails-delete',
             // Contacts (emails sync)
             'login-lv2',
             'emails-sync',

@@ -13,21 +13,20 @@ class NetworkController extends Controller
 {
     public function list()
     {
-        $this->authorize('viewNetwork', Alumnus::class);
+        $this->authorize('viewNetworkPage', Person::class);
 
         $prefilt = Person::where('coorte', '>', 0)->whereIn('status', Alumnus::public_status);
 
-        if (Auth::check() && Auth::user()->can('viewAny', Alumnus::class)) {
-            $prefilt = Alumnus::where('coorte', '>', 0);
+        if (Auth::check() && Auth::user()->can('viewAnyAlumnus', Person::class)) {
+            $prefilt = Person::where('coorte', '>', 0);
         }
 
-        $alumni = $prefilt->where('coorte', '>', 0)
-            ->orderBy('coorte')
+        $alumni = $prefilt->orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
             ->get();
 
         foreach ($alumni as $alumnus) {
-            if (Auth::user()->can('viewNetworkDetails', $alumnus)) {
+            if (Auth::check() && Auth::user()->can('viewDetails', $alumnus)) {
                 $alumnus->load(['aDetails' => function ($query) {
                     $query->whereHas('aDetailsType', function ($query) {
                         $query->where('visible', true);
@@ -39,7 +38,7 @@ class NetworkController extends Controller
             }
         }
 
-        $alumni->append('can_be_network_edited');
+        $alumni->append('can_details_be_edited');
 
         $alumni_cleaned = $alumni->map->only([
             'id',
@@ -50,23 +49,23 @@ class NetworkController extends Controller
 
             'filtered_details',
 
-            'can_be_network_edited',
+            'can_details_be_edited',
             'consent_to_network_share',
         ]);
 
         return Inertia::render('Network/List', [
             'alumni' => $alumni_cleaned,
-            'canEditView' => Auth::user()->can('editNetworkView', Alumnus::class)
+            'canEditView' => Auth::user()->can('editNetworkView', Person::class)
         ]);
     }
 
-    public function view(Request $request, Alumnus $alumnus)
+    public function view(Request $request, Person $alumnus)
     {
-        $this->authorize('view', $alumnus);
+        $this->authorize('viewGeneral', $alumnus);
 
-        $itsme = Auth::user()->id == $alumnus->id;
+        $itsme = (Auth::user()->is($alumnus));
 
-        if (Auth::user()->can('viewNetworkDetails', $alumnus)) {
+        if (Auth::user()->can('viewDetails', $alumnus)) {
             $alumnus->load(['aDetails' => function ($query) {
                 $query->whereHas('aDetailsType', function ($query) {
                     $query->where('visible', true);
@@ -79,9 +78,9 @@ class NetworkController extends Controller
 
         $alumnus->load('emails');
         $alumnus->load('emails.identity');
-        $alumnus['visible_emails'] = $alumnus->emails->filter->canView;
+        $alumnus->append('visible_emails');
 
-        $alumnus->append('can_be_network_edited');
+        $alumnus->append('can_details_be_edited');
 
         $alumnus = $alumnus->only([
             'id',
@@ -93,7 +92,7 @@ class NetworkController extends Controller
             'filtered_details',
             'visible_emails',
 
-            'can_be_network_edited',
+            'can_details_be_edited',
             'consent_to_email_share',
             'consent_to_network_share',
         ]);
@@ -107,7 +106,7 @@ class NetworkController extends Controller
 
     public function settings()
     {
-        $this->authorize('editNetworkView', Alumnus::class);
+        $this->authorize('editNetworkView', Person::class);
 
         return Inertia::render('Network/Settings', [
             'aDetailsTypes' => ADetailsType::allOrdered()
@@ -116,7 +115,7 @@ class NetworkController extends Controller
 
     public function adtedit(Request $request)
     {
-        $this->authorize('editNetworkView', Alumnus::class);
+        $this->authorize('editNetworkView', Person::class);
         $update = false;
 
         $validated = $request->validate([
@@ -147,7 +146,7 @@ class NetworkController extends Controller
 
     public function adtdelete(Request $request)
     {
-        $this->authorize('editNetworkView', Alumnus::class);
+        $this->authorize('editNetworkView', Person::class);
 
         $validated = $request->validate([
             'id' => 'required|numeric',
@@ -160,61 +159,5 @@ class NetworkController extends Controller
         }
 
         return redirect()->back()->with(['notistack' => ['error', 'Qualcosa è andato storto']]);
-    }
-
-    public function edit(Request $request, Alumnus $alumnus)
-    {
-        $this->authorize('editNetworkAlumnus', $alumnus);
-
-        $adtlist = ADetailsType::allOrdered();
-        $adtlist->load(['aDetails' => function ($query) use ($alumnus) {
-            $query->where('identity_type', Alumnus::class)->where('identity_id', $alumnus->id);
-        }]);
-        $adtlist->append('usedValues');
-
-        $alumnus['visible_emails'] = $alumnus->emails->filter->canView;
-        $cleaned_alumnus = $alumnus->only([
-            'id',
-            'name',
-            'surname',
-            'coorte',
-            'status',
-
-            'visible_emails',
-
-            'can_be_network_edited',
-            'consent_to_email_share',
-            'consent_to_network_share',
-        ]);
-
-        return Inertia::render('Network/Edit', [
-            'alumnus' => $cleaned_alumnus,
-            'adts' => $adtlist
-        ]);
-    }
-
-
-    public function edit_post(Request $request, Alumnus $alumnus)
-    {
-        $this->authorize('editNetworkAlumnus', $alumnus);
-
-        $validated = $request->validate([
-            'adts' => 'array',
-            'adts.*' => 'array',
-            'adts.*.id' => 'required|distinct|exists:a_details_types,id',
-            'adts.*.value' => 'nullable|array',
-        ]);
-
-        foreach ($validated['adts'] as $adts) {
-            if ((count($adts['value']) == 1) && is_array($adts['value'][0])) // Extra check to prevent array of array
-                $adts['value'] = $adts['value'][0];
-
-            $alumnus->aDetails()->updateOrCreate(
-                ['a_details_type_id' => $adts['id']],
-                ['value' => $adts['value']]
-            );
-        }
-
-        return redirect()->back()->with(['notistack' => ['success', 'Salvato!']]);
     }
 }

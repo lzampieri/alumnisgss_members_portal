@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Alumnus;
 use App\Models\Email;
-use App\Models\External;
 use App\Models\Person;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class EmailController extends Controller
@@ -15,7 +12,6 @@ class EmailController extends Controller
     
     function manually_add_post(Request $request)
     {
-        $this->authorize('add', Email::class);
         
         $validated = $request->validate([
             'address' => 'required|email|unique:emails,address',
@@ -23,6 +19,8 @@ class EmailController extends Controller
         ]);
 
         $person = Person::find($validated['identity']);
+
+        $this->authorize('editEmails', $person);
 
         if (! $person) {
             return redirect()->back()->with(['notistack' => ['error', 'Identità non trovata']]);
@@ -42,7 +40,8 @@ class EmailController extends Controller
         
         $e = Email::find($validated['id']);
         
-        if( $e ) {
+        if( $e && $e->identity ) {
+            
             $this->authorize('edit', $e);
 
             $e->primary = max( $e->identity->emails()->pluck('emails.primary')->toArray() ) + 1;

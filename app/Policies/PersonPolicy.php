@@ -56,19 +56,6 @@ class PersonPolicy
         return $user->hasPermissionTo('people-externals-view-all');
     }
 
-
-    /**
-     * Determine whether the person can view himself, and its details.
-     *
-     * @param  \App\Models\Person  $user
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function viewHimself(Person $user)
-    {
-        return true; // TODO implement for externals!!
-    }
-
-
     /**
      * Determine whether the person can view an alumnus withOUT details
      * Warning: this permission is rewritten with more efficiency in NetworkController::list
@@ -82,7 +69,38 @@ class PersonPolicy
 
         if (in_array($person->status, Alumnus::public_status)) return true;
 
+        // Everyone can also see themself
+        if ($person->is($user)) return true;
+
         return $this->viewAnyAlumnus($user);
+    }
+
+    /**
+     * Determine whether the person can view the EMAILS for a specific PERSON
+     *
+     * @param  \App\Models\Person  $user optional
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function viewEmails(Person $user, Person $person)
+    {
+        if ($user->hasPermissionTo('emails-view-all'))
+            return true;
+
+        // People can also see themselves emails
+        if ($person->is($user)) return true;
+
+        if ($person->coorte < 0)
+            if ($user->hasPermissionTo('emails-view-external'))
+                return true;
+
+        if ($person->coorte > 0)
+            if (in_array($person->status, Alumnus::public_status)) {
+                if ($user->hasPermissionTo('emails-view-public-alumnus'))
+                    return true;
+                if ($this->viewDetails($user, $person))
+                    if ($person->consent_to_email_share)
+                        return true;
+            }
     }
 
     /**
@@ -101,6 +119,9 @@ class PersonPolicy
         if (!$person->is_alumnus) return false;
         if ($user->hasPermissionTo('people-view-alldetails')) return true;
         if ($user->hasPermissionTo('network-view') && $person->consent_to_network_share) return true;
+
+        // Members can also see themselves details
+        if ($person->is($user) && in_array($person->status, Alumnus::public_status)) return true;
         return false;
     }
 
@@ -143,6 +164,23 @@ class PersonPolicy
     }
 
     /**
+     * Determine whether the person can edit the list of person mail addresses
+     *
+     * @param  \App\Models\Person  $user
+     * @param  \App\Models\Person  $person
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function editEmails(Person $user, ?Person $person = null)
+    {
+        if (!$person) return $user->hasPermissionTo('people-edit-emails');
+
+        // Everyone can also edit themself emails
+        if ($person->is($user)) return true;
+
+        return $this->viewGeneral($user, $person) && $user->hasPermissionTo('people-edit-emails');
+    }
+
+    /**
      * Determine whether the person can edit a person profile,
      * relative to the consents flags
      *
@@ -153,6 +191,10 @@ class PersonPolicy
     public function editConsent(Person $user, ?Person $person = null)
     {
         if (!$person) return $user->hasPermissionTo('people-edit-consent');
+        
+        // Members can also edit themselves consents
+        if ($person->is($user) && in_array($person->status, Alumnus::public_status)) return true;
+
         return $this->viewGeneral($user, $person) && $user->hasPermissionTo('people-edit-consent');
     }
 
@@ -167,6 +209,10 @@ class PersonPolicy
     public function editDetails(Person $user, ?Person $person = null)
     {
         if (!$person) return $user->hasPermissionTo('people-edit-details');
+                
+        // Members can also edit themselves details
+        if ($person->is($user) && in_array($person->status, Alumnus::public_status)) return true;
+
         return $this->viewDetails($user, $person) && $user->hasPermissionTo('people-edit-details');
     }
 

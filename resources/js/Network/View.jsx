@@ -7,7 +7,7 @@ import ADetailsType from "./ADetailsType";
 import SmartChip from "./SmartChip";
 import Backdrop from "../Layout/Backdrop";
 import { Collapse } from "react-collapse";
-import { faAt, faChevronLeft, faCircleInfo, faCircleQuestion, faPenToSquare, faStar } from "@fortawesome/free-solid-svg-icons";
+import { faAt, faChevronLeft, faCircleInfo, faCircleQuestion, faPencil, faPenToSquare, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function adtRenderer(ad, adt, i) {
@@ -52,11 +52,18 @@ export default function View() {
     return (
         <div className="flex flex-col w-full md:w-3/5 items-start gap-2">
             <Head title={alumnus.name + " " + alumnus.surname} />
-            <div className="flex flex-row justify-start w-full">
+            <div className="flex flex-row justify-between w-full">
                 <div className="button flex flex-row items-center self-start mb-4" onClick={() => window.history.back()} >
                     <FontAwesomeIcon icon={faChevronLeft} />
                     Indietro
                 </div>
+                {
+                    alumnus.can_details_be_edited &&
+                    <Link className="button flex flex-row items-center self-end mb-4" href={itsme ? route('profile') : route('person.edit', { person: alumnus.id })} >
+                        <FontAwesomeIcon icon={faPencil} />
+                        Modifica
+                    </Link>
+                }
             </div>
             <h3>{alumnus.name} {alumnus.surname}</h3>
             <div className="flex flex-row w-full flex-wrap">
@@ -77,15 +84,22 @@ export default function View() {
             </div>
 
             <div className="font-bold text-primary-main mt-4">Contatti</div>
+            { !alumnus.consent_to_email_share && <label className="error">
+                Questo socio ha disabilitato la condivisione diretta degli indirizzi email. {
+                    alumnus.visible_emails.length > 0 ? "Gli indirizzi qui visibili non sono visibili ai soci." : "Contattaci per avere i suoi contatti!"   
+                }</label>}
+
             {alumnus.visible_emails.map((e, i) => <EmailDiv
                 key={e.id} isFirst={i == 0} e={e}
             />)}
-            { !alumnus.consent_to_email_share && <label className="error">Questo socio ha disabilitato la condivisione diretta degli indirizzi email. Contattaci per avere i suoi contatti!</label>}
 
 
 
             <div className="font-bold text-primary-main mt-4">Dettagli</div>
-            { !alumnus.consent_to_network_share && <label className="error">Questo socio ha disabilitato la condivisione diretta degli indirizzi email. Contattaci per avere i suoi contatti!</label>}
+            { !alumnus.consent_to_network_share && <label className="error">
+                Questo socio ha disabilitato la condivisione diretta dei dettagli sul suo percorso accademico e professionale. {
+                    alumnus.filtered_details.length > 0 ? "I dettagli qui visibili non sono visibili ai soci." : "Contattaci per saperne di più!!"   
+                }</label>}
 
             {
                 alumnus.filtered_details.map((adt, i) => adt.value.length > 0 && <Fragment key={adt.id}>

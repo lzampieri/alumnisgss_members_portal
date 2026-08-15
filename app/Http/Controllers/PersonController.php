@@ -37,20 +37,33 @@ class PersonController extends Controller
         // Edit general details
         $person_tocheck = $person ? $person : Person::class;
         $data['edit_general'] = Auth::user()->can('editGeneral', $person_tocheck);
+        $data['edit_emails'] = Auth::user()->can('editEmails', $person_tocheck);
         $data['edit_consent'] = Auth::user()->can('editConsent', $person_tocheck);
         $data['edit_login'] = Auth::user()->can('enable', $person_tocheck);
         $data['edit_details'] = Auth::user()->can('editDetails', $person_tocheck);
 
-        if (!$data['edit_general'] && !$data['edit_consent'] && !$data['edit_login'] && !$data['edit_details']) {
+        // Case in which it is himselves and annot modify general details (typical member):
+        // redirect to the fancier profile editor
+        if(Auth::user()->is($person) && !$data['edit_general']) {
+            return redirect()->route('profile');
+        }
+
+        if (!$data['edit_general'] && !$data['edit_emails'] && !$data['edit_consent'] && !$data['edit_login'] && !$data['edit_details']) {
             abort(403);
         }
 
         // Basic informations are available to everyone,
         // like name, surname, notes, coorte, status, tags
-        // ratifications and emails for history
+        // ratifications for history
         if ($person) {
-            $person->load(['ratifications', 'ratifications.document', 'emails']);
-            $person->makeVisible(['ratifications', 'ratifications.document', 'emails']);
+            $person->load(['ratifications', 'ratifications.document']);
+
+            // Only visible emails are in fact visible, and the total count of emails
+            $person['emails'] = Auth::user()->can('viewEmails',$person) ? $person->emails : [];
+            $person['emails_count'] = $person->emails()->count();
+            
+            $person->makeVisible(['ratifications', 'ratifications.document', 'emails', 'emails_count']);
+
         }
 
         // Moreover, if they are editable, more details are available
@@ -94,6 +107,7 @@ class PersonController extends Controller
 
         $person_tocheck = $person ? $person : Person::class;
         $edit_general = Auth::user()->can('editGeneral', $person_tocheck);
+        $edit_emails = Auth::user()->can('editEmails', $person_tocheck);
         $edit_consent = Auth::user()->can('editConsent', $person_tocheck);
         $edit_login   = Auth::user()->can('enable', $person_tocheck);
         $edit_details = Auth::user()->can('editDetails', $person_tocheck);
@@ -108,13 +122,18 @@ class PersonController extends Controller
                 'notes' => '',
                 'coorte' => 'required|numeric',
                 'status' => 'required|in:' . implode(',', Alumnus::status),
-                'tags' => 'nullable|array',
-                'emails' => 'nullable|array'
+                'tags' => 'nullable|array'
             ];
 
         if( !$is_update )
             $toValidate += [
                 'associate_to' => 'sometimes|numeric|exists:emails,id'
+            ];
+
+        // Emails
+        if($edit_emails)
+            $toValidate += [
+                'emails' => 'nullable|array'
             ];
 
         // Consents
@@ -184,15 +203,20 @@ class PersonController extends Controller
                 }
             }
 
+        }
 
+        if($edit_emails) {
             // Update email addresses
-            $emails = $person->emails->map(function ($email) {
+            $visible_emails = Auth::user()->can('viewEmails',$person) ? $person->emails : [];
+            $emails = $visible_emails->map(function ($email) {
                 return $email->address;
             })->toArray();
             // Create new addresses
             foreach (array_diff($validated['emails'], $emails) as $email) {
-                $person->emails()->create(['address' => $email]);
-                $updated = true;
+                if(!Email::where('address', $email)->exists()) {
+                    $person->emails()->create(['address' => $email]);
+                    $updated = true;
+                }
             }
             foreach (array_diff($emails, $validated['emails']) as $email) {
                 $person->emails()->where('address', $email)->delete();
@@ -209,7 +233,6 @@ class PersonController extends Controller
                     $updated = true;
                 }
             }
-
         }
 
         if (!$person)
@@ -268,5 +291,70 @@ class PersonController extends Controller
         }
 
         return redirect()->route('person.edit', ['person' => $person])->with('notistack', ['success', $is_update ? ( $updated ? 'Alumno aggiornato' : 'Nessuna modifica') : 'Alumno creato']);
+    }
+    
+    public function accessesList()
+    {
+        $this->authorize('enable', Person::class);
+
+        $people = Person::orderBy('surname')->orderBy('name')->get()
+            ->filter->canView->setVisible(['id','name','surname','coorte','enabled']);
+
+        foreach ($people as $person) {
+            $person['emails'] = Auth::user()->can('viewEmails',$person) ? $person->emails : [];
+            $person['emails_count'] = $person->emails()->count();
+            $person->makeVisible(['emails','emails_count']);
+            
+            $person->roles = $person->getAllRoles();
+            foreach ($person->emails as $em) {
+                $em->append('can_delete')->makeVisible('can_delete');
+            }
+            $person->makeVisible('roles');
+
+            $person['canAddEmails'] = Auth::user()->can('editEmails', $person);
+            $person->makeVisible('canAddEmails');
+        }
+        
+        $requests = Auth::user()->can('associate', Email::class) ?
+            Email::whereNull('identity_id')->orderBy('created_at', 'desc')->get() : [];
+
+        return Inertia::render('Accesses/List', [
+            'people' => $people->values(),
+            'totpeople' => Person::count(),
+            'requests' => $requests,
+            'editableRoles' => Auth::user()->editableRoles(),
+            'canAssociate' => Auth::user()->can('associate', Email::class),
+            'canAddPeople' => Auth::user()->can('create', Person::class)
+        ]);
+    }
+
+    public function enabled(Request $request)
+    {
+        $validated = $request->validate([
+            'identity' => 'required|numeric|exists:people,id',
+            'enabled' => 'required|boolean'
+        ]);
+
+        $identity = Person::find($validated['identity']);
+        
+        $this->authorize('enable', $identity);
+
+        if (!$identity) {
+            return redirect()->back()->with('notistack', ['error', 'Identità non trovata']);
+        }
+
+        if ($identity->hasRole('webmaster')) {
+            return redirect()->back()->with('notistack', ['error', 'Impossibile disabilitare il webmaster']);
+        }
+
+        if ($identity->enabled && !$validated['enabled']) {
+            $identity->revokePermissionTo('login');
+        }
+
+        if (!$identity->enabled && $validated['enabled']) {
+            $identity->givePermissionTo('login');
+        }
+
+        return redirect()->back();
     }
 }

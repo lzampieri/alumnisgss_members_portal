@@ -32,7 +32,7 @@ class AppsController extends Controller
             $apps[] = 'registry';
         }
 
-        if (Auth::user() && Auth::user()->can('viewHimself', Person::class)) {
+        if (Auth::user()) {
             $apps[] = 'profile';
         }
 
@@ -54,7 +54,7 @@ class AppsController extends Controller
             $apps[] = 'webmaster';
         }
 
-        if (Auth::user() && Auth::user()->can('viewAny', Email::class)) {
+        if (Auth::user() && Auth::user()->can('enable', Person::class)) {
             $apps[] = 'accesses';
         }
 

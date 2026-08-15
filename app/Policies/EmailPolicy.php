@@ -31,37 +31,15 @@ class EmailPolicy
      */
     public function view(Person $user, Email $email)
     {
-        if ($email->identity && $email->identity->is($user->identity))
-            return true;
+        $person = $email->identity;
+
         if ($user->hasPermissionTo('emails-view-all'))
             return true;
-        if ($email->identity) {
-            if ($email->identity_type == External::class)
-                if ($user->hasPermissionTo('emails-view-external'))
-                    return true;
 
-            if ($email->identity_type == Alumnus::class)
-                if (in_array($email->identity->status, Alumnus::public_status)) {
-                    if ($user->hasPermissionTo('emails-view-public-alumnus'))
-                        return true;
-                    if ((new AlumnusPolicy())->viewNetworkDetails($user, $email->identity))
-                        if ($email->identity->consent_to_email_share)
-                            return true;
-                }
-        }
+        if (!$person)
+            return false;
 
-        return false;
-    }
-
-    /**
-     * Determine whether the person can create a new email address.
-     *
-     * @param  \App\Models\Person  $user
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function add(Person $user)
-    {
-        return $user->hasPermissionTo('emails-add');
+        return (new PersonPolicy())->viewEmails($user, $person);
     }
 
     /**
@@ -72,13 +50,11 @@ class EmailPolicy
      */
     public function edit(Person $user, Email $email)
     {
-        if ($user->hasPermissionTo('emails-edit'))
-            return true;
-
-        if ($email->identity && $email->identity->is($user->identity))
-            return true;
-
-        return false;
+        if($email->identity) {
+            return $user->can('editEmails', $email->identity);
+        } else {
+            return $this->associate($user);
+        }
     }
 
     /**
@@ -90,13 +66,11 @@ class EmailPolicy
      */
     public function delete(Person $user, Email $email)
     {
-        if ($user->hasPermissionTo('emails-delete'))
-            return true;
-
-        if ($email->identity && $email->identity->is($user->identity))
-            return true;
-
-        return false;
+        if($email->identity) {
+            return $user->can('editEmails', $email->identity);
+        } else {
+            return $this->associate($user);
+        }
     }
 
     /**
