@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
-use App\Models\External;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 use Spatie\Permission\Exceptions\RoleDoesNotExist;
 use App\Models\Permission;
+use App\Models\Person;
 use App\Models\Position;
 use App\Models\Role;
 
@@ -26,12 +26,12 @@ class PermissionsController extends Controller
         }
 
         $this->authorize('permissions-view');
-        $roles = Role::with('permissions')->get()->append('is_automatic');
+        $roles = Role::with('permissions')->get()->append(['is_automatic', 'can_view', 'can_edit']);
         $perms = Permission::orderBy('name')->get()->pluck('name');
 
         foreach ($roles as &$role) {
             $role->permissions_names = $role->permissions->pluck('name');
-            $role->identities = Alumnus::role($role)->with('emails')->get()->concat(External::role($role)->with('emails')->get())->makeVisible('emails');
+            $role->identities = Auth::user()->can('view', $role) ? Person::role($role)->get() : [];
         }
 
         return Inertia::render('Permissions/List', ['roles' => $roles, 'perms' => $perms]);
@@ -48,7 +48,8 @@ class PermissionsController extends Controller
 
     public static function verify()
     {
-
+        // No authorization required: this is just a maintenance tool,
+        // and can be run without authentication.
         // ROLES
 
         $count_r_prev = Role::count();

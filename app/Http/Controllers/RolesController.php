@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
 use App\Models\DynamicPermission;
-use App\Models\External;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -53,7 +52,7 @@ class RolesController extends Controller
 
 
         $role = Role::findByName($validated['name'])->load(['hasDynamicPermissions', 'permissableViaDynamicPermissions']);
-        $this->authorize('edit', $role);
+        $this->authorize('delete', $role);
 
         $dynpers = $role->hasDynamicPermissions;
         foreach ($dynpers as $dynper)
@@ -62,10 +61,6 @@ class RolesController extends Controller
         $dynpers = $role->permissableViaDynamicPermissions;
         foreach ($dynpers as $dynper)
             $dynper->delete();
-
-        if ($role->isAutomatic) {
-            return redirect()->back()->with(['notistack' => ['error', 'Non puoi eliminare un ruolo automatico']]);
-        }
 
         $role->delete();
 

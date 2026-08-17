@@ -68,6 +68,9 @@ class RolePolicy
      */
     public function delete(Person $user, Role $role)
     {
+        if ($role->isAutomatic) return false;
+        if ($role->name == 'webmaster') return false;
+
         return DynamicPermission::PersonCanEditPermissable($role, $user);
     }
 }

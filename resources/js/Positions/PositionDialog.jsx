@@ -4,67 +4,63 @@ import { useForm, usePage } from "@inertiajs/react";
 import { useEffect, useMemo, useState } from "react";
 import EmptyDialog from "../Layout/EmptyDialog";
 
-import DatePicker from "tailwind-datepicker-react";
 import CreatableSelect from 'react-select/creatable';
 import Select, { createFilter } from 'react-select';
 import { AlumnusStatus, romanize } from "../Utils";
 
 
 import Backdrop from "../Layout/Backdrop";
+import { NurDate, NurDatePicker } from "../Libs/DateEditor";
 
-
-
-export default function NewPositionDialog({ toEdit, setToEdit }) {
+export default function PositionDialog({ toEdit, setToEdit }) {
     const { data, setData, errors, post, transform, processing, setDefaults } = useForm({
-        from: new Date(),
-        to: new Date(),
+        from: new NurDate(),
+        to: new NurDate(),
         type: "",
         note: "",
-        owner: undefined
+        owner: null
     });
     const [creating, setCreating] = useState(false);
-
-    const [datePicker1Open, setDatePicker1Open] = useState(false);
-    const [datePicker2Open, setDatePicker2Open] = useState(false);
 
     const submit = (e) => {
         e.preventDefault()
         let rt = toEdit ? route('positions.edit', { position: toEdit.id }) : route('positions.create')
         post(rt, { onSuccess: () => { setCreating(false); setToEdit(null) } });
-        
     }
 
     const positions = usePage().props.positions
     const typeOptions = useMemo(() => positions.map((p) => p.type).filter((value, index, array) => array.indexOf(value) === index).map(t => ({ value: t, label: t})), [positions]);
 
     const positionable = usePage().props.positionable
-    const idOptions = useMemo(() => [
-        ...(positionable['App\\Models\\Alumnus']?.map((p) => { return { type: 'App\\Models\\Alumnus', id: p.id, label: <span>{p.surname} {p.name} <span className="text-gray-400">({romanize(p.coorte)}) - {AlumnusStatus.status[p.status].label}</span></span>, filter: p.surname + " " + p.name + " " + p.coorte } }) || []),
-        ...(positionable['App\\Models\\External']?.map((p) => { return { type: 'App\\Models\\External', id: p.id, label: <span>{p.surname} {p.name} <span className="text-gray-400 small">({p.notes})</span></span>, filter: p.surname + " " + p.name + " " + p.notes } }) || []),
-    ], [positionable]);
+    const idOptions = useMemo(() => 
+        positionable.map((p) => { return { id: p.id, label: <span>{p.surname} {p.name} <span className="text-gray-400">({romanize(p.coorte)}) - {p.coorte > 0 ? AlumnusStatus.status[p.status].label : p.notes}</span></span>, filter: p.surname + " " + p.name + " " + p.coorte + " " + " " + p.notes } }) || [],
+        [positionable]);
 
     transform((data) => ({
         ...data,
-        owner_type: idOptions[data.owner.value]?.type,
-        owner_id: idOptions[data.owner.value]?.id
+        owner: idOptions[data.owner.value]?.id
     }));
 
     useEffect(() => {
         if (creating) {
-            setData('from', new Date())
-            setData('to', new Date())
-            setData('type', "")
-            setData('note', "")
-            setData('owner', undefined)
+            setData({
+                'from': new NurDate(),
+                'to': new NurDate(),
+                'type': "",
+                'note': "",
+                'owner': null,
+            })
         }
     }, [creating])
     useEffect(() => {
         if (toEdit) {
-            setData('from', new Date(toEdit.from))
-            setData('to', new Date(toEdit.to))
-            setData('type', toEdit.type)
-            setData('note', toEdit.note || "")
-            setData('owner', { value: idOptions.findIndex(o => o.id == toEdit.owner_id && o.type == toEdit.owner_type) })
+            setData({
+                'from': new NurDate(toEdit.from),
+                'to': new NurDate(toEdit.to),
+                'type': toEdit.type,
+                'note': toEdit.note || "",
+                'owner': { value: idOptions.findIndex(o => o.id == toEdit.owner_id) },
+            })
         }
     }, [toEdit])
 
@@ -85,8 +81,6 @@ export default function NewPositionDialog({ toEdit, setToEdit }) {
                     value={data.owner}
                     onChange={(sels) => setData('owner', sels)} />
                 <label className="error">{errors.owner}</label>
-                <label className="error">{errors.owner_type}</label>
-                <label className="error">{errors.owner_id}</label>
 
                 <label>Tipo</label>
                 <CreatableSelect
@@ -102,21 +96,18 @@ export default function NewPositionDialog({ toEdit, setToEdit }) {
                 <label className="error">{errors.note}</label>
 
                 <label>Nomina</label>
-                <DatePicker
+                <NurDatePicker
                     value={data.from}
-                    classNames='w-full' options={{ defaultDate: data.from, language: 'it', theme: { input: '!text-black' } }}
-                    onChange={(date) => setData('from', date)} show={datePicker1Open} setShow={setDatePicker1Open} />
+                    classNames='w-full'
+                    onChange={(date) => setData('from', date)} />
                 <label className="error">{errors.from}</label>
 
                 <label>Scadenza</label>
-                <DatePicker
+                <NurDatePicker
                     value={data.to}
-                    classNames='w-full' options={{ defaultDate: data.to, language: 'it', theme: { input: '!text-black' } }}
-                    onChange={(date) => setData('to', date)} show={datePicker2Open} setShow={setDatePicker2Open} />
+                    classNames='w-full'
+                    onChange={(date) => setData('to', date)} />
                 <label className="error">{errors.to}</label>
-
-                <input type="hidden" value={data.owner_id} />
-                <input type="hidden" value={data.owner_type} />
 
                 <input type="submit" className="button" value="Salva incarico" />
 

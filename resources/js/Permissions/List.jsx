@@ -16,7 +16,9 @@ function RoleCard({role, perms, setProcessing}) {
     const submitDelete = async () => {
         postRequest('roles.delete',
             { name: role.name },
-            setProcessing
+            setProcessing,
+            {}, true, true,
+            () => {setIsDeleting(false);},
         )
     }
 
@@ -24,13 +26,13 @@ function RoleCard({role, perms, setProcessing}) {
         <label>{role.name}</label>
         <div className="flex flex-row items-start">
             <h3>{role.common_name}</h3>
-            <h4>{!role.is_automatic && <div className="icon-button" onClick={() => setIsDeleting(true)}><FontAwesomeIcon icon={faTrash} /></div>}</h4>
+            <h4>{role.can_edit && <div className="icon-button" onClick={() => setIsDeleting(true)}><FontAwesomeIcon icon={faTrash} /></div>}</h4>
         </div>
         <div className="md:columns-2">
             {perms.map(pm => PermissionSwitch(pm, role.permissions_names.includes(pm), role.name, setProcessing))}
         </div>
         <div className="flex flex-row flex-wrap justify-center mt-4 gap-2">
-            {role.identities.map(identity => IdentityChip(identity, setProcessing))}
+            {role.can_view ? role.identities.map(identity => IdentityChip(identity, setProcessing)) : <label>Non hai il permesso di vedere gli utenti in questo gruppo.</label>}
         </div>
         <Dialog
             open={isDeleting}
@@ -111,6 +113,7 @@ export default function List() {
                         {role.common_name}
                     </div>
                 )}
+                <Link className="drawer-item" href={route('roles.list')} as="div">Gestione ruoli</Link>
             </ResponsiveDrawer.Drawer>
             {selectedIdx >= 0 && <RoleCard role={roles[selectedIdx]} perms={perms} setProcessing={setProcessing} />}
             {permissionAdd(setProcessing)}

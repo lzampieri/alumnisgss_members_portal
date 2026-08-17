@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Alumnus;
-use App\Models\External;
+use App\Models\Person;
 use App\Models\Position;
 use App\Models\Role;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -27,10 +26,7 @@ class PositionController extends Controller
 
         $positionable = [];
         if (Auth::user()->can('edit', Position::class)) {
-            $positionable = [
-                Alumnus::class => array_values(Alumnus::orderBy('surname')->orderBy('name')->get()->filter->canView->toArray()),
-                External::class => array_values(External::orderBy('surname')->orderBy('name')->get()->filter->canView->toArray()),
-            ];
+            $positionable = Person::orderBy('surname')->orderBy('name')->get()->filter->canView->toArray();
         }
 
         return Inertia::render(
@@ -73,27 +69,23 @@ class PositionController extends Controller
         $this->authorize('edit', Position::class);
 
         $validated = $request->validate([
-            'owner_type' => 'required|in:' . Alumnus::class . ',' . External::class,
-            'owner_id' => 'required|numeric',
+            'owner' => 'required|numeric|exists:people,id',
             'type' => 'required|string|min:3',
             'note' => 'nullable|string',
             'from' => 'required|date',
             'to' => 'required|date|after:from',
         ]);
 
-        if ($validated['owner_type'] == Alumnus::class) {
-            $identity = Alumnus::find($validated['owner_id']);
-        } else {
-            $identity = External::find($validated['owner_id']);
-        }
+        $identity = Person::find($validated['owner']);
+
         if (! $identity) {
             return redirect()->back()->withErrors(['owner_id' => ['Identità non trovata']])->withInput();
         }
 
         // Check that, if the role already exists, it is due to another position
         try {
-            $prevrole = Role::findByName($validated['type']);
-            $exists = Position::first('type', $validated['type']);
+            Role::findByName($validated['type']); // Will give the exception otherwise
+            $exists = Position::where('type', $validated['type'])->first();
             if (!$exists)
                 return redirect()->back()->withErrors(['type' => ['Un ruolo con questo nome esiste già, sorry']])->withInput();
         } catch (RoleDoesNotExist $e) {
@@ -118,27 +110,23 @@ class PositionController extends Controller
         $this->authorize('edit', Position::class);
 
         $validated = $request->validate([
-            'owner_type' => 'required|in:' . Alumnus::class . ',' . External::class,
-            'owner_id' => 'required|numeric',
+            'owner' => 'required|numeric|exists:people,id',
             'type' => 'required|string|min:3',
             'note' => 'nullable|string',
             'from' => 'required|date',
             'to' => 'required|date|after:from',
         ]);
 
-        if ($validated['owner_type'] == Alumnus::class) {
-            $identity = Alumnus::find($validated['owner_id']);
-        } else {
-            $identity = External::find($validated['owner_id']);
-        }
+        $identity = Person::find($validated['owner']);
+
         if (! $identity) {
             return redirect()->back()->withErrors(['owner_id' => ['Identità non trovata']])->withInput();
         }
 
         // Check that, if the role already exists, it is due to another position
         try {
-            $prevrole = Role::findByName($validated['type']);
-            $exists = Position::first('type', $validated['type']);
+            Role::findByName($validated['type']); // Will give the exception otherwise
+            $exists = Position::where('type', $validated['type'])->first();
             if (!$exists)
                 return redirect()->back()->withErrors(['type' => ['Un ruolo con questo nome esiste già, sorry']])->withInput();
         } catch (RoleDoesNotExist $e) {
