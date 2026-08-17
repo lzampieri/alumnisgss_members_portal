@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
-use App\Models\Identity;
 use App\Models\Ratification;
 use App\Utils\TemplatedPdfGenerator;
 use Illuminate\Http\Request;

@@ -8,17 +8,20 @@ import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
 import { TextFilterModule, themeQuartz } from "ag-grid-community";
 import { ModuleRegistry, ClientSideRowModelModule, ColumnAutoSizeModule, QuickFilterModule } from 'ag-grid-community';
 import { AlumnusStatus, bgAndContrast, bgAndContrastPastel } from "../Utils";
-import { faEnvelopeOpen, faEye, faPenToSquare, faTruckFast } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelopeOpen, faEye, faPenToSquare, faTrash, faTruckFast } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import EmptyDialog from "../Layout/EmptyDialog";
 import InlinePie from "./InlinePie";
-ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnAutoSizeModule, QuickFilterModule,TextFilterModule]);
+ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnAutoSizeModule, QuickFilterModule, TextFilterModule]);
 
 
 export default function List() {
+    const [toDelete,setToDelete] = useState(null);
 
-    const showCake = ({value, data}) => {
-        return <div className="flex flex-row gap-2 items-center"><InlinePie primary={data.totalSentTo} secondary={data.totalScheduled} total={data.totalCountTo} /> {data.totalSentTo}/{data.totalCountTo} {data.totalScheduled > 0 && <>({data.totalScheduled} progr.)</>}</div>;
-    }
+    const showCake = ({ value, data }) => {
+        return <div className="flex flex-row gap-2 items-center"><InlinePie primary={data.totalSentTo} secondary={data.totalScheduled} total={data.totalCountTo} /> {data.totalSentTo}/{data.totalCountTo} {data.totalScheduled > 0 &&
+            "(" + data.totalScheduled + " progr.)"
+        }</div>};
 
 
     const columns = [
@@ -38,9 +41,9 @@ export default function List() {
         },
         {
             field: 'go', headerName: '', valueGetter: ({ data }) => data.id, cellRenderer: ({ value, data }) => <>
-                {data.sent_at ? ""
-                    : <Link className="button" href={route('newsletter.edit', { id: value })}><FontAwesomeIcon icon={faPenToSquare} /></Link>}
                 <Link className="button" href={route('newsletter.view', { id: value })}><FontAwesomeIcon icon={faEye} /></Link>
+                {data.can_edit && <Link className="button" href={route('newsletter.edit', { id: value })}><FontAwesomeIcon icon={faPenToSquare} /></Link>}
+                {data.can_delete && <span className="button" onClick={() => setToDelete(data)}><FontAwesomeIcon icon={faTrash} /></span>}
             </>
         },
         {
@@ -63,6 +66,14 @@ export default function List() {
                 Mailing list
             </Link>
         </div>
+        <EmptyDialog open={!!toDelete} onClose={() => setToDelete(null)}>
+            Sei sicuro di voler cancellare la bozza di newsletter:<br/>
+            <b>{toDelete?.subject}</b>
+            <div className="flex flex-row gap-2">
+                <div className="button" onClick={() => setToDelete(null)}>Annulla</div>
+                <Link className="button" href={route('newsletter.delete', { newsletter: toDelete?.id || 0 })}>Elimina bozza</Link>
+            </div>
+            </EmptyDialog>
 
         <div className='w-full h-[50vh]'>
             <AgGridReact

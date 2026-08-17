@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Email;
-use App\Models\Identity;
 use App\Models\Person;
 use Carbon\Carbon;
 use Illuminate\Http\Request;

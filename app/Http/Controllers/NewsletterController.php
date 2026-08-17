@@ -4,17 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
 use App\Models\Email;
-use App\Models\External;
 use App\Models\File;
 use App\Models\MailingList;
 use App\Models\Newsletter;
+use App\Models\Person;
 use App\Models\Position;
 use App\Models\Role;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Symfony\Component\Mailer\Mailer;
@@ -22,7 +20,6 @@ use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email as MimeEmail;
 use Symfony\Component\Mime\Exception\RfcComplianceException;
-use Symfony\Component\Mime\Message;
 use Symfony\Component\Mime\Part\DataPart;
 
 class NewsletterController extends Controller
@@ -30,15 +27,12 @@ class NewsletterController extends Controller
 
     public function list()
     {
-        if (Auth::user()->can('viewAll', Newsletter::class)) {
-            $prequery = Newsletter::with('owner');
-        } else {
-            $prequery = Auth::user()->newsletters()->with('owner');
-        }
-        $newsletters = $prequery->orderBy('updated_at', 'desc')->doesntHave('parent')->get();
+        $newsletters = Newsletter::with('owner')->orderBy('updated_at', 'desc')->doesntHave('parent')->get();
         $newsletters->load('childrens');
 
         $newsletters = $newsletters->append(['totalCountTo', 'totalSentTo', 'totalScheduled']);
+
+        $newsletters = $newsletters->filter->canView->values();
 
         return Inertia::render(
             'Newsletter/List',
@@ -79,6 +73,15 @@ class NewsletterController extends Controller
         return redirect()->route('newsletter.edit', ['newsletter' => $newletter->id]);
     }
 
+    public function delete(Newsletter $newsletter)
+    {
+        $this->authorize('delete', $newsletter);
+
+        $newsletter->delete();
+
+        return redirect()->back()->with(['notistack' => ['success', 'Newsletter eliminata']]);
+    }
+
     public function edit(Newsletter $newsletter)
     {
         $this->authorize('edit', $newsletter);
@@ -86,15 +89,7 @@ class NewsletterController extends Controller
         $newsletter->append('attachments');
         $newsletter->load(['mailingLists', 'childrens', 'parent']);
 
-        $emails = Email::whereHas('identity')->with('identity')->get()->makeVisible('identity');
-        $emails = $emails->sortBy([['identity.surname', 'asc'], ['identity.name', 'asc'], ['primary', 'desc']]);
-        $emails = array_values($emails->append('canView')->filter->canView->toArray());
-
-        for ($i = 0; $i < count($emails); $i++) {
-            if ($i == 0 || ($emails[$i]['identity']['id'] != $emails[$i - 1]['identity']['id'])) {
-                $emails[$i]['isPrimary'] = true;
-            } else $emails[$i]['isPrimary'] = false;
-        }
+        $people = Person::all()->filter->canView->append('visible_emails')->makeVisible('visible_emails')->values();
 
         $user = Auth::user();
 
@@ -116,21 +111,18 @@ class NewsletterController extends Controller
         $position_defined_roles = Position::select('type')->distinct()->get()->pluck('type')->toArray();
 
         foreach ($roles as &$role) {
-            if ($role->name == 'everyone') $role->identities = Alumnus::with('emails')->get()->concat(External::with('emails')->get());
-            else if (in_array($role->name, Alumnus::public_status)) $role->identities = Alumnus::where('status', $role->name)->with('emails')->get();
-            else if (in_array($role->name, $position_defined_roles)) $role->identities = Alumnus::whereHas('positions', function (Builder $query) use ($role) {
+            if (in_array($role->name, Alumnus::public_status)) $role->identities = Person::where('coorte', '>', 0)->where('status', $role->name)->get()->append('visible_emails');
+            else if (in_array($role->name, $position_defined_roles)) $role->identities = Person::whereHas('positions', function ($query) use ($role) {
                 $query->where('type', $role->name)->whereNowOrPast('from')->whereNowOrFuture('to');
-            })->with('emails')->get()->concat(External::whereHas('positions', function (Builder $query) use ($role) {
-                $query->where('type', $role->name)->whereNowOrPast('from')->whereNowOrFuture('to');
-            })->with('emails')->get());
-            else $role->identities = Alumnus::role($role)->with('emails')->get()->concat(External::role($role)->with('emails')->get());
+            })->get()->append('visible_emails');
+            else $role->identities = Person::role($role)->get()->append('visible_emails');
 
-            $role->identities->makeVisible('emails');
+            $role->identities->makeVisible('visible_emails');
 
             if (in_array($role->name, Alumnus::require_ratification)) $aspirant_toappend[] = $role->name;
         }
 
-        $roles = array_values($roles->toArray());
+        $roles = $roles->values();
 
         // Aspirant
         foreach ($aspirant_toappend as $i => $status) {
@@ -138,9 +130,9 @@ class NewsletterController extends Controller
                 'id' => -$i - 1,
                 'name' => 'aspirant_' . $status,
                 'common_name' => 'Candidati ' . Alumnus::AlumnusStatusLabels[$status],
-                'identities' => Alumnus::where('status', '!=', $status)->whereHas('ratifications', function ($query) use ($status) {
+                'identities' => Person::where('coorte', '>', 0)->where('status', '!=', $status)->whereHas('ratifications', function ($query) use ($status) {
                     $query->where('required_state', $status)->whereNull('document_id');
-                })->with('emails')->get()
+                })->get()->append('visible_emails')->makeVisible('visible_emails')
             ];
         }
 
@@ -151,7 +143,7 @@ class NewsletterController extends Controller
             'Newsletter/Edit',
             [
                 'newsletter' => $newsletter,
-                'rubrica' => $emails,
+                'rubrica' => $people,
                 'groups' => $roles,
                 'mailingLists' => $mailingLists,
                 'allowedFormats' => [...File::ALLOWED_FORMATS, ...File::ALLOWED_IMAGES_FORMATS]
@@ -272,24 +264,15 @@ class NewsletterController extends Controller
 
         $newsletter->append('attachments');
 
-        $user = Auth::user()->load('emails', 'emails.identity');
-        $email = null;
-
-        if (count($user->emails) > 0) {
-            $email = $user->emails[0]->address;
-
-            Mail::send([], [], function (\Illuminate\Mail\Message $msg) use ($email, $newsletter) {
-                $msg->to($email);
-                $msg->replyTo("info@alumniscuolagalileiana.it");
-                $msg->from("info@alumniscuolagalileiana.it");
-                $msg->subject("Test | " . $newsletter->subject);
-                $msg->html($newsletter->body);
-                foreach ($newsletter->attachments as $att) {
-                    $msg->attach($att->path());
-                }
-            });
-            LogController::log(LogEvents::NEWSLETTER_TEST_SENT, NULL, $newsletter->subject, [$email, $newsletter]);
-        }
+        $sentTo = MailerController::sendEmail(
+            [Auth::user()],
+            "Test | " . $newsletter->subject,
+            $newsletter->body,
+            "info@alumniscuolagalileiana.it",
+            "info@alumniscuolagalileiana.it",
+            $newsletter->attachments,
+            LogEvents::NEWSLETTER_TEST_SENT
+        );
 
         $newsletter->append(['allTo', 'countTo']);
 
@@ -299,7 +282,7 @@ class NewsletterController extends Controller
             'Newsletter/Preview',
             [
                 'newsletter' => $newsletter,
-                'sentTo' => $email,
+                'sentTo' => $sentTo,
                 'canSend' => Auth::user()->can('send', $newsletter),
                 'canSendServer' => Auth::user()->can('sendServer', $newsletter),
                 'serverETA' => $serverETA
@@ -317,20 +300,18 @@ class NewsletterController extends Controller
             'sendTo' => 'required|email',
         ]);
         $email = $validated['sendTo'];
+        
+        $sentTo = MailerController::sendEmail(
+            [$email],
+            "Test | " . $newsletter->subject,
+            $newsletter->body,
+            "info@alumniscuolagalileiana.it",
+            "info@alumniscuolagalileiana.it",
+            $newsletter->attachments,
+            LogEvents::NEWSLETTER_TEST_SENT
+        );
 
-        Mail::send([], [], function (\Illuminate\Mail\Message $msg) use ($email, $newsletter) {
-            $msg->to($email);
-            $msg->replyTo("info@alumniscuolagalileiana.it");
-            $msg->from("info@alumniscuolagalileiana.it");
-            $msg->subject("Test | " . $newsletter->subject);
-            $msg->html($newsletter->body);
-            foreach ($newsletter->attachments as $att) {
-                $msg->attach($att->path());
-            }
-        });
-        LogController::log(LogEvents::NEWSLETTER_TEST_SENT, NULL, $newsletter->subject, [$email, $newsletter]);
-
-        return response()->json(['sentTo' => $email]);
+        return response()->json(['sentTo' => $sentTo]);
     }
 
     public function send(Newsletter $newsletter)

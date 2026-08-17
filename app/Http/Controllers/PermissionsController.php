@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
-use App\Models\Document;
 use App\Models\External;
-use App\Models\Identity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -153,6 +151,7 @@ class PermissionsController extends Controller
             'helpdesk-solve-plain',
             // Newsletter
             'newsletters-create',
+            'newsletters-view-all',
             'newsletters-master',
             'newsletters-send',
             'newsletters-send-server',

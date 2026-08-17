@@ -25,8 +25,8 @@ class RolePolicy
         if ($role->isAutomatic) return false;
 
         if (
-            DynamicPermission::PersonCanViewPermissable($role, $user ? $user->identity : NULL)
-            || DynamicPermission::PersonCanEditPermissable($role, $user ? $user->identity : NULL)
+            DynamicPermission::PersonCanViewPermissable($role, $user)
+            || DynamicPermission::PersonCanEditPermissable($role, $user)
         )
             return true;
 
@@ -56,7 +56,7 @@ class RolePolicy
     {
         if ($role->isAutomatic) return false;
 
-        return DynamicPermission::PersonCanEditPermissable($role, $user ? $user->identity : NULL);
+        return DynamicPermission::PersonCanEditPermissable($role, $user);
     }
 
     /**
@@ -68,6 +68,6 @@ class RolePolicy
      */
     public function delete(Person $user, Role $role)
     {
-        return DynamicPermission::PersonCanEditPermissable($role, $user ? $user->identity : NULL);
+        return DynamicPermission::PersonCanEditPermissable($role, $user);
     }
 }

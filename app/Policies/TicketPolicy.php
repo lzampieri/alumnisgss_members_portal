@@ -31,9 +31,9 @@ class TicketPolicy
     public function view(Person $user, Ticket $ticket)
     {
         return
-            $ticket->author()->is($user->identity) ||
-            $ticket->assigner()->is($user->identity) ||
-            $ticket->instance->canBeSeen($user->identity) ||
+            $ticket->author()->is($user) ||
+            $ticket->assigner()->is($user) ||
+            $ticket->instance->canBeSeen($user) ||
             $user->hasPermissionTo('helpdesk-master');
     }
 
@@ -58,9 +58,9 @@ class TicketPolicy
     public function comment(Person $user, Ticket $ticket)
     {
         return
-            $ticket->author()->is($user->identity) ||
-            $ticket->assigner()->is($user->identity) ||
-            $ticket->instance->canBeSeen($user->identity) ||
+            $ticket->author()->is($user) ||
+            $ticket->assigner()->is($user) ||
+            $ticket->instance->canBeSeen($user) ||
             $user->hasPermissionTo('helpdesk-master');
     }
 }

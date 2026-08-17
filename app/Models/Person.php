@@ -125,7 +125,8 @@ class Person extends User
     {
         $emails = $this->emails;
         $maxprim = $emails->max('primary');
-        return $emails->filter(function ($email) use ($maxprim) { return $email->primary == $maxprim; })->toArray();
+        return $emails->filter(function ($email) use ($maxprim) { return $email->primary == $maxprim; })
+            ->pluck('address')->toArray();
     }
     public function newsletters()
     {

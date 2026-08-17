@@ -2,17 +2,18 @@
 
 namespace App\Models\TicketTypes;
 
-use App\Models\Identity;
+use App\Models\Person;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 use JsonSerializable;
 
-interface TicketTypeInterface extends JsonSerializable {
+interface TicketTypeInterface extends JsonSerializable
+{
 
     public static function commonName(): string;
     public static function selfCreatable(): bool;
 
-    public static function canBeSeen(Identity $identity): bool;
+    public static function canBeSeen(Person $identity): bool;
 
     public function fieldList(): array;
 

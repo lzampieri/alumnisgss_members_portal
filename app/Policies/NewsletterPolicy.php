@@ -31,7 +31,7 @@ class NewsletterPolicy
      */
     public function view(Person $user, Newsletter $newsletter)
     {
-        return $newsletter->owner()->is($user->identity) || $user->hasPermissionTo('newsletters-master');
+        return $newsletter->owner()->is($user) || $user->hasPermissionTo('newsletters-view-all') || $user->hasPermissionTo('newsletters-master');
     }
 
     /**
@@ -55,7 +55,7 @@ class NewsletterPolicy
     {
         if ($newsletter->sent_at) return false;
         if ($newsletter->from == 'SMTP') return false; // newsletter already scheduled to be sent
-        return $newsletter->owner()->is($user->identity) || $user->hasPermissionTo('newsletters-master');
+        return $newsletter->owner()->is($user) || $user->hasPermissionTo('newsletters-master');
     }
 
     /**
@@ -80,5 +80,18 @@ class NewsletterPolicy
     {
         if (!$this->edit($user, $newsletter)) return false;
         return $user->hasPermissionTo('newsletters-send-server');
+    }
+
+    /**
+     * Determine whether the person can delete models.
+     *
+     * @param  \App\Models\Person  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function delete(Person $user, Newsletter $newsletter)
+    {
+        if ($newsletter->sent_at) return false;
+        if ($newsletter->from == 'SMTP') return false; // newsletter already scheduled to be sent
+        return $newsletter->owner()->is($user) || $user->hasPermissionTo('newsletters-master');
     }
 }

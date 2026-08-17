@@ -30,7 +30,7 @@ class StampPolicy
      */
     public function view(Person $user, Stamp $stamp)
     {
-        return $stamp->employee->is($user->identity) || $user->hasPermissionTo('clockin-view-all');
+        return $stamp->employee->is($user) || $user->hasPermissionTo('clockin-view-all');
     }
 
     /**
@@ -75,7 +75,7 @@ class StampPolicy
      */
     public function delSpecial(Person $user, Stamp $stamp)
     {
-        return $stamp->employee->is($user->identity) || $user->hasPermissionTo('clockin-edit-all');
+        return $stamp->employee->is($user) || $user->hasPermissionTo('clockin-edit-all');
     }
 
     /**
@@ -99,6 +99,6 @@ class StampPolicy
      */
     public function editNote(Person $user, Stamp $stamp)
     {
-        return $stamp->employee->is($user->identity) || $user->hasPermissionTo('clockin-edit-all');
+        return $stamp->employee->is($user) || $user->hasPermissionTo('clockin-edit-all');
     }
 }

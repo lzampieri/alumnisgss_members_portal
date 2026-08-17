@@ -3,20 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
-use App\Models\Email;
-use App\Models\External;
-use App\Models\Identity;
 use App\Models\Log;
-use App\Models\Permission;
+use App\Models\Person;
 use Defuse\Crypto\File as CryptoFile;
 use Defuse\Crypto\Key;
 use Illuminate\Support\Facades\Artisan;
 use Inertia\Inertia;
 use Ifsnop\Mysqldump\Mysqldump;
-use Illuminate\Encryption\Encrypter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use RuntimeException;
@@ -76,7 +71,6 @@ class WebmasterController extends Controller
 
     public function decryptUtility()
     {
-        // Must be logged in - guaranteed in middleware
 
         return Inertia::render('Webmaster/DecryptUtility', [
             '_token' => csrf_token()
@@ -85,7 +79,6 @@ class WebmasterController extends Controller
 
     public function decryptUtilityPost(Request $request)
     {
-        // Must be logged in - guaranteed in middleware
 
         try {
             // $validated = $request->validate([
@@ -207,19 +200,12 @@ class WebmasterController extends Controller
         $message = "Questo è un messaggio di prova inviato su richiesta del webmaster dal portale soci.";
 
         $message .= "Le mail di richiesta accesso sono tipicamente inviate a:\n";
-        $message .= implode("\n", MailerController::getAddresses(Identity::allWithPermission('accesses-receive-request-emails')));
+        $message .= implode("\n", MailerController::getAddresses(Person::allWithPermission('accesses-receive-request-emails')));
 
-        $email = Auth::user()->address;
-
-        LogController::log(LogEvents::MAIL_SENT, NULL, 'email', NULL, $email);
-
-        Mail::raw(
-            $message,
-            function (\Illuminate\Mail\Message $message) use ($email) {
-                $message->to([$email, 'webmaster@alumniscuolagalileiana.it']);
-                $message->subject('Messaggio di test da soci.alumniscuolagalileiana.it');
-            }
-        );
+        MailerController::sendEmail(
+            [Auth::user()],
+            'Messaggio di test da soci.alumniscuolagalileiana.it',
+            $message);
 
         return redirect()->back()
             ->with('notistack', ['success', "Mail inviata."]);

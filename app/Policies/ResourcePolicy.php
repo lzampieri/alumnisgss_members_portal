@@ -25,7 +25,7 @@ class ResourcePolicy
      */
     public function view(?Person $user, Resource $resource, ?File $file = null)
     {
-        if (DynamicPermission::PersonCanViewPermissable($resource, $user ? $user->identity : NULL) || DynamicPermission::PersonCanEditPermissable($resource, $user ? $user->identity : NULL))
+        if (DynamicPermission::PersonCanViewPermissable($resource, $user) || DynamicPermission::PersonCanEditPermissable($resource, $user))
             return true;
 
         // Check for Magic Link
@@ -79,7 +79,7 @@ class ResourcePolicy
      */
     public function edit(Person $user, Resource $resource)
     {
-        return DynamicPermission::PersonCanEditPermissable($resource, $user ? $user->identity : NULL);
+        return DynamicPermission::PersonCanEditPermissable($resource, $user);
     }
 
     /**
@@ -91,6 +91,6 @@ class ResourcePolicy
      */
     public function delete(Person $user, Resource $resource)
     {
-        return DynamicPermission::PersonCanEditPermissable($resource, $user ? $user->identity : NULL);
+        return DynamicPermission::PersonCanEditPermissable($resource, $user);
     }
 }

@@ -70,6 +70,12 @@ return new class extends Migration
             }
             $table->foreign('identity_id')->references('id')->on('people');
         });
+        Schema::table('newsletters', function (Blueprint $table) {
+            if (Schema::hasColumn('newsletters', 'owner_type')) {
+                $table->dropColumn('owner_type');
+            }
+            $table->foreign('owner_id')->references('id')->on('people');
+        });
     }
 
     /**

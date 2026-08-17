@@ -6,8 +6,8 @@ use App\Traits\EditsAreLogged;
 use App\Traits\SoftEditsAreLogged;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
-use function PHPUnit\Framework\isNull;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Auth;
 
 class Newsletter extends Model
 {
@@ -19,7 +19,6 @@ class Newsletter extends Model
         'subject',
         'body',
         'sent_at',
-        'owner_type',
         'owner_id',
         'from',
         'parent_id'
@@ -30,7 +29,7 @@ class Newsletter extends Model
 
     public function owner()
     {
-        return $this->morphTo('owner');
+        return $this->belongsTo(Person::class);
     }
 
     public function parent()
@@ -122,5 +121,23 @@ class Newsletter extends Model
     public function logify()
     {
         return "Newsletter " . $this->id . " with subject " . $this->subject;
+    }
+    
+    protected $appends = [
+        'can_view',
+        'can_edit',
+        'can_delete'
+    ];
+    protected function canView(): Attribute // If the logged in user can view this person
+    {
+        return Attribute::make(get: fn(mixed $_, array $attributes) => Auth::check() && Auth::user()->can('view', $this));
+    }
+    protected function canEdit(): Attribute // If the logged in user can view this person
+    {
+        return Attribute::make(get: fn(mixed $_, array $attributes) => Auth::check() && Auth::user()->can('edit', $this));
+    }
+    protected function canDelete(): Attribute // If the logged in user can view this person
+    {
+        return Attribute::make(get: fn(mixed $_, array $attributes) => Auth::check() && Auth::user()->can('delete', $this));
     }
 }

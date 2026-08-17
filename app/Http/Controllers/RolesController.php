@@ -3,16 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
-use App\Models\Document;
 use App\Models\DynamicPermission;
 use App\Models\External;
-use App\Models\Identity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use Spatie\Permission\Exceptions\PermissionDoesNotExist;
-use Spatie\Permission\Exceptions\RoleDoesNotExist;
-use App\Models\Permission;
 use App\Models\Person;
 use App\Models\Role;
 

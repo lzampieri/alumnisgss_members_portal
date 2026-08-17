@@ -34,6 +34,7 @@ export default function List() {
                 <li><RequireConfirmLink href={route('webmaster.enableAllPublic')}>Abilita al login tutti gli alumni con stato pubblico (membri, studenti, preiscritti).</RequireConfirmLink></li>
                 <li><a href={route('auth.login_lv2.google')}>Forza accesso con autorizzazioni elevate</a></li>
                 <li><a href={route('webmaster.verify_cities')}>Verifica lista città</a></li>
+                <li><a href={route('newsletter.smtpCallback')}>Callback SMTP</a></li>
                 <li><a href={route('webmaster.settings')}>Parametri e impostazioni</a></li>
             </ul>
         </div>

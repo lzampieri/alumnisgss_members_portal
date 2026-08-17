@@ -2,12 +2,11 @@
 
 namespace App\Models\TicketTypes;
 
-use App\Models\Identity;
+use App\Models\Person;
 use App\Models\Stamp;
 use App\Models\Ticket;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Date;
 
 class EditStamp implements TicketTypeInterface
 {
@@ -38,7 +37,7 @@ class EditStamp implements TicketTypeInterface
         return false;
     }
 
-    public static function canBeSeen(Identity $identity): bool
+    public static function canBeSeen(Person $identity): bool
     {
         return $identity->hasPermissionTo('helpdesk-master') || Auth()->user()->can('edit', Stamp::class);
     }
@@ -166,6 +165,6 @@ class EditStamp implements TicketTypeInterface
 
     public static function notifyOnCreation(): array
     {
-        return Identity::allWithPermission('helpdesk-master');
+        return Person::allWithPermission('helpdesk-master');
     }
 }

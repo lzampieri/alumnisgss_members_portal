@@ -24,7 +24,7 @@ class DocumentPolicy
     {
         if ($user && $user->hasPermissionTo('documents-view-all')) return true;
         if ($document->attached_to_id) return $this->view($user, $document->attached_to);
-        return DynamicPermission::PersonCanViewPermissable($document, $user ? $user->identity : null);
+        return DynamicPermission::PersonCanViewPermissable($document, $user);
     }
 
     /**

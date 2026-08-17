@@ -2,9 +2,7 @@
 
 namespace App\Models\TicketTypes;
 
-use App\Models\External;
-use App\Models\Identity;
-use App\Models\Permission;
+use App\Models\Person;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 
@@ -34,7 +32,7 @@ class Plain implements TicketTypeInterface
         return true;
     }
 
-    public static function canBeSeen(Identity $identity): bool
+    public static function canBeSeen(Person $identity): bool
     {
         return $identity->hasPermissionTo('helpdesk-master') || $identity->hasPermissionTo('helpdesk-solve-plain');
     }
@@ -99,6 +97,6 @@ class Plain implements TicketTypeInterface
 
     public static function notifyOnCreation(): array
     {
-        return Identity::allWithPermission('helpdesk-master');
+        return Person::allWithPermission('helpdesk-master');
     }
 }

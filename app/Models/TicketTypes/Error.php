@@ -2,7 +2,7 @@
 
 namespace App\Models\TicketTypes;
 
-use App\Models\Identity;
+use App\Models\Person;
 use App\Models\Permission;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
@@ -30,7 +30,7 @@ class Error implements TicketTypeInterface
         return false;
     }
 
-    public static function canBeSeen(Identity $identity): bool
+    public static function canBeSeen(Person $identity): bool
     {
         return $identity->hasPermissionTo('helpdesk-master');
     }
@@ -85,6 +85,6 @@ class Error implements TicketTypeInterface
 
     public static function notifyOnCreation(): array
     {
-        return Identity::allWithPermission('helpdesk-master');
+        return Person::allWithPermission('helpdesk-master');
     }
 }

@@ -10,37 +10,47 @@ import sanitizeHtml from "sanitize-html";
 import { useDropzone } from "react-dropzone";
 
 import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
-import { themeQuartz } from "ag-grid-community";
+import { RowAutoHeightModule, themeQuartz } from "ag-grid-community";
 import { ModuleRegistry, ClientSideRowModelModule, ColumnAutoSizeModule, QuickFilterModule } from 'ag-grid-community';
-import { AlumnusStatus, asyncPostWithResult, bgAndContrast, noninertiaPostRequest, postRequest } from "../Utils";
+import { AlumnusStatus, asyncPostWithResult, bgAndContrast, noninertiaPostRequest, postRequest, romanize } from "../Utils";
 import { to } from "@react-spring/web";
 import { faAddressBook, faCheck, faCirclePlus, faFileArrowUp, faPlus, faStar, faTrashCan, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Editor from "../Libs/Editor";
-ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnAutoSizeModule, QuickFilterModule]);
+ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnAutoSizeModule, RowAutoHeightModule, QuickFilterModule]);
 
 function delFromArray(arr, idx) {
     const newarr = arr.toSpliced(idx, 1)
     return newarr;
 }
 
-function StatusTooltip({ status }) {
-    if (AlumnusStatus.status[status])
-        return <div className="chip mx-1 group relative z-auto my-auto" style={bgAndContrast(AlumnusStatus.status[status].color)}>
+function StatusTooltip({ data }) {
+    if (!data) return "Aaaaaa";
+    if (data.coorte <= 0) return <div className="text-gray-500 text-sm">{romanize(data.coorte)} - {data.notes}</div>
+
+    const status = data.status;
+    return <div className="text-gray-500 text-sm leading-none flex flex-row">
+        {romanize(data.coorte)}
+        {AlumnusStatus.status[status] && <div className="chip mx-1 group relative z-auto my-auto" style={bgAndContrast(AlumnusStatus.status[status].color)}>
             {AlumnusStatus.status[status].acronym}
-            <span className="tooltip-right" style={bgAndContrast(AlumnusStatus.status[status].color)}>
+            <div className="tooltip-right" style={bgAndContrast(AlumnusStatus.status[status].color)}>
                 {AlumnusStatus.status[status].label}
-            </span>
-        </div>
-    return "";
+            </div>
+        </div>}
+    </div>
 }
 
-function AddButton({ address, to, setTo }) {
-    if (to.includes(address)) return <FontAwesomeIcon icon={faCheck} className="text-[#00CC00]" />;
-    return <FontAwesomeIcon icon={faPlus} className="icon-button" onClick={() => setTo([...to, address])} />
+function EmailsList({ emails, to, addTo }) {
+    const max = Math.max(...emails.map(e => e.primary));
+    if(emails.length == 0) return <div className="text-gray-500">Nessun indirizzo</div>;
+    return <div>
+        {emails.map(e => <div className={to.includes(e.address) ? "text-green-400" : "hover:text-primary-main cursor-pointer"} key={e.id} onClick={() => addTo(e.address)}>
+            {e.primary == max ? <FontAwesomeIcon icon={faStar} className="mr-2 text-[#f5b700]" /> : ""} {e.address}
+        </div>)}
+    </div>
 }
 
-function Rubrica({ to, setTo }) {
+function Rubrica({ to, addTo }) {
     const [open, setOpen] = useState(false);
     const rubrica = usePage().props.rubrica || [];
     const [quickFilter, setQuickFilter] = useState('');
@@ -48,24 +58,22 @@ function Rubrica({ to, setTo }) {
     const columns = [
         {
             field: 'identity', headerName: 'identity',
-            valueGetter: ({ data }) => data?.identity?.name + " " + data?.identity?.surname, filter: 'agTextColumnFilter',
-            cellRenderer: ({ value, data }) => <div className="flex flex-row items-center">{value} <StatusTooltip status={data.identity.status} /></div>
+            valueGetter: ({ data }) => data?.name + " " + data?.surname, filter: 'agTextColumnFilter',
+            cellRenderer: ({ value, data }) => <div className="flex flex-col pt-1">
+                <div className="leading-none">{value}</div>
+                <StatusTooltip data={data} />
+            </div>,
+            flex: 1
         },
         {
-            field: 'address', headerName: 'address', valueGetter: ({ data }) => data?.address, filter: 'agTextColumnFilter',
-            cellRenderer: ({ value, data }) => <span>{data.isPrimary && <FontAwesomeIcon icon={faStar} className="mr-2 text-[#f5b700]" />}{value}</span>
-        },
-        {
-            field: 'add', headerName: 'add', valueGetter: ({ data }) => data.isPrimary, filter: 'agTextColumnFilter',
-            cellRenderer: ({ value, data }) => <AddButton address={data.address} to={to} setTo={setTo} />
-        },
+            field: 'addresses', headerName: 'addresses', valueGetter: ({ data }) => JSON.stringify(data?.visible_emails), filter: 'agTextColumnFilter',
+            cellRenderer: ({ value, data }) => <EmailsList emails={data?.visible_emails || []} to={to} addTo={addTo} />,
+            flex: 1, autoHeight: true
+        }
     ]
 
     const theme = themeQuartz.withParams({
         headerHeight: 0,
-        rowBorder: false,
-        rowHoverColor: "#00000000",
-        borderColor: "#00000000",
     })
 
     return <>
@@ -97,8 +105,13 @@ function Groups({ to, setTo, setNotFound }) {
         const notfound = [];
 
         group.identities.forEach((identity) => {
-            if (identity.emails.length > 0) {
-                if (!newto.includes(identity.emails[0].address)) newto.push(identity.emails[0].address);
+            if (identity.visible_emails.length > 0) {
+                const max = Math.max(...identity.visible_emails.map(e => e.primary));
+                identity.visible_emails.forEach(e => {
+                    if (e.primary == max)
+                        if (!newto.includes(e.address)) 
+                            newto.push(e.address);
+                })
             }
             else notfound.push(identity.name + " " + identity.surname);
         });
@@ -236,9 +249,9 @@ export default function Edit() {
                     tokensList={data.to}
                     updateTokensList={(newVal) => setData('to', newVal)} />
                 <label className="error">{errors.to}</label>
-                {Object.keys(errors).map((key) => key.startsWith("to.") && <label className="error">{errors[key]}</label>)}
+                {Object.keys(errors).map((key) => key.startsWith("to.") && <label className="error" key={key}>{errors[key]}</label>)}
                 <div className="flex flex-row w-full gap-2 justify-center mb-4">
-                    <Rubrica to={data.to} setTo={(newVal) => setData('to', newVal)} />
+                    <Rubrica to={data.to} addTo={(newVal) => setData('to', [...data.to, newVal])} />
                     <Groups to={data.to} setTo={(newVal) => setData('to', newVal)} setNotFound={setNotFound} />
                 </div>
                 {notFound.length > 0 && <label className="error">Non sono stati trovati indirizzi email per: {notFound.join(", ")}</label>}
@@ -268,7 +281,7 @@ export default function Edit() {
 
                 {prevDraft?.childrens?.length > 0 && <label>
                     Questa newsletter è stata spezzata per l'invio e ha originato le newsletter
-                    {prevDraft.childrens.map(ch => <Link href={route('newsletter.edit', { id: ch.id })} className="ml-2" id={ch.id}>#{ch.id}</Link>)}
+                    {prevDraft.childrens.map(ch => <Link href={route('newsletter.edit', { id: ch.id })} className="ml-2" key={ch.id}>#{ch.id}</Link>)}
                 </label>}
                 {prevDraft?.parent && <label>
                     Questa newsletter proviene, essento stata spezzata per l'invio, dalla newsletter originale
