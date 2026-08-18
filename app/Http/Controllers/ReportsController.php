@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
+use App\Models\Person;
 use App\Models\Ratification;
 use App\Utils\TemplatedPdfGenerator;
 use Carbon\Carbon;
@@ -22,7 +23,6 @@ class ReportsController extends Controller
         $options = [
             ['name' => 'Ratifiche in attesa', 'url' => route('ratifications.export'), 'inertia' => FALSE, 'enabled' => Auth::user()->can('view', Ratification::class)],
             ['name' => 'Variazioni libri societari', 'url' => route('reports.members_variations'), 'inertia' => TRUE, 'enabled' => Auth::user()->can('view', Ratification::class)],
-            // ['name' => 'Documents', 'url' => route('members')],
         ];
 
         $feasible_options = array_values(array_filter($options, function ($opt) {
@@ -42,18 +42,17 @@ class ReportsController extends Controller
         ]);
     }
 
-    public function members_variations_generate(Request $request)
+    public function members_variations_generate(Request $request, string $from, string $to, string $statuses)
     {
         $this->authorize('view', Ratification::class);
 
-        $statuses = array_values(array_intersect(Alumnus::require_ratification, explode('.', $request->statuses)));
+        $from = Carbon::parse($from);
+        $to = Carbon::parse($to);
+        $statuses = array_values(array_intersect(Alumnus::require_ratification, explode(';', $request->statuses)));
 
         if (count($statuses) < 1) {
             return back()->with('notistack', ['error', 'Selezionare almeno uno stato!']);
         }
-
-        $from = Carbon::createFromTimestamp($request->from / 1000);
-        $to = Carbon::createFromTimestamp($request->to / 1000);
 
         if ($from > $to) {
             return back()->with('notistack', ['error', 'La data di inizio non puè essere successiva alla data di fine!']);

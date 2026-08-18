@@ -4,9 +4,10 @@ import { Head, Link, usePage } from "@inertiajs/react";
 import { Documents } from "../Utils";
 import { faCirclePlus, faFilePdf, faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { NurDate } from "../Libs/DateEditor";
 
 function DocumentItem(document, isAttachment = false) {
-    let date = new Date(document.date);
+    let date = new NurDate(document.date);
 
     return (
         <div key={document.id}
@@ -16,11 +17,11 @@ function DocumentItem(document, isAttachment = false) {
                 {!isAttachment &&
                     <div className="flex flex-col items-center mr-4">
                         <span className="text-3xl font-bold">
-                            {date.toLocaleDateString('it-IT', { 'day': '2-digit' })}.
-                            {date.toLocaleDateString('it-IT', { 'month': '2-digit' })}
+                            {date.dayString()}.
+                            {date.monthString()}
                         </span>
                         <span className="font-bold">
-                            {date.toLocaleDateString('it-IT', { 'year': 'numeric' })}
+                            {date.yearString()}
                         </span>
                     </div>
                 }
@@ -31,7 +32,7 @@ function DocumentItem(document, isAttachment = false) {
                         {" " + document.dynamic_permissions.filter(dp => dp.role).map(dp => dp.role.common_name).join(", ")}
                         {document.note && " - Nota: " + document.note}
                     </span>}
-                    <span className="text-gray-500 text-sm">Caricato il {new Date(document.created_at).toLocaleDateString('it-IT', { 'dateStyle': 'long' })} da {document.author?.name} {document.author?.surname}</span>
+                    <span className="text-gray-500 text-sm">Caricato il {new NurDate(document.created_at).toLiteral()} da {document.author?.name} {document.author?.surname}</span>
                 </div>
                 {document.can_view && document.can_edit && <Link href={route('board.edit', { document: document.id })} className="">
                     <FontAwesomeIcon icon={faPen} className="text-4xl !p-4 icon-button" />

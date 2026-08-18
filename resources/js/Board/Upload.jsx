@@ -2,23 +2,21 @@ import { Head, useForm, usePage } from "@inertiajs/react";
 import { AlumnusStatus, Documents, romanize } from "../Utils";
 import IdSelector from "./IdSelector";
 import IdSelector_Attachment from "./IdSelector_Attachment";
-import Datepicker from "tailwind-datepicker-react"
 import { useState } from "react";
 import Backdrop from "../Layout/Backdrop";
 import ReactSwitch from "react-switch";
 import Select from 'react-select';
+import { NurDate, NurDatePicker } from "../Libs/DateEditor";
 
 export default function Upload() {
     const roles = usePage().props.roles;
     const rats = usePage().props.open_rats;
     const parentable = usePage().props.parentable.map(p => ({ value: p.id, label: p.identifier }));
 
-    const [datePickerOpen, setDatePickerOpen] = useState(false);
-
     const { data, setData, post, processing, errors, progress, transform } = useForm({
         roles: [],
         identifier: '',
-        date: new Date(),
+        date: new NurDate(),
         prehandle: '',
         note: '',
         ratifications: [],
@@ -57,15 +55,16 @@ export default function Upload() {
     const submit = (e) => {
         e.preventDefault();
 
-        data.prehandle = data.date.toLocaleDateString('it-IT', { 'year': 'numeric' });
+        data.prehandle = data.date.yearString();
         let months = ['A', 'B', 'C', 'D', 'E', 'H', 'L', 'M', 'P', 'R', 'S', 'T'];
-        data.prehandle = data.prehandle + months[data.date.toLocaleDateString('it-IT', { 'month': 'numeric' }) - 1];
+        data.prehandle = data.prehandle + months[data.date.month() - 1];
 
         post(route('board.add'));
     }
 
     transform((data) => ({
         ...data,
+        date: data.date.toJSON(),
         attached_to_id: (data.isAttachment && data.attachedTo) ? data.attachedTo.value : null
     }))
 
@@ -104,7 +103,7 @@ export default function Upload() {
 
             <label className="error">{errors.roles}</label>
             <label>Data di redazione</label>
-            <Datepicker classNames='w-full' options={{ maxDate: new Date(), language: 'it', theme: { input: '!text-black' } }} onChange={(date) => setData('date', date)} show={datePickerOpen} setShow={setDatePickerOpen} />
+            <NurDatePicker classNames='w-full' value={data.date} onChange={(date) => setData('date', date)} />
             <label className="error">{errors.date}</label>
             <label>Note</label>
             <input type="text" value={data.note} onChange={(e) => setData('note', e.target.value)} />

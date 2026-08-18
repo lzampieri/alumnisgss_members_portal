@@ -76,7 +76,6 @@ class DocumentsController extends Controller
             ]
         ]);
 
-
         $validated['author_id'] = Auth::user()->id;
         $validated['protocol'] = $validated['prehandle'];
 

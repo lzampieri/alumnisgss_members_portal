@@ -1,19 +1,17 @@
 import { useEffect, useState } from 'react';
 import Select from 'react-select';
-import Datepicker from "tailwind-datepicker-react"
+import { NurDate, NurDatePicker } from '../Libs/DateEditor';
 
 export default function IdSelector({ onChange, prevIdf }) {
     const [progr, setProgr] = useState('');
-    const [year, setYear] = useState(new Date().getFullYear());
+    const [year, setYear] = useState(new NurDate().year());
     const [other, setOther] = useState(prevIdf || '');
-    const [date, setDate] = useState(new Date());
-
-    const [datePickerOpen, setDatePickerOpen] = useState(false);
+    const [date, setDate] = useState(new NurDate());
 
     const options = [
         { value: 'Decreto', label: 'Decreto', yearAndProgr: true, parser: (progr, year, date, other) => 'Decreto ' + progr + '/' + year },
         { value: 'Verbale CdA', label: 'Verbale CdA', date: true, parser: (progr, year, date, other) => 'Verbale Consiglio di Amministrazione ' + date.toLocaleDateString('it-IT', { year: 'numeric', month: '2-digit', day: '2-digit' }) },
-        { value: 'Verbale Assemblea dei Soci', label: 'Verbale Assemblea dei Soci', date: true, parser: (progr, year, date, other) => 'Verbale Assemblea dei Soci ' + date.toLocaleDateString('it-IT', { year: 'numeric', month: '2-digit', day: '2-digit' }) },
+        { value: 'Verbale Assemblea dei Soci', label: 'Verbale Assemblea dei Soci', date: true, parser: (progr, year, date, other) => 'Verbale Assemblea dei Soci ' + date.toNiceString() },
         { value: 'Altro', label: 'Altro', other: true, parser: (progr, year, date, other) => other },
     ]
 
@@ -27,10 +25,10 @@ export default function IdSelector({ onChange, prevIdf }) {
             {selected.yearAndProgr && <>
                 <input className='grow' type='text' placeholder='Progressivo' value={progr} onChange={(e) => setProgr(e.target.value)} />
                 <span>/</span>
-                <input className='grow' type='number' value={year} onChange={(e) => setYear(e.target.value)} min={2000} max={new Date().getFullYear()} />
+                <input className='grow' type='number' value={year} onChange={(e) => setYear(e.target.value)} min={2000} max={new NurDate().year()} />
             </>}
             {selected.date && <>
-                <Datepicker classNames='w-full md:w-auto grow' options={{ maxDate: new Date(), language: 'it', theme: { input: '!text-black' } }} onChange={setDate} show={datePickerOpen} setShow={setDatePickerOpen} />
+                <NurDatePicker classNames='w-full md:w-auto grow' value={date} onChange={setDate} />
             </>}
             {selected.other && <>
                 <input className='grow' type='text' placeholder='Identificativo' value={other} onChange={(e) => setOther(e.target.value)} />

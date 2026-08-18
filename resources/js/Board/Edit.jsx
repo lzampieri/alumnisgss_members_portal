@@ -1,7 +1,6 @@
 import { Head, useForm, usePage } from "@inertiajs/react";
 import { AlumnusStatus, Documents, romanize } from "../Utils";
 import IdSelector from "./IdSelector";
-import Datepicker from "tailwind-datepicker-react"
 import { useState } from "react";
 import Backdrop from "../Layout/Backdrop";
 import Dialog from "../Layout/Dialog";
@@ -12,6 +11,7 @@ import DeleteRatification from "./DeleteRatification";
 import RolesChips from "../Permissions/RolesChips";
 import ReactSwitch from "react-switch";
 import Select from 'react-select';
+import { NurDate, NurDatePicker } from "../Libs/DateEditor";
 
 export default function Edit() {
     const prevDoc = usePage().props.document;
@@ -19,23 +19,19 @@ export default function Edit() {
     const rats = prevDoc.grouped_ratifications;
     const parentable = usePage().props.parentable.map(p => ({ value: p.id, label: p.identifier }));
 
-    console.log(prevDoc)
-
     const { data, setData, post, processing, errors, isDirty, transform } = useForm({
         identifier: prevDoc.identifier,
         roles: prevDoc.dynamic_permissions.map(dp => dp.role_id),
-        date: new Date(prevDoc.date),
+        date: new NurDate(prevDoc.date),
         note: prevDoc.note || "",
         isAttachment: !!prevDoc.attached_to_id,
         attachedTo: prevDoc.attached_to ? { value: prevDoc.attached_to.id, label: prevDoc.attached_to.identifier } : null
     })
 
-    const [datePickerOpen, setDatePickerOpen] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
     const submit = (e) => {
         e.preventDefault();
-        console.log(data)
         post(route('board.edit', { document: prevDoc.id }));
     }
 
@@ -47,8 +43,6 @@ export default function Edit() {
         ...data,
         attached_to_id: ( data.isAttachment && data.attachedTo ) ? data.attachedTo.value : null
     }))
-
-    console.log(errors)
 
     return (
         <div className="flex flex-col w-full md:w-3/5">
@@ -79,7 +73,7 @@ export default function Edit() {
                 }
                 <label className="error">{errors.roles}</label>
                 <label>Data di redazione</label>
-                <Datepicker classNames='w-full' options={{ defaultDate: data.date, maxDate: new Date(), language: 'it', theme: { input: '!text-black' } }} onChange={(date) => setData('date', date)} show={datePickerOpen} setShow={setDatePickerOpen} />
+                <NurDatePicker classNames='w-full' value={data.date} onChange={(date) => setData('date', date)} />
                 <label className="error">{errors.date}</label>
                 <label>Note</label>
                 <input type="text" value={data.note} onChange={(e) => setData('note', e.target.value)} />

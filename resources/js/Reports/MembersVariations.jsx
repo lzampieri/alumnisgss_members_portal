@@ -1,11 +1,11 @@
 
 
-import Datepicker from "tailwind-datepicker-react"
 import { useState } from "react";
 import { Head, usePage } from "@inertiajs/react";
 import { AlumnusStatus } from "../Utils";
 import { faArrowsLeftRightToLine, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { NurDate, NurDatePicker } from "../Libs/DateEditor";
 
 function YearPicker({ year, setYear }) {
     return (
@@ -31,8 +31,8 @@ function SelectByYear({ sendPostRequest }) {
     }
     const send = () => {
         sendPostRequest(
-            new Date(from, 0),
-            new Date(new Date(to + 1, 0) - 1)
+            new NurDate(from, 1, 1),
+            new NurDate(to, 12, 31)
         )
     }
 
@@ -48,22 +48,15 @@ function SelectByYear({ sendPostRequest }) {
 }
 
 function SelectByDate({ sendPostRequest }) {
-    const [from, setFrom] = useState(new Date(new Date().getFullYear(), 0));
-    const [to, setTo] = useState(new Date(new Date(new Date().getFullYear() + 1, 0) - 1));
-
-    const setToRealigner = (newDate) => {
-        setTo(new Date(newDate - 1 + 24 * 60 * 60 * 1000))
-    }
-
-    const [datePickerOpenFrom, setDatePickerOpenFrom] = useState(false);
-    const [datePickerOpenTo, setDatePickerOpenTo] = useState(false);
+    const [from, setFrom] = useState(new NurDate(new Date().getFullYear(), 1, 1));
+    const [to, setTo] = useState(new NurDate(new Date().getFullYear(), 12, 31));
 
     return <>
         <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
-            <Datepicker classNames='w-full' options={{ defaultDate: from, language: 'it', theme: { input: '!text-black' } }} onChange={(date) => setFrom(date)} show={datePickerOpenFrom} setShow={setDatePickerOpenFrom} />
+            <NurDatePicker classNames='w-full' value={from} onChange={(date) => setFrom(date)} />
             <FontAwesomeIcon icon={faArrowsLeftRightToLine} className="block rotate-90 md:hidden" />
             <FontAwesomeIcon icon={faArrowsLeftRightToLine} className="hidden md:block" />
-            <Datepicker classNames='w-full' options={{ defaultDate: to, language: 'it', theme: { input: '!text-black' } }} onChange={(date) => setToRealigner(date)} show={datePickerOpenTo} setShow={setDatePickerOpenTo} />
+            <NurDatePicker classNames='w-full' value={to} onChange={(date) => setTo(date)} />
         </div>
         <div className="button w-fit" onClick={() => sendPostRequest(from, to)}>Genera</div>
     </>
@@ -85,9 +78,9 @@ export default function MembersVariations() {
     const sendPostRequest = (from, to) => {
         window.location = route('reports.members_variations.generate',
             {
-                statuses: statuses.join('.'),
-                from: from.getTime() - from.getTimezoneOffset() * 60000,
-                to: to.getTime() - to.getTimezoneOffset() * 60000
+                statuses: statuses.join(';') || "None",
+                from: from.toJSON(),
+                to: to.toJSON()
             });
     }
 

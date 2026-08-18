@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
+use App\Models\Person;
 use App\Models\Ratification;
 use App\Utils\TemplatedPdfGenerator;
 use Illuminate\Http\Request;
@@ -36,9 +37,9 @@ class RatificationController extends Controller
         $this->authorize('edit', Ratification::class);
 
         return Inertia::render('Ratifications/Add', [
-            'alumni' => Alumnus::with('ratifications')->get(),
+            'alumni' => Person::where('coorte', '>', 0)->with('ratifications')->get(),
             'possibleStatus' => Alumnus::status,
-            'alumnus' => array_key_exists('alumnus', $_GET) ? Alumnus::find($_GET['alumnus']) : null
+            'alumnus' => array_key_exists('alumnus', $_GET) ? Person::find($_GET['alumnus']) : null
         ]);
     }
 
@@ -48,7 +49,7 @@ class RatificationController extends Controller
 
         $validated = $request->validate([
             'alumni_id' => 'required|array',
-            'alumni_id.*' => 'exists:alumni,id',
+            'alumni_id.*' => 'exists:people,id',
             'required_state' => 'required|in:' . implode(',', Alumnus::status),
             'rat_force' => 'required|boolean'
         ]);
@@ -61,7 +62,7 @@ class RatificationController extends Controller
         $reqState = $validated['required_state'];
 
         foreach ($validated['alumni_id']  as $al_id) {
-            $alumnus = Alumnus::find($al_id);
+            $alumnus = Person::find($al_id);
 
             // Check that the alumnus does not already have the required state
             if ($alumnus->status == $reqState) {
@@ -88,7 +89,7 @@ class RatificationController extends Controller
             $newrats++;
         }
 
-        $output = ["Helloo"];
+        $output = ["Fatto"];
         if ($newrats > 0) $output[] = $newrats . " ratifiche inserite";
         if ($updated > 0) $output[] = $updated . " alumni aggiornati";
         if ($rejected > 0) $output[] = $rejected . " ratifiche già presenti";
@@ -101,7 +102,7 @@ class RatificationController extends Controller
 
     public function delete_post(Request $request, Ratification $rat)
     {
-        $this->authorize('view', Ratification::class);
+        $this->authorize('edit', Ratification::class);
 
         $rat->delete();
 

@@ -9,5 +9,5 @@ Route::prefix('/reports')->middleware('auth')->group( function () {
 
     // Members variations
     Route::get('/members_variations', [ ReportsController::class, 'members_variations' ])->name('reports.members_variations');
-    Route::get('/members_variations/{from}/{to}/{statuses?}', [ ReportsController::class, 'members_variations_generate' ])->name('reports.members_variations.generate');
+    Route::get('/members_variations/{from}/{to}/{statuses}', [ ReportsController::class, 'members_variations_generate' ])->name('reports.members_variations.generate');
 });
