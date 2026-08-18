@@ -30,8 +30,11 @@ class ResourceController extends Controller
 
             $params['resource']->makeHidden('children');
 
-            if ($params['resource']->canView) {
+            if ($params['resource']->canEdit) {
                 $params['resource']->makeVisible('access_token');
+                $params['roles'] = Role::where('name', '!=', 'webmaster')->orderBy('id')->get();
+                $params['allowedFormats'] = File::ALLOWED_FORMATS;
+                $params['allowedImagesFormats'] = File::ALLOWED_IMAGES_FORMATS;
             }
         }
 
@@ -75,15 +78,13 @@ class ResourceController extends Controller
 
         $params['resources'] = array_values($prequery->with(['permalinks'])->withCount(['children'])->get()->filter->canView->toArray());
 
-
-        $params['roles'] = Role::where('name', '!=', 'webmaster')->orderBy('id')->get();
+        // If the 
         $params['canCreate'] = Auth::check() && Auth::user()->can('create', Resource::class);
+        if( $params['canCreate'] ) {
+            $params['roles'] = Role::where('name', '!=', 'webmaster')->orderBy('id')->get();
+            $params['possibleParentsForNew'] = $this->getPossibleParentsList();
+        }
         $params['canSeeArchive'] = Auth::check() && Auth::user()->can('see_archive', Resource::class);
-
-        $params['allowedFormats'] = File::ALLOWED_FORMATS;
-        $params['allowedImagesFormats'] = File::ALLOWED_IMAGES_FORMATS;
-
-        $params['possibleParentsForNew'] = $this->getPossibleParentsList();
 
         return $params;
     }
@@ -119,7 +120,7 @@ class ResourceController extends Controller
 
         // Check the current user have the permissions to edit the resource
         $current_user = Auth::user();
-        if (!$current_user->hasRole(Role::findByName('webmaster'))) {
+        if (!$current_user->hasPermissionTo('resources-edit-all')) {
             $current_roles = $current_user->getAllRoles()->pluck('id')->toArray();
             if (count(array_intersect($current_roles, $validated['canEdit'])) == 0) {
                 return back()->withErrors(['canEdit' => 'Stai creando una risorsa che non avresti i permessi di modificare. Aggiungi un tuo ruolo.'])->withInput();
@@ -160,9 +161,19 @@ class ResourceController extends Controller
 
         $this->authorize('edit', $res);
 
-
         $new_roles = $validated['newList'];
         $type = $validated['type'];
+
+        if( $type == 'edit' ) {
+            // Check the current user have the permissions to edit the resource
+            $current_user = Auth::user();
+            if (!$current_user->hasPermissionTo('resources-edit-all')) {
+                $current_roles = $current_user->getAllRoles()->pluck('id')->toArray();
+                if (count(array_intersect($current_roles, $new_roles)) == 0) {
+                    return back()->with(['notistack' => ['error','Stai togliendo a te stesso i permessi di modificare questa risorsa. Aggiungi un tuo ruolo.']]);
+                }
+            }
+        }
 
         $current_roles = $res->dynamicPermissions()->where('type', $type)->get()->pluck('role_id')->toArray();
 
@@ -221,6 +232,17 @@ class ResourceController extends Controller
         ]);
 
         $res = Resource::find($validated['resourceId']);
+        
+        if( $validated['type'] == 'edit' ) {
+            // Check the current user have the permissions to edit the resource
+            $current_user = Auth::user();
+            if (!$current_user->hasPermissionTo('resources-edit-all')) {
+                $current_roles = $current_user->getAllRoles()->pluck('id')->toArray();
+                if (count(array_intersect($current_roles, $validated['newList'])) == 0) {
+                    return back()->with(['notistack' => ['error','Stai togliendo a te stesso i permessi di modificare questa risorsa. Aggiungi un tuo ruolo.']]);
+                }
+            }
+        }
 
         $count = $this->update_permissions_all_recursive($res, $validated['newList'], $validated['type']);
 

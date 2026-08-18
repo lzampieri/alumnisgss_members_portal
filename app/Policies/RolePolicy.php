@@ -16,7 +16,7 @@ class RolePolicy
     /**
      * Determine whether the person can view the model.
      *
-     * @param  \Illuminate\Support\Facades\Auth\Person  $user
+     * @param  \App\Models\Person  $user
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Auth\Access\Response|bool
      */
@@ -36,7 +36,7 @@ class RolePolicy
     /**
      * Determine whether the person can create models.
      *
-     * @param  \Illuminate\Support\Facades\Auth\Person  $user
+     * @param  \App\Models\Person  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function create(Person $user)
@@ -48,7 +48,7 @@ class RolePolicy
     /**
      * Determine whether the person can update the model.
      *
-     * @param  \Illuminate\Support\Facades\Auth\Person  $user
+     * @param  \App\Models\Person  $user
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Auth\Access\Response|bool
      */
@@ -62,7 +62,7 @@ class RolePolicy
     /**
      * Determine whether the person can delete the model.
      *
-     * @param  \Illuminate\Support\Facades\Auth\Person  $user
+     * @param  \App\Models\Person  $user
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Auth\Access\Response|bool
      */

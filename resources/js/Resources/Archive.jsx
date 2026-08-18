@@ -10,7 +10,6 @@ import { postRequest } from "../Utils";
 import Backdrop from "../Layout/Backdrop";
 import Select from 'react-select';
 import ParentSelector from "./ParentSelector";
-import MagicLink from "./MagicLink";
 import computeResourceLink from "./computeResourceLink";
 import Drawer from "./Drawer";
 import { faArchive, faChevronRight } from "@fortawesome/free-solid-svg-icons";

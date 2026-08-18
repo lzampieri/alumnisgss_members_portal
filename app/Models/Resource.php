@@ -45,7 +45,7 @@ class Resource extends Model
             }
         }
 
-        return DynamicPermission::UserCanViewPermissable($this) || DynamicPermission::PersonCanEditPermissable($this);
+        return DynamicPermission::PersonCanViewPermissable($this) || DynamicPermission::PersonCanEditPermissable($this);
     }
     public function getCanEditAttribute()
     {
@@ -94,8 +94,8 @@ class Resource extends Model
         if (!$parent || !$parent->canView) return null;
         return $parent->only(['id', 'title', 'archived', 'permalinks', 'children_count']);
     }
-    
-    
+
+
     public function logify()
     {
         return "Resource " . $this->title . ": " . json_encode($this->content);

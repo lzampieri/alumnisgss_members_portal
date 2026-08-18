@@ -42,6 +42,10 @@ class FilePolicy
                     if ($block['fileHandle'] == $file->handle)
                         return true;
                 }
+                if ($block['type'] == 'pdf') {
+                    if ($block['fileHandle'] == $file->handle)
+                        return true;
+                }
                 if ($block['type'] == 'image') {
                     if ($block['imageHandle'] == $file->handle)
                         return true;

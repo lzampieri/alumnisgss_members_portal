@@ -9,8 +9,6 @@ use App\Models\DynamicPermission;
 use App\Models\File;
 use App\Models\Person;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Http\Client\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ResourcePolicy
 {
@@ -19,7 +17,7 @@ class ResourcePolicy
     /**
      * Determine whether the person can view the model.
      *
-     * @param  \Illuminate\Support\Facades\Auth\Person  $user
+     * @param  \App\Models\Person  $user
      * @param  \App\Models\Resource  $resource
      * @return \Illuminate\Auth\Access\Response|bool
      */
@@ -50,7 +48,7 @@ class ResourcePolicy
     /**
      * Determine whether the person can create models.
      *
-     * @param  \Illuminate\Support\Facades\Auth\Person  $user
+     * @param  \App\Models\Person  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function create(Person $user)
@@ -62,7 +60,7 @@ class ResourcePolicy
     /**
      * Determine whether the person can see archived models.
      *
-     * @param  \Illuminate\Support\Facades\Auth\Person  $user
+     * @param  \App\Models\Person  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function see_archive(Person $user)
@@ -73,7 +71,7 @@ class ResourcePolicy
     /**
      * Determine whether the person can update the model.
      *
-     * @param  \Illuminate\Support\Facades\Auth\Person  $user
+     * @param  \App\Models\Person  $user
      * @param  \App\Models\Resource  $resource
      * @return \Illuminate\Auth\Access\Response|bool
      */
@@ -85,7 +83,7 @@ class ResourcePolicy
     /**
      * Determine whether the person can delete the model.
      *
-     * @param  \Illuminate\Support\Facades\Auth\Person  $user
+     * @param  \App\Models\Person  $user
      * @param  \App\Models\Resource  $resource
      * @return \Illuminate\Auth\Access\Response|bool
      */
