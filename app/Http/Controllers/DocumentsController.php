@@ -320,7 +320,7 @@ class DocumentsController extends Controller
         $this_version = array_search($file->id, $all_versions) + 1;
         $latest = ($this_version == count($all_versions));
 
-        \define('K_PATH_FONTS', substr( app_path(), 0, -3) . "vendor\\tecnickcom\\tc-lib-pdf-font\\target\\fonts");
+        \define('K_PATH_FONTS', substr( app_path(), 0, -3) . "vendor/tecnickcom/tc-lib-pdf-font/target/fonts");
 
         $pdf = new \Com\Tecnick\Pdf\Tcpdf();
 

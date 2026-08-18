@@ -167,7 +167,7 @@ class WebmasterController extends Controller
     {
         $this->authorizeRole('webmaster'); // Todo add specific authorization
 
-        $alumnus = Alumnus::whereIn('status', Alumnus::public_status)
+        $alumnus = Person::whereIn('status', Alumnus::public_status)
             ->where('coorte', '>', 0)
             ->get();
 
