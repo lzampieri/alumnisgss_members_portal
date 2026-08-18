@@ -6,6 +6,7 @@ use App\Models\Person;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 use JsonSerializable;
+use Illuminate\Support\Facades\Auth;
 
 interface TicketTypeInterface extends JsonSerializable
 {
@@ -26,5 +27,5 @@ interface TicketTypeInterface extends JsonSerializable
     public function actionList(): array;
     public function doAction(string $action): ?string;
 
-    public static function notifyOnCreation(): array;
+    public static function notifyOnCreation(): iterable;
 };

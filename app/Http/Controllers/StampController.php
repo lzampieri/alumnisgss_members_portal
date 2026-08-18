@@ -2,18 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Alumnus;
-use App\Models\External;
+use App\Models\Person;
 use App\Models\Stamp;
 use App\Models\StampTypes;
+use App\Utils\Settings;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use mcaskill\array_group_by;
-
-const EXPECTED_HOURS = 6; // TODO replace to a user-related field
 
 class StampController extends Controller
 {
@@ -37,7 +33,6 @@ class StampController extends Controller
         if (Auth::user()->can('viewOnline', Stamp::class)) {
             $data['currentlyOnline'] = Stamp::whereDate('date', Carbon::now())
                 ->whereNull('clockout')->with('employee')->get();
-            // ->only(['employee','type']);
         }
 
         return Inertia::render('Clockings/Clocker', $data);
@@ -155,7 +150,7 @@ class StampController extends Controller
             return $carry + $item['hours'];
         }, 0);
 
-        return $total > EXPECTED_HOURS + 0.6;
+        return $total > Settings::get('expected_hours') + 0.6;
     }
 
     public function toomuchtime()
@@ -169,7 +164,7 @@ class StampController extends Controller
             'Clockings/TooMuchTime',
             [
                 'stamps' => Auth::user()->stamps()->whereDate('date', Carbon::now())->whereNotNull('clockout')->where('type', 'work')->with('acpttickets', 'opentickets')->get(),
-                'expectedHours' => EXPECTED_HOURS
+                'expectedHours' => Settings::get('expected_hours')
             ]
         );
     }
@@ -286,10 +281,7 @@ class StampController extends Controller
         };
 
         if (Auth::user()->can('viewAny', Stamp::class)) {
-            $data = array_merge(
-                Alumnus::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter, 'stamps.acpttickets', 'stamps.opentickets'])->get()->all(),
-                External::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter, 'stamps.acpttickets', 'stamps.opentickets'])->get()->all(),
-            );
+            $data = Person::whereHas('stamps', $stampsFilter)->with(['stamps' => $stampsFilter, 'stamps.acpttickets', 'stamps.opentickets'])->get()->all();
         } else {
             $data = [
                 Auth::user()->load(['stamps' => $stampsFilter, 'stamps.acpttickets', 'stamps.opentickets']),
@@ -300,7 +292,7 @@ class StampController extends Controller
             $ident->stamps_grouped = $ident->stamps->groupBy(function ($item, $key) {
                 return $item->date->day;
             });
-            $ident->mayOpenTicket = $ident->is(Auth()->user()->identity);
+            $ident->mayOpenTicket = $ident->is(Auth::user());
             $ident = $ident->only(['id', 'surname', 'name', 'stamps_grouped', 'mayOpenTicket']);
         });
 

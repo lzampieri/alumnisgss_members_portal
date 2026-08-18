@@ -7,6 +7,7 @@ use App\Models\Stamp;
 use App\Models\Ticket;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EditStamp implements TicketTypeInterface
 {
@@ -77,7 +78,7 @@ class EditStamp implements TicketTypeInterface
             if (!$it->stamp)
                 return null;
 
-            if (!Auth()->user()->can('edit', Stamp::class) && !$it->stamp->employee->is(Auth()->user()->identity))
+            if (!Auth()->user()->can('edit', Stamp::class) && !$it->stamp->employee->is(Auth::user()))
                 return null;
 
             if ($it->stamp->clockin) {
@@ -126,7 +127,7 @@ class EditStamp implements TicketTypeInterface
     {
         $actions = [];
         if ($this->ticket->status == 'open') {
-            if ($this->ticket->author()->is(Auth()->user()->identity))
+            if ($this->ticket->author()->is(Auth::user()))
                 $actions['retire'] = 'Ritira richiesta';
             if (Auth()->user()->can('edit', Stamp::class)) {
                 $actions['accept'] = 'Accetta variazione orari';
@@ -139,7 +140,7 @@ class EditStamp implements TicketTypeInterface
 
     public function doAction(string $action): ?string
     {
-        if (($action == 'retire') && $this->ticket->author()->is(Auth()->user()->identity)) {
+        if (($action == 'retire') && $this->ticket->author()->is(Auth::user())) {
             $this->ticket->status = 'retired';
             $this->ticket->save();
         }
@@ -163,7 +164,7 @@ class EditStamp implements TicketTypeInterface
         return null;
     }
 
-    public static function notifyOnCreation(): array
+    public static function notifyOnCreation(): iterable
     {
         return Person::allWithPermission('helpdesk-master');
     }

@@ -19,7 +19,7 @@ class AuthLev2
      */
     public function handle(Request $request, Closure $next)
     {
-        if( !Auth::check() || !Auth::user()->lev2_loggedin() ) {
+        if( !Auth::check() || !Auth::user()->lev2_logged_in ) {
             $request->session()->put('url.intended', url()->full());
             return Inertia::location(route('auth.login_lv2.google'));
         }

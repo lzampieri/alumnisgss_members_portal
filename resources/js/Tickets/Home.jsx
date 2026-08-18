@@ -62,6 +62,7 @@ export default function Home() {
             getRows: async (params) => {
                 let page = Math.floor(params.startRow / perPage)
                 let response = await fetch(route('helpdesk.list_getrows', { perPage: perPage, page: page }));
+                console.log(response)
                 if (response.ok) {
                     let data = await response.json();
                     params.successCallback(data.data, data.total)

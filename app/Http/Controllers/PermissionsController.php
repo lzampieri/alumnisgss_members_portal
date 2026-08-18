@@ -45,6 +45,19 @@ class PermissionsController extends Controller
             [...array_map(fn($s) => Alumnus::AlumnusStatusLabels[$s], Alumnus::public_status), 'Tutti', ...$position_defined_roles]
         ];
     }
+    
+    public static function getAutomaticType(Role $role)
+    {
+        if ($role->name == 'everyone')
+            return 'everyone';
+
+        if(in_array($role->name, Alumnus::public_status)) return 'status';
+
+        $position_defined_roles = Position::select('type')->distinct()->get()->pluck('type')->toArray();
+        if(in_array($role->name, $position_defined_roles)) return 'position';
+
+        return 'unknown';
+    }
 
     public static function verify()
     {

@@ -81,22 +81,6 @@ class WebmasterController extends Controller
     {
 
         try {
-            // $validated = $request->validate([
-            //     'file' => 'required',
-            //     'key' => 'required',
-            // ]);
-
-            // $key = base64_decode($validated['key']);
-            // $encrypter = new Encrypter($key, 'AES-256-CBC');
-
-            // $content = $validated['file']->get();
-            // $filename = $validated['file']->getClientOriginalName();
-
-            // $output =  $encrypter->decryptString($content);
-
-            // return response()->streamDownload(function () use ($output) {
-            //     echo $output;
-            // }, $filename . "_dec");
 
 
             $validated = $request->validate([

@@ -133,10 +133,13 @@ class RolesController extends Controller
             $role->load(['permissableViaDynamicPermissions', 'permissableViaDynamicPermissions.role']);
 
             if ($role->canView)
-                $role->identities = Alumnus::role($role)->get()->concat(External::role($role)->get());
+                $role->identities = Person::role($role)->get();
 
             if ($role->canEdit)
-                $people = Alumnus::get()->concat(External::get());
+                $people = Person::all()->filter->canView;
+
+            if ($role->is_automatic)
+                $role['type'] = PermissionsController::getAutomaticType($role);
         }
 
         return Inertia::render('Roles/Manage', ['roles' => $roles, 'role' => $role, 'people' => $people, 'canCreate' => Auth::user()->can('create', Role::class)]);

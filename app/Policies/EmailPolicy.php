@@ -2,9 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Alumnus;
 use App\Models\Email;
-use App\Models\External;
 use App\Models\Person;
 use Illuminate\Auth\Access\HandlesAuthorization;
 

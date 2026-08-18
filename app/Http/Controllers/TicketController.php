@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Ticket;
 use App\Models\TicketComment;
-use App\Models\TicketTypes\TicketTypeInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -56,7 +55,7 @@ class TicketController extends Controller
         return Inertia::render(
             'Tickets/Add',
             [
-                'author' => Auth()->user()->identity->surnameAndName(),
+                'author' => Auth::user()->surnameAndName(),
                 'type' => $type,
                 'name' => $tti->commonName(),
                 'fieldList' => $tti->fieldList(),
@@ -77,7 +76,7 @@ class TicketController extends Controller
 
         $params = $tti->validateInput($request);
 
-        $newTicket = Auth()->user()->identity->authoredTickets()->create([
+        $newTicket = Auth::user()->authoredTickets()->create([
             'type' => $type,
             'params' => $params
         ]);
@@ -88,9 +87,9 @@ class TicketController extends Controller
 
         $message = "<b>È stato inserita una nuova richiesta nel portale soci</b>\n";
         $message .= "Ticket  #" . $newTicket->id . " - " . call_user_func(Ticket::fullName($type) . "::commonName") . "\n";
-        $message .= "Creato da " . Auth()->user()->identity->surnameAndName() . "\n\n";
+        $message .= "Creato da " . Auth::user()->surnameAndName() . "\n\n";
 
-        foreach ( $newTicket->instance->fieldList() as $key => $field)
+        foreach ($newTicket->instance->fieldList() as $key => $field)
             $message .= "<i>" . $field['label'] . "</i>\n" . $field['currentValue'] . "\n\n";
 
         $message .= "<a href='" . route('ticket.view', $newTicket) . "'>Visualizza e rispondi alla richiesta</a>\n";
@@ -134,7 +133,7 @@ class TicketController extends Controller
         $newComment = new TicketComment([
             'content' => $validated['content']
         ]);
-        $newComment->author()->associate(Auth()->user()->identity);
+        $newComment->author()->associate(Auth::user());
         $newComment->ticket()->associate($ticket);
         $newComment->save();
 
@@ -142,7 +141,7 @@ class TicketController extends Controller
         $message .= "Ticket  #" . $ticket->id . " - " . $ticket->instance->commonName() . "\n";
         $message .= $ticket->instance->jsonSerialize()['subject'] . "\n\n";
 
-        $message .= "<i>Commento di " . Auth()->user()->identity->surnameAndName() . "</i>\n";
+        $message .= "<i>Commento di " . Auth::user()->surnameAndName() . "</i>\n";
         $message .= $validated['content'] . "\n\n";
 
         $message .= "<a href='" . route('ticket.view', $ticket) . "'>Visualizza e rispondi alla richiesta</a>\n";
@@ -150,10 +149,10 @@ class TicketController extends Controller
         $sendingTo = [$ticket->author, $ticket->assigner];
         foreach ($ticket->comments as $comment)
             $sendingTo[] = $comment->author;
-        
+
         // But not sending to myself!
         $sendingTo = array_filter($sendingTo, function ($identity) {
-            return $identity && ($identity->id != Auth()->user()->identity->id);
+            return $identity && ($identity->id != Auth::user()->id);
         });
 
         MailerController::sendEmail(
@@ -173,31 +172,30 @@ class TicketController extends Controller
 
         $output = $ticket->instance->doAction($action);
 
-        if( $output ) {
+        if ($output) {
             $newComment = new TicketComment([
                 'content' => $output
             ]);
-            $newComment->author()->associate(Auth()->user()->identity);
+            $newComment->author()->associate(Auth::user());
             $newComment->ticket()->associate($ticket);
             $newComment->save();
         }
 
-        if(( $ticket->status != $prevStatus ) && !($ticket->author()->is( Auth()->user()->identity ) ) ) {
-                
+        if (($ticket->status != $prevStatus) && !($ticket->author()->is(Auth::user()))) {
+
             $message = "<b>È stato cambiato lo stato della richiesta</b>\n";
             $message .= "Ticket  #" . $ticket->id . " - " . call_user_func(Ticket::fullName($ticket->type) . "::commonName") . "\n";
             $message .= "Creato da " . $ticket->author->surnameAndName() . "\n\n";
 
-            $message .= "È stato cambiato lo stato della richiesta da " . Auth()->user()->identity->surnameAndName() . "\n\n";
+            $message .= "È stato cambiato lo stato della richiesta da " . Auth::user()->surnameAndName() . "\n\n";
 
             $message .= "<a href='" . route('ticket.view', $ticket) . "'>Visualizza la richiesta aggiornata</a>\n";
 
             MailerController::sendEmail(
-                [ $ticket->author ],
+                [$ticket->author],
                 'Cambio di stato del ticket #' . $ticket->id,
                 $message
             );
-
         }
 
         return redirect()->back();
@@ -208,14 +206,10 @@ class TicketController extends Controller
     {
         $this->authorize('viewAny', Ticket::class);
 
-        $identity = Auth()->user()->identity;
+        $identity = Auth::user();
 
-        $rows = Ticket::whereHasMorph('author', [get_class($identity)], function ($query) use ($identity) {
-            $query->where('id', $identity->id);
-        })
-            ->orWhereHasMorph('assigner', [get_class($identity)], function ($query) use ($identity) {
-                $query->where('id', $identity->id);
-            })
+        $rows = Ticket::where('author_id', $identity->id)
+            ->orWhere('assigner_id', $identity->id)
             ->orWhereIn('type', Ticket::getVisibleTypes())
             ->with(['author'])->withCount('comments')
             ->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page + 1);

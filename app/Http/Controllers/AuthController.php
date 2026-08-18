@@ -37,7 +37,7 @@ class AuthController extends Controller
     function callback(Request $request)
     {
         if (Auth::check()) {
-            Auth::logout();
+            Auth::user()->logout();
         }
 
         $email = Socialite::driver('google')->user()->email;
@@ -46,14 +46,7 @@ class AuthController extends Controller
 
         if ($em && $em->identity) {
             if ($em->identity->can('login')) {
-                Auth::login($em->identity);
-                $request->session()->regenerate();
-
-                LogController::log(LogEvents::LOGIN, $em);
-
-                $em->token = null;
-                $em->last_login = Carbon::now();
-                $em->save();
+                $em->login();
 
                 // For any reason there is a looping problem with this route, prevent it
                 if (str_contains($request->session()->get('url.intended', ""), "contacts"))
@@ -71,15 +64,7 @@ class AuthController extends Controller
     function logout(Request $request)
     {
         if (Auth::check()) {
-            /**@var Email $em*/
-            foreach (Auth::user()->emails as $em) {
-                if ($em->lev2_loggedin_thisaddress()) {
-                    $em->token = null;
-                    $em->token_expdate = Carbon::now();
-                    $em->save();
-                }
-            }
-            Auth::logout();
+            Auth::user()->logout();
         }
 
         $request->session()->invalidate();
@@ -103,7 +88,7 @@ class AuthController extends Controller
             throw ValidationException::withMessages(['address' => 'not_enabled']);
 
         $em->otp = rand(100000, 999999);
-        $em->otp_expiration = Carbon::now()->addMinutes(2);
+        $em->otp_expiration = Carbon::now()->addMinutes(5);
         $em->otp_session = $request->session()->getId();
         $em->save();
 
@@ -136,8 +121,7 @@ class AuthController extends Controller
         if (!$em->identity->can('login'))
             throw ValidationException::withMessages(['otp' => 'not_enabled']);
 
-        Auth::login($em->identity);
-        $request->session()->regenerate();
+        $em->login();
 
         LogController::log(LogEvents::LOGIN_OTP, $em);
 
@@ -167,23 +151,14 @@ class AuthController extends Controller
 
         $em = Email::where('address', $email)->first();
 
-        if ($em && $em->identity) {
-            if ($em->identity->can('login_lv2')) {
-                Auth::login($em->identity);
-                $request->session()->regenerate();
-
-                LogController::log(LogEvents::LOGIN_LV2, $em, 'scopes', '', $user->approvedScopes);
-
-                $em->last_login = Carbon::now();
-                $em->token = $user->token;
-                $em->token_expdate = now()->addSeconds($user->expiresIn);
-                $em->save();
-
-                return redirect()->intended(route('home'));
-            }
-        }
-
-        return redirect()->route('home')->with('notistack', ['error', 'Non hai il permesso di accedere a questo livello.']);
+        if (!$em || !$em->identity)
+            return redirect()->route('home')->with('notistack', ['error', 'Indirizzo email non registrato.']);
+        
+        if (!$em->identity->can('login-lv2',$em->identity))
+            return redirect()->route('home')->with('notistack', ['error', 'Non hai il permesso di accedere a questo livello.']);
+        
+        $em->login_lv2($user->token, now()->addSeconds($user->expiresIn), $user->approvedScopes);
+        return redirect()->intended(route('home'));
     }
 
     function askaccess(Request $request)

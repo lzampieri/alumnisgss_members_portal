@@ -5,6 +5,7 @@ namespace App\Models\TicketTypes;
 use App\Models\Person;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class Plain implements TicketTypeInterface
 {
@@ -95,7 +96,7 @@ class Plain implements TicketTypeInterface
         return null;
     }
 
-    public static function notifyOnCreation(): array
+    public static function notifyOnCreation(): iterable
     {
         return Person::allWithPermission('helpdesk-master');
     }

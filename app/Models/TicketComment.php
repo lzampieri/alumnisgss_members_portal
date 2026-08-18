@@ -20,7 +20,7 @@ class TicketComment extends Model
 
     public function author()
     {
-        return $this->morphTo('author');
+        return $this->belongsTo(Person::class);
     }
 
     public function ticket()

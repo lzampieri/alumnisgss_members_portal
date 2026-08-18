@@ -31,14 +31,14 @@ class Stamp extends Model
 
     public function employee()
     {
-        return $this->morphTo();
+        return $this->belongsTo(Person::class);
     }
 
     protected $appends = ['hours'];
     public function getHoursAttribute(): float
     {
         if (is_null($this->clockin) || is_null($this->clockout)) return 0;
-        $diff = $this->clockout->floatDiffInHours($this->clockin);
+        $diff = $this->clockin->floatDiffInRealHours($this->clockout);
         // Approx to 15 minutes
         $diff = ((float) round($diff * 4)) / 4;
         return $diff;

@@ -9,6 +9,7 @@ use App\Models\Ticket;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileEdit implements TicketTypeInterface
 {
@@ -61,7 +62,7 @@ class ProfileEdit implements TicketTypeInterface
     public static function fromRequest(Request $request): ?TicketTypeInterface
     {
         $it = new ProfileEdit();
-        $it->subject = "Richiesta di modifica profilo per " . Auth()->user()->identity->nameAndSurname();
+        $it->subject = "Richiesta di modifica profilo per " . Auth::user()->nameAndSurname();
         $it->content = "";
         return $it;
     }
@@ -85,7 +86,7 @@ class ProfileEdit implements TicketTypeInterface
     {
         $actions = [];
         if ($this->ticket->status == 'open') {
-            if ($this->ticket->author()->is(Auth()->user()->identity))
+            if ($this->ticket->author()->is(Auth::user()))
                 $actions['retire'] = 'Ritira richiesta';
             if (Auth()->user()->can('edit', Alumnus::class)) {
                 $actions['set_accepted'] = 'Segna come risolto';
@@ -98,7 +99,7 @@ class ProfileEdit implements TicketTypeInterface
 
     public function doAction(string $action): ?string
     {
-        if (($action == 'retire') && $this->ticket->author()->is(Auth()->user()->identity)) {
+        if (($action == 'retire') && $this->ticket->author()->is(Auth::user())) {
             $this->ticket->status = 'retired';
             $this->ticket->save();
         }
@@ -117,7 +118,7 @@ class ProfileEdit implements TicketTypeInterface
         return null;
     }
 
-    public static function notifyOnCreation(): array
+    public static function notifyOnCreation(): iterable
     {
         return Person::allWithPermission('helpdesk-master');
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Alumnus;
 use App\Models\Email;
+use App\Models\Person;
 use Google\Client;
 use Google\Service;
 use Google\Service\PeopleService;
@@ -33,8 +34,8 @@ class ContactsSyncController extends Controller
     {
         $this->authorize('sync', Email::class);
 
-        $data = Alumnus::whereIn('status', Alumnus::public_status)
-            ->where('coorte', '>', 0) // exclude onorari
+        $data = Person::whereIn('status', Alumnus::public_status)
+            ->where('coorte', '>', 0) // exclude onorari and external
             ->orderBy('coorte')
             ->orderBy('surname')->orderBy('name')
             ->with('emails')
@@ -95,52 +96,7 @@ class ContactsSyncController extends Controller
             }
         }
 
-        // $groups_data = $peopleService->contactGroups->listContactGroups();
-        // $groups_list = [];
-        // foreach ($groups_data->getContactGroups() as $group) {
-        //     if ($group->getGroupType() != 'USER_CONTACT_GROUP') continue;
-
-        //     $key = array_search($group->getName(), GROUPS);
-        //     if ($key === false) continue;
-
-        //     $groups_list[$key] = [
-        //         'id' => $group->getResourceName(),
-        //         'name' => $group->getName(),
-        //         'members' => []
-        //     ];
-
-        //     $group_details = $peopleService->contactGroups->get($group->getResourceName(), [
-        //         'maxMembers' => count($connections)
-        //     ]);
-
-        //     if (!$group_details->getMemberResourceNames()) continue;
-        //     foreach ($group_details->getMemberResourceNames() as $memberId) {
-        //         $groups_list[$key]['members'][] = $memberId;
-        //     }
-        // }
-        // foreach (GROUPS as $key => $group) {
-        //     if (!array_key_exists($key, $groups_list)) {
-        //         $draft = new \Google\Service\PeopleService\ContactGroup();
-        //         $draft->setName(GROUPS[$key]);
-
-        //         $rqt = new \Google\Service\PeopleService\CreateContactGroupRequest();
-        //         $rqt->setContactGroup($draft);
-
-        //         $group = $peopleService->contactGroups->create($rqt);
-
-        //         $groups_list[$key] = [
-        //             'id' => $group->getResourceName(),
-        //             'name' => $group->getName(),
-        //             'members' => []
-        //         ];
-        //     }
-        // }
-
         return response()->json(array_values($output));
-        // return response()->json([
-        //     'groups' => $groups_list,
-        //     'contacts' => array_values($output)
-        // ]);
     }
 
     public function deassociate(Request $request)
@@ -202,7 +158,7 @@ class ContactsSyncController extends Controller
 
         $peopleService = $this->getPeopleService();
 
-        $alumnus = Alumnus::find($item);
+        $alumnus = Person::find($item);
         if (!$alumnus) return response()->json([]);
 
         $newPerson = new \Google\Service\PeopleService\Person();
@@ -229,7 +185,7 @@ class ContactsSyncController extends Controller
 
         $item = $request->input('item');
 
-        $alumnus = Alumnus::find($item['local_id']);
+        $alumnus = Person::find($item['local_id']);
         if (!$alumnus) return;
 
         // Check for unicity
@@ -237,7 +193,7 @@ class ContactsSyncController extends Controller
 
         $alumnus->emails()->create(['address' => $item['address']]);
 
-        $newProfile = Alumnus::where('id',$item['local_id'])
+        $newProfile = Person::where('id',$item['local_id'])
             ->with('emails')
             ->get()
             ->makeVisible('emails');
@@ -336,7 +292,7 @@ class ContactsSyncController extends Controller
     private function getPeopleService()
     {
         $client = new Client();
-        $access = Auth::user();
+        $access = Auth::user()->logged_in_email;
 
         $client->setClientId(env('GOOGLE_CLIENT_ID'));
         $client->setClientSecret(env('GOOGLE_CLIENT_SECRET'));

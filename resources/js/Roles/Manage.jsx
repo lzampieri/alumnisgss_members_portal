@@ -9,9 +9,19 @@ import { router } from "@inertiajs/react";
 import ResponsiveDrawer from "../Layout/ResponsiveDrawer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faTrash, faUsers, faUsersGear, faX } from "@fortawesome/free-solid-svg-icons";
-import { postRequest, romanize } from "../Utils";
+import { AlumnusStatus, postRequest, romanize } from "../Utils";
 import RolesChips from "../Permissions/RolesChips";
 import Create from "./Create";
+
+function getAutoRoleLabel(role) {
+    if (role.type == 'status')
+        return "Questo gruppo contiene tutti i profili di alumni registrati come " + AlumnusStatus.status[role.name]?.label + ".";
+    if (role.type == 'everyone')
+        return "Questo gruppo contiene tutti i profili - alumni ed esterni, soci e non soci - registrati al portale. Questo gruppo include anche gli utenti non registrati, ovvero che non hanno fatto il login.";
+    if (role.type == 'position')
+        return "Questo gruppo contiene tutti i profili che in questo momento hanno un incarico del tipo " + role.name + ", come definiti dall'applicazione 'incarichi'.";
+    return "Non è possibile trovare maggiori informazioni su questo gruppo, probabilmente è un retaggio del passato non più utilizzato.";
+}
 
 function RoleCard({ role, setProcessing }) {
     const [isDeleting, setIsDeleting] = useState(false);
@@ -54,46 +64,52 @@ function RoleCard({ role, setProcessing }) {
             <h3>{role.common_name}</h3>
             <h4>{role.can_edit && <div className="icon-button" onClick={() => setIsDeleting(true)}><FontAwesomeIcon icon={faTrash} /></div>}</h4>
         </div>
-        <div className="text-sm text-gray-400">
-            Visibile da {canView.map(r => r.common_name).join(", ")}
-            {role.can_edit && <EditRoles type="view" initialList={canView.map(r => r.id)} role={role} setProcessing={setProcessing} />}
-        </div>
-        <div className="text-sm text-gray-400">
-            Modificabile da {canEdit.map(r => r.common_name).join(", ")}
-            {role.can_edit && <EditRoles type="edit" initialList={canEdit.map(r => r.id)} role={role} setProcessing={setProcessing} />}
-        </div>
-        {!role.can_view && <div className="text-primary-main">Non hai il permesso di vedere i componenti di questo gruppo</div>}
-        {!role.can_edit && <div className="text-primary-main">Non hai il permesso di modificare i componenti di questo gruppo</div>}
-        {role.can_view && <div className="flex flex-col justify-start items-start mt-4 gap-2">
-            {role.identities.map(identity => <IdentityChip identity={identity} setIsDeleting={setIdentityDeleting} key={identity.id} canEdit={role.can_edit} />)}
+        { !role.is_automatic && <>
+            <div className="text-sm text-gray-400">
+                Visibile da {canView.map(r => r.common_name).join(", ")}
+                {role.can_edit && <EditRoles type="view" initialList={canView.map(r => r.id)} role={role} setProcessing={setProcessing} />}
+            </div>
+            <div className="text-sm text-gray-400">
+                Modificabile da {canEdit.map(r => r.common_name).join(", ")}
+                {role.can_edit && <EditRoles type="edit" initialList={canEdit.map(r => r.id)} role={role} setProcessing={setProcessing} />}
+            </div>
+            {!role.can_view && <div className="text-primary-main">Non hai il permesso di vedere i componenti di questo gruppo</div>}
+            {!role.can_edit && <div className="text-primary-main">Non hai il permesso di modificare i componenti di questo gruppo</div>}
+            {role.can_view && <div className="flex flex-col justify-start items-start mt-4 gap-2">
+                {role.identities.map(identity => <IdentityChip identity={identity} setIsDeleting={setIdentityDeleting} key={identity.id} canEdit={role.can_edit} />)}
+            </div>}
+            {role.can_edit &&
+                <Select
+                    className="my-2"
+                    classNames={{ control: () => 'selectDropdown' }}
+                    isSearchable={true}
+                    getOptionValue={(option) => option.id }
+                    getOptionLabel={(option) => <span><IdentityName identity={option} /></span>}
+                    filterOption={createFilter({ stringify: option => option.data.surname + " " + option.data.name + " " + option.data.coorte + " " + romanize(option.data.coorte) + " " + option.data.note })}
+                    options={people}
+                    placeholder="Aggiungi..."
+                    onChange={(sels) => submitIdentityAdd( sels )} />}
+            <Dialog
+                open={isDeleting}
+                onClose={() => setIsDeleting(false)}
+                confirmLabel={"Cancella questo ruolo"}
+                undoLabel={"Annulla"}
+                onConfirm={submitDelete}>
+                Sei sicuro di voler cancellare questo ruolo? Al momento vi sono {role?.identities?.length} persone con questo ruolo.
+            </Dialog>
+            <Dialog
+                open={identityDeleting}
+                onClose={() => setIdentityDeleting(null)}
+                confirmLabel={"Rimuovi"}
+                undoLabel={"Annulla"}
+                onConfirm={submitIdentityDelete}>
+                Sei sicuro di voler rimuovere <IdentityName identity={identityDeleting} /> dal gruppo {role.common_name}?
+            </Dialog>
+        </>}
+        { role.is_automatic && <div className="text-sm text-gray-400">
+            { getAutoRoleLabel(role) }<br />
+            Questo è un gruppo automatico e non può essere modificato.
         </div>}
-        {role.can_edit &&
-            <Select
-                className="my-2"
-                classNames={{ control: () => 'selectDropdown' }}
-                isSearchable={true}
-                getOptionValue={(option) => option.id }
-                getOptionLabel={(option) => <span><IdentityName identity={option} /></span>}
-                filterOption={createFilter({ stringify: option => option.data.surname + " " + option.data.name + " " + option.data.coorte + " " + romanize(option.data.coorte) + " " + option.data.note })}
-                options={people}
-                placeholder="Aggiungi..."
-                onChange={(sels) => submitIdentityAdd( sels )} />}
-        <Dialog
-            open={isDeleting}
-            onClose={() => setIsDeleting(false)}
-            confirmLabel={"Cancella questo ruolo"}
-            undoLabel={"Annulla"}
-            onConfirm={submitDelete}>
-            Sei sicuro di voler cancellare questo ruolo? Al momento vi sono {role?.identities?.length} persone con questo ruolo.
-        </Dialog>
-        <Dialog
-            open={identityDeleting}
-            onClose={() => setIdentityDeleting(null)}
-            confirmLabel={"Rimuovi"}
-            undoLabel={"Annulla"}
-            onConfirm={submitIdentityDelete}>
-            Sei sicuro di voler rimuovere <IdentityName identity={identityDeleting} /> dal gruppo {role.common_name}?
-        </Dialog>
     </div>
 }
 

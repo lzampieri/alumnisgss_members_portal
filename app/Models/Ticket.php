@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\TicketTypes\TicketTypeInterface;
 use Carbon\Carbon;
-use Error;
 use Illuminate\Support\Facades\Auth;
 
 class Ticket extends Model
@@ -43,7 +42,7 @@ class Ticket extends Model
     public static function getVisibleTypes()
     {
         return Ticket::getAllTypes()->filter(
-            function ($type) { return Auth()->check() && call_user_func( Ticket::fullName( $type ) . "::canBeSeen", Auth()->user()->identity ); }
+            function ($type) { return Auth::check() && call_user_func( Ticket::fullName( $type ) . "::canBeSeen", Auth::user() ); }
         );
     }
 
@@ -60,11 +59,11 @@ class Ticket extends Model
 
     public function author()
     {
-        return $this->morphTo('author');
+        return $this->belongsTo(Person::class);
     }
     public function assigner()
     {
-        return $this->morphTo('assigner');
+        return $this->belongsTo(Person::class);
     }
     public function reference()
     {

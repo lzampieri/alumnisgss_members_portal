@@ -310,4 +310,32 @@ class Person extends User
         $c = Person::romanize($this->coorte);
         return "Person #{$this->id}: {$this->surname} {$this->name} {$c}";
     }
+
+    /* Authentication */
+    // Login is in the Email class
+    protected function loggedInEmail(): Attribute {
+        return Attribute::make(get: function(mixed $_, array $attributes) {
+            if(!Auth::check()) return null;
+            if(!Auth::user()->is($this)) return null;
+            $email = Email::find(request()->session()->get('auth.email', -1));
+            if(!$email) return null;
+            if(!$email->identity->is($this)) return null;
+            return $email;
+        });
+    }
+    protected function lev2LoggedIn(): Attribute {
+        return Attribute::make(get: function(mixed $_, array $attributes) {
+            $email = $this->logged_in_email;
+            if( $email ) return $email->lv2_logged_in_thisaddress;
+            return false;
+        });
+    }
+    public function logout()
+    {
+        request()->session()->remove('auth.email');
+        if(!Auth::check()) return null;
+        $email = $this->logged_in_email;
+        if( $email ) return $email->logout();
+        Auth::logout();
+    }
 }

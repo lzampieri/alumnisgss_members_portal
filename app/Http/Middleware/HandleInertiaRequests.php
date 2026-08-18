@@ -43,11 +43,9 @@ class HandleInertiaRequests extends Middleware
         if( Auth::check() ) {
             $user = Auth::user();
             $user->append('all_roles')->makeVisible('all_roles');
+            $user->append('logged_in_email')->makeVisible('logged_in_email');
+            $user->append('lev2_logged_in')->makeVisible('lev2_logged_in');
             $data = array_merge( $data, [ 'user' => $user ] );
-
-            if( Auth::user()->lev2_loggedin() ) {
-                $data = array_merge( $data, [ 'lev2_loggedin' => true ] );
-            }
         }
         
         if( session()->has( 'notistack' ) ) {
