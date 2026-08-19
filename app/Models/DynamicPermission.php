@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\LogController;
 use App\Models\Role as ModelsRole;
 use App\Traits\EditsAreLogged;
 use Illuminate\Database\Eloquent\Model;
@@ -62,6 +63,10 @@ class DynamicPermission extends Model
             if ($person->hasPermissionTo('roles-view-all'))
                 return true;
 
+        if ($permissable instanceof Project)
+            if ($person->hasPermissionTo('projects-view-all'))
+                return true;
+
         return $permissable
             ->morphMany(DynamicPermission::class, 'permissable')
             ->whereIn('role_id', $person->allRoles->pluck('id'))
@@ -94,6 +99,10 @@ class DynamicPermission extends Model
             if ($id->hasPermissionTo('roles-edit-all'))
                 return true;
 
+        if ($permissable instanceof Project)
+            if ($id->hasPermissionTo('projects-edit-all'))
+                return true;
+
         return $permissable
             ->morphMany(DynamicPermission::class, 'permissable')
             ->whereIn('role_id', $id->getAllRoles()->pluck('id'))
@@ -101,10 +110,35 @@ class DynamicPermission extends Model
             ->count() > 0;
     }
 
-    
-    
+    public static function PersonCanDoOnPermissable(string $action, Model $permissable, ?Person $id = NULL)
+    {
+        if( $action == 'view' ) return self::PersonCanViewPermissable($permissable, $id);
+        if( $action == 'edit' ) return self::PersonCanEditPermissable($permissable, $id);
+
+        if (is_null($id)) return false;
+
+        return $permissable
+            ->morphMany(DynamicPermission::class, 'permissable')
+            ->whereIn('role_id', $id->getAllRoles()->pluck('id'))
+            ->where('type', $action)
+            ->count() > 0;
+    }
+
     public function logify()
     {
         return $this->type . " of " . $this->role->name . " for " . LogController::stringify($this->permissable);
+    }
+
+    public static function syncPermissions(Model $permissable, string $action, array $new_roles_id) {
+        $current_roles = $permissable->morphMany(DynamicPermission::class, 'permissable')->where('type', $action)->get()->pluck('role_id')->toArray();
+
+        foreach (array_diff($current_roles, $new_roles_id) as $role) {
+            // Roles to remove
+            $permissable->morphMany(DynamicPermission::class, 'permissable')->where('role_id', $role)->where('type', $action)->delete();
+        }
+        foreach (array_diff($new_roles_id, $current_roles) as $role) {
+            // Roles to add
+            DynamicPermission::createFromRelations($action, $permissable, Role::findById($role));
+        }
     }
 }

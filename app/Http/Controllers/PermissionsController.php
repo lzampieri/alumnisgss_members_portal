@@ -137,6 +137,10 @@ class PermissionsController extends Controller
             'roles-edit-all',
             'roles-create',
             'groups-view',
+            // Projects
+            'projects-create',
+            'projects-view-all',
+            'projects-edit-all',
             // Positions
             'positions-view-active',
             'positions-view-all',

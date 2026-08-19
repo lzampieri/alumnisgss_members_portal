@@ -1,4 +1,4 @@
-import { faAddressBook, faBookOpen, faBoxArchive, faBug, faBusinessTime, faCircleNodes, faEnvelopeOpenText, faFilePen, faIdBadge, faIdCard, faLandmark, faMap, faPeopleRoof, faSignature, faStapler, faTruckMedical, faUser, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faAddressBook, faBookOpen, faBoxArchive, faBug, faBusinessTime, faCircleNodes, faDiagramProject, faEnvelopeOpenText, faFilePen, faIdBadge, faIdCard, faLandmark, faMap, faPeopleRoof, faSignature, faStapler, faTruckMedical, faUser, faUsers } from "@fortawesome/free-solid-svg-icons";
 
 export default [
     { id: 'profile', name: 'Profilo', url: route('profile'), icon: faUser },
@@ -9,6 +9,7 @@ export default [
     { id: 'ratifications', name: 'Ratifiche', url: route('ratifications'), icon: faSignature },
     { id: 'board', name: 'Albo', url: route('board'), icon: faBookOpen },
     { id: 'positions', name: 'Incarichi', url: route('positions'), icon: faLandmark },
+    { id: 'projects', name: 'Progetti', url: route('projects'), icon: faDiagramProject },
     { id: 'reports', name: 'Report', url: route('reports'), icon: faFilePen },
     { id: 'resources', name: 'Risorse', url: route('resources'), icon: faBoxArchive },
     { id: 'clockings', name: 'Timbrature', url: route('clockings'), icon: faBusinessTime },

@@ -70,6 +70,10 @@ class AppsController extends Controller
             $apps[] = 'positions';
         }
 
+        if (Auth::user()) {
+            $apps[] = 'projects';
+        }
+
         if (Auth::user() && (Auth::user()->can('clockin', Stamp::class) || Auth::user()->can('viewAny', Stamp::class))) {
             $apps[] = 'clockings';
         }

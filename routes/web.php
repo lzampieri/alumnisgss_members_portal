@@ -34,6 +34,8 @@ include( 'reports.php' );
 include( 'accesses.php' );
 include( 'positions.php' );
 
+include( 'reimbursements.php' );
+
 include( 'clockings.php' );
 
 include( 'webmaster.php' );
