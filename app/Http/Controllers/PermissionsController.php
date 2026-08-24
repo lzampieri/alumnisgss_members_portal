@@ -141,6 +141,8 @@ class PermissionsController extends Controller
             'projects-create',
             'projects-view-all',
             'projects-edit-all',
+            // Reimbursement
+            'reimbursements-view-all',
             // Positions
             'positions-view-active',
             'positions-view-all',
@@ -181,7 +183,8 @@ class PermissionsController extends Controller
             'logfile-view',
             'logdb-view',
             'db-reset',
-            'maintenance-access'
+            'maintenance-access',
+            'features-preview'
         ];
 
         // Add permissions

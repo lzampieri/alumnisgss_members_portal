@@ -168,6 +168,10 @@ class Person extends User
     {
         return $this->hasMany(Ratification::class, 'alumnus_id')->whereNull('document_id');
     }
+    public function collaborator()
+    {
+        return $this->hasOne(Collaborator::class, 'id');
+    }
 
     // ----------- COLLECTIVE FUNCTIONS ----------- //
     public static function allTags()

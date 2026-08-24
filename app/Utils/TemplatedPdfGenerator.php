@@ -4,6 +4,8 @@ namespace App\Utils;
 
 use Illuminate\Support\Facades\Auth;
 use setasign\Fpdi\Tcpdf\Fpdi;
+// setasign is way better to fill new PDFs
+// while tc-lib-pdf will be used to merge PDFs
 
 class TemplatedPdfGenerator extends Fpdi
 {
@@ -38,8 +40,7 @@ class TemplatedPdfGenerator extends Fpdi
 
     public function HTMLhere($content, $align = 'J')
     {
-        $this->writeHTMLCell(0, 0, null, null, $content, 0, 0, false, true, $align);
-        $this->Ln();
+        $this->writeHTMLCell(0, 0, null, null, $content, 0, 1, false, true, $align);
     }
 
     public function spacing($size = 1)

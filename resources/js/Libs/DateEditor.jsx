@@ -8,9 +8,17 @@ export class NurDate {
         if( string_or_year == undefined ) {
             this.date = new Date();
         } else if( month_1based == undefined ) {
-            this.date = new Date(string_or_year);
+            try {
+                this.date = new Date(string_or_year);
+            } catch {
+                console.error("Invalid date string: " + string_or_year);
+                this.date = new Date();
+            }
         } else {
             this.date = new Date(string_or_year, month_1based - 1, day);
+        }
+        if( isNaN(this.date) ) {
+            this.date = new Date();
         }
     }
 
@@ -63,7 +71,7 @@ export function NurDatePicker({ value, onChange, classNames }) {
     const [open, setOpen] = useState(false);
     return <DatePicker
         value={value.date}
-        classNames={classNames} options={{ defaultDate: value.date, language: 'it', theme: { input: '!text-black' } }}
+        classNames={classNames+" relative"} options={{ defaultDate: value.date, language: 'it', theme: { input: '!text-black' } }}
         onChange={(date) => onChange(new NurDate(date))} show={open} setShow={setOpen} />
 
 }

@@ -70,8 +70,9 @@ class AppsController extends Controller
             $apps[] = 'positions';
         }
 
-        if (Auth::user()) {
+        if (Auth::user() && Auth::user()->hasPermissionTo('features-preview')) { // todo remove
             $apps[] = 'projects';
+            $apps[] = 'reimbursements';
         }
 
         if (Auth::user() && (Auth::user()->can('clockin', Stamp::class) || Auth::user()->can('viewAny', Stamp::class))) {

@@ -7,7 +7,9 @@ use App\Models\File;
 use App\Models\Newsletter;
 use App\Models\Resource;
 use App\Models\Person;
+use App\Models\Reimbursement;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Auth;
 
 class FilePolicy
 {
@@ -64,9 +66,13 @@ class FilePolicy
 
         // Newsletter
         if ($parent_type == Newsletter::class) {
-            return (new NewsletterPolicy())->view($user, $file->parent);
+            return $user && (new NewsletterPolicy())->view($user, $file->parent);
         }
 
+        // Reimbursement
+        if ($parent_type == Reimbursement::class) {
+            return $user && (new ReimbursementPolicy())->view($user, $file->parent);
+        }
 
         return false;
     }
