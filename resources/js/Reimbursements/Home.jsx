@@ -11,26 +11,11 @@ import { faAdd, faCircle, faPencil } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NurDate } from "../Libs/DateEditor";
 ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnAutoSizeModule, QuickFilterModule]);
-import { bgAndContrastPastel } from "../Utils";
+import StateChip from "./StateChip";
 
 function Actions({ data }) {
     return <div className="flex flex-row gap-2 leading-none">
         {data.can_edit && <Link className="button" href={route('reimbursements.edit', { id: data.id })}><FontAwesomeIcon icon={faPencil} /></Link>}
-    </div>
-}
-
-const states = {
-    'draft': { label: 'Bozza', color: 9 },
-    'sent': { label: 'Inviata', color: 1 },
-    'approved': { label: 'Approvata', color: 0 },
-    'paid': { label: 'Pagata', color: 4 },
-}
-
-function StateChip({ value }) {
-    return <div className="flex flex-row align-center justify-start items-center h-full">
-        <div className="px-1 rounded-xl leading-none p-2" style={bgAndContrastPastel(states[value]?.color)}>
-            {states[value]?.label}
-        </div>
     </div>
 }
 

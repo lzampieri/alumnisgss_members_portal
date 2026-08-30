@@ -82,7 +82,6 @@ class WebmasterController extends Controller
 
         try {
 
-
             $validated = $request->validate([
                 'file' => 'required',
                 'key' => 'required',

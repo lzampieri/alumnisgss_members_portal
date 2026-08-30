@@ -16,7 +16,9 @@ function getKeyText_Expenses(key, value) {
     if (key == "to") return "Arrivo: " + value_t;
     if (key == "to.id") return "Arrivo: " + value_t;
     if (key == "to.name") return "Arrivo: " + value_t;
-    if (key == "Distance") return value_t;
+    if (key == "carPower") return "Alimentazione: " + value_t;
+    if (key == "carModel") return "Modello: " + value_t;
+    return value_t;
 }
 
 export function ExpensesErrorDiv({ errors }) {

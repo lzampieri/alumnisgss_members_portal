@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\File;
 use App\Models\Project;
 use App\Models\Reimbursement;
+use App\Utils\Settings;
 use App\Utils\TemplatedPdfGenerator;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Mail\Mailer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
@@ -16,6 +18,8 @@ class ReimbursementController extends Controller
 {
     public function home()
     {
+        // todo add authorization here
+
         $reimbursements = Reimbursement::all()->filter->canView->load('project','author')->append(['can_edit','can_approve'])->values();
 
         $canCreate = Auth::check() && Auth::user()->can('create', Reimbursement::class);
@@ -105,7 +109,9 @@ class ReimbursementController extends Controller
             return redirect()->back()->withErrors($output['errors']);
         }
 
-        return redirect()->back()->with(['notistack' => ['info', 'Bozza salvata']]);
+        $this->generate_PDF($reimbursement);
+
+        return redirect()->route('reimbursements.review', ['reimbursement' => $reimbursement]);
     }
     
     private function add_error(array &$errors, int $id, string $field, string $message)
@@ -228,6 +234,8 @@ class ReimbursementController extends Controller
                         'from.name' => 'required|string',
                         'to.id' => 'required|string',
                         'to.name' => 'required|string',
+                        'carPower' => 'required|string',
+                        'carModel' => 'required|string',
                         'id' => 'required|numeric'
                     ]);
 
@@ -241,34 +249,25 @@ class ReimbursementController extends Controller
                     'to'   => $item['to'] ?? [],
                     'type' => 'driving',
                     'date' => $item['date'] ?? '',
+                    'carPower' => $item['carPower'] ?? '',
+                    'carModel' => $item['carModel'] ?? '',
                     'id'   => $item['id']
                 ];
 
-                // If the from and to are set...
-                if (array_key_exists('id', $newItem['from']) && array_key_exists('id', $newItem['to'])) {
+                if( !$draft ) {
 
-                    // Before going with the API key call, let's check if
-                    // we already have computed the distance
-                    $computed = false;
-                    foreach ($reimbursement->content as $c) {
-                        if ($c['type'] == 'driving' && array_key_exists('distance', $c)) {
-                            if ($c['from']['id'] == $item['from']['id'] && $c['to']['id'] == $item['to']['id']) {
-                                $computed = true;
-                                $newItem['distance'] = $c['distance'];
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!$computed) {
-                        $res = $this->compute_driving($item, false);
-                        if ($res['distance'] < 0 ) {
-                            $this->add_error($content_errors, $item['id'], 'distance', 'Impossibile calcolare la distanza, seleziona indirizzi più precisi.');
-                        } else if( $res['distance'] == 0 ) {
-                            $this->add_error($content_errors, $item['id'], 'distance', 'Seleziona due indirizzi distinti.');
-                        } else {
-                            $newItem['distance'] = $res['distance'];
-                        }
+                    // Compute the 
+                    $res = $this->compute_driving($item, false);
+                    if ($res['distance'] < 0 ) {
+                        $this->add_error($content_errors, $item['id'], 'distance', 'Impossibile calcolare la distanza, seleziona indirizzi più precisi.');
+                    } else if( $res['distance'] == 0 ) {
+                        $this->add_error($content_errors, $item['id'], 'distance', 'Seleziona due indirizzi distinti.');
+                    } else if( !array_key_exists('car', $res) ) {
+                        $this->add_error($content_errors, $item['id'], 'car', 'Impossibile ritrovare il veicolo selezionato.');
+                    } else if( !array_key_exists('prices', $res) ) {
+                        $this->add_error($content_errors, $item['id'], 'price', 'Impossibile calcolare il prezzo.');
+                    } else {
+                        $newItem += $res;
                     }
                 }
 
@@ -319,16 +318,71 @@ class ReimbursementController extends Controller
         return response()->json($outputs);
     }
 
+    const NAMES = [
+        'petrol' => 'Benzina',
+        'diesel' => 'Gasolio',
+        'gpl' => 'GPL',
+        'methane' => 'Metano',
+        'electricity' => 'Elettricità'
+    ];
+    const UNITS = [
+        'petrol' => '€/L',
+        'diesel' => '€/L',
+        'gpl' => '€/L',
+        'methane' => '€/kg',
+        'electricity' => '€/kWh',
+    ];
+    const REVUNITS = [
+        'petrol' => 'L/100km',
+        'diesel' => 'L/100km',
+        'gpl' => 'L/100km',
+        'methane' => 'kg/100km',
+        'electricity' => 'kWh/100km',
+    ];
+
     private function compute_driving(array $item, bool $withPdf, string $iden = ''): array {
         $out = [];
         
-        $routes = GoogleAPI::computeRoutes($item['from']['id'], $item['to']['id'])['routes'];
+
+        // Distance
+        $routes = APIs::computeRoutes($item['from']['id'], $item['to']['id'])['routes'];
         if( empty($routes) ) return ['distance' => -1];
         $distances = array_map(fn($r) => $r['distanceMeters'], $routes);
         $minDistance = round(min($distances) / 1000);
         if ($minDistance == 0)
             return ['distance' => 0];
         $out['distance'] = $minDistance;
+
+        // Car
+        $car = false;
+        foreach( APIs::getAciTable() as $c ) {
+            if( $c['power'] == $item['carPower'] && $c['label'] == $item['carModel'] ) {
+                $car = $c;
+                break;
+            }
+        }
+        if( !$car ) return $out;
+        $out['car'] = $car;
+
+        // Carburants
+        $prices = APIs::getAciPrices(Carbon::createFromFormat("Y-m-d",$item['date']));
+        if( empty($prices['prices']) ) return $out;
+        $out['prices'] = $prices;
+
+        // Total count
+        $considered_prices = [];
+        $total_price = 0;
+        foreach($car['consumption'] as $carb => $cons) {
+            $carbprice = $prices['prices'][$carb];
+            $considered_prices[$carb] = $carbprice;
+            $total_price += $cons * $carbprice / 100;
+        }
+        $out['total_price_fuel'] = $total_price;
+        $out['considered_prices'] = $considered_prices;
+
+        $out['total_price_km'] = $car['QUOTA_CAPITALE'] + $out['total_price_fuel'] + $car['QUOTA_PNEUMATICI'] + $car['QUOTA_MANUTENZIONE'];
+
+        $out['price'] = round($out['total_price_km'] * $minDistance * 100) / 100;
 
         if($withPdf) {
             $pdf = new TemplatedPdfGenerator();
@@ -341,13 +395,48 @@ class ReimbursementController extends Controller
             $pdf->HTMLhere("<small>Riferimento interno: {$iden}.{$item['id']}</small>", 'R');
             $pdf->HTMLhere('<b>Calcolo rimborso chilometrico</b>');
             $pdf->spacing();
+
             $pdf->HTMLhere("<b>Da</b>: {$item['from']['name']} [{$item['from']['id']}]");
             $pdf->HTMLhere("<b>A</b>: {$item['to']['name']} [{$item['to']['id']}]");
             $pdf->spacing();
+
             $pdf->HTMLhere("Distanza calcolata dall'endpoint routes.googleapis.com il giorno " . Carbon::now()->format('d/m/Y'));
             $pdf->HTMLhere($out['distance'] . " km");
+            $pdf->spacing();
 
-            
+            $pdf->HTMLhere("<b>Veicolo</b>: " . $out['car']['label']);
+            $pdf->HTMLhere("<b>Alimentazione</b>: " . $out['car']['power']);
+            $cons_str = [];
+            foreach( $out['car']['consumption'] as $carb => $cons ) {
+                $cons_str[] = ReimbursementController::NAMES[$carb] . ": " . number_format($cons, 3, ',', ' ') . " " . ReimbursementController::UNITS[$carb];
+            }
+            $pdf->HTMLhere("<b>Consumi</b>: " . implode(" + ", $cons_str));
+
+            $pdf->spacing();
+
+            $pdf->HTMLhere("<b>Prezzi dei carburanti considerati:</b>");
+            $pdf->HTMLhere("Calcolati dai dati forniti da ACI (ultimo aggiornamento " . Carbon::parse($out['prices']['updated'])->format("d/m/Y") . ")");
+            $pdf->HTMLhere("Data del viaggio: " . $out['prices']['forDate'] . " - rilevazione utile: " . $out['prices']['realDate']);
+            foreach( $out['considered_prices'] as $carb => $price ) {
+                $pdf->HTMLhere(ReimbursementController::NAMES[$carb] . ": " . number_format($price, 3, ',', ' ') . " " . ReimbursementController::UNITS[$carb]);
+            }
+            $pdf->spacing();
+
+            $pdf->HTMLhere("Quota capitale");
+            $pdf->HTMLhere("€/km " . number_format($car['QUOTA_CAPITALE'], 3, ',', ' '), "R");
+            $pdf->HTMLhere("Quota carburante");
+            $pdf->HTMLhere("€/km " . number_format($out['total_price_fuel'], 3, ',', ' '), "R");
+            $pdf->HTMLhere("Quota pneumatici");
+            $pdf->HTMLhere("€/km " . number_format($car['QUOTA_PNEUMATICI'], 3, ',', ' '), "R");
+            $pdf->HTMLhere("Quota manutenzione");
+            $pdf->HTMLhere("€/km " . number_format($car['QUOTA_MANUTENZIONE'], 3, ',', ' '), "R");
+            $pdf->HTMLhere("Totale");
+            $pdf->HTMLhere("€/km " . number_format($out['total_price_km'], 3, ',', ' '), "R");
+
+            $pdf->spacing(2);
+            $pdf->HTMLhere("<b>Totale da rimborsare</b>:");
+            $pdf->HTMLhere("<b>€ " . number_format($out['price'], 2, ',', ' ') . "</b>", "R");
+
             $output_filename = storage_path("app/reimbursements/parts/{$iden}_{$item['id']}.pdf");
             $pdf->Output( $output_filename, 'F');
             $out['filename'] = $output_filename;
@@ -356,7 +445,7 @@ class ReimbursementController extends Controller
         return $out;
     }
 
-    public function generate_PDF(Reimbursement $reimbursement) {
+    public function generate_PDF(Reimbursement $reimbursement): string {
 
         $filesToAppend = [];
         $total_material = 0;
@@ -422,19 +511,20 @@ class ReimbursementController extends Controller
         foreach ($content as &$item) {
             if( $item['type'] == 'driving') {
                 $res = $this->compute_driving($item, true, $reimbursement->iden);
-                $item['distance'] = $res['distance']; 
+                $item += $res; 
                 $filesToAppend[] = $res['filename'];
 
                 $date = Carbon::parse($item['date'])->format('d/m/Y');
-                $price = 0;
+                $price = $res['price'];
                 $pdf->HTMLhere("Da {$item['from']['name']} a {$item['to']['name']}");
                 $pdf->HTMLhere("<small>Viaggio del {$date} - distanza {$item['distance']} km</small>");
                 $pdf->HTMLhere("€ {$price}", 'R');
-                $total_driving += 0;
+                $total_driving += $res['price'];
             }
         };
 
         $reimbursement->content = $content;
+        $reimbursement->total = $total_material + $total_travel + $total_driving;
         $reimbursement->save();
 
         $pdf->spacing(2);
@@ -456,6 +546,17 @@ class ReimbursementController extends Controller
         $pdf->HTMLhere("IBAN: {$reimbursement->author->collaborator->IBAN}");
         $pdf->HTMLhere("Intestato a: {$reimbursement->author->collaborator->holder}");
         $pdf->HTMLhere("Presso: {$reimbursement->author->collaborator->bank}");
+
+        if( strlen($reimbursement->notes) > 0 ) {
+            $pdf->spacing(2);
+            $pdf->HTMLhere("Nota: {$reimbursement->notes}");
+        }
+        
+        $pdf->spacing(2);
+        $pdf->HTMLhere("Lì, ". Carbon::now()->format('d/m/Y'));
+        $pdf->HTMLhere($reimbursement->author->nameAndSurname(), 'R');
+        $email = Auth::user()->logged_in_email->address;
+        $pdf->HTMLhere("<small>Indentificato mezzo email - {$email}</small>", 'R');
 
         $output_filename = storage_path("app/reimbursements/parts/{$reimbursement->iden}.pdf");
         $pdf->Output( $output_filename, 'F');
@@ -501,8 +602,72 @@ class ReimbursementController extends Controller
         $rawpdf = $merged->getOutPDFString();
 
         $merged->savePDF($merged_folder, $rawpdf);
-        $merged->renderPDF($rawpdf);
 
-        exit;
+        return $merged_folder . $reimbursement->iden . '.pdf';
+    }
+
+    public function review(Reimbursement $reimbursement) {
+        $this->authorize('edit', $reimbursement);
+        
+        return Inertia::render('Reimbursements/Review', [
+            'reimbursement' => $reimbursement
+        ]);
+    }
+
+    public function send(Reimbursement $reimbursement) {
+        // $this->authorize('edit', $reimbursement);
+
+        $file = storage_path("app/reimbursements/sent/") . $reimbursement->iden . '.pdf';
+        if(!file_exists($file)) {
+            return redirect()->back()->with('notistack', ['error', 'Rimborso non correttamente generato.']);
+        }
+        
+        $to = Settings::get('reimbursements_sent_email_to','info@alumniscuolagalileiana.it');
+        // TODO: check if francesca and send to tesoreria@
+
+        $date = Carbon::now()->format('d/m/Y');
+        $goto = route('reimbursements.view', $reimbursement);
+
+        $message = "
+Gent. segreteria,\n
+In data {$date} è stata inviata da {$reimbursement->author->nameAndSurname()} una nuova richiesta di rimborso relativa al progetto {$reimbursement->project->name}.\n
+In allegato la richiesta di rimborso.\n
+\n
+Per verificare lo stato della richiesta o per approvarla - se autorizzato - si acceda all'indirizzo seguente:\n
+<a href='{$goto}'>{$goto}<a>\n
+\n
+Cordiali saluti.\n
+\n
+\n
+Email generata automaticamente.
+        ";
+
+        MailerController::sendEmail(
+            explode(",", $to),
+            "Nuova richiesta di rimborso: " . $reimbursement->iden,
+            $message,
+            replyTo: Auth::user()->logged_in_email->address,
+            attachments: [$file],
+            cc: [Auth::user(),Auth::user()->logged_in_email->address]
+        );
+
+        $reimbursement->sent = Carbon::now();
+        $reimbursement->save();
+
+        return redirect()->route('reimbursements.view', ['reimbursement' => $reimbursement])->with('inertiaFlash',['justSent' => true]);
+    }
+
+    public function view(Reimbursement $reimbursement) {
+        $this->authorize('view', $reimbursement);
+        $reimbursement->load('author','approver','payer');
+        return Inertia::render('Reimbursements/View', [
+            'reimbursement' => $reimbursement,
+        ]);
+    }
+
+    public function receipt(Reimbursement $reimbursement) {
+        $this->authorize('view', $reimbursement);
+        
+        return response()->file(storage_path("app/reimbursements/sent/") . $reimbursement->iden . '.pdf');
     }
 }

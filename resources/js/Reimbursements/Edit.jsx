@@ -1,5 +1,5 @@
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Material, materialProps, Travel, travelProps } from "./Edit_Expense";
 import { faPaperPlane, faPlus, faSave } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,6 +11,8 @@ import { APIProvider } from "@vis.gl/react-google-maps";
 import { Driving, drivingProps } from "./Edit_Driving";
 import { enqueueSnackbar } from "notistack";
 import { NurDate } from "../Libs/DateEditor";
+import { noninertiaPostRequest } from "../Utils";
+import axios from "axios";
 
 function getId(arr) {
     let next = 0;
@@ -57,6 +59,15 @@ export default function Edit() {
             setData('content', [...refToData.current.content.filter((e) => e.id != id)]);
         }
     }, [refToData]);
+
+    const [carsList,setCarsList] = useState([]);
+    useEffect(() => {
+        async function loadCars() {
+            const res = await axios.get(route('reimbursements.aciTable'));
+            setCarsList(res.data);
+        }
+        loadCars();
+    }, []);
 
     const setDataAtId = useCallback((newprops) => {
         if (refToData.current) {
@@ -166,7 +177,7 @@ export default function Edit() {
                 <h4>Viaggi in auto privata</h4>
                 <APIProvider apiKey={import.meta.env.VITE_PUBLIC_MAPS_API_KEY}
                     version={'beta'}>
-                    {data.content.map((e) => e.type == "driving" && <Driving key={e.id} data={e} setData={setDataAtId} remove={remove} errors={content_errors[e.id]} />)}
+                    {data.content.map((e) => e.type == "driving" && <Driving key={e.id} data={e} setData={setDataAtId} remove={remove} errors={content_errors[e.id]} carsList={carsList} />)}
                 </APIProvider>
                 <div className="flex flex-row justify-end">
                     <div className="chip-button" onClick={() => setData('content', [...data.content, drivingProps(getId(data.content))])}>

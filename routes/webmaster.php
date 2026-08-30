@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\APIs;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\ContactsSyncController;
 use App\Http\Controllers\LogControllerFile;
@@ -42,6 +43,10 @@ Route::prefix('/webmaster')->group( function () {
     Route::get('/verify_cities', [ CityController::class, 'verify_cities'])->name('webmaster.verify_cities');
     Route::post('/delete_cities', [ CityController::class, 'delete_city'])->name('webmaster.delete_city');
     Route::post('/regenerate_cities', [ CityController::class, 'renegerate_cities'])->name('webmaster.renegerate_cities');
+
+    // API ACI
+    Route::get('/ACIprices', [ APIs::class, 'updateACIprices'])->name('webmaster.ACIprices');
+    Route::get('/ACIpricesTester', [ APIs::class, 'AciPricesTester'])->name('webmaster.AciPricesTester');
 
     // Settings
     Route::get('/settings', [ WebmasterController::class, 'settings'])->name('webmaster.settings');

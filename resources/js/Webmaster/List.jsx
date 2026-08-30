@@ -35,6 +35,8 @@ export default function List() {
                 <li><a href={route('auth.login_lv2.google')}>Forza accesso con autorizzazioni elevate</a></li>
                 <li><a href={route('webmaster.verify_cities')}>Verifica lista città</a></li>
                 <li><a href={route('newsletter.smtpCallback')}>Callback SMTP</a></li>
+                <li><a href={route('webmaster.ACIprices')}>Scarica aggiornamento prezzi da database ACI</a></li>
+                <li><a href={route('webmaster.AciPricesTester')}>Verifica prezzi ACI</a></li>
                 <li><a href={route('webmaster.settings')}>Parametri e impostazioni</a></li>
             </ul>
         </div>

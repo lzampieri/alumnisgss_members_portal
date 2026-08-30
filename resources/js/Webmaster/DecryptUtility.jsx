@@ -9,7 +9,7 @@ export default function DecryptUtility() {
         <div className="main-container">
             <Head title="Utility per decriptazione AES" />
             <h3>Utility per decriptazione AES.</h3>
-            <form target="_blank" action={route('webmaster.decryptUtility')} method="POST" className="w-full flex flex-col justify-start" enctype="multipart/form-data">
+            <form target="_blank" action={route('webmaster.decryptUtility')} method="POST" className="w-full flex flex-col justify-start" encType="multipart/form-data">
                 <label>File da decriptare</label>
                 <input type="file" name="file" />
                 <label>Chiave</label>

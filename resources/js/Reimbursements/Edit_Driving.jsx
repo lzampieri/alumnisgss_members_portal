@@ -12,6 +12,7 @@ import { noninertiaPostRequest } from "../Utils";
 import Backdrop from "../Layout/Backdrop";
 import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
 import { ExpensesErrorDiv } from "./Edit_ErrorDiv";
+import SmartSelect from "../Libs/SmartSelect";
 
 function delFromArray(arr, idx) {
     const newarr = arr.toSpliced(idx, 1)
@@ -23,9 +24,11 @@ export function drivingProps(id, prev) {
         date: new NurDate(prev?.date),
         from: prev?.from || null,
         to: prev?.to || null,
-        distance: prev?.distance || 0,
         id: id,
-        type: "driving"
+        type: "driving",
+        carPower: prev?.carPower || "",
+        carModel: prev?.carModel || "",
+        price: 0
     };
 }
 
@@ -61,14 +64,40 @@ async function computeDistance(data, setDistance) {
     setDistance(minDistance);
 }
 
-export const Driving = memo(({ data, setData, remove, errors }) => {
+export const Driving = memo(({ data, setData, remove, errors, carsList }) => {
     const routesLibrary = useMapsLibrary("routes");
     const placesLibrary = useMapsLibrary("places");
 
+    const [distance, setDistance] = useState(0);
+    const [pricePerKm, setPricePerKm] = useState(0);
+
     useEffect(() => {
         if (!routesLibrary || !placesLibrary) return;
-        computeDistance(data, (d) => setData({ ...data, distance: d }));
+        computeDistance(data, (d) => setDistance( d ) );
     }, [data.from, data.to, routesLibrary, placesLibrary]);
+
+    useEffect(() => {
+        if( !data.carModel || !data.carPower || !carsList )
+            setPricePerKm(0);
+
+        const car = carsList.find(c => c['label'] == data.carModel && c['power'] == data.carPower);
+        if( car )
+            setPricePerKm(car['priceperkm_estimated']);
+        else setPricePerKm(0);
+    }, [data.carModel, data.carPower, carsList]);
+
+    useEffect(() => {
+        setData({ ...data, price: distance * pricePerKm });
+    }, [distance, pricePerKm]);
+
+    const [power,setPower] = useState([])
+    useEffect(() => {
+        const t = {}
+        carsList.forEach((c) => {
+            t[c['power']] = 1;
+        })
+        setPower(Object.keys(t))
+    }, [carsList]);
 
     return <div className="my-2 border-l-4 border-t-4 rounded-xl pl-1 border-primary-main flex flex-col">
         <div className="flex flex-row justify-end">
@@ -93,13 +122,38 @@ export const Driving = memo(({ data, setData, remove, errors }) => {
             setPlace={(newPlace) => setData({ ...data, to: newPlace })} />
 
         <label>Distanza (stimata)</label>
-        { data.distance >= 0 ?
-            <input type="text" className="w-full" value={data.distance > 0 ? (data.distance.toFixed(0) + " km") : "-"} readOnly />
+        { distance >= 0 ?
+            <input type="text" className="w-full" value={distance > 0 ? (distance.toFixed(0) + " km") : "-"} readOnly />
             : <FontAwesomeIcon icon={faSpinner} spin /> }
-        
+
+        <label>Tipo di auto</label>
+        <SmartSelect
+            list={power}
+            value={data.carPower}
+            setValue={(value) => setData({...data, carPower: value})}
+            getLabel={(v) => v}
+            getValue={(v) => v} />
+
+        {
+            data.carPower && <>
+                <label>Modello</label>
+                <SmartSelect
+                    list={carsList.filter(c => c['power'] == data.carPower)}
+                    value={data.carModel}
+                    setValue={(value) => setData({...data, carModel: value})}
+                    getLabel={(v) => v['label']}
+                    getValue={(v) => v['label']} />
+            </>
+        }
+        <label>Rimborso (Stimato)</label>
+        { distance >= 0 && pricePerKm > 0 ?
+            <input type="text" className="w-full" value={(distance*pricePerKm).toFixed(2) + " €"} readOnly />
+            : <FontAwesomeIcon icon={faSpinner} spin /> }
+        <label className="unspaced">Prezzo stimato che non tiene ancora conto della variazione giornaliera dei prezzi dei carburanti.</label>
+
 
     </div>;
-}, (prev, next) => JSON.stringify(prev.data) == JSON.stringify(next.data) && JSON.stringify(prev.errors) == JSON.stringify(next.errors));
+}, (prev, next) => JSON.stringify(prev.data) == JSON.stringify(next.data) && JSON.stringify(prev.errors) == JSON.stringify(next.errors) && prev.carsList.length == next.carsList.length);
 
 
 
