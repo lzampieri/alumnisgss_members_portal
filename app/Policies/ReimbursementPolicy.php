@@ -46,6 +46,51 @@ class ReimbursementPolicy
      */
     public function edit(Person $person, Reimbursement $reimbursement): bool
     {
+        if( !$this->view($person, $reimbursement) ) return false;
         return !( $reimbursement->sent ) && $reimbursement->author->is($person);
     }
+
+    /**
+     * Determine whether the user can approve the model, if it is has been sent.
+     */
+    public function approve(Person $person, Reimbursement $reimbursement): bool
+    {
+        if( !$this->view($person, $reimbursement) ) return false;
+        return ( $reimbursement->sent ) && !( $reimbursement->approved ) && $person->can('approve', $reimbursement->project);
+    }
+
+    /**
+     * Determine whether the user can mark the model as paid, if it is has been approved.
+     */
+    public function pay(Person $person, Reimbursement $reimbursement): bool
+    {
+        if( !$this->view($person, $reimbursement) ) return false;
+        return ( $reimbursement->approved ) && !( $reimbursement->paid ) && $person->can('approve', $reimbursement->project);
+    }
+
+    /**
+     * Determine whether the user reset the model as draft, if it is has been sent or approved
+     */
+    public function redraft(Person $person, Reimbursement $reimbursement): bool
+    {
+        if( !$this->view($person, $reimbursement) ) return false;
+        if( !($reimbursement->sent) ) return false;
+        if( $reimbursement->paid ) return false;
+        return $this->approve($person, $reimbursement) || $this->pay($person, $reimbursement);
+    }
+
+    /**
+     * Determine whether the user can see and edit the internal notes of the request
+     */
+    public function internal(Person $person, Reimbursement $reimbursement): bool
+    {
+        if( !$this->view($person, $reimbursement) ) return false;
+        $project = $reimbursement->project;
+        if( $project ) {
+                return $person->can('see',$project) || $person->can('approve', $project);
+        }
+        return false;
+    }
+
+
 }

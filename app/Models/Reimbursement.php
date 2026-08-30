@@ -12,6 +12,8 @@ class Reimbursement extends Model
 {
     use EditsAreLogged;
     use SoftDeletes;
+
+    protected $hidden = ['internal_notes'];
     
     protected $fillable = [
         'project_id',
@@ -76,6 +78,14 @@ class Reimbursement extends Model
     }
     protected function canApprove(): Attribute
     {
-        return Attribute::make(get: fn(mixed $_, array $attributes) => Auth::check() && $this->project && $this->project->can_approve);
+        return Attribute::make(get: fn(mixed $_, array $attributes) => Auth::check() && Auth::user()->can('approve', $this));
+    }
+    protected function canPay(): Attribute
+    {
+        return Attribute::make(get: fn(mixed $_, array $attributes) => Auth::check() && Auth::user()->can('pay', $this));
+    }
+    protected function canInternal(): Attribute
+    {
+        return Attribute::make(get: fn(mixed $_, array $attributes) => Auth::check() && Auth::user()->can('internal', $this));
     }
 }

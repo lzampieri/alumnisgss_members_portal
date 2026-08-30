@@ -7,7 +7,7 @@ import { useMemo, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
 import { ClientSideRowModelModule, themeQuartz } from "ag-grid-community";
 import { ModuleRegistry, ColumnAutoSizeModule, QuickFilterModule } from 'ag-grid-community';
-import { faAdd, faCircle, faPencil } from "@fortawesome/free-solid-svg-icons";
+import { faAdd, faCircle, faEye, faPencil } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NurDate } from "../Libs/DateEditor";
 ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnAutoSizeModule, QuickFilterModule]);
@@ -16,6 +16,7 @@ import StateChip from "./StateChip";
 function Actions({ data }) {
     return <div className="flex flex-row gap-2 leading-none">
         {data.can_edit && <Link className="button" href={route('reimbursements.edit', { id: data.id })}><FontAwesomeIcon icon={faPencil} /></Link>}
+        {!data.can_edit && data.can_view && <Link className="button" href={route('reimbursements.view', { reimbursement: data.id })}><FontAwesomeIcon icon={faEye} /></Link>}
     </div>
 }
 
@@ -28,7 +29,7 @@ export default function Home() {
     const columns = useMemo(() => [
         { field: 'iden', headerName: '', filter: 'agTextColumnFilter' },
         { field: 'author', headerName: 'Richiedente', valueGetter: ({ data }) => data?.author?.name + " " + data?.author?.surname, filter: 'agTextColumnFilter' },
-        { field: 'sent', headerName: 'Data di invio', valueGetter: ({ value }) => value ? new NurDate(value) : "", filter: 'agTextColumnFilter' },
+        { field: 'sent', headerName: 'Data di invio', valueGetter: ({ data }) => data?.sent ? (new NurDate(data.sent)).toNiceString() : "", filter: 'agTextColumnFilter' },
         { field: 'project.title', headerName: 'Progetto', filter: 'agTextColumnFilter' },
         { field: 'state', headerName: 'Stato', filter: 'agTextColumnFilter', cellRenderer: ({ value }) => <StateChip value={value} /> },
         { field: 'id', headerName: 'Azioni', cellRenderer: ({ data }) => <Actions data={data} /> },

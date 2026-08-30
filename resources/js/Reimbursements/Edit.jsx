@@ -11,7 +11,6 @@ import { APIProvider } from "@vis.gl/react-google-maps";
 import { Driving, drivingProps } from "./Edit_Driving";
 import { enqueueSnackbar } from "notistack";
 import { NurDate } from "../Libs/DateEditor";
-import { noninertiaPostRequest } from "../Utils";
 import axios from "axios";
 
 function getId(arr) {

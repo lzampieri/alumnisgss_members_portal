@@ -21,12 +21,17 @@ Route::prefix('/reimbursements')->group(function () {
     Route::post('/autosave/{reimbursement}', [ReimbursementController::class, 'autosave'])->name('reimbursements.autosave');
     Route::post('/saveDraft/{reimbursement}', [ReimbursementController::class, 'save_draft'])->name('reimbursements.save_draft');
     Route::post('/saveFinal/{reimbursement}', [ReimbursementController::class, 'save_final'])->name('reimbursements.save_final');
+    
+    Route::post('/saveInternal/{reimbursement}', [ReimbursementController::class, 'save_internal'])->name('reimbursements.save_internal');
 
     Route::get('/aciTable', [APIs::class, 'getAciTableAsResponse'])->name('reimbursements.aciTable');
     
     Route::get('/review/{reimbursement}', [ReimbursementController::class, 'review'])->name('reimbursements.review');
     
     Route::get('/send/{reimbursement}', [ReimbursementController::class, 'send'])->name('reimbursements.send');
+    Route::get('/backToDraft/{reimbursement}', [ReimbursementController::class, 'backToDraft'])->name('reimbursements.backToDraft');
+    Route::get('/approve/{reimbursement}', [ReimbursementController::class, 'approve'])->name('reimbursements.approve');
+    Route::get('/pay/{reimbursement}', [ReimbursementController::class, 'pay'])->name('reimbursements.pay');
     
     Route::get('/view/{reimbursement}', [ReimbursementController::class, 'view'])->name('reimbursements.view');
 

@@ -20,7 +20,7 @@ class ReimbursementController extends Controller
     {
         // todo add authorization here
 
-        $reimbursements = Reimbursement::all()->filter->canView->load('project','author')->append(['can_edit','can_approve'])->values();
+        $reimbursements = Reimbursement::all()->filter->canView->load('project','author')->append(['can_edit','can_view'])->values();
 
         $canCreate = Auth::check() && Auth::user()->can('create', Reimbursement::class);
 
@@ -515,7 +515,7 @@ class ReimbursementController extends Controller
                 $filesToAppend[] = $res['filename'];
 
                 $date = Carbon::parse($item['date'])->format('d/m/Y');
-                $price = $res['price'];
+                $price = number_format($item['price'], 2, ',', ' ');
                 $pdf->HTMLhere("Da {$item['from']['name']} a {$item['to']['name']}");
                 $pdf->HTMLhere("<small>Viaggio del {$date} - distanza {$item['distance']} km</small>");
                 $pdf->HTMLhere("€ {$price}", 'R');
@@ -615,7 +615,7 @@ class ReimbursementController extends Controller
     }
 
     public function send(Reimbursement $reimbursement) {
-        // $this->authorize('edit', $reimbursement);
+        $this->authorize('edit', $reimbursement);
 
         $file = storage_path("app/reimbursements/sent/") . $reimbursement->iden . '.pdf';
         if(!file_exists($file)) {
@@ -657,12 +657,92 @@ Email generata automaticamente.
         return redirect()->route('reimbursements.view', ['reimbursement' => $reimbursement])->with('inertiaFlash',['justSent' => true]);
     }
 
+    public function approve(Reimbursement $reimbursement) {
+        $this->authorize('approve', $reimbursement);
+        
+
+        $file = storage_path("app/reimbursements/sent/") . $reimbursement->iden . '.pdf';
+        if(!file_exists($file)) {
+            return redirect()->back()->with('notistack', ['error', 'Rimborso non correttamente generato.']);
+        }
+        
+        $to = explode(",",Settings::get('reimbursements_approved_email_to','tesoreria@alumniscuolagalileiana.it'));
+        $cc = explode(",",Settings::get('reimbursements_sent_email_to','info@alumniscuolagalileiana.it'));
+
+        $date_sent = $reimbursement->sent->format('d/m/Y');
+        $date = Carbon::now()->format('d/m/Y');
+        $goto = route('reimbursements.view', $reimbursement);
+
+        $message = "
+Gent. tesoreria,\n
+Il rimborso inviato da {$reimbursement->author->nameAndSurname()} in data {$date_sent} è stato revisionato dalla segreteria in data {$date} e approvato per il pagamento.\n
+In allegato la richiesta di rimborso.\n
+\n
+Per verificare lo stato della richiesta o per segnarla come pagata - se autorizzato - si acceda all'indirizzo seguente:\n
+<a href='{$goto}'>{$goto}<a>\n
+\n
+Cordiali saluti.\n
+\n
+\n
+Email generata automaticamente.
+        ";
+
+        MailerController::sendEmail(
+            $to,
+            "Nuova richiesta di pagamento: " . $reimbursement->iden,
+            $message,
+            replyTo: $cc[0],
+            attachments: [$file],
+            cc: [Auth::user(),Auth::user()->logged_in_email->address,...$cc]
+        );
+
+        $reimbursement->approved = Carbon::now();
+        $reimbursement->approver_id = Auth::user()->id;
+        $reimbursement->save();
+        return redirect()->route('reimbursements.view', ['reimbursement' => $reimbursement])->with('inertiaFlash',['justApproved' => true]);
+    }
+
+    public function pay(Reimbursement $reimbursement) {
+        $this->authorize('pay', $reimbursement);
+        $reimbursement->paid = Carbon::now();
+        $reimbursement->payer_id = Auth::user()->id;
+        $reimbursement->save();
+        return redirect()->route('reimbursements.view', ['reimbursement' => $reimbursement]);
+    }
+
     public function view(Reimbursement $reimbursement) {
         $this->authorize('view', $reimbursement);
         $reimbursement->load('author','approver','payer');
+        $reimbursement->append('can_approve','can_pay','can_internal');
+        if( $reimbursement->can_internal ) {
+            $reimbursement->makeVisible('internal_notes');
+        }
         return Inertia::render('Reimbursements/View', [
             'reimbursement' => $reimbursement,
         ]);
+    }
+
+    public function save_internal(Request $request, Reimbursement $reimbursement) {
+        $this->authorize('internal', $reimbursement);
+
+        $validated = $request->validate([
+            'internal_notes' => 'nullable|string',
+        ]);
+
+        $reimbursement->internal_notes = $validated['internal_notes'];
+        $reimbursement->save();
+
+        return response("OK");
+    }
+
+    public function backToDraft(Reimbursement $reimbursement) {
+        $this->authorize('redraft', $reimbursement);
+
+        $reimbursement->sent = null;
+        $reimbursement->approved = null;
+        $reimbursement->paid = null;
+        $reimbursement->save();
+        return redirect()->route('reimbursements')->with('notistack', ['success', 'Rimborso ripristinato come bozza.']);
     }
 
     public function receipt(Reimbursement $reimbursement) {
