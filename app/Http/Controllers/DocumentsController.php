@@ -320,14 +320,14 @@ class DocumentsController extends Controller
         $this_version = array_search($file->id, $all_versions) + 1;
         $latest = ($this_version == count($all_versions));
 
-        \define('K_PATH_FONTS', substr( app_path(), 0, -3) . "vendor/tecnickcom/tc-lib-pdf-font/target/fonts");
+        \define('K_PATH_FONTS', substr( app_path(), 0, -3) . "storage/fonts");
 
         $pdf = new \Com\Tecnick\Pdf\Tcpdf();
 
         $sourceId = $pdf->setImportSourceFile($file->path());
         $pageCount = $pdf->getSourcePageCount($sourceId);
         $pdf->appendDocument($sourceId);
-
+        
         $bfont = $pdf->font->insert($pdf->pon, 'helvetica', '', 10);
 
         $header = '=== VERSIONE OBSOLETA! Una nuova versione del documento é presente sul portale ===';

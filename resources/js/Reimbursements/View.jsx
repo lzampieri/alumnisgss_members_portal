@@ -79,7 +79,6 @@ function BackToDraft({ reimbursement }) {
 
 export default function View() {
     const reimbursement = usePage().props.reimbursement;
-    console.log(reimbursement);
 
     return (
         <div className="flex flex-col w-full md:w-3/5">

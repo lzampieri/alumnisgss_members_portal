@@ -24,8 +24,6 @@ export default function Home() {
 
     const [quickFilter, setQuickFilter] = useState('');
 
-    console.log(usePage().props.reimbursements)
-
     const columns = useMemo(() => [
         { field: 'iden', headerName: '', filter: 'agTextColumnFilter' },
         { field: 'author', headerName: 'Richiedente', valueGetter: ({ data }) => data?.author?.name + " " + data?.author?.surname, filter: 'agTextColumnFilter' },

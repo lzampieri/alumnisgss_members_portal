@@ -87,7 +87,8 @@ export const Driving = memo(({ data, setData, remove, errors, carsList }) => {
     }, [data.carModel, data.carPower, carsList]);
 
     useEffect(() => {
-        setData({ ...data, price: distance * pricePerKm });
+        if(distance * pricePerKm != data.price)
+            setData({ ...data, price: distance * pricePerKm });
     }, [distance, pricePerKm]);
 
     const [power,setPower] = useState([])

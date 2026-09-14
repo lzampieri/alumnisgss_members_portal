@@ -20,7 +20,7 @@ class ReimbursementController extends Controller
     {
         // todo add authorization here
 
-        $reimbursements = Reimbursement::all()->filter->canView->load('project','author')->append(['can_edit','can_view'])->values();
+        $reimbursements = Reimbursement::orderBy('created_at', 'desc')->get()->filter->canView->load('project', 'author')->append(['can_edit', 'can_view'])->values();
 
         $canCreate = Auth::check() && Auth::user()->can('create', Reimbursement::class);
 
@@ -113,7 +113,7 @@ class ReimbursementController extends Controller
 
         return redirect()->route('reimbursements.review', ['reimbursement' => $reimbursement]);
     }
-    
+
     private function add_error(array &$errors, int $id, string $field, string $message)
     {
         if (!array_key_exists($id, $errors)) {
@@ -254,17 +254,17 @@ class ReimbursementController extends Controller
                     'id'   => $item['id']
                 ];
 
-                if( !$draft ) {
+                if (!$draft) {
 
                     // Compute the 
                     $res = $this->compute_driving($item, false);
-                    if ($res['distance'] < 0 ) {
+                    if ($res['distance'] < 0) {
                         $this->add_error($content_errors, $item['id'], 'distance', 'Impossibile calcolare la distanza, seleziona indirizzi più precisi.');
-                    } else if( $res['distance'] == 0 ) {
+                    } else if ($res['distance'] == 0) {
                         $this->add_error($content_errors, $item['id'], 'distance', 'Seleziona due indirizzi distinti.');
-                    } else if( !array_key_exists('car', $res) ) {
+                    } else if (!array_key_exists('car', $res)) {
                         $this->add_error($content_errors, $item['id'], 'car', 'Impossibile ritrovare il veicolo selezionato.');
-                    } else if( !array_key_exists('prices', $res) ) {
+                    } else if (!array_key_exists('prices', $res)) {
                         $this->add_error($content_errors, $item['id'], 'price', 'Impossibile calcolare il prezzo.');
                     } else {
                         $newItem += $res;
@@ -340,13 +340,14 @@ class ReimbursementController extends Controller
         'electricity' => 'kWh/100km',
     ];
 
-    private function compute_driving(array $item, bool $withPdf, string $iden = ''): array {
+    private function compute_driving(array $item, bool $withPdf, string $iden = ''): array
+    {
         $out = [];
-        
+
 
         // Distance
         $routes = APIs::computeRoutes($item['from']['id'], $item['to']['id'])['routes'];
-        if( empty($routes) ) return ['distance' => -1];
+        if (empty($routes)) return ['distance' => -1];
         $distances = array_map(fn($r) => $r['distanceMeters'], $routes);
         $minDistance = round(min($distances) / 1000);
         if ($minDistance == 0)
@@ -355,24 +356,24 @@ class ReimbursementController extends Controller
 
         // Car
         $car = false;
-        foreach( APIs::getAciTable() as $c ) {
-            if( $c['power'] == $item['carPower'] && $c['label'] == $item['carModel'] ) {
+        foreach (APIs::getAciTable() as $c) {
+            if ($c['power'] == $item['carPower'] && $c['label'] == $item['carModel']) {
                 $car = $c;
                 break;
             }
         }
-        if( !$car ) return $out;
+        if (!$car) return $out;
         $out['car'] = $car;
 
         // Carburants
-        $prices = APIs::getAciPrices(Carbon::createFromFormat("Y-m-d",$item['date']));
-        if( empty($prices['prices']) ) return $out;
+        $prices = APIs::getAciPrices(Carbon::createFromFormat("Y-m-d", $item['date']));
+        if (empty($prices['prices'])) return $out;
         $out['prices'] = $prices;
 
         // Total count
         $considered_prices = [];
         $total_price = 0;
-        foreach($car['consumption'] as $carb => $cons) {
+        foreach ($car['consumption'] as $carb => $cons) {
             $carbprice = $prices['prices'][$carb];
             $considered_prices[$carb] = $carbprice;
             $total_price += $cons * $carbprice / 100;
@@ -384,7 +385,7 @@ class ReimbursementController extends Controller
 
         $out['price'] = round($out['total_price_km'] * $minDistance * 100) / 100;
 
-        if($withPdf) {
+        if ($withPdf) {
             $pdf = new TemplatedPdfGenerator();
 
             $pdf->SetTitle("Calcolo rimborso chilometrico {$iden}.{$item['id']}");
@@ -407,7 +408,7 @@ class ReimbursementController extends Controller
             $pdf->HTMLhere("<b>Veicolo</b>: " . $out['car']['label']);
             $pdf->HTMLhere("<b>Alimentazione</b>: " . $out['car']['power']);
             $cons_str = [];
-            foreach( $out['car']['consumption'] as $carb => $cons ) {
+            foreach ($out['car']['consumption'] as $carb => $cons) {
                 $cons_str[] = ReimbursementController::NAMES[$carb] . ": " . number_format($cons, 3, ',', ' ') . " " . ReimbursementController::UNITS[$carb];
             }
             $pdf->HTMLhere("<b>Consumi</b>: " . implode(" + ", $cons_str));
@@ -417,7 +418,7 @@ class ReimbursementController extends Controller
             $pdf->HTMLhere("<b>Prezzi dei carburanti considerati:</b>");
             $pdf->HTMLhere("Calcolati dai dati forniti da ACI (ultimo aggiornamento " . Carbon::parse($out['prices']['updated'])->format("d/m/Y") . ")");
             $pdf->HTMLhere("Data del viaggio: " . $out['prices']['forDate'] . " - rilevazione utile: " . $out['prices']['realDate']);
-            foreach( $out['considered_prices'] as $carb => $price ) {
+            foreach ($out['considered_prices'] as $carb => $price) {
                 $pdf->HTMLhere(ReimbursementController::NAMES[$carb] . ": " . number_format($price, 3, ',', ' ') . " " . ReimbursementController::UNITS[$carb]);
             }
             $pdf->spacing();
@@ -438,14 +439,15 @@ class ReimbursementController extends Controller
             $pdf->HTMLhere("<b>€ " . number_format($out['price'], 2, ',', ' ') . "</b>", "R");
 
             $output_filename = storage_path("app/reimbursements/parts/{$iden}_{$item['id']}.pdf");
-            $pdf->Output( $output_filename, 'F');
+            $pdf->Output($output_filename, 'F');
             $out['filename'] = $output_filename;
         }
 
         return $out;
     }
 
-    public function generate_PDF(Reimbursement $reimbursement): string {
+    public function generate_PDF(Reimbursement $reimbursement): string
+    {
 
         $filesToAppend = [];
         $total_material = 0;
@@ -471,11 +473,11 @@ class ReimbursementController extends Controller
 
         $pdf->spacing();
         $pdf->HTMLhere("Al fine di svolgere l'incarico affidato, ha sostenuto le seguenti spese:");
-        
+
         $pdf->spacing(2);
         $pdf->HTMLhere('<b>Materiali didattici</b>', 'C');
         foreach ($content as $item) {
-            if( $item['type'] == 'material') {
+            if ($item['type'] == 'material') {
                 $date = Carbon::parse($item['date'])->format('d/m/Y');
                 $price = number_format($item['price'], 2, ',', ' ');
                 $pdf->HTMLhere("{$item['title']}");
@@ -492,7 +494,7 @@ class ReimbursementController extends Controller
         $pdf->spacing(2);
         $pdf->HTMLhere('<b>Mezzi di transporto pubblici e pedaggi</b>', 'C');
         foreach ($content as $item) {
-            if( $item['type'] == 'travel') {
+            if ($item['type'] == 'travel') {
                 $date = Carbon::parse($item['date'])->format('d/m/Y');
                 $price = number_format($item['price'], 2, ',', ' ');
                 $pdf->HTMLhere("{$item['way']}: da {$item['from']} a {$item['to']}");
@@ -509,9 +511,9 @@ class ReimbursementController extends Controller
         $pdf->spacing(2);
         $pdf->HTMLhere('<b>Viaggio con mezzo proprio</b>', 'C');
         foreach ($content as &$item) {
-            if( $item['type'] == 'driving') {
+            if ($item['type'] == 'driving') {
                 $res = $this->compute_driving($item, true, $reimbursement->iden);
-                $item += $res; 
+                $item += $res;
                 $filesToAppend[] = $res['filename'];
 
                 $date = Carbon::parse($item['date'])->format('d/m/Y');
@@ -547,24 +549,30 @@ class ReimbursementController extends Controller
         $pdf->HTMLhere("Intestato a: {$reimbursement->author->collaborator->holder}");
         $pdf->HTMLhere("Presso: {$reimbursement->author->collaborator->bank}");
 
-        if( strlen($reimbursement->notes) > 0 ) {
+        if (strlen($reimbursement->notes) > 0) {
             $pdf->spacing(2);
             $pdf->HTMLhere("Nota: {$reimbursement->notes}");
         }
-        
+
         $pdf->spacing(2);
-        $pdf->HTMLhere("Lì, ". Carbon::now()->format('d/m/Y'));
+        $pdf->HTMLhere("Lì, " . Carbon::now()->format('d/m/Y'));
         $pdf->HTMLhere($reimbursement->author->nameAndSurname(), 'R');
         $email = Auth::user()->logged_in_email->address;
         $pdf->HTMLhere("<small>Indentificato mezzo email - {$email}</small>", 'R');
 
         $output_filename = storage_path("app/reimbursements/parts/{$reimbursement->iden}.pdf");
-        $pdf->Output( $output_filename, 'F');
+        $pdf->Output($output_filename, 'F');
 
 
         // Use now the tc-lib-pdf to merge all the PDFs in a single file
         $merged = new \Com\Tecnick\Pdf\Tcpdf(
-            'mm', true, false, true, '', null, [
+            'mm',
+            true,
+            false,
+            true,
+            '',
+            null,
+            [
                 'allowedPaths' => [storage_path()]
             ]
         );
@@ -575,7 +583,7 @@ class ReimbursementController extends Controller
 
         // Attachments
         foreach ($filesToAppend as $file) {
-            if( str_ends_with( $file, '.pdf' ) ) {
+            if (str_ends_with($file, '.pdf')) {
                 // It's a PDF, import it!
                 $sourceId = $merged->setImportSourceFile($file);
                 $merged->appendDocument($sourceId);
@@ -597,7 +605,7 @@ class ReimbursementController extends Controller
         $merged->SetTitle('Richiesta di rimborso ' . $reimbursement->iden);
         $merged->SetAuthor($reimbursement->author->surnameAndName());
         $merged->setPDFFilename($reimbursement->iden . '.pdf');
-        
+
         $merged_folder = storage_path("app/reimbursements/sent/");
         $rawpdf = $merged->getOutPDFString();
 
@@ -606,23 +614,25 @@ class ReimbursementController extends Controller
         return $merged_folder . $reimbursement->iden . '.pdf';
     }
 
-    public function review(Reimbursement $reimbursement) {
+    public function review(Reimbursement $reimbursement)
+    {
         $this->authorize('edit', $reimbursement);
-        
+
         return Inertia::render('Reimbursements/Review', [
             'reimbursement' => $reimbursement
         ]);
     }
 
-    public function send(Reimbursement $reimbursement) {
+    public function send(Reimbursement $reimbursement)
+    {
         $this->authorize('edit', $reimbursement);
 
         $file = storage_path("app/reimbursements/sent/") . $reimbursement->iden . '.pdf';
-        if(!file_exists($file)) {
+        if (!file_exists($file)) {
             return redirect()->back()->with('notistack', ['error', 'Rimborso non correttamente generato.']);
         }
-        
-        $to = Settings::get('reimbursements_sent_email_to','info@alumniscuolagalileiana.it');
+
+        $to = Settings::get('reimbursements_sent_email_to', 'info@alumniscuolagalileiana.it');
         // TODO: check if francesca and send to tesoreria@
 
         $date = Carbon::now()->format('d/m/Y');
@@ -648,26 +658,27 @@ Email generata automaticamente.
             $message,
             replyTo: Auth::user()->logged_in_email->address,
             attachments: [$file],
-            cc: [Auth::user(),Auth::user()->logged_in_email->address]
+            cc: [Auth::user(), Auth::user()->logged_in_email->address]
         );
 
         $reimbursement->sent = Carbon::now();
         $reimbursement->save();
 
-        return redirect()->route('reimbursements.view', ['reimbursement' => $reimbursement])->with('inertiaFlash',['justSent' => true]);
+        return redirect()->route('reimbursements.view', ['reimbursement' => $reimbursement])->with('inertiaFlash', ['justSent' => true]);
     }
 
-    public function approve(Reimbursement $reimbursement) {
+    public function approve(Reimbursement $reimbursement)
+    {
         $this->authorize('approve', $reimbursement);
-        
+
 
         $file = storage_path("app/reimbursements/sent/") . $reimbursement->iden . '.pdf';
-        if(!file_exists($file)) {
+        if (!file_exists($file)) {
             return redirect()->back()->with('notistack', ['error', 'Rimborso non correttamente generato.']);
         }
-        
-        $to = explode(",",Settings::get('reimbursements_approved_email_to','tesoreria@alumniscuolagalileiana.it'));
-        $cc = explode(",",Settings::get('reimbursements_sent_email_to','info@alumniscuolagalileiana.it'));
+
+        $to = explode(",", Settings::get('reimbursements_approved_email_to', 'tesoreria@alumniscuolagalileiana.it'));
+        $cc = explode(",", Settings::get('reimbursements_sent_email_to', 'info@alumniscuolagalileiana.it'));
 
         $date_sent = $reimbursement->sent->format('d/m/Y');
         $date = Carbon::now()->format('d/m/Y');
@@ -693,16 +704,17 @@ Email generata automaticamente.
             $message,
             replyTo: $cc[0],
             attachments: [$file],
-            cc: [Auth::user(),Auth::user()->logged_in_email->address,...$cc]
+            cc: [Auth::user(), Auth::user()->logged_in_email->address, ...$cc]
         );
 
         $reimbursement->approved = Carbon::now();
         $reimbursement->approver_id = Auth::user()->id;
         $reimbursement->save();
-        return redirect()->route('reimbursements.view', ['reimbursement' => $reimbursement])->with('inertiaFlash',['justApproved' => true]);
+        return redirect()->route('reimbursements.view', ['reimbursement' => $reimbursement])->with('inertiaFlash', ['justApproved' => true]);
     }
 
-    public function pay(Reimbursement $reimbursement) {
+    public function pay(Reimbursement $reimbursement)
+    {
         $this->authorize('pay', $reimbursement);
         $reimbursement->paid = Carbon::now();
         $reimbursement->payer_id = Auth::user()->id;
@@ -710,11 +722,12 @@ Email generata automaticamente.
         return redirect()->route('reimbursements.view', ['reimbursement' => $reimbursement]);
     }
 
-    public function view(Reimbursement $reimbursement) {
+    public function view(Reimbursement $reimbursement)
+    {
         $this->authorize('view', $reimbursement);
-        $reimbursement->load('author','approver','payer');
-        $reimbursement->append('can_approve','can_pay','can_internal');
-        if( $reimbursement->can_internal ) {
+        $reimbursement->load('author', 'approver', 'payer');
+        $reimbursement->append('can_approve', 'can_pay', 'can_internal');
+        if ($reimbursement->can_internal) {
             $reimbursement->makeVisible('internal_notes');
         }
         return Inertia::render('Reimbursements/View', [
@@ -722,7 +735,8 @@ Email generata automaticamente.
         ]);
     }
 
-    public function save_internal(Request $request, Reimbursement $reimbursement) {
+    public function save_internal(Request $request, Reimbursement $reimbursement)
+    {
         $this->authorize('internal', $reimbursement);
 
         $validated = $request->validate([
@@ -735,7 +749,8 @@ Email generata automaticamente.
         return response("OK");
     }
 
-    public function backToDraft(Reimbursement $reimbursement) {
+    public function backToDraft(Reimbursement $reimbursement)
+    {
         $this->authorize('redraft', $reimbursement);
 
         $reimbursement->sent = null;
@@ -745,9 +760,72 @@ Email generata automaticamente.
         return redirect()->route('reimbursements')->with('notistack', ['success', 'Rimborso ripristinato come bozza.']);
     }
 
-    public function receipt(Reimbursement $reimbursement) {
+    public function receipt(Reimbursement $reimbursement)
+    {
         $this->authorize('view', $reimbursement);
-        
+
         return response()->file(storage_path("app/reimbursements/sent/") . $reimbursement->iden . '.pdf');
+    }
+
+    public function approveReminder()
+    {
+        $reimbs = Reimbursement::whereNotNull('sent')->whereNull('approved')->get();
+
+        if (count($reimbs)) {
+            $output = "";
+            $files = [];
+
+            foreach ($reimbs as $reimbursement) {
+                $price = number_format($reimbursement->total, 2, ',', ' ');
+                $output .= "<a href='" . route('reimbursements.view', ['reimbursement' => $reimbursement]) . "'>{$reimbursement->iden}</a> da {$reimbursement->author->nameAndSurname()} sul progetto {$reimbursement->project->title} ({$price} €)<br>";
+                
+                $file = storage_path("app/reimbursements/sent/") . $reimbursement->iden . '.pdf';
+                if (file_exists($file)) {
+                    $files[] = $file;
+                }
+            }
+
+            $to = Settings::get('reimbursements_sent_email_to', 'info@alumniscuolagalileiana.it');
+
+            MailerController::sendEmail(
+                explode(",", $to),
+                "Promemoria: {$reimbs->count()} rimborso/i da approvare",
+                "Gent. segreteria,\nNel portale risultano le seguenti richiese di rimborso in attesa di approvazione (richieste in allegato):\n" . $output . "\n\nCordiali saluti.\n\n\nEmail generata automaticamente ogni lunedì mattina.",
+                attachments: $files
+            );
+        }
+
+        return response("OK");
+    }
+
+    public function payReminder()
+    {
+        $reimbs = Reimbursement::whereNotNull('approved')->whereNull('paid')->get();
+
+        if (count($reimbs)) {
+            $output = "";
+            $files = [];
+
+            foreach ($reimbs as $reimbursement) {
+                $price = number_format($reimbursement->total, 2, ',', ' ');
+                $output .= "<a href='" . route('reimbursements.view', ['reimbursement' => $reimbursement]) . "'>{$reimbursement->iden}</a> da {$reimbursement->author->nameAndSurname()} sul progetto {$reimbursement->project->title} ({$price} €)<br>";
+                
+                $file = storage_path("app/reimbursements/sent/") . $reimbursement->iden . '.pdf';
+                if (file_exists($file)) {
+                    $files[] = $file;
+                }
+            }
+
+            $to = Settings::get('reimbursements_approved_email_to', 'tesoreria@alumniscuolagalileiana.it');
+
+            MailerController::sendEmail(
+                explode(",", $to),
+                "Promemoria: {$reimbs->count()} rimborso/i da pagare",
+                "Gent. tesoreria,\nNel portale risultano le seguenti richiese di rimborso in attesa di pagamento (richieste in allegato):\n" . $output . "\n\nCordiali saluti.\n\n\nEmail generata automaticamente ogni lunedì mattina.",
+                attachments: $files
+            );
+        }
+
+        return response("OK");
     }
 }

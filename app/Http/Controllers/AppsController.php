@@ -6,6 +6,7 @@ use App\Models\Email;
 use App\Models\Newsletter;
 use App\Models\Person;
 use App\Models\Ratification;
+use App\Models\Reimbursement;
 use App\Models\Stamp;
 use App\Policies\PersonPolicy;
 use App\Policies\PositionPolicy;
@@ -70,7 +71,7 @@ class AppsController extends Controller
             $apps[] = 'positions';
         }
 
-        if (Auth::user() && Auth::user()->hasPermissionTo('features-preview')) { // todo remove
+        if (Auth::user() && Auth::user()->can('access',Reimbursement::class)) { // todo remove
             $apps[] = 'projects';
             $apps[] = 'reimbursements';
         }

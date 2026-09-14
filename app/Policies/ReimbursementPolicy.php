@@ -10,6 +10,14 @@ use Illuminate\Support\Facades\Auth;
 class ReimbursementPolicy
 {
     /**
+     * Determine whether the user can access the reimbursements and projects sections.
+     */
+    public function access(Person $person): bool
+    {
+        return Auth::check();
+    }
+
+    /**
      * Determine whether the user can view the model.
      */
     public function view(Person $person, Reimbursement $reimbursement): bool

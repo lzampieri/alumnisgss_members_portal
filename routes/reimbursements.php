@@ -39,4 +39,7 @@ Route::prefix('/reimbursements')->group(function () {
     Route::get('/file/{id}', [FileController::class, 'fromId'])->name('reimbursements.viewFile');
     
     Route::get('/receipt/{reimbursement}', [ReimbursementController::class, 'receipt'])->name('reimbursements.receipt');
+
+    Route::get('/reminders/approve', [ReimbursementController::class, 'approveReminder']);
+    Route::get('/reminders/pay', [ReimbursementController::class, 'payReminder']);
 });
