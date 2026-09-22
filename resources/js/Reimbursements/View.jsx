@@ -1,5 +1,5 @@
 import { Head, Link, usePage } from "@inertiajs/react";
-import { faCheckDouble, faFloppyDisk, faHandHoldingDollar, faPaperPlane, faPencil, faSpinner, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCheckDouble, faFloppyDisk, faHandHoldingDollar, faPaperPlane, faPencil, faRotateBack, faSpinner, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import StateChip from "./StateChip";
 import { NurDate } from "../Libs/DateEditor";
@@ -79,6 +79,7 @@ function BackToDraft({ reimbursement }) {
 
 export default function View() {
     const reimbursement = usePage().props.reimbursement;
+    const [regOpen, setRegOpen] = useState(false);
 
     return (
         <div className="flex flex-col w-full md:w-3/5">
@@ -136,6 +137,28 @@ export default function View() {
                         <FontAwesomeIcon icon={faHandHoldingDollar} className="mr-2" />
                         Segna come pagata
                     </Link>
+                </div>
+            }
+            
+            { usePage().props.can_regenerate && <div className="flex flex-row justify-center mt-4 gap-4">
+                    <div className="button" onClick={() => setRegOpen(true)}>
+                        <FontAwesomeIcon icon={faRotateBack} className="mr-2" />
+                        Rigenera pdf
+                    </div>
+                    <EmptyDialog
+                        open={regOpen}
+                        onClose={() => setRegOpen(false)}>
+                        Sei sicuro di voler rigenerare il pdf?<br />Si tratta di una operazione delicata (ed anche leggermente illegale).
+                        <div className="flex flex-row justify-center mt-4 gap-4">
+                            <div className="button" onClick={() => setRegOpen(false)}>
+                                Annulla
+                            </div>
+                            <Link className="button" href={route('reimbursements.regenerate', { reimbursement: reimbursement.id })}>
+                                <FontAwesomeIcon icon={faRotateBack} className="mr-2" />
+                                Rigenera
+                            </Link>
+                        </div>
+                    </EmptyDialog>
                 </div>
             }
         </div>

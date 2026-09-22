@@ -101,4 +101,31 @@ class ReimbursementPolicy
     }
 
 
+    /**
+     * Determine whether the user can regenerate the pdf for the model.
+     */
+    public function regenerate(Person $person, Reimbursement $reimbursement): bool
+    {
+        if( !$this->view($person, $reimbursement) ) return false;
+        if( !( $reimbursement->sent ) ) return false;
+        return $person->hasPermissionTo('reimbursements-regenerate');
+    }
+
+    /**
+     * Determine whether the user can delete the model.
+     */
+    public function delete(Person $person, Reimbursement $reimbursement): bool
+    {
+        if( $reimbursement->deleted_at ) return false;
+        return $this->edit($person, $reimbursement) || $this->approve($person, $reimbursement) || $this->pay($person, $reimbursement);
+    }
+
+    /**
+     * Determine whether the user can restore the model.
+     */
+    public function restore(Person $person, Reimbursement $reimbursement): bool
+    {
+        if( !$reimbursement->deleted_at ) return false;
+        return $this->edit($person, $reimbursement) || $this->approve($person, $reimbursement) || $this->pay($person, $reimbursement);
+    }
 }

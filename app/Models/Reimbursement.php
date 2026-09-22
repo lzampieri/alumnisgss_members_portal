@@ -61,6 +61,7 @@ class Reimbursement extends Model
     }
     protected function state(): Attribute {
         return Attribute::make( get: function () {
+            if( $this->deleted_at ) return 'deleted';
             if( !$this->sent ) return 'draft';
             if( !$this->approved ) return 'sent';
             if( !$this->paid ) return 'approved';
@@ -83,6 +84,14 @@ class Reimbursement extends Model
     protected function canPay(): Attribute
     {
         return Attribute::make(get: fn(mixed $_, array $attributes) => Auth::check() && Auth::user()->can('pay', $this));
+    }
+    protected function canDelete(): Attribute
+    {
+        return Attribute::make(get: fn(mixed $_, array $attributes) => Auth::check() && Auth::user()->can('delete', $this));
+    }
+    protected function canRestore(): Attribute
+    {
+        return Attribute::make(get: fn(mixed $_, array $attributes) => Auth::check() && Auth::user()->can('restore', $this));
     }
     protected function canInternal(): Attribute
     {

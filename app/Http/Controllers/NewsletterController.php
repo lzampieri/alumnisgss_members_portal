@@ -224,7 +224,7 @@ class NewsletterController extends Controller
 
             // Upload file
             $file = File::create();
-            $file->handle =  $cleaned_name . '_' . $file->id . '.' . $extension;
+            $file->handle = 'news_' . $cleaned_name . '_' . $file->id . '.' . $extension;
             $file->parent()->associate($newsletter)->save();
             $file->save();
 

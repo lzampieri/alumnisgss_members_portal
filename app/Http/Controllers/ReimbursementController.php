@@ -16,11 +16,14 @@ use Inertia\Inertia;
 
 class ReimbursementController extends Controller
 {
-    public function home()
+    public function home(Request $request)
     {
         // todo add authorization here
+        $rr = Reimbursement::orderBy('created_at', 'desc');
+        if($request->has('withTrashed'))
+            $rr = $rr->withTrashed();
 
-        $reimbursements = Reimbursement::orderBy('created_at', 'desc')->get()->filter->canView->load('project', 'author')->append(['can_edit', 'can_view'])->values();
+        $reimbursements = $rr->get()->filter->canView->load('project', 'author')->append(['can_edit', 'can_view', 'can_delete', 'can_restore'])->values();
 
         $canCreate = Auth::check() && Auth::user()->can('create', Reimbursement::class);
 
@@ -306,7 +309,7 @@ class ReimbursementController extends Controller
 
             // Upload file
             $file = File::create();
-            $file->handle =  $reimbursement->iden . '_R' . $file->id . '_' . $cleaned_name  . '.' . $extension;
+            $file->handle = 'reimb_' . $reimbursement->iden . '_R' . $file->id . '_' . $cleaned_name  . '.' . $extension;
             $file->parent()->associate($reimbursement);
             $file->save();
 
@@ -654,7 +657,7 @@ Email generata automaticamente.
 
         MailerController::sendEmail(
             explode(",", $to),
-            "Nuova richiesta di rimborso: " . $reimbursement->iden,
+            "Nuova richiesta di rimborso: " . $reimbursement->iden . " [" . $reimbursement->project->title . "]",
             $message,
             replyTo: Auth::user()->logged_in_email->address,
             attachments: [$file],
@@ -700,7 +703,7 @@ Email generata automaticamente.
 
         MailerController::sendEmail(
             $to,
-            "Nuova richiesta di pagamento: " . $reimbursement->iden,
+            "Nuova richiesta di pagamento: " . $reimbursement->iden. " [" . $reimbursement->project->title . "]",
             $message,
             replyTo: $cc[0],
             attachments: [$file],
@@ -732,7 +735,17 @@ Email generata automaticamente.
         }
         return Inertia::render('Reimbursements/View', [
             'reimbursement' => $reimbursement,
+            'can_regenerate' => Auth::check() && Auth::user()->can('regenerate', $reimbursement),
         ]);
+    }
+
+    public function regenerate(Reimbursement $reimbursement)
+    {
+        $this->authorize('regenerate', $reimbursement);
+        
+        $this->generate_PDF($reimbursement);
+
+        return redirect()->back()->with('notistack', ['success', 'Rimborso rigenerato.']);
     }
 
     public function save_internal(Request $request, Reimbursement $reimbursement)
@@ -764,7 +777,11 @@ Email generata automaticamente.
     {
         $this->authorize('view', $reimbursement);
 
-        return response()->file(storage_path("app/reimbursements/sent/") . $reimbursement->iden . '.pdf');
+        return response()->file(storage_path("app/reimbursements/sent/") . $reimbursement->iden . '.pdf',[
+            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+            'Pragma' => 'no-cache',
+            'Expires' => '0'
+        ]);
     }
 
     public function approveReminder()
@@ -827,5 +844,27 @@ Email generata automaticamente.
         }
 
         return response("OK");
+    }
+
+    public function delete(Reimbursement $reimbursement)
+    {
+        $this->authorize('delete', $reimbursement);
+
+        $reimbursement->delete();
+
+        return redirect()->back()->with('notistack', ['success', 'Rimborso cancellato.']);
+    }
+
+
+    public function restore(int $reimbursement)
+    {
+        $reimbursement = Reimbursement::withTrashed()->find($reimbursement);
+        if( !$reimbursement ) abort(404);
+
+        $this->authorize('restore', $reimbursement);
+
+        $reimbursement->restore();
+
+        return redirect()->back()->with('notistack', ['success', 'Rimborso ripristinato.']);
     }
 }

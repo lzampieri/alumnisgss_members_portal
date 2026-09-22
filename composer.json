@@ -26,6 +26,7 @@
         "staudenmeir/laravel-adjacency-list": "^1.25",
         "symfony/mailer": "^7.4",
         "tecnickcom/tc-lib-pdf": "^8.74",
+        "tecnickcom/tcpdf": "6.*",
         "tightenco/ziggy": "^2.6"
     },
     "require-dev": {

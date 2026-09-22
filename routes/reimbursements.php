@@ -27,6 +27,7 @@ Route::prefix('/reimbursements')->group(function () {
     Route::get('/aciTable', [APIs::class, 'getAciTableAsResponse'])->name('reimbursements.aciTable');
     
     Route::get('/review/{reimbursement}', [ReimbursementController::class, 'review'])->name('reimbursements.review');
+    Route::get('/regenerate/{reimbursement}', [ReimbursementController::class, 'regenerate'])->name('reimbursements.regenerate');
     
     Route::get('/send/{reimbursement}', [ReimbursementController::class, 'send'])->name('reimbursements.send');
     Route::get('/backToDraft/{reimbursement}', [ReimbursementController::class, 'backToDraft'])->name('reimbursements.backToDraft');
@@ -42,4 +43,7 @@ Route::prefix('/reimbursements')->group(function () {
 
     Route::get('/reminders/approve', [ReimbursementController::class, 'approveReminder']);
     Route::get('/reminders/pay', [ReimbursementController::class, 'payReminder']);
+
+    Route::get('/delete/{reimbursement}', [ReimbursementController::class, 'delete'])->name('reimbursements.delete');
+    Route::get('/restore/{reimbursement}', [ReimbursementController::class, 'restore'])->name('reimbursements.restore');
 });

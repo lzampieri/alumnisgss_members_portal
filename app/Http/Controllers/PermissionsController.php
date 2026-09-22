@@ -143,6 +143,7 @@ class PermissionsController extends Controller
             'projects-edit-all',
             // Reimbursement
             'reimbursements-view-all',
+            'reimbursements-regenerate',
             // Positions
             'positions-view-active',
             'positions-view-all',
