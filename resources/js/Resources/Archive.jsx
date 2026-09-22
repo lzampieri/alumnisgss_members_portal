@@ -43,7 +43,7 @@ export default function Archive() {
         <Head title="Archivio" />
         <Drawer isArchive={true}>
             <div className="flex flex-col w-full items-start">
-                <h3>Archivio</h3>
+                <h1>Archivio</h1>
                 <i>L'archivio non è visibile a tutti gli utenti, ma solo a coloro a cui è stato specificatamente concesso.</i>
                 <span>È qui riportata la lista completa di tutte le risorse visibili dall'utente corrente. Quelle contrassegnate dal simbolo <FontAwesomeIcon icon={faArchive} /> sono archiviate e generalmente non visibili nel menù laterale.</span>
                 <div className="w-full flex flex-col items-stretch">

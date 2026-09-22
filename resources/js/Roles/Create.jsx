@@ -26,9 +26,9 @@ export default function Create() {
 
     return <>
         <EmptyDialog open={creating} onClose={() => setIsCreating(false)}>
-            <h3 className="mb-3">
+            <h1 className="mb-3">
                 Nuovo gruppo
-            </h3>
+            </h1>
             <form onSubmit={submit} className="flex flex-col items-stretch">
                 <label>Nome software</label>
                 <input type="text" value={data.name} onChange={(e) => setData('name', e.target.value)} />

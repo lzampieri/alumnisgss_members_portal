@@ -49,7 +49,7 @@ export default function ImageUploadModal({ imageHandle, imageSizeClass, setImage
         </div>
         <div className='button' onClick={() => setIsEditing(true)}>{imageHandle ? "Modifica" : "Scegli"}</div>
         <EmptyDialog open={isEditing} onClose={() => setIsEditing(false)}>
-            <h3>Seleziona immagine</h3>
+            <h1>Seleziona immagine</h1>
             <div {...getRootProps()} className="border-2 border-dashed rounded-md my-4 flex flex-col items-center p-4">
                 <input {...getInputProps()} />
                 <FontAwesomeIcon icon={faFileImage} className="text-4xl" />

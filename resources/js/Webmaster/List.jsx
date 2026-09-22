@@ -22,7 +22,7 @@ export default function List() {
     return (
         <div className="main-container">
             <Head title="Funzioni webmaster" />
-            <ul>
+            <ul className="list-none">
                 <li><a href={route('webmaster.log.files')}>Log to files</a></li>
                 <li><a href={route('webmaster.log.internal')}>Log to database</a></li>
                 <li><RequireConfirmLink href={route('webmaster.backup')}>Backup</RequireConfirmLink></li>

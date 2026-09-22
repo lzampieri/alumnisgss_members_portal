@@ -84,7 +84,7 @@ export default function View() {
     return (
         <div className="flex flex-col w-full md:w-3/5">
             <Head title="Richiesta di rimborso" />
-            <h3>Richiesta di rimborso</h3>
+            <h1>Richiesta di rimborso</h1>
             <label className="unspaced">Identificativo: {reimbursement.iden}</label>
 
             { usePage().props.flash?.justSent &&
@@ -99,7 +99,7 @@ export default function View() {
             }
 
             <div className="flex flex-col my-4 border-l-4 pl-2 border-l-primary-main">
-                <ul>
+                <ul className="list-none">
                     <li><StateChip value={reimbursement.state} /></li>
                     {
                         reimbursement.sent &&

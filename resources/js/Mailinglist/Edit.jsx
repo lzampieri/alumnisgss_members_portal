@@ -46,7 +46,7 @@ export default function Edit() {
         <form className="flex flex-col w-full md:w-3/5" onSubmit={submit}>
             <Head title={prev ? prev.name : "Nuova mailing list"} />
             <div className="w-full justify-between flex flex-row">
-                <h3>{prev ? "Aggiorna" : "Crea nuova"} mailing list</h3>
+                <h1>{prev ? "Aggiorna" : "Crea nuova"} mailing list</h1>
                 <div className="button flex flex-row items-center" onClick={submit}>
                     <FontAwesomeIcon icon={faSave} />
                     Salva

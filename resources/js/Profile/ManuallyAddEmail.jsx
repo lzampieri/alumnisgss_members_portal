@@ -24,7 +24,7 @@ export default function ManuallyAddEmail() {
         <FontAwesomeIcon icon={faPlus} className="icon-button ml-2" onClick={() => setOpen(true)} />
         <EmptyDialog open={open} onClose={() => setOpen(false)}>
             <form className="flex flex-col w-full" onSubmit={submit}>
-                <h3>Inserisci nuovo indirizzo mail</h3>
+                <h1>Inserisci nuovo indirizzo mail</h1>
                 <label>Indirizzo</label>
                 <input type="text" value={data.address} onChange={(e) => setData('address', e.target.value)} />
                 <label className="error">{errors.address}</label>

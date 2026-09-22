@@ -18,7 +18,7 @@ export default function DataConsent() {
         <div className="flex flex-col w-full md:w-3/5 items-start gap-2">
             <Head title="Il mio profilo" />
 
-            <h3>{alumnus.name} {alumnus.surname}</h3>
+            <h1>{alumnus.name} {alumnus.surname}</h1>
             <div className="font-bold text-primary-main mt-4">Consenso alla diffusione dei dettagli</div>
             <div className="text-gray-400 text-sm">
                 <FontAwesomeIcon icon={faCircleInfo} className="ml-2 mr-1" />

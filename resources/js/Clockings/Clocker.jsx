@@ -76,7 +76,7 @@ export default function Clocker() {
 
     return <div className="main-container gap-4">
         <Head title="Timbratore" />
-        <h3>Timbrature dipendenti - <i>{user.identity ? (user.identity.name || '') + " " + (user.identity.surname || '') : user.credential}</i></h3>
+        <h1>Timbrature dipendenti - <i>{user.identity ? (user.identity.name || '') + " " + (user.identity.surname || '') : user.credential}</i></h1>
         <span className="text-6xl md:text-9xl font-mono"><Clock /></span>
         {lastClockIn && canClockToday && <div>
             Entrato ore: {new Date(lastClockIn.clockin).toLocaleTimeString('it-IT', { 'hour': '2-digit', 'minute': '2-digit' })} - Dall'entrata <Stopwatch from={new Date(lastClockIn.clockin)} />

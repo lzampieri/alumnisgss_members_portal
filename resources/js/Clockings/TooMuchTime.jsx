@@ -34,7 +34,7 @@ export default function TooMuchTime() {
             </div>
             <div className="w-full">È stato rilevato per la data odierna un eccesso di ore lavorative. In particolare risultano lavorate <b>{withQuartersAndHours(totalCount(stamps))}</b> a fronte delle <b>{withQuartersAndHours(expectedHours)}</b> attese.</div>
             <div className="w-full">Le ore di lavoro risultano dalle seguenti timbrature:
-                <ul className="list-disc list-inside">
+                <ul>
                     {stamps.map((stamp) =>
                         <li key={stamp.id}>
                             {stamp.type.label}

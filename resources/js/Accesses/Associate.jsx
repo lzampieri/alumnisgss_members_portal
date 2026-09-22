@@ -103,7 +103,7 @@ function deleteRequest(email, setProcessing) {
 function NewProfile({ subject, open, setOpen }) {
 
     return <EmptyDialog open={open} onClose={() => setOpen(false)}>
-        <h3>Crea nuovo profilo</h3>
+        <h1>Crea nuovo profilo</h1>
         <div className="text-error font-bold p-2">Prima di creare una nuova identità, controllare con attenzione che non sia già presente, per evitare doppioni.</div>
         <Link
             href={route('person.add',{associate_to: subject.id})}
@@ -124,7 +124,7 @@ export default function List() {
 
     return <div className="main-container-large h-[80vh] gap-1">
         <Head title={"Approvazione " + subject.address} />
-        <h3>Approvazione richiesta di accesso</h3>
+        <h1>Approvazione richiesta di accesso</h1>
         {subject.address}<br />
         <div className="text-gray-500">Richiesta il {new Date(subject.created_at).toLocaleDateString('it-IT', { year: 'numeric', month: '2-digit', day: '2-digit' })}</div>
         <div className="w-full md:w-3/4">

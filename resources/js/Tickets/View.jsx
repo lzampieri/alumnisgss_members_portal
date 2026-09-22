@@ -46,7 +46,7 @@ function RequireConfirmAction({ label, callback }) {
             open={open}
             onClose={() => setOpen(false)}
             onConfirm={() => { setOpen(false); callback() }}>
-            <h4>{label}</h4><br />
+            <h2>{label}</h2><br />
             Sei sicuro?
         </Dialog>
     </>
@@ -83,8 +83,8 @@ export default function View() {
             Indietro
         </Link> */}
         <Head title={"Ticket #" + ticket.id + " (" + usePage().props.commonName + ")"} />
-        <h3 className="my-3">Ticket #{ticket.id}</h3>
-        <h4>{usePage().props.commonName}: {ticket.instance.subject}</h4>
+        <h1 className="my-3">Ticket #{ticket.id}</h1>
+        <h2>{usePage().props.commonName}: {ticket.instance.subject}</h2>
 
         <div className="w-full flex flex-col items-stretch">
             <label>Stato</label>

@@ -55,7 +55,7 @@ export default function FileUploadModal({ fileHandle, setFileHandle, setFileExt,
             <div className='button' onClick={() => setIsEditing(true)}>{fileHandle ? "Modifica" : "Scegli"}</div>
         </div>
         <EmptyDialog open={isEditing} onClose={() => setIsEditing(false)}>
-            <h3>Seleziona file</h3>
+            <h1>Seleziona file</h1>
             <div {...getRootProps()} className="border-2 border-dashed rounded-md my-4 flex flex-col items-center p-4">
                 <input {...getInputProps()} />
                 <FontAwesomeIcon icon={faFileArrowUp} className="text-4xl" />

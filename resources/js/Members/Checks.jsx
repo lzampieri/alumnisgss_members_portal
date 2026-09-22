@@ -53,13 +53,13 @@ function verifyCounts() {
     }, [adtlist, alumnusData])
 
     return <>
-        <h4>Verifica dettagli</h4>
-        <h5>Valori attesi:</h5>
-        <ul className="list-disc list-inside">
+        <h2>Verifica dettagli</h2>
+        <h3>Valori attesi:</h3>
+        <ul>
             {Object.values(adtlist).map(adt => <li key={adt.id}>{adt.name}: {adt.expval}</li>)}
         </ul>
-        <h5>Valori errati:</h5>
-        <ul className="list-disc list-inside">
+        <h3>Valori errati:</h3>
+        <ul>
             {errorsInAlumnusData.map((err, i) =>
                 <li key={i}><a href={route('person.edit', { id: err.id })}>{err.name} {err.surname}</a> - {adtlist[err.det_id].name}: {err.val} instead of {adtlist[err.det_id].expval}</li>)}
             {errorsInAlumnusData.length == 0 && <>Nessun valore errato rilevato! Evviva!</>}
@@ -82,8 +82,8 @@ function doubledDetails() {
     }
 
     return <>
-        <h4>Valori duplicati nei dettagli</h4>
-        <ul className="list-disc list-inside">
+        <h2>Valori duplicati nei dettagli</h2>
+        <ul>
             <div className="discrete-button" onClick={() => post(route('registry.checks.dupcor'))}>Correggi selezionati</div>
             <div className="discrete-button" onClick={() => setData('selected', list.map(i => i.id))}>Seleziona tutti</div>
             {list.length == 0 && <>Nessun dettaglio duplicato rilevato! Evviva!</>}
@@ -100,8 +100,8 @@ function wrongSelect() {
     const list = usePage().props.wrongSelect;
 
     return <>
-        <h4>Valori irregolari nei dettagli a scelta multipla</h4>
-        <ul className="list-disc list-inside">
+        <h2>Valori irregolari nei dettagli a scelta multipla</h2>
+        <ul>
             {list.length == 0 && <>Nessun valore irregolare rilevato! Evviva!</>}
             {list.map((k, i) => <li key={i}>
                 {k.a_details_type.name} for <Link href={route('person.edit', { id: k.identity.id })}>{k.identity.name} {k.identity.surname}</Link>: "{k.value}" non è in {k.a_details_type.param}
@@ -113,7 +113,7 @@ function wrongSelect() {
 export default function Checks() {
 
     return <>
-        <h3>Controlli integrità anagrafica</h3>
+        <h1>Controlli integrità anagrafica</h1>
         <Head title="Controlli integrità anagrafe" />
         <div className="w-full flex-col">
             {wrongSelect()}

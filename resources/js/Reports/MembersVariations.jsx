@@ -87,7 +87,7 @@ export default function MembersVariations() {
     return (
         <div className="main-container">
             <Head title="Variazioni nei libri societari" />
-            <h3>Variazioni nei libri societari</h3>
+            <h1>Variazioni nei libri societari</h1>
             Relativa agli stati:
             <div className="flex flex-row gap-6">
                 {av_statuses.map(s => (

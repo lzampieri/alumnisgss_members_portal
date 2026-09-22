@@ -38,11 +38,11 @@ export default function List() {
                 </Link>
             </div>
             <div className="w-full flex flex-col justify-start">
-                <h3>Ratifiche in attesa</h3>
+                <h1>Ratifiche in attesa</h1>
                 {Object.keys(open_rats).map(r =>
                     <div className="mt-4" key={r}>
                         <span>Per il passaggio a <b>{AlumnusStatus.status[r].label}</b></span>
-                        <ul className="list-disc list-inside">
+                        <ul>
                             {Object.values(open_rats[r]).map(a =>
                                 <li key={a.id}>
                                     {a.alumnus.surname} {a.alumnus.name} <span className="text-gray-400">{romanize(a.alumnus.coorte)}{a.alumnus.coorte != 0 && " coorte"}</span>
@@ -56,11 +56,11 @@ export default function List() {
                 )}
             </div>
             <div className="w-full flex flex-col justify-start mt-8">
-                <h3>Ratifiche già approvate</h3>
+                <h1>Ratifiche già approvate</h1>
                 {Object.keys(closed_rats).map(r =>
                     <div className="mt-4" key={r}>
                         <span>Per il passaggio a <b>{AlumnusStatus.status[r].label}</b></span>
-                        <ul className="list-disc list-inside">
+                        <ul>
                             {Object.values(closed_rats[r]).map(a =>
                                 <li key={a.id}>
                                     {a.alumnus.surname} {a.alumnus.name} <span className="text-gray-400">{romanize(a.alumnus.coorte)}{a.alumnus.coorte != 0 && " coorte"}</span> Approvata in data {new Date(a.document.date).toLocaleDateString('it-IT', { 'dateStyle': 'long' })} - <a href={route('board.view_document', { protocol: a.document.protocol })}>{a.document.identifier}</a>

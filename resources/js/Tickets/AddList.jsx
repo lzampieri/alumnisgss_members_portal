@@ -14,7 +14,7 @@ export default function AddList() {
             <FontAwesomeIcon icon={faCircleLeft} className="pr-2" />
             Indietro
         </Link>
-        <h3 className="my-3">Aggiungi richiesta</h3>
+        <h1 className="my-3">Aggiungi richiesta</h1>
         {availableTypes.map((type) =>
             <Link key={type.key} className="w-full flex flex-row-reverse items-center bg-gray-50 border-gray-400 border py-2 px-4 rounded-first-last group no-underline" href={route('ticket.add', { type: type.key })}>
                 <FontAwesomeIcon icon={faRightLong} className="text-4xl !p-4 icon-button" />

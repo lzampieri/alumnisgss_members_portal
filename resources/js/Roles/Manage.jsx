@@ -61,8 +61,8 @@ function RoleCard({ role, setProcessing }) {
     return <div className="w-full p-4" key={role.name}>
         <label>{role.name}</label>
         <div className="flex flex-row items-start">
-            <h3>{role.common_name}</h3>
-            <h4>{role.can_edit && <div className="icon-button" onClick={() => setIsDeleting(true)}><FontAwesomeIcon icon={faTrash} /></div>}</h4>
+            <h1>{role.common_name}</h1>
+            <h2>{role.can_edit && <div className="icon-button" onClick={() => setIsDeleting(true)}><FontAwesomeIcon icon={faTrash} /></div>}</h2>
         </div>
         { !role.is_automatic && <>
             <div className="text-sm text-gray-400">

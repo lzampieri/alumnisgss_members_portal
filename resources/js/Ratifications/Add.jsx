@@ -32,7 +32,7 @@ export default function Add() {
     return (
         <form className="flex flex-col w-full md:w-3/5" onSubmit={submit}>
             <Head title="Nuova ratifica" />
-            <h3>Variazioni di stato</h3>
+            <h1>Variazioni di stato</h1>
             <label>Alumni interessato</label>
             <Select
                 isMulti={true}
@@ -47,7 +47,7 @@ export default function Add() {
             <label className="error">{errors.alumnus}{errors.alumnus_id}</label>
             {data.alumni.length > 0 && <>
                 <label>Stati correnti:</label>
-                <ul className="font-bold">
+                <ul className="font-bold list-none">
                     {keys(counts).map(k =>
                         <li key={k}>{AlumnusStatus.status[k].label} ({counts[k]})</li>
                     )}

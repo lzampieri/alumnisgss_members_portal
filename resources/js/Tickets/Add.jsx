@@ -31,7 +31,7 @@ export default function Add() {
             <FontAwesomeIcon icon={solid('circle-left')} className="pr-2" />
             Indietro
         </Link> */}
-        <h3 className="my-3">Aggiungi richiesta - {usePage().props.name}</h3>
+        <h1 className="my-3">Aggiungi richiesta - {usePage().props.name}</h1>
 
         <div className="w-full flex flex-col items-stretch">
             <label>Autore</label>

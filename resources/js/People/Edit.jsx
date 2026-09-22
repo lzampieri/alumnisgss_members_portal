@@ -142,7 +142,7 @@ export default function Edit() {
         <form className="flex flex-col w-full md:w-3/5" onSubmit={submit}>
             <Head title={prev ? prev.name + " " + prev.surname : "Nuovo profilo"} />
             <div className="w-full justify-between flex flex-row">
-                <h3>{prev ? "Aggiorna" : "Crea nuovo"} profilo</h3>
+                <h1>{prev ? "Aggiorna" : "Crea nuovo"} profilo</h1>
                 <div className="button flex flex-row items-center" onClick={submit}>
                     <FontAwesomeIcon icon={faSave} />
                     Salva
@@ -152,7 +152,7 @@ export default function Edit() {
             {prev &&
                 <div className="flex flex-col my-4 border-l-4 pl-2 border-l-primary-main">
                     <div className="font-bold text-primary-main">Storico</div>
-                    <ul className="list-disc list-inside">
+                    <ul>
                         <li>Creazione: {new Date(prev.created_at).toLocaleDateString("it-IT")}</li>
                         <li>Ultima modifica: {new Date(prev.updated_at).toLocaleDateString("it-IT")}</li>
                         {prev.ratifications.map(r =>

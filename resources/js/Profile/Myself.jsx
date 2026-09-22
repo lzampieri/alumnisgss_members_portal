@@ -70,7 +70,7 @@ export default function Myself() {
     return (
         <div className="flex flex-col w-full md:w-3/5 items-start gap-2">
             <Head title="Il mio profilo" />
-            <h3>{alumnus.name} {alumnus.surname}</h3>
+            <h1>{alumnus.name} {alumnus.surname}</h1>
             <div className="flex flex-row w-full flex-wrap">
                 <div className="chip group relative z-auto" style={bgAndContrast('6b7280')} key='coorte'>
                     {romanize(alumnus.coorte)} coorte

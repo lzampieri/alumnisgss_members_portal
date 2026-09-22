@@ -8,7 +8,7 @@ export default function Review() {
     return (
         <div className="flex flex-col w-full md:w-3/5">
             <Head title="Anteprima richiesta di rimborso" />
-            <h3>Anteprima richiesta di rimborso</h3>
+            <h1>Anteprima richiesta di rimborso</h1>
             <label className="unspaced">Identificativo: {reimbursement.iden}</label>
 
             <div className="alert">

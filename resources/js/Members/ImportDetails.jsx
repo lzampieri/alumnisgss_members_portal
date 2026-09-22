@@ -24,7 +24,7 @@ export default function ImportDetails() {
         <div className="main-container">
             <Head title="Importa dati" />
             <div className="w-full flex flex-col justify-start items-start gap-2">
-                <h3>Import database</h3>
+                <h1>Import database</h1>
                 Attraverso questa pagina è possibile importare il database degli alumni da un file excel. <br />
                 Il file deve essere precedentemente scaricato da questo stesso portale; operate le modifiche, lo si può quindi ricaricare e le differenze verranno individuate e salvate.<br />
                 Si preferisca sempre la modifica direttamente sul portale, uno per uno, dei dati; si utilizzi questa funzionalità solo quando il numero di modifiche da apportare sia tale da rendere disagevole la procedura.<br />

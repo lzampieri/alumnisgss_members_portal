@@ -129,7 +129,7 @@ export default function Edit() {
     return (
         <div className="flex flex-col w-full md:w-3/5">
             <Head title="Richiesta di rimborso" />
-            <h3>Richiesta di rimborso</h3>
+            <h1>Richiesta di rimborso</h1>
             <label className="unspaced">Identificativo: {reimbursement.iden}</label>
 
             { Object.keys(errors).length > 0 && <div className="alert">
@@ -151,7 +151,7 @@ export default function Edit() {
             />
 
             <div className="w-full rounded bg-blue-100 mt-4 p-2">
-                <h4>Materiali didattici</h4>
+                <h2>Materiali didattici</h2>
                 {data.content.map((e) => e.type == "material" && <Material key={e.id} data={e} setData={setDataAtId} remove={remove} errors={content_errors[e.id]} />)}
                 <div className="flex flex-row justify-end">
                     <div className="chip-button" onClick={() => setData('content', [...data.content, materialProps(getId(data.content))])}>
@@ -162,7 +162,7 @@ export default function Edit() {
             </div>
 
             <div className="w-full rounded bg-red-100 mt-4 p-2">
-                <h4>Mezzi di transporto pubblici e pedaggi</h4>
+                <h2>Mezzi di transporto pubblici e pedaggi</h2>
                 {data.content.map((e) => e.type == "travel" && <Travel key={e.id} data={e} setData={setDataAtId} remove={remove} errors={content_errors[e.id]} />)}
                 <div className="flex flex-row justify-end">
                     <div className="chip-button" onClick={() => setData('content', [...data.content, travelProps(getId(data.content))])}>
@@ -173,7 +173,7 @@ export default function Edit() {
             </div>
 
             <div className="w-full rounded bg-green-100 mt-4 p-2">
-                <h4>Viaggi in auto privata</h4>
+                <h2>Viaggi in auto privata</h2>
                 <APIProvider apiKey={import.meta.env.VITE_PUBLIC_MAPS_API_KEY}
                     version={'beta'}>
                     {data.content.map((e) => e.type == "driving" && <Driving key={e.id} data={e} setData={setDataAtId} remove={remove} errors={content_errors[e.id]} carsList={carsList} />)}

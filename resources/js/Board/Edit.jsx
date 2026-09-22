@@ -47,7 +47,7 @@ export default function Edit() {
     return (
         <div className="flex flex-col w-full md:w-3/5">
             <Head title="Modifica documento" />
-            <h3>Modifica documento</h3>
+            <h1>Modifica documento</h1>
             <span className="font-bold">Protocollo web: {prevDoc.protocol}</span>
 
             <form className="flex flex-col w-full" onSubmit={submit}>

@@ -106,9 +106,9 @@ function AddPermalink({ resourceId }) {
         <FontAwesomeIcon icon={faAdd} className="icon-button mx-3" onClick={() => openDialog(true)} />
         <EmptyDialog open={dialog} onClose={() => openDialog(false)}>
             <form onSubmit={submit} className="flex flex-col w-full items-start">
-                <h3 className="mb-3">
+                <h1 className="mb-3">
                     Aggiungi permalink:
-                </h3>
+                </h1>
                 <div className="text-error text-sm">Attenzione: l'aggiunta di permalink è permanente. Una volta aggiunto, un permalink non potrà essere rimosso o modificato.</div>
                 <input className="w-full my-2" type="text" maxLength={125} id="link" name="link" value={data.link} onChange={(e) => setLink(e.target.value)} />
                 <label className="error">{errors.link}</label>
@@ -164,9 +164,9 @@ function Archive({ resource, setProcessing }) {
     return <>
         <div className='button ml-2' onClick={() => setIsArchiving(true)}><FontAwesomeIcon icon={resource.archived ? faBoxOpen : faBoxArchive} />{resource.archived ? "Ripristina" : "Archivia"}</div>
         <EmptyDialog open={archiving && resource.archived} onClose={() => setIsArchiving(false)}>
-            <h3 className="mb-3">
+            <h1 className="mb-3">
                 Ripristino
-            </h3>
+            </h1>
             <span>La risorsa verrà ripristinata, e tornerà ad essere visibile nel menù. I link diretti alla risorsa continueranno a funzionare.</span>
             {resource.visibleAncestors.map((va) => va.archived && <div className="w-full bg-error bg-opacity-10">
                 Attenzione: la risorsa non sarà comunque visibile, perché è all'interno della risorsa archivata <i>{va.title}</i>. Per rendere questa risorsa visibile, alternativamente ripristinare anche la risorsa genitore o modificare la gerarchia.
@@ -177,9 +177,9 @@ function Archive({ resource, setProcessing }) {
             </div>
         </EmptyDialog>
         <EmptyDialog open={archiving && !resource.archived} onClose={() => setIsArchiving(false)}>
-            <h3 className="mb-3">
+            <h1 className="mb-3">
                 Archiviazione
-            </h3>
+            </h1>
             <span>Una volta archiviata, la risorsa non sarà più visibile nel menù laterale, ma rimarrà nella sezione "archivio". I link diretti alla risorsa continueranno a funzionare.</span>
             <div className="w-full flex flex-row justify-end my-2 gap-2">
                 <div className='button items-end self-end' onClick={() => setIsArchiving(false)}>Annulla</div>
@@ -207,9 +207,9 @@ function Delete({ resource, setProcessing }) {
     return <>
         <div className='button ml-2' onClick={() => setIsDeleting(true)}><FontAwesomeIcon icon={faTrash} />Elimina</div>
         <EmptyDialog open={deleting} onClose={() => setIsDeleting(false)}>
-            <h3 className="mb-3">
+            <h1 className="mb-3">
                 Attenzione!
-            </h3>
+            </h1>
             <span>Sei sicuro di voler eliminare la risorsa <i>{resource.title}</i>? Questa azione è irreversibile.</span>
             <div className="w-full flex flex-row justify-end my-2 gap-2">
                 <div className='button items-end self-end' onClick={() => setIsDeleting(false)}>Annulla</div>
@@ -227,7 +227,7 @@ export default function ResourceDetails({ resource }) {
     const hasPermalinks = resource?.permalinks?.length
 
     return <div className="flex flex-col w-full items-start">
-        <h3>{resource.title} <span className="text-sm">{resource.canEdit && <EditTitle resource={resource} setProcessing={setProcessing} />}</span></h3>
+        <h1>{resource.title} <span className="text-sm">{resource.canEdit && <EditTitle resource={resource} setProcessing={setProcessing} />}</span></h1>
         {resource.canEdit && <div className="text-sm text-gray-400">
             Visibile da {canView.map(r => r.common_name).join(", ")}
             <EditRoles type="view" initialList={canView.map(r => r.id)} resourceId={resource.id} setProcessing={setProcessing} />

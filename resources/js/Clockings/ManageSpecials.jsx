@@ -64,7 +64,7 @@ function SpecialsList({ isOpened }) {
 
     return <Collapse theme={{ collapse: "w-full md:w-3/5 gap-1 cpm" }} isOpened={isOpened}>
         <div className="w-full border-2 border-primary-main rounded px-2 py-1 text-center mb-1">
-            <h4>Eventi già inseriti</h4>
+            <h2>Eventi già inseriti</h2>
         </div>
         {Object.keys(specials).map(ss => specials[ss].map(s =>
             <div className="w-full border-2 border-primary-main rounded px-2 py-1 mb-1 flex flex-row gap-2" key={s.id}>
@@ -86,7 +86,7 @@ function SpecialsList({ isOpened }) {
 function AddPanel({ isOpened, typesOptions, data, setData, post }) {
     return <Collapse theme={{ collapse: "w-full md:w-3/5 gap-1 cpm" }} isOpened={isOpened}>
         <div className="w-full border-2 border-primary-main rounded px-2 py-1 text-center mb-1">
-            <h4>Aggiungi evento</h4>
+            <h2>Aggiungi evento</h2>
             Seleziona i giorni dal calendario qui sopra
             <Select
                 classNames={{ control: () => 'selectDropdown' }}
@@ -125,7 +125,7 @@ export default function ManageSpecials() {
 
     return <div className="main-container-large gap-4">
         <Head title="Gestione ferie e permessi" />
-        <h3>Gestione ferie e permessi</h3>
+        <h1>Gestione ferie e permessi</h1>
         Oggi puoi gestire le ferie e i permessi per il periodo dal {from.toLocaleDateString()} al {to.toLocaleDateString()}
 
         <div className="flex flex-row gap-2">

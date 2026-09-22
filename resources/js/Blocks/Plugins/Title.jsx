@@ -23,8 +23,8 @@ export default class Title {
     }
 
     static mainElementReadOnly = ({ item }) => {
-        return <h3 className="mt-4">
+        return <h1 className="mt-4">
             {item.content}
-        </h3>
+        </h1>
     }
 }

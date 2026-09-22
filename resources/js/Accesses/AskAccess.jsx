@@ -24,7 +24,7 @@ export default function AskAccess() {
     return (
         <div className="main-container !items-start">
             <Head title="Richiesta di accesso" />
-            <h3>Primo accesso</h3>
+            <h1>Primo accesso</h1>
             È la prima volta che viene rilevato un accesso a questo portale con queste credenziali.<br />
             <br />
             <b>Se hai sbagliato credenziali</b>

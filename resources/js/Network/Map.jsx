@@ -45,7 +45,7 @@ export default function Map() {
                 " md:h-full md:sticky md:transform-none md:translate-none " +
                 " bg-white p-4 overflow-auto"
             } onClick={(e) => { e.stopPropagation() }}>
-                <h3 className="pb-4">{city ? city[0].display_name : ""}</h3>
+                <h1 className="pb-4">{city ? city[0].display_name : ""}</h1>
                 { city && city['alumni'].map( a => a.id < 0 ? "" : 
                     <div className="w-full" key={a.id}>
                         <FontAwesomeIcon icon={faUser} className="pr-2"/>{a.name} {a.surname} <span className="text-gray-400">{romanize(a.coorte)}</span>

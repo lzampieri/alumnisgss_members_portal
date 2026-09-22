@@ -25,8 +25,8 @@ function RoleCard({role, perms, setProcessing}) {
     return <div className="w-full bg-gray-200 rounded-xl p-4" key={role.name}>
         <label>{role.name}</label>
         <div className="flex flex-row items-start">
-            <h3>{role.common_name}</h3>
-            <h4>{role.can_edit && <div className="icon-button" onClick={() => setIsDeleting(true)}><FontAwesomeIcon icon={faTrash} /></div>}</h4>
+            <h1>{role.common_name}</h1>
+            <h2>{role.can_edit && <div className="icon-button" onClick={() => setIsDeleting(true)}><FontAwesomeIcon icon={faTrash} /></div>}</h2>
         </div>
         <div className="md:columns-2">
             {perms.map(pm => PermissionSwitch(pm, role.permissions_names.includes(pm), role.name, setProcessing))}

@@ -242,7 +242,7 @@ function ManuallyAddEmail({ open, setClosed, setProcessing }) {
 
     return <EmptyDialog open={!!open} onClose={setClosed}>
         <form className="flex flex-col w-full" onSubmit={submit}>
-            <h3>Inserisci nuovo indirizzo mail</h3>
+            <h1>Inserisci nuovo indirizzo mail</h1>
             <b>{open?.name} {open?.surname}</b>
             {romanize(open?.coorte)}
             <label>Indirizzo</label>

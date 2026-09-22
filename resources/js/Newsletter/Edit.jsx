@@ -222,7 +222,7 @@ export default function Edit() {
     return (
         <div className="flex flex-col w-full md:w-3/5">
             <Head title={data.subject + " | Bozza"} />
-            <h3>Preparazione newsletter</h3>
+            <h1>Preparazione newsletter</h1>
             <form className="flex flex-col w-full" onSubmit={submit}>
                 <div className="flex flex-row self-end gap-2">
                     <button className="button self-end">Salva bozza</button>

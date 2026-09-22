@@ -30,7 +30,7 @@ export default function Preview() {
     return (
         <div className="flex flex-col w-full md:w-3/5">
             <Head title={newsletter.subject + " | Anteprima"} />
-            <h3>Anteprima newsletter</h3>
+            <h1>Anteprima newsletter</h1>
             {sentTo && <div className="mb-4">Newsletter di prova inviata a: {sentTo}</div>}
             <div className="flex flex-row w-full">
                 <label>Invia newsletter di prova a:</label>

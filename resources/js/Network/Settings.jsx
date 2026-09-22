@@ -158,7 +158,7 @@ export default function Settings() {
             <FontAwesomeIcon icon={faChevronLeft} />
             Indietro
         </Link>
-        <h3>Campi in forma di lista</h3>
+        <h1>Campi in forma di lista</h1>
         <ADlist />
     </div>
 }

@@ -55,7 +55,7 @@ function FullList({ dateString }) {
 
     return <div className="w-full md:w-3/5">
         {allStamps.map((d, id) => <Fragment key={id}>
-            <h4>{d.name} {d.surname}</h4>
+            <h2>{d.name} {d.surname}</h2>
             <table><tbody>
                 {Object.keys(d.stamps_grouped).map((day) => <tr key={day}>
                     <td className="align-top pr-2"><b>{twoDigits(day)}{dateString}</b></td>
@@ -129,12 +129,12 @@ export default function Monthly() {
 
     return <div className="main-container-large gap-4">
         <Head title={capFirst(date.toLocaleDateString('it-IT', { 'month': 'long', 'year': 'numeric' }))} />
-        <h3>Registro timbrature</h3>
+        <h1>Registro timbrature</h1>
         <div className="flex flex-row gap-2 items-center">
             <Link as="button" className="button" href={route('clockings.monthly', month == 1 ? { year: year - 1, month: 12 } : { year: year, month: month - 1 })}>
                 <FontAwesomeIcon icon={faChevronLeft} />
             </Link>
-            <h3>{capFirst(date.toLocaleDateString('it-IT', { 'month': 'long', 'year': 'numeric' }))}</h3>
+            <h1>{capFirst(date.toLocaleDateString('it-IT', { 'month': 'long', 'year': 'numeric' }))}</h1>
             <Link as="button" className="button" href={route('clockings.monthly', month == 12 ? { year: year + 1, month: 1 } : { year: year, month: month + 1 })} disabled={!nextAvailable}>
                 <FontAwesomeIcon icon={faChevronRight} />
             </Link>

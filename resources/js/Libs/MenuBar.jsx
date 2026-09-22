@@ -2,7 +2,7 @@ import { useEditorState } from '@tiptap/react'
 
 import { menuBarStateSelector } from './menuBarState.js'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBold, faCode, faGripLines, faImage, faItalic, faLink, faLinkSlash, faListOl, faListUl, faParagraph, faQuoteLeft, faRotateLeft, faRotateRight, faStrikethrough, faTerminal } from '@fortawesome/free-solid-svg-icons'
+import { faBold, faCode, faGripLines, faImage, faItalic, faLink, faLinkSlash, faListOl, faListUl, faQuoteLeft, faRotateLeft, faRotateRight, faStrikethrough, faTerminal } from '@fortawesome/free-solid-svg-icons'
 import { useCallback } from 'react'
 
 export const MenuBar = ({ editor, imgCallback }) => {
@@ -72,12 +72,6 @@ export const MenuBar = ({ editor, imgCallback }) => {
           <FontAwesomeIcon icon={faCode} />
         </div>
         <div
-          onClick={() => editor.chain().focus().setParagraph().run()}
-          className={editorState.isParagraph ? 'is-active' : ''}
-        >
-          <FontAwesomeIcon icon={faParagraph} />
-        </div>
-        <div
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
           className={editorState.isHeading1 ? 'is-active' : ''}
         >
@@ -94,24 +88,6 @@ export const MenuBar = ({ editor, imgCallback }) => {
           className={editorState.isHeading3 ? 'is-active' : ''}
         >
           H3
-        </div>
-        <div
-          onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
-          className={editorState.isHeading4 ? 'is-active' : ''}
-        >
-          H4
-        </div>
-        <div
-          onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}
-          className={editorState.isHeading5 ? 'is-active' : ''}
-        >
-          H5
-        </div>
-        <div
-          onClick={() => editor.chain().focus().toggleHeading({ level: 6 }).run()}
-          className={editorState.isHeading6 ? 'is-active' : ''}
-        >
-          H6
         </div>
       </div>
       <div className="tiptap-menu">
@@ -162,8 +138,6 @@ export const MenuBar = ({ editor, imgCallback }) => {
         </div>
       </div>
       <div className="tiptap-menu">
-        <div onClick={() => editor.chain().focus().unsetAllMarks().run()}>Clear marks</div>
-        <div onClick={() => editor.chain().focus().clearNodes().run()}>Clear nodes</div>
         <div onClick={() => editor.chain().focus().undo().run()} disabled={!editorState.canUndo}>
           <FontAwesomeIcon icon={faRotateLeft} />
         </div>

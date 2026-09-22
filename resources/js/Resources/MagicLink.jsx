@@ -40,7 +40,7 @@ export default function MagicLink({ resource, setProcessing }) {
             Nessun magic link per l'accesso alla risorsa <FontAwesomeIcon icon={faAdd} className="ml-2 icon-button" onClick={() => setIsOpen(true)} />
         </>}
         <EmptyDialog open={isOpen} onClose={() => setIsOpen(false)}>
-            <h4>MagicLink</h4>
+            <h2>MagicLink</h2>
             <span>I MagicLink permettono a chiunque lo possieda - anche senza eseguire l'accesso - di accedere alla risorsa <b>e a tutte le sue sottorisorse</b>.</span>
             {resource.access_token && <>
                 <span>Per questa risorsa è già attivo un magic link.</span>
@@ -57,7 +57,7 @@ export default function MagicLink({ resource, setProcessing }) {
             </>}
         </EmptyDialog>
         <EmptyDialog open={deleteOpen} onClose={() => setDeleteOpen(false)}>
-            <h4>Elimina MagicLink</h4>
+            <h2>Elimina MagicLink</h2>
             <span>Sei sicuro di voler eliminare il magic link?</span>
             <span>Non <b>potrà più essere recuperato,</b> e tutti coloro che accedevano tramite questo link non potranno più accedere. L'eliminazione è <b>irreversibile</b>: se venisse ricreato, sarebbe diverso dall'attuale.</span>
             <div className="w-full flex flex-row justify-between">

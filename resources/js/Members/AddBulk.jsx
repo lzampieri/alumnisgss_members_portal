@@ -78,7 +78,7 @@ export default function Bulk() {
         <form className="flex flex-col w-full" onSubmit={submit}>
             <Head title="Inserimento di massa" />
             <div className="w-full justify-between flex flex-row">
-                <h3>Inserimento in massa di {data.rows.length - 1} persone</h3>
+                <h1>Inserimento in massa di {data.rows.length - 1} persone</h1>
                 <div className="button flex flex-row items-center" onClick={submit}>
                     <FontAwesomeIcon icon={faSave} />
                     Salva

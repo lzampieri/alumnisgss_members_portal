@@ -45,7 +45,7 @@ export default function DraggingManagement({ list, updateOrder, renderItem }) {
 
 
     return <DndContext onDragEnd={onDragEnd} collisionDetection={closestCenter} sensors={useSensors(sensor)}>
-        <ul ref={setNodeRef} className="w-full flex flex-col gap-2">
+        <ul ref={setNodeRef} className="list-none w-full flex flex-col gap-2">
             <SortableContext items={list} strategy={verticalListSortingStrategy}>
                 {list?.map((item, index) =>
                     <SortableItem key={item.id} id={"" + item.id}>

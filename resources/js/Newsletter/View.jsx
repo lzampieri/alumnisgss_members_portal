@@ -8,7 +8,7 @@ export default function View() {
     return (
         <div className="flex flex-col w-full md:w-3/5">
             <Head title={newsletter.subject + " | Inviata"} />
-            <h3>Newsletter</h3>
+            <h1>Newsletter</h1>
             <b>Oggetto: {newsletter.subject}</b>
             {newsletter.sent_at && <div className="mb-4 text-gray-400">Newsletter inviata il {new Date(newsletter?.sent_at).toLocaleDateString('it-IT', { year: 'numeric', month: '2-digit', day: '2-digit' })}</div>}
             <div className="w-full" dangerouslySetInnerHTML={{ __html: newsletter.body }} />
