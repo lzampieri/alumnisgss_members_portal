@@ -3,14 +3,14 @@ import RegisteredTools from "./RegisteredTools";
 
 export default class BlockParser {
 
-    static render(item, setItemValue, isEditable, dndContextId = null ) {
+    static render(item, setItemValue, isEditable, dndContextId = null, data = null, setData = null ) {
 
         if (RegisteredTools[item.type] !== undefined) {
 
             if (isEditable)
                 return createElement(RegisteredTools[item.type].mainElementEditable, { item: item, setItemValue: setItemValue, dndContextId: dndContextId });
 
-            return createElement(RegisteredTools[item.type].mainElementReadOnly, { item: item, setItemValue: setItemValue });
+            return createElement(RegisteredTools[item.type].mainElementReadOnly, { item: item, formValue: data, setFormValue: setData });
         }
 
         return <label className="error">{item.type} not defined</label>
@@ -23,6 +23,17 @@ export default class BlockParser {
                 return { id: item.id, type: item.type, ...RegisteredTools[item.type].preProcess(item) }
 
         return item
+
+    }
+
+    
+    static isForm(item) {
+
+        if (RegisteredTools[item.type] !== undefined)
+            if (RegisteredTools[item.type].isForm !== undefined)
+                return RegisteredTools[item.type].isForm
+
+        return false
 
     }
 

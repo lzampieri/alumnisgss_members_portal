@@ -14,6 +14,7 @@ import MagicLink from "./MagicLink";
 import computeResourceLink from "./computeResourceLink";
 import { faAdd, faBoxArchive, faBoxOpen, faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import FormWrapper from "./FormWrapper";
 
 function EditRoles({ type, initialList, resourceId, setProcessing }) {
     if (!(type == 'view' || type == 'edit'))
@@ -50,8 +51,8 @@ function EditRoles({ type, initialList, resourceId, setProcessing }) {
                 {type == 'edit' && "Modificabile da:"}
             </label>
             <RolesChips roles={roles} list={currentList} updateList={updateList} />
-            <div className='button items-end self-end mt-2' onClick={save}>Salva<br/><small>solo per questa</small></div>
-            <div className='button items-end self-end mt-2' onClick={saveAll}>Salva<br/><small>per questa e per tutte le sottorisorse<br/>a cui hai accesso</small></div>
+            <div className='button items-end self-end mt-2' onClick={save}>Salva<br /><small>solo per questa</small></div>
+            <div className='button items-end self-end mt-2' onClick={saveAll}>Salva<br /><small>per questa e per tutte le sottorisorse<br />a cui hai accesso</small></div>
         </EmptyDialog>
     </>
 }
@@ -141,7 +142,7 @@ function Content({ resource, setProcessing }) {
             </div>}
         {isEditing ?
             <BlocksEditor initialContent={JSON.parse(resource.content)} saveCallback={save} /> :
-            <BlocksViewer content={JSON.parse(resource.content)} />}
+            <FormWrapper content={JSON.parse(resource.content)} resource={resource} />}
     </>
 
 }

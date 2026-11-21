@@ -111,7 +111,7 @@
         @apply border-l-4 border-primary-main mx-6 my-2 px-4
     }
     hr {
-        @apply border border-gray-300 mt-1 mb-3
+        @apply border border-gray-300 mt-1 mb-5
     }
 
     /* INPUT AND FORMS */

@@ -62,6 +62,16 @@ class Resource extends Model
         return $this->children()->count();
     }
 
+    public function responses()
+    {
+        return $this->hasMany(FormResponse::class);
+    }
+
+    public function responsesCount()
+    {
+        return $this->responses()->count();
+    }
+
     public function isChildOfArchived()
     {
         return $this->ancestors()->where('archived', true)->exists();

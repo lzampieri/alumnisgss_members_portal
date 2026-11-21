@@ -10,6 +10,9 @@ import SubContent from './Plugins/SubContent';
 import BarChart from './Plugins/BarChart';
 import PdfDisplay from './Plugins/PdfDisplay';
 import GoogleDriveFolder from './Plugins/GoogleDriveFolder';
+import OpenQuestion from './Plugins/OpenQuestion';
+import SelectQuestion from './Plugins/SelectQuestion';
+import LargeSelectQuestion from './Plugins/LargeSelectQuestion';
 
 export default {
     text: Text,
@@ -23,5 +26,8 @@ export default {
     subcontent: SubContent,
     timeline: Timeline,
     barChart: BarChart,
-    googleDriveFolder: GoogleDriveFolder
+    googleDriveFolder: GoogleDriveFolder,
+    openQuestion: OpenQuestion,
+    selectQuestion: SelectQuestion,
+    largeSelectQuestion: LargeSelectQuestion
 }

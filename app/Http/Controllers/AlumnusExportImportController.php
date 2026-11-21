@@ -180,8 +180,8 @@ class AlumnusExportImportController extends Controller
         $sheet->setCellValue('A4', "Per motivi di sicurezza, il download di questo file è registrato assieme alle credenziali di accesso.");
         $sheet->getStyle('A4')->applyFromArray(['font' => ['bold' => true, 'color' => ['argb' => 'FF0000']]]);
 
-        $titles = ['ID', 'Cognome', 'Nome', 'Coorte', 'Stato', 'Tags', 'Consenso condivisione indirizzi mail', 'Consenso condivisione dettagli'];
-        $keys   = ['id', 'surname', 'name', 'coorte', 'status', 'tags', 'consent_to_email_share', 'consent_to_network_share'];
+        $titles = ['ID', 'Cognome', 'Nome', 'Coorte', 'Stato', 'Tags', 'Consenso condivisione indirizzi mail', 'Consenso condivisione dettagli', 'Indirizzi mail principali [colonna non modificabile]'];
+        $keys   = ['id', 'surname', 'name', 'coorte', 'status', 'tags', 'consent_to_email_share', 'consent_to_network_share', 'primary_emails'];
 
         foreach ($titles as $col => $title) {
             $this->writeXY($sheet, $col + 1, 6, $title, ['font' => ['bold' => true]]);
@@ -203,7 +203,10 @@ class AlumnusExportImportController extends Controller
 
         foreach ($alumni as $i => $alumnus) {
             foreach ($keys as $col => $key) {
-                $content = $alumnus[$key];
+                if ($key == 'primary_emails')
+                    $content = $alumnus->primaryEmails();
+                else
+                    $content = $alumnus[$key];
                 if ($key == 'status')
                     $content = Alumnus::AlumnusStatusLabels[$content];
                 if (is_array($content))
@@ -228,6 +231,8 @@ class AlumnusExportImportController extends Controller
         $spreadsheet->getDefaultStyle()->getProtection()->setLocked(false);
         $sheet->getStyle('1:6')->getProtection()->setLocked(\PhpOffice\PhpSpreadsheet\Style\Protection::PROTECTION_PROTECTED);
         $sheet->getStyle('A:A')->getProtection()->setLocked(\PhpOffice\PhpSpreadsheet\Style\Protection::PROTECTION_PROTECTED);
+        // Emails column
+        $sheet->getStyle(Coordinate::stringFromColumnIndex(count($titles)) . ':' . Coordinate::stringFromColumnIndex(count($titles)))->getProtection()->setLocked(\PhpOffice\PhpSpreadsheet\Style\Protection::PROTECTION_PROTECTED);
         foreach ($cumcolindex as $key => $col) {
             $col_str = Coordinate::stringFromColumnIndex($col);
             $sheet->getStyle($col_str . ':' . $col_str)->getProtection()->setLocked(\PhpOffice\PhpSpreadsheet\Style\Protection::PROTECTION_PROTECTED);
@@ -285,7 +290,7 @@ class AlumnusExportImportController extends Controller
             return redirect()->back()->with('notistack', ['error', "Nessun alumno nella lista."]);
 
         // Standard fields
-        $stdkeys   = ['id', 'surname', 'name', 'coorte', 'status', 'tags', 'consent_to_email_share', 'consent_to_network_share'];
+        $stdkeys   = ['id', 'surname', 'name', 'coorte', 'status', 'tags', 'consent_to_email_share', 'consent_to_network_share', 'primary_emails'];
 
         $columnsNumber = Coordinate::columnIndexFromString($sheet->getHighestColumn());
         if ($columnsNumber < count($stdkeys))

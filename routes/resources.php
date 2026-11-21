@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\FormResponseController;
 use App\Http\Controllers\ResourceController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,8 +24,13 @@ Route::prefix('/resources')->group( function () {
     Route::post('/delete', [ ResourceController::class, 'delete' ] )->name('resources.delete');
     Route::post('/addPermalink', [ ResourceController::class, 'add_permalink' ] )->name('resources.addPermalink');
     Route::post('/magicLink/{resource}', [ ResourceController::class, 'magic_link' ] )->name('resources.magicLink');
-
+    
     // Media in text resources
     Route::get('/media/{handle}', [ ResourceController::class, 'retrive_img_editor' ] )->name('resources.retrive_img_editor');
     Route::post('/media/{resource}', [ ResourceController::class, 'upload_img_editor' ] )->name('resources.upload_img_editor');
+    
+    // Resources-form management
+    Route::post('/saveForm/{resource}', [ FormResponseController::class, 'save_form' ] )->name('resources.saveForm');
+    Route::get('/responses/{resource?}', [ FormResponseController::class, 'show_responses'] )->where('resource', '[0-9]+')->name('resources.responses');
+    Route::get('/responses/{resource?}/xslx', [ FormResponseController::class, 'show_responses_xlsx'] )->where('resource', '[0-9]+')->name('resources.responses.xlsx');
 });

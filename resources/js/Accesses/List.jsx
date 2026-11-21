@@ -12,6 +12,7 @@ import ReactSwitch from "react-switch";
 import { faAnglesRight, faAt, faCirclePlus, faPerson, faPersonCircleQuestion, faPersonDigging, faPlus, faStar, faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { enqueueSnackbar } from "notistack";
+import { max } from "lodash";
 ModuleRegistry.registerModules([ClientSideRowModelModule, RowAutoHeightModule, QuickFilterModule]);
 
 const TYPE_PERSON = 0;
@@ -22,10 +23,10 @@ function whichType(item) {
     return TYPE_PERSON;
 }
 
-function EmailDiv({ e, isFirst, setPrimary, deleteAddress }) {
+function EmailDiv({ e, isPrimary, setPrimary, deleteAddress }) {
     return <div>
         <FontAwesomeIcon icon={faAt} className="mr-2" />
-        {isFirst ? <FontAwesomeIcon icon={faStar} className="mr-2 text-[#f5b700]" />
+        {isPrimary ? <FontAwesomeIcon icon={faStar} className="mr-2 text-[#f5b700] cursor-pointer" onClick={() => setPrimary(e.id)}/>
             : <FontAwesomeIcon icon={faStar} className="mr-2 text-gray-200 hover:text-[#f5b700] cursor-pointer" onClick={() => setPrimary(e.id)} />}
         {e.address}
         {e.last_login && <span className="text-gray-400 ml-2">Last seen {new Date(e.last_login).toLocaleDateString('it-IT', { year: 'numeric', month: '2-digit', day: '2-digit' })}</span>}
@@ -98,6 +99,8 @@ function IdentityContent({ data, setPrimary, deleteAddress, removeRole, addRole,
 
     }
 
+    const primary_email = max(data.emails.map((e) => e.primary))
+
     // TYPE_PERSON
     return <div className={
         "w-full border-2 rounded  flex flex-row p-2 min-h-12 justify-center gap-2 leading-normal	" +
@@ -116,7 +119,7 @@ function IdentityContent({ data, setPrimary, deleteAddress, removeRole, addRole,
             {data.emails_count != data.emails.length &&<label className="error">
                 {data.emails_count} indirizzi email associati a questa identità, non visibili all'utente corrente.
             </label>}
-            {data.emails.map((e, i) => <EmailDiv key={e.id} isFirst={i == 0} e={e} setPrimary={setPrimary} deleteAddress={deleteAddress} />)}
+            {data.emails.map((e, i) => <EmailDiv key={e.id} isPrimary={e.primary==primary_email} e={e} setPrimary={setPrimary} deleteAddress={deleteAddress} />)}
             {canAddEmail &&
                 <div className="cursor-pointer hover:text-primary-main text-sm" onClick={() => setAddingEmail(data)}>
                     <FontAwesomeIcon icon={faPlus} />
