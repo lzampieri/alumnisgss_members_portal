@@ -91,4 +91,28 @@ class ResourcePolicy
     {
         return DynamicPermission::PersonCanEditPermissable($resource, $user);
     }
+
+    /**
+     * Determine whether the person can submit a response to a form resource
+     *
+     * @param  \App\Models\Person  $user
+     * @param  \App\Models\Resource  $resource
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function submit(?Person $user, Resource $resource)
+    {
+        return $resource->form_open && $this->view($user, $resource);
+    }
+
+    /**
+     * Determine whether the person can submit a view the responses to a form resource
+     *
+     * @param  \App\Models\Person  $user
+     * @param  \App\Models\Resource  $resource
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function viewResponses(Person $user, Resource $resource)
+    {
+        return $this->edit($user, $resource);
+    }
 }

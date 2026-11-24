@@ -8,8 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -18,11 +16,19 @@ class FormResponseController extends Controller
     // Form from resource
     public function save_form(Request $request, Resource $resource)
     {
+        $this->authorize('submit', $resource);
+
         $validated = $request->validate([
-            'data' => 'required'
+            'data' => 'required',
+            'form_email_to' => 'present|nullable|string'
         ]);
 
-        $fr = new FormResponse(["data" => $validated['data']]);
+        $fr = new FormResponse(
+            [
+                "data" => $validated['data'],
+                "form_email_to" => $validated["form_email_to"]
+            ]
+        );
         $fr->resource()->associate($resource);
 
         if (Auth::check())
@@ -30,13 +36,21 @@ class FormResponseController extends Controller
 
         $fr->save();
 
+        if (strlen($resource->form_email_to ?? "") || strlen($fr->form_email_to ?? "")) {
+            MailerController::sendEmail(
+                [...explode(",", $resource->form_email_to),...explode(",", $fr->form_email_to)],
+                "Nuova risposta al modulo " . $resource['title'],
+                $fr->toHtml()
+            );
+        }
+
         return redirect()->back();
     }
 
     // Form responses from resource
     public function show_responses(Request $request, Resource $resource)
     {
-        $this->authorize('edit', $resource);
+        $this->authorize('viewResponses', $resource);
 
         $resource->load('responses')->makeVisible('responses');
 
@@ -46,7 +60,7 @@ class FormResponseController extends Controller
 
     public function show_responses_xlsx(Resource $resource)
     {
-        $this->authorize('edit', $resource);
+        $this->authorize('viewResponses', $resource);
 
         $resource->load('responses');
 

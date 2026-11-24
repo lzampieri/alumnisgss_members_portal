@@ -1,16 +1,27 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import DraggingManagement from './DraggingManagement';
 import BlockParser from './BlockParser';
 import BlockEnvironment from './BlockEnvironment';
 import AddBlock from './AddBlock';
 import { randomHex } from '../Utils';
+import ReactSwitch from 'react-switch';
 
-export default function BlocksEditor({ initialContent, saveCallback }) {
+export default function BlocksEditor({ initialContent, resource, saveCallback }) {
 
     const [list, setList] = useState(initialContent?.map(block => BlockParser.preProcess(block)) || [])
 
+    const isForm = useMemo(() =>
+        list.map(block => BlockParser.isForm(block)).reduce((pVal, cVal) => pVal || cVal, false), [list])
+
+    const [formOpen, setFormOpen] = useState(resource.form_open || false)
+    const [sendEmailTo, setSendEmailTo] = useState(resource.form_email_to) || ""
+
     const save = () => {
-        saveCallback(list.map(block => BlockParser.postProcess(block)))
+        saveCallback({
+            content: JSON.stringify(list.map(block => BlockParser.postProcess(block))),
+            form_open: formOpen,
+            form_email_to: sendEmailTo
+        })
     }
 
     const addBlockAt = (props, pos) => {
@@ -49,6 +60,18 @@ export default function BlocksEditor({ initialContent, saveCallback }) {
 
     return <>
         <div className='button items-end self-end' onClick={save}>Salva</div>
+        {isForm && <div className="w-full border rounded m-2 p-2">
+            <span className='font-bold text-primary-main'>Impostazioni modulo</span>
+            <div className="flex flex-row items-center">
+                <ReactSwitch
+                    height={28} width={56} className="m-2"
+                    checked={formOpen} onChange={setFormOpen}
+                />
+                <p>Accetta risposte</p>
+            </div>
+            <label>Ad ogni risposta, invia una mail a:</label>
+            <input type='email' placeholder='Lascia vuoto per non inviare nessuna mail' className='w-full' value={sendEmailTo || ""} onChange={(e) => setSendEmailTo(e.target.value)} />
+        </div>}
         <div className="w-full border rounded m-2 p-2">
             <DraggingManagement list={list} updateOrder={updateOrder} renderItem={(item, index) =>
                 <BlockEnvironment index={index} addBlockAt={addBlockAt} updateOrder={updateOrder} deleteItem={deleteItem}>

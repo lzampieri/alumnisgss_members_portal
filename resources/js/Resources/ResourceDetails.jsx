@@ -1,6 +1,5 @@
 import { useState } from "react";
 import BlocksEditor from "../Blocks/BlocksEditor";
-import BlocksViewer from "../Blocks/BlocksViewer";
 import { Link, useForm, usePage } from '@inertiajs/react';
 
 
@@ -8,13 +7,12 @@ import EmptyDialog from "../Layout/EmptyDialog";
 import RolesChips from "../Permissions/RolesChips";
 import { postRequest } from "../Utils";
 import Backdrop from "../Layout/Backdrop";
-import Select from 'react-select';
 import ParentSelector from "./ParentSelector";
 import MagicLink from "./MagicLink";
 import computeResourceLink from "./computeResourceLink";
 import { faAdd, faBoxArchive, faBoxOpen, faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import FormWrapper from "./FormWrapper";
+import FormWrapper from "./Form/FormWrapper";
 
 function EditRoles({ type, initialList, resourceId, setProcessing }) {
     if (!(type == 'view' || type == 'edit'))
@@ -123,12 +121,12 @@ function AddPermalink({ resourceId }) {
 function Content({ resource, setProcessing }) {
     const [isEditing, setIsEditing] = useState(false)
 
-    const save = (newContent) => {
+    const save = (dataToSave) => {
         setIsEditing(false)
 
         postRequest(
             'resources.updateContent',
-            { content: JSON.stringify(newContent), resourceId: resource.id },
+            { ...dataToSave, resourceId: resource.id },
             setProcessing
         )
     }
@@ -141,7 +139,7 @@ function Content({ resource, setProcessing }) {
                 <Delete resource={resource} setProcessing={setProcessing} />
             </div>}
         {isEditing ?
-            <BlocksEditor initialContent={JSON.parse(resource.content)} saveCallback={save} /> :
+            <BlocksEditor initialContent={JSON.parse(resource.content)} resource={resource} saveCallback={save} /> :
             <FormWrapper content={JSON.parse(resource.content)} resource={resource} />}
     </>
 

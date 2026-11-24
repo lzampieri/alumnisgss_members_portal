@@ -277,7 +277,9 @@ class ResourceController extends Controller
     {
         $validated = $request->validate([
             'resourceId' => 'required|integer|exists:resources,id',
-            'content' => ''
+            'content' => '',
+            'form_open' => "required|boolean",
+            'form_email_to' => "present|nullable|string"
         ]);
 
         $res = Resource::find($validated['resourceId']);
@@ -285,6 +287,8 @@ class ResourceController extends Controller
         $this->authorize('edit', $res);
 
         $res->content = $validated['content'];
+        $res->form_open = $validated['form_open'];
+        $res->form_email_to = $validated['form_email_to'];
         $res->save();
 
         return redirect()->back()->with(['notistack' => ['success', 'Salvato']]);

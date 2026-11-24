@@ -18,7 +18,9 @@ class Resource extends Model
         'title',
         'content',
         'type',
-        'archive'
+        'archive',
+        'form_open',
+        'form_email_to'
     ];
     protected $hidden = [
         'access_token'
